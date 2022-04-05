@@ -78,7 +78,7 @@
         </el-table-column>
         <el-table-column prop="plugin_settings.cost_gold" label="花费金币">
         </el-table-column>
-        <el-table-column prop="plugin_settings.plugin_type" label="插件类型">
+        <el-table-column prop="plugin_settings.plugin_type[0]" label="插件类型">
         </el-table-column>
         <el-table-column prop="plugin_manager.error" label="加载状态">
           <template slot-scope="scope">
@@ -217,7 +217,7 @@
           <td>插件类型</td>
           <td>
             <el-input
-              v-model="pluginData.plugin_settings.plugin_type"
+              v-model="pluginData.plugin_settings.plugin_type[0]"
               placeholder=""
               size="small"
             ></el-input>
