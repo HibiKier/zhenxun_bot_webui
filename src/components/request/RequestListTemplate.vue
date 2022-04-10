@@ -158,7 +158,8 @@ export default {
                   type: "success",
                 });
               } else {
-                this.$message.error("操作失败，未找到id");
+                this.$message.error(resp.data);
+                this.initRequestList();
               }
             }
           });
