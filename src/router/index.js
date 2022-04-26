@@ -5,6 +5,7 @@ import Home from "@/views/Home";
 import PluginManage from "@/views/plugin/PluginManage";
 import GroupManage from "@/views/group/GroupManage";
 import RequestManage from "@/views/request/RequestManage";
+import SystemInfo from "@/views/system/SystemInfo";
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,7 @@ const routes = [
       { path: '/plugin', name: '插件列表', component: PluginManage, },
       { path: '/group', name: '群组管理', component: GroupManage, },
       { path: '/request', name: '请求管理', component: RequestManage, },
+      { path: '/system', name: '系统信息', component: SystemInfo, },
     ]
   },
   // {

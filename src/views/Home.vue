@@ -20,6 +20,10 @@
                 <i class="el-icon-menu"></i>
                 <span slot="title">请求管理</span>
               </el-menu-item>
+              <el-menu-item index="/system">
+                <i class="el-icon-menu"></i>
+                <span slot="title">系统信息</span>
+              </el-menu-item>
             </el-menu>
           </el-scrollbar>
         </el-aside>
@@ -33,7 +37,9 @@
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Home",
-  data() {},
+  data() {
+    return {};
+  },
   methods: {
     handleSelect(index) {
       this.$router.replace(index);
