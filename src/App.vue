@@ -12,6 +12,11 @@ export default {
 </script>
 
 <style>
+/* 清除浏览器默认样式 */
+*{
+  margin: 0;
+  padding: 0;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

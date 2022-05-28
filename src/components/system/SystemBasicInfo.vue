@@ -1,24 +1,20 @@
 <template>
-  <div>
-    <el-row>
-      <el-col :span="12"
-        ><div class="grid-content bg-purple">
-          <el-row>
-            <SystemStatusTemplate :status-type="type[0]" :getData="getData" />
-          </el-row>
-          <el-row>
-            <SystemStatusTemplate :status-type="type[1]" :getData="getData" />
-          </el-row>
-          <el-row>
-            <SystemStatusTemplate :status-type="type[2]" :getData="getData" />
-          </el-row></div
-      ></el-col>
-      <el-col :span="12">
-        <div class="grid-content bg-purple-light">
-          <SystemResourceTemplate />
-        </div>
-      </el-col>
-    </el-row>
+  <!-- dom结构优化，左右两个图片盒子高度对齐 -->
+  <div class="grid-wrapper">
+    <div class="grid-content bg-purple">
+      <el-row>
+        <SystemStatusTemplate :status-type="type[0]" :getData="getData" />
+      </el-row>
+      <el-row>
+        <SystemStatusTemplate :status-type="type[1]" :getData="getData" />
+      </el-row>
+      <el-row>
+        <SystemStatusTemplate :status-type="type[2]" :getData="getData" />
+      </el-row>
+    </div>
+    <div class="grid-content bg-purple-light">
+      <SystemResourceTemplate />
+    </div>
   </div>
 </template>
 
@@ -73,14 +69,8 @@ export default {
 </script>
 
 <style>
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.el-col {
-  border-radius: 4px;
+.grid-wrapper{
+  display: flex;
 }
 .bg-purple-dark {
   background: #99a9bf;
@@ -92,6 +82,7 @@ export default {
   background: #e5e9f2;
 }
 .grid-content {
+  flex: 1;
   border-radius: 4px;
   min-height: 36px;
 }

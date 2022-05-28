@@ -5,6 +5,7 @@ import store from "./store";
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
 import * as echarts from "echarts";
+import 'default-passive-events'//处理ele-ui警告
 
 import { postRequest } from "@/utils/api";
 import { putRequest } from "@/utils/api";

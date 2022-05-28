@@ -174,10 +174,8 @@ export default {
             },
           },
           axisLabel: {
-            textStyle: {
-              fontSize: 14,
+              fontSize: 14,//echart 5.0+的新写法，消除控制台黄色警告
               color: "#92A5E3",
-            },
           },
         },
         series: [

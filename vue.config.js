@@ -7,7 +7,7 @@ let proxyObj = {};
 
 proxyObj["/"] = {
   ws: false,
-  target: "http://localhost:8080",
+  target: "http://localhost:8090",
   // 发送请求头会被设置target
   changeOrigin: true,
   // 不重写请求地址
