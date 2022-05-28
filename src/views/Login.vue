@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height:100vh;min-height: 500px;">
     <el-form
       v-loading="loading"
       element-loading-text="正在登录..."
@@ -23,8 +23,8 @@
           type="password"
           v-model="loginForm.password"
           placeholder="请输入密码"
-          autofocus="false"
         ></el-input>
+        <!-- 关闭输入密码在打开时默认获取焦点 -->
       </el-form-item>
       <el-button type="primary" style="width: 100%" @click="submitLogin"
         >登录</el-button
@@ -35,9 +35,18 @@
 
 <script>
 import qs from "qs";
+// 导入cookie的获取和设置方法
+import { setCookie } from "@/utils/api";
+import { getCookie } from "@/utils/api";
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
+  created(){//进入登录页面先验证是否已经登录
+    if (getCookie("tokenStr")) {
+      this.$router.replace("/home");
+    }
+  },
   data() {
     return {
       loginForm: {
@@ -69,7 +78,7 @@ export default {
             if (resp) {
               // this.loading = false;
               const tokenStr = resp.token_type + " " + resp.access_token;
-              window.sessionStorage.setItem("tokenStr", tokenStr);
+              setCookie("tokenStr", tokenStr);
               // // 页面跳转
               let path = this.$route.query.redirect;
               this.$router.replace(
@@ -90,9 +99,11 @@ export default {
 
 <style>
 .loginContainer {
+  position: relative;
+  top: calc(50% - 200px);
   border-radius: 15px;
   background-clip: padding-box;
-  margin: 400px auto;
+  margin: 0 auto;
   width: 350px;
   padding: 15px 35px 15px 35px;
   background: #fff;

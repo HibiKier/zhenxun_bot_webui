@@ -6,10 +6,10 @@ import router from "../router";
 // 请求拦截器
 axios.interceptors.request.use(
   (config) => {
-    if (window.sessionStorage.getItem("tokenStr")) {
+    if (getCookie("tokenStr")) {
       //请求携带自定义token
       config.headers["Authorization"] =
-        window.sessionStorage.getItem("tokenStr");
+        getCookie("tokenStr");
     }
     return config;
   },
@@ -47,7 +47,9 @@ axios.interceptors.response.use(
         Message.error({ message: "尚未登录，请登录" });
       }
       router.replace("/");
-    } else {
+    } else if (error.response.status == 422){
+      Message.error({ message: "修改的数据类型返回错误" });
+    }else {
       Message.error({ message: "未知错误" });
     }
     return;
@@ -88,3 +90,22 @@ export const deleteRequest = (url, params) => {
     data: params,
   });
 };
+
+
+//设置cookie方法
+export const setCookie = (name,value) => {
+  var Days = 7;//有效期7天
+  var exp = new Date();
+  exp.setTime(exp.getTime() + Days*24*60*60*30);
+  document.cookie = name + "="+ encodeURI(value) + ";expires=" + exp.toGMTString();
+}
+
+//获取cookie方法
+export const getCookie = (name) => {
+  var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+  if(document.cookie.match(reg)){
+    arr=document.cookie.match(reg)
+    return decodeURI(arr[2]);
+  }else
+    return null;
+}
