@@ -390,7 +390,6 @@ export default {
       postConfigData.plugin_config = null;
       if(postConfigData.plugin_settings.cmd){
         postConfigData.plugin_settings.cmd = postConfigData.plugin_settings.cmd.replace('，', ',');//逗号转换
-        postConfigData.plugin_settings.cmd = postConfigData.plugin_settings.cmd.split(",");//字符串转列表
       }
       this.postRequest("/webui/plugins", postConfigData).then((resp) => {
         //先判断是否有返回数据
