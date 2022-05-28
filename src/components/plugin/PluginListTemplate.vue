@@ -165,8 +165,9 @@
         <tr>
           <td>群权限</td>
           <td>
+            <!-- 前端int数据返回bot变成str的问题 -->
             <el-input
-              v-model="pluginData.plugin_settings.level"
+              v-model.number="pluginData.plugin_settings.level"
               placeholder=""
               size="small"
             ></el-input>
@@ -215,8 +216,9 @@
         <tr>
           <td>花费金币</td>
           <td>
+            <!-- 前端int数据返回bot变成str的问题 -->
             <el-input
-              v-model="pluginData.plugin_settings.cost_gold"
+              v-model.number="pluginData.plugin_settings.cost_gold"
               placeholder=""
               size="small"
             ></el-input>
@@ -250,8 +252,9 @@
         <el-table-column prop="key" label="键"> </el-table-column>
         <el-table-column label="值">
           <template slot-scope="scope">
+            <!-- 前端int数据返回bot变成str的问题 -->
             <el-input
-              v-model="pluginData.plugin_config[scope.row.id].value"
+              v-model.number="pluginData.plugin_config[scope.row.id].value"
               placeholder="请输入内容"
               size="small"
             ></el-input>
@@ -379,19 +382,31 @@ export default {
       this.dialogVisible = true;
     },
     doUpdate() {
-      if (this.pluginData.plugin_manager.status) {
-        this.pluginData.plugin_manager.block_type = "";
+      // 修复回传数据列表变成字符串的问题
+      let postConfigData =JSON.parse(JSON.stringify(this.pluginData));//不提交原配置项而是一个副本
+      if (postConfigData.plugin_manager.status) {
+        postConfigData.plugin_manager.block_type = "";
       }
-      this.pluginData.plugin_config = null;
-      this.postRequest("/webui/plugins", this.pluginData).then((resp) => {
-        if (resp.code == 200) {
+      postConfigData.plugin_config = null;
+      if(postConfigData.plugin_settings.cmd){
+        postConfigData.plugin_settings.cmd = postConfigData.plugin_settings.cmd.replace('，', ',');//逗号转换
+        postConfigData.plugin_settings.cmd = postConfigData.plugin_settings.cmd.split(",");//字符串转列表
+      }
+      this.postRequest("/webui/plugins", postConfigData).then((resp) => {
+        //先判断是否有返回数据
+        if (resp && resp.code == 200) {
           this.$message({
             message: "修改成功",
             type: "success",
           });
           this.initPluginList();
         } else {
-          this.$message.error(resp.data);
+          //修改失败也刷新一次配置
+          if(resp && resp.data)
+            this.$message.error(resp.data);
+          else
+            this.$message.error("修改失败");
+          this.initPluginList();
         }
       });
       this.dialogVisible = false;
@@ -400,24 +415,12 @@ export default {
       let pluginConfigData = JSON.parse(JSON.stringify(this.pluginData));
       pluginConfigData.plugin_manager = null;
       pluginConfigData.plugin_settings = null;
+
       for (var i = 0; i < this.configsType.length; i++) {
-        if (
-          this.configsType[i].type == "list" &&
-          !(
-            pluginConfigData.plugin_config[this.configsType[i].index]
-              .value instanceof Array
-          )
-        ) {
-          console.log(
-            pluginConfigData.plugin_config[this.configsType[i].index].value
-          );
-          pluginConfigData.plugin_config[this.configsType[i].index].value =
-            pluginConfigData.plugin_config[
-              this.configsType[i].index
-            ].value.split(",");
+        if (this.configsType[i].type == "list" && !(pluginConfigData.plugin_config[this.configsType[i].index].value instanceof Array)) {
+          pluginConfigData.plugin_config[this.configsType[i].index].value =pluginConfigData.plugin_config[this.configsType[i].index].value.split(",");
         }
       }
-      console.log(pluginConfigData);
       this.postRequest("/webui/plugins", pluginConfigData).then((resp) => {
         if (resp.code == 200) {
           this.$message({
