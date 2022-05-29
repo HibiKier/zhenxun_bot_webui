@@ -37,16 +37,17 @@
 import qs from "qs";
 // 导入cookie的获取和设置方法
 import { setCookie } from "@/utils/api";
+import { clearCookie } from "@/utils/api";
 import { getCookie } from "@/utils/api";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
-  created(){//进入登录页面先验证是否已经登录
-    if (getCookie("tokenStr")) {
-      this.$router.replace("/home");
-    }
-  },
+  // created(){//进入登录页面先验证是否已经登录
+  //   if (getCookie("tokenStr")) {
+  //     this.$router.replace("/home");
+  //   }
+  // },
   data() {
     return {
       loginForm: {
@@ -78,6 +79,9 @@ export default {
             if (resp) {
               // this.loading = false;
               const tokenStr = resp.token_type + " " + resp.access_token;
+              if(getCookie){
+                clearCookie("tokenStr");
+              }
               setCookie("tokenStr", tokenStr);
               // // 页面跳转
               let path = this.$route.query.redirect;

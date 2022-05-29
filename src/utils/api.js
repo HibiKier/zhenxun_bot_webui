@@ -109,3 +109,7 @@ export const getCookie = (name) => {
   }else
     return null;
 }
+
+export const clearCookie = (name) => {
+  setCookie(name, "", -1);
+}
