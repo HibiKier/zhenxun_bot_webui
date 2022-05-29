@@ -6,14 +6,12 @@ module.exports = defineConfig({
 let proxyObj = {};
 
 proxyObj["/"] = {
-  ws: false,
-  target: "http://localhost:8080",
-  // 发送请求头会被设置target
+  target: "http://localhost:8080",//真寻酱的端口捏
   changeOrigin: true,
-  // 不重写请求地址
   pathReWrite: {
     "^/": "/",
   },
+  ws: false
 };
 
 module.exports = {
@@ -22,4 +20,9 @@ module.exports = {
     port: 8081,
     proxy: proxyObj,
   },
+  chainWebpack: config => {
+    config.plugin('html').tap(args => {
+        args[0].title = '真寻酱的后台捏'
+        return args
+    })},
 };
