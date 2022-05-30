@@ -19,6 +19,7 @@ const routes = [
     path: "/home",
     name: "Home",
     component: Home,
+    redirect:'/plugin',
     children: [
       { path: '/plugin', name: '插件列表', component: PluginManage, },
       { path: '/group', name: '群组管理', component: GroupManage, },
