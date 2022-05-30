@@ -6,7 +6,7 @@
       </el-header>
       <el-container class="layoutbox">
         <el-aside width="220px" class="left-aside">
-          <el-scrollbar class="myscrollbar">
+          <div class="myscrollbar">
             <el-menu @select="handleSelect">
               <el-menu-item index="/plugin">
                 <i class="el-icon-menu"></i>
@@ -25,7 +25,7 @@
                 <span slot="title">系统信息</span>
               </el-menu-item>
             </el-menu>
-          </el-scrollbar>
+          </div>
         </el-aside>
         <el-main><router-view class="homeRouterView" /></el-main>
       </el-container>
@@ -72,11 +72,8 @@ export default {
 .myscrollbar {
   height: 100%;
 }
-.myscrollbar >>> .el-scrollbar__wrap {
-  overflow-x: hidden;
-}
 .layoutbox {
-  height: 100vh;
+  height: calc(100vh - 60px);
   background-color: #f0f2f5;
 }
 </style>
