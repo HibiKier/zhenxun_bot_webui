@@ -3,9 +3,10 @@
     <el-container>
       <el-header class="homeHeader">
         <div class="title">小真寻的后台捏</div>
+        <div class="menu-btn" @click="showmenu"><div class="btn-logo"><div class="cover" :class="{covershow:covershow}"></div></div></div>
       </el-header>
       <el-container class="layoutbox">
-        <el-aside width="220px" class="left-aside">
+        <el-aside class="left-aside" :class="{show:asideshow}">
           <div class="myscrollbar">
             <el-menu @select="handleSelect">
               <el-menu-item index="/plugin">
@@ -38,12 +39,19 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Home",
   data() {
-    return {};
+    return {
+      asideshow:false,
+      covershow:false,
+    };
   },
   methods: {
     handleSelect(index) {
       this.$router.replace(index);
     },
+    showmenu(){
+      this.asideshow = !this.asideshow;
+      this.covershow = !this.covershow;
+    }
   },
 };
 </script>
@@ -58,6 +66,23 @@ export default {
   box-sizing: border-box;
 }
 
+.menu-btn{
+  display: flex;
+  align-items: center;
+  width: 0rem;
+  height: 2rem;
+  line-height: 2.5rem;
+  margin-right: 1rem;
+}
+.btn-logo{
+  position: relative;
+  width: 100%;
+  height: 0.2rem;
+  background: #fff;
+  box-shadow: 0 0.6rem 0 0 #fff,
+              0 -0.6rem 0 0 #fff;
+}
+
 .homeHeader .title {
   font-size: 30px;
   font-family: 宋体;
@@ -66,7 +91,8 @@ export default {
 
 .left-aside {
   background-color: #ffffff;
-  overflow-y: hidden;
+  width: 8rem !important;
+  transition: all .2s ease;
 }
 
 .myscrollbar {
@@ -75,5 +101,13 @@ export default {
 .layoutbox {
   height: calc(100vh - 60px);
   background-color: #f0f2f5;
+}
+
+@media screen  and (max-width:600px) {
+  .menu-btn{width: 2rem;}
+  .left-aside{position: fixed;top:60px;left: 0;width: 0 !important;height: calc(100vh - 60px);z-index: 999999;}
+  .show{width: 8rem !important;}
+  .cover{position:fixed;top:60px;right: 0;height: calc(100vh - 60px);width:0%;background-color: #00000080;z-index: 9999;}
+  .covershow{width: 100%;}
 }
 </style>
