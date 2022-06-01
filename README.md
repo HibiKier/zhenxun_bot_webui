@@ -26,6 +26,12 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## 更新
 
+### 2022/5/31
+
+* 样式表现优化
+* 主界面移动端简易简易适配
+
+
 ### 2022/5/28
 
 * 修复配置项和编辑项某些情况下修改出错的问题
