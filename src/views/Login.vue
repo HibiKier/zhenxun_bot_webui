@@ -1,6 +1,7 @@
 <template>
   <div style="height:100vh;min-height: 500px;">
     <el-form
+      @submit.native.prevent
       v-loading="loading"
       element-loading-text="正在登录..."
       element-loading-spinner="el-icon-loading"
@@ -26,7 +27,7 @@
         ></el-input>
         <!-- 关闭输入密码在打开时默认获取焦点 -->
       </el-form-item>
-      <el-button type="primary" style="width: 100%" @click="submitLogin"
+      <el-button type="primary" style="width: 100%" native-type="submit" @click="submitLogin"
         >登录</el-button
       >
     </el-form>
@@ -114,6 +115,10 @@ export default {
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #caca6c;
 }
+@media screen  and (max-width:600px) {
+  .loginContainer {width: calc(100vw - 10rem);top: calc(30%);}
+}
+
 
 .loginTitle {
   margin: 10px auto 40px auto;
