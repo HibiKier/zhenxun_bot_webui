@@ -71,6 +71,13 @@ export default {
 <style>
 .grid-wrapper{
   display: flex;
+  height: 100%;
+  overflow: hidden;
+}
+
+@media screen  and (max-width:600px) {
+  .grid-wrapper{display: flex;flex-direction: column;}
+  .grid-content {flex: 0!important;}
 }
 .bg-purple-dark {
   background: #99a9bf;

@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 1014px">
+  <div class="resbox">
     <div ref="echarts" style="width: 100%; height: 100%"></div>
     <el-drawer :title="ccw.title" :visible.sync="drawer">
       <div ref="ccwEcharts" style="width: 100%; height: 90%"></div>
@@ -152,7 +152,7 @@ export default {
         },
         graphic: {
           type: "text",
-          left: "center",
+          right: "3%",
           top: "13%",
           style: {
             text: "总占用空间：" + total.toFixed(2) + v,
@@ -229,4 +229,10 @@ export default {
 </script>
 
 <style>
+  .resbox{
+    height: 100%;
+  }
+  @media screen  and (max-width:600px) {
+  .resbox{height: 35rem;}
+  }
 </style>
