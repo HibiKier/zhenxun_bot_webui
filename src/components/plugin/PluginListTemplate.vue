@@ -117,7 +117,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="编辑插件" :visible.sync="dialogVisible" width="1000px">
+    <el-dialog title="编辑插件" :visible.sync="dialogVisible">
       <table>
         <tr>
           <td>插件名称</td>
@@ -245,7 +245,7 @@
     <el-dialog
       title="编辑配置项"
       :visible.sync="configDialogVisible"
-      width="1000px"
+      custom-class="edit-opt"
     >
       <table></table>
       <el-table :data="pluginData.plugin_config">
@@ -438,4 +438,39 @@ export default {
 </script>
 
 <style>
+
+.el-dialog__body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.el-dialog{
+  width: 25%;
+}
+.edit-opt{
+  width: 50%;
+}
+@media screen  and (max-width:600px) {
+  .el-dialog__body{
+    padding: 0!important;
+    width: 100%;
+  }
+  .el-dialog__body > table > tr >td{
+    padding-bottom: 0.5rem;
+  }
+  .el-dialog{
+    margin: 0 auto!important;
+    top:20%;
+    width: 90%!important;
+  }
+  .edit-opt{
+    margin: 0 auto!important;
+    top:25%;
+    width: 95%!important;
+  }
+  .edit-opt > .el-dialog__body{
+    padding: 0;
+    width: 100%;
+  }
+}
 </style>
