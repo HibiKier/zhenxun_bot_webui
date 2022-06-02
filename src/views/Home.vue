@@ -3,7 +3,7 @@
     <el-container>
       <el-header class="homeHeader">
         <div class="title">小真寻的后台捏</div>
-        <div class="menu-btn" @click="showmenu"><div class="btn-logo"><div class="cover" :class="{covershow:covershow}"></div></div></div>
+        <div class="menu-btn" @click="showmenu"><div class="btn-logo" :class="{show:asideshow}"></div><div class="cover" :class="{covershow:covershow}"></div></div>
       </el-header>
       <el-container class="layoutbox">
         <el-aside class="left-aside" :class="{show:asideshow}">
@@ -46,6 +46,8 @@ export default {
   },
   methods: {
     handleSelect(index) {
+      this.asideshow = false;
+      this.covershow = false;
       this.$router.replace(index);
     },
     showmenu(){
@@ -68,10 +70,10 @@ export default {
 
 .menu-btn{
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   width: 0rem;
   height: 2rem;
-  line-height: 2.5rem;
+  padding-bottom: 0.6rem;
   margin-right: 1rem;
 }
 .btn-logo{
@@ -79,10 +81,29 @@ export default {
   width: 100%;
   height: 0.2rem;
   background: #fff;
-  box-shadow: 0 0.6rem 0 0 #fff,
-              0 -0.6rem 0 0 #fff;
+  /* box-shadow: 0 0.6rem 0 0 #fff,
+              0 -0.6rem 0 0 #fff; */
 }
-
+.btn-logo::before,.btn-logo::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.6rem;
+  width: 100%;
+  height: 0.2rem;
+  background: #fff;
+  transition: all .2s ease;
+  transform-origin: left;
+}
+.btn-logo::after{
+  top: -1.2rem;
+}
+.show.btn-logo::before{
+  transform: rotate(-16deg);
+}
+.show.btn-logo::after{
+  transform: rotate(16deg);
+}
 .homeHeader .title {
   font-size: 30px;
   font-family: 宋体;
