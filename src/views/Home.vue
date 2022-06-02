@@ -71,6 +71,7 @@ export default {
 .menu-btn{
   display: flex;
   align-items: flex-end;
+  justify-content: center;
   width: 0rem;
   height: 2rem;
   padding-bottom: 0.6rem;
@@ -93,16 +94,18 @@ export default {
   height: 0.2rem;
   background: #fff;
   transition: all .2s ease;
-  transform-origin: left;
+  transform-origin: center;
 }
 .btn-logo::after{
   top: -1.2rem;
 }
 .show.btn-logo::before{
-  transform: rotate(-16deg);
+  top: -0.9rem;
+  transform: rotate(-45deg);
 }
 .show.btn-logo::after{
-  transform: rotate(16deg);
+  top: -0.9rem;
+  transform: rotate(45deg);
 }
 .homeHeader .title {
   font-size: 30px;
