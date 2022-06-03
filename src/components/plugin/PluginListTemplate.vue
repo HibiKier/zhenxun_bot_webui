@@ -349,7 +349,7 @@ export default {
       // 假数据
       if (data.plugin_settings == null) {
         data.plugin_settings = {
-          level: 0,
+          level: null,
           default_status: null,
           limit_superuser: null,
           cmd: "",
@@ -415,20 +415,21 @@ export default {
       pluginConfigData.plugin_manager = null;
       pluginConfigData.plugin_settings = null;
 
-      for (var i = 0; i < this.configsType.length; i++) {
-        if (this.configsType[i].type == "list" && !(pluginConfigData.plugin_config[this.configsType[i].index].value instanceof Array)) {
-          pluginConfigData.plugin_config[this.configsType[i].index].value =pluginConfigData.plugin_config[this.configsType[i].index].value.split(",");
-        }
-      }
+
       this.postRequest("/webui/plugins", pluginConfigData).then((resp) => {
-        if (resp.code == 200) {
+        if (resp && resp.code == 200) {
           this.$message({
             message: "修改成功",
             type: "success",
           });
           this.initPluginList();
         } else {
-          this.$message.error(resp.data);
+           //修改失败也刷新一次配置
+          if(resp && resp.data)
+            this.$message.error(resp.data);
+          else
+            this.$message.error("修改失败");
+          this.initPluginList();
         }
       });
       this.configDialogVisible = false;
