@@ -176,4 +176,9 @@ export default {
 </script>
 
 <style>
+@media screen  and (max-width:600px) {
+  .el-message-box{
+    width: 90vw;
+  }
+}
 </style>
