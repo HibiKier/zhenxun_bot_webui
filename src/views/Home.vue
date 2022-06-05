@@ -3,6 +3,7 @@
     <el-container>
       <el-header class="homeHeader">
         <div class="title">小真寻的后台捏</div>
+         <router-link class="to-myapi" :to="{ name: 'MyApi'}">修改api地址</router-link>
         <div class="menu-btn" @click="showmenu"><div class="btn-logo" :class="{show:asideshow}"></div><div class="cover" :class="{covershow:covershow}"></div></div>
       </el-header>
       <el-container class="layoutbox">
@@ -67,12 +68,14 @@ export default {
   padding: 0px 15px;
   box-sizing: border-box;
 }
-
+.el-menu{
+  border-right: none;
+}
 .menu-btn{
-  display: flex;
+  display: none;
   align-items: flex-end;
   justify-content: center;
-  width: 0rem;
+  width: 2rem;
   height: 2rem;
   padding-bottom: 0.6rem;
   margin-right: 1rem;
@@ -126,12 +129,26 @@ export default {
   height: calc(100vh - 60px);
   background-color: #f0f2f5;
 }
-
+.to-myapi{
+  width: 10rem;
+  height: 30px;
+  line-height: 30px;
+  font-size: 1.2rem;
+  color: #FFF;
+  text-decoration: none;
+  border-radius:100px;
+  border: 5px solid #FFF;
+}
 @media screen  and (max-width:600px) {
-  .menu-btn{width: 2rem;}
+  .menu-btn{display: flex;}
   .left-aside{position: fixed;top:60px;left: 0;width: 0 !important;height: calc(100vh - 60px);z-index: 999999;}
   .show{width: 8rem !important;}
   .cover{position:fixed;top:60px;right: 0;height: calc(100vh - 60px);width:0%;background-color: #00000080;z-index: 9999;}
   .covershow{width: 100%;}
+}
+@media screen  and (max-width:600px) {
+  .title{font-size: 1.4rem !important;}
+  .loginContainer {width: calc(100vw - 10rem);top: calc(30%);}
+  .to-myapi{width: 6rem !important; font-size: 1rem !important;border: 2px solid #FFF !important;}
 }
 </style>

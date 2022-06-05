@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from "@/views/Login";
 import Home from "@/views/Home";
+import MyApi from "@/views/MyApi";
 import PluginManage from "@/views/plugin/PluginManage";
 import GroupManage from "@/views/group/GroupManage";
 import RequestManage from "@/views/request/RequestManage";
@@ -14,6 +15,11 @@ const routes = [
     path: "/",
     name: "Login",
     component: Login
+  },
+  {
+    path: "/myapi",
+    name: "MyApi",
+    component: MyApi
   },
   {
     path: "/home",
