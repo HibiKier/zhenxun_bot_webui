@@ -25,6 +25,10 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 ## 更新
+### 2022/6/5[v0.1.0.3]
+* 新增修改“webui请求api地址”的页面以及功能
+* 接口数据类型对齐zhenxun_bot_v0.1.5.9
+* 样式体验优化，移动端下样式优化
 
 ### 2022/5/31
 
