@@ -14,9 +14,13 @@
 <script>
 import GroupRequestMana from "@/components/request/GroupRequestMana";
 import PrivateRequestMana from "@/components/request/PrivateRequestMana";
+import {verifyIdentity} from "@/utils/api";
 
 export default {
   name: "RequestManage",
+  created(){
+    verifyIdentity();
+  },
   data() {
     return {
       activeName: "GroupRequestMana",

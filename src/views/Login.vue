@@ -1,5 +1,9 @@
 <template>
   <div style="height:100vh;min-height: 500px;">
+    <el-header class="homeHeader">
+        <div class="title">小真寻的后台捏</div>
+        <router-link class="to-myapi" :to="{ name: 'MyApi'}">修改api地址</router-link>
+    </el-header>
     <el-form
       @submit.native.prevent
       v-loading="loading"
@@ -37,18 +41,14 @@
 <script>
 import qs from "qs";
 // 导入cookie的获取和设置方法
-import { setCookie } from "@/utils/api";
-import { clearCookie } from "@/utils/api";
-import { getCookie } from "@/utils/api";
+import { setCookie , clearCookie , getCookie , verifyIdentity} from "@/utils/api";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
-  // created(){//进入登录页面先验证是否已经登录
-  //   if (getCookie("tokenStr")) {
-  //     this.$router.replace("/home");
-  //   }
-  // },
+  created(){//进入登录页面先验证是否已经登录
+    verifyIdentity();
+  },
   data() {
     return {
       loginForm: {
@@ -103,6 +103,14 @@ export default {
 </script>
 
 <style>
+.homeHeader {
+  background-color: #409eff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 15px;
+  box-sizing: border-box;
+}
 .loginContainer {
   position: relative;
   top: calc(50% - 200px);
@@ -115,11 +123,6 @@ export default {
   border: 1px solid #eaeaea;
   box-shadow: 0 0 25px #caca6c;
 }
-@media screen  and (max-width:600px) {
-  .loginContainer {width: calc(100vw - 10rem);top: calc(30%);}
-}
-
-
 .loginTitle {
   margin: 10px auto 40px auto;
   text-align: center;
@@ -133,5 +136,20 @@ export default {
 .el-form-item__content {
   display: flex;
   align-items: center;
+}
+.to-myapi{
+  width: 10rem;
+  height: 30px;
+  line-height: 30px;
+  font-size: 1.2rem;
+  color: #FFF;
+  text-decoration: none;
+  border-radius:100px;
+  border: 5px solid #FFF;
+}
+@media screen  and (max-width:600px) {
+  .title{font-size: 1.6rem !important;}
+  .loginContainer {width: calc(100vw - 10rem);top: calc(30%);}
+  .to-myapi{width: 8rem !important; font-size: 1rem !important;border: 3px solid #FFF !important;}
 }
 </style>

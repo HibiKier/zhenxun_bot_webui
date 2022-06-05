@@ -40,7 +40,10 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response.code == 504 || error.response.code == 404) {
       Message.error({ message: "服务器被吃了┭┮﹏┭┮" });
-    } else if (error.response.status == 401) {
+    } else if (error.response.status == 405 || error.response.code == 500){
+      Message.error({ message: "真寻的api地址不正确捏" });
+    }else if (error.response.status == 401) {
+      clearCookie("tokenStr");
       if (error.response.data.detail == "Could not validate credentials") {
         Message.error({ message: "用户名或密码错误" });
       } else {
@@ -57,6 +60,23 @@ axios.interceptors.response.use(
 );
 
 let base = "";
+
+export const setBase = (url) =>{
+  if( url[url.length-1] == "/" || url[url.length-1] == "\\"){
+    url = url.slice(0,-1);
+  }
+  if(url != ""){
+    base = url;
+    setBaseUrlLocalStorage(base);
+  }else{
+    base = "http://localhost:8080";
+    setBaseUrlLocalStorage(base);
+  }
+}
+
+export const getBase = () =>{
+  return base;
+}
 
 //传送json格式的post请求
 export const postRequest = (url, params) => {
@@ -91,6 +111,14 @@ export const deleteRequest = (url, params) => {
   });
 };
 
+//设置localStorage
+export const setBaseUrlLocalStorage = (value)=>{
+  localStorage.setItem("baseUrl",value);
+}
+//取出localStorage
+export const getBaseUrlLocalStorage = ()=>{
+  return localStorage.getItem("baseUrl");
+}
 
 //设置cookie方法
 export const setCookie = (name,value) => {
@@ -110,6 +138,35 @@ export const getCookie = (name) => {
     return null;
 }
 
+
+
 export const clearCookie = (name) => {
   setCookie(name, "", -1);
+}
+
+export const verifyIdentity = ()=>{
+    let path = router.currentRoute.path;
+    if (getCookie("tokenStr")) {//判断是否存有token
+      postRequest(
+        "/webui/auth",
+        {token: getCookie("tokenStr")}
+      ).then((resp)=>{//请求成功
+        if(resp){//如果有返回的数据
+          //还需要判断身份是否正确，如果身份不对则清空cookie
+          router.replace(//身份验证成功
+            path == "/" || path == undefined ? "/home" : path
+          );
+        }else{//如果没有返回的数据
+          if(path != "/") //如果当前页面不是登陆页面
+            router.replace("/");
+        }
+      }).catch(()=>{//请求失败
+        if(path != "/") //如果当前页面不是登陆页面
+          router.replace("/");
+        Message.error({ message: "真寻酱的api请求不了捏" });
+      });
+    }else{//如果没有token
+      if(path != "/") //如果当前页面不是登陆页面
+        router.replace("/");
+    }
 }

@@ -22,9 +22,13 @@ import NormalPlugin from "@/components/plugin/NormalPlugin";
 import AdminPlugin from "@/components/plugin/AdminPlugin";
 import SuperPlugin from "@/components/plugin/SuperPlugin";
 import OtherPlugin from "@/components/plugin/OtherPlugin";
+import {verifyIdentity} from "@/utils/api";
 
 export default {
   name: "PluginList",
+  created(){
+    verifyIdentity();
+  },
   data() {
     return {
       activeName: "NormalPlugin",
