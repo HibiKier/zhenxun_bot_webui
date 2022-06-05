@@ -165,9 +165,8 @@
         <tr>
           <td>群权限</td>
           <td>
-            <!-- 前端int数据返回bot变成str的问题 -->
             <el-input
-              v-model.number="pluginData.plugin_settings.level"
+              v-model="pluginData.plugin_settings.level"
               placeholder=""
               size="small"
             ></el-input>
@@ -216,9 +215,8 @@
         <tr>
           <td>花费金币</td>
           <td>
-            <!-- 前端int数据返回bot变成str的问题 -->
             <el-input
-              v-model.number="pluginData.plugin_settings.cost_gold"
+              v-model="pluginData.plugin_settings.cost_gold"
               placeholder=""
               size="small"
             ></el-input>
@@ -252,9 +250,8 @@
         <el-table-column prop="key" label="键"> </el-table-column>
         <el-table-column label="值">
           <template slot-scope="scope">
-            <!-- 前端int数据返回bot变成str的问题 -->
             <el-input
-              v-model.number="pluginData.plugin_config[scope.row.id].value"
+              v-model="pluginData.plugin_config[scope.row.id].value"
               placeholder="请输入内容"
               size="small"
             ></el-input>
