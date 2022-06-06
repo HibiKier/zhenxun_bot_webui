@@ -22,6 +22,9 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (success) => {
     // 业务逻辑错误
+    if(success.status && success.status === 200 && success.request.responseURL.search(/auth/)!=-1){
+      return success.data;
+    }
     if (success.status && success.status === 200) {
       if (
         success.data.code == 500 ||
@@ -43,7 +46,6 @@ axios.interceptors.response.use(
     } else if (error.response.status == 405 || error.response.code == 500){
       Message.error({ message: "真寻的api地址不正确捏" });
     }else if (error.response.status == 401) {
-      clearCookie("tokenStr");
       if (error.response.data.detail == "Could not validate credentials") {
         Message.error({ message: "用户名或密码错误" });
       } else {
@@ -144,7 +146,7 @@ export const clearCookie = (name) => {
   setCookie(name, "", -1);
 }
 
-export const verifyIdentity = ()=>{
+export const verifyIdentity = () => {
     let path = router.currentRoute.path;
     if (getCookie("tokenStr")) {//判断是否存有token
       postRequest(
@@ -152,10 +154,16 @@ export const verifyIdentity = ()=>{
         {token: getCookie("tokenStr")}
       ).then((resp)=>{//请求成功
         if(resp){//如果有返回的数据
-          //还需要判断身份是否正确，如果身份不对则清空cookie
-          router.replace(//身份验证成功
-            path == "/" || path == undefined ? "/home" : path
-          );
+          if(resp.code == 200){
+            router.replace(//身份验证成功
+              path == "/" || path == undefined ? "/home" : path
+            );
+          }else{
+            Message.error({ message: "身份信息过期或错误" });
+            clearCookie("tokenStr");
+            if(path != "/") //如果当前页面不是登陆页面
+              router.replace("/");
+          }
         }else{//如果没有返回的数据
           if(path != "/") //如果当前页面不是登陆页面
             router.replace("/");
