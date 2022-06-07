@@ -281,6 +281,8 @@
 </template>
 
 <script>
+import { verifyIdentity } from "@/utils/api";
+
 export default {
   name: "PluginListTemplate",
   props: ["pluginType"],
@@ -321,7 +323,11 @@ export default {
     };
   },
   mounted() {
-    this.initPluginList();
+    verifyIdentity().then((res)=>{
+      if(res == "true"){
+        this.initPluginList();
+      }
+    });
   },
   methods: {
     refresh() {

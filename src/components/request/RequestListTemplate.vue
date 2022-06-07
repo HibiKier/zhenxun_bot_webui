@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { verifyIdentity } from "@/utils/api";
 export default {
   name: "RequestListTemplate",
   props: ["requestType"],
@@ -74,7 +75,11 @@ export default {
     };
   },
   mounted() {
-    this.initRequestList();
+    verifyIdentity().then((res)=>{
+      if(res == "true"){
+        this.initRequestList();
+      }
+    });
   },
   methods: {
     refresh() {

@@ -10,13 +10,9 @@
 
 <script>
 import SystemBasicInfo from "@/components/system/SystemBasicInfo";
-import { verifyIdentity } from "@/utils/api";
 
 export default {
   name: "SystemInfo",
-  created() {
-    verifyIdentity();
-  },
   data() {
     return {
       activeName: "SystemBasicInfo",

@@ -10,13 +10,9 @@
 
 <script>
 import GroupMana from "@/components/group/GroupMana";
-import { verifyIdentity } from "@/utils/api";
 
 export default {
   name: "PluginList",
-  created() {
-    verifyIdentity();
-  },
   data() {
     return {
       activeName: "GroupManage",

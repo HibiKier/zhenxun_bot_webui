@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import { verifyIdentity } from "@/utils/api";
 export default {
   name: "SystemResourceTemplate",
   data() {
@@ -25,7 +26,11 @@ export default {
     };
   },
   mounted() {
-    this.initData();
+    verifyIdentity().then((res)=>{
+      if(res == "true"){
+        this.initData();
+      }
+    });
   },
   methods: {
     initData() {

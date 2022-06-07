@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { verifyIdentity } from "@/utils/api";
 export default {
   name: "SystemLineDrawTemplate",
   props: ["statusType", "getData"],
@@ -26,10 +27,14 @@ export default {
     };
   },
   mounted() {
-    this.initData();
-    this.timer = setInterval(() => {
-      setTimeout(this.initData);
-    }, 1000 * 5);
+    verifyIdentity().then((res)=>{
+      if(res == "true"){
+        this.initData();
+        this.timer = setInterval(() => {
+          setTimeout(this.initData);
+        }, 1000 * 5);
+      }
+    });
   },
   destroyed() {
     clearInterval(this.timer);

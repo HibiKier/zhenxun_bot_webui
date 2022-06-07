@@ -82,6 +82,8 @@
 </template>
 
 <script>
+import { verifyIdentity } from "@/utils/api";
+
 export default {
   name: "GroupMana",
   props: ["pluginType"],
@@ -101,7 +103,11 @@ export default {
     };
   },
   mounted() {
-    this.initGroupList();
+    verifyIdentity().then((res)=>{
+      if(res == "true"){
+        this.initGroupList();
+      }
+    });
   },
   methods: {
     refresh() {
