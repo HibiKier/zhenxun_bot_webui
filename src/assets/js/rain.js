@@ -6,9 +6,9 @@ let windX = 1;
 let angle = [];
 let drops = [],
   bounces = [];
-let image;
-
+let image;  
 let eachAnger = 0.017453293;
+let rafID = 0;
 
 window.requestAnimFrame =
   window.requestAnimationFrame ||
@@ -58,17 +58,21 @@ export function Rain(opts) {
   gravity = opts.gravity || 0.163; 
 
   setStyle();
-  update();
+  window.addEventListener("resize", onWindowResize, false);
+  rafID = window.requestAnimFrame(update);
   if (opts.cloud) {
     image = new Image()
     image.onload = init
     image.src = 'https://luckyclover.top/static/cloud.png'
   }
+
+  this.clearRain = ()=>{
+    document.body.removeChild(canvas);
+    window.removeEventListener("resize", onWindowResize);
+    window.cancelAnimationFrame(rafID);
+  }
 }
 
-export function clearRain(){
-  document.body.removeChild(canvas);
-}
 
 function setStyle() {
   ctx.lineWidth = 1.5 * DPR;
@@ -116,9 +120,8 @@ function update() {
     }
   }
 
-  window.addEventListener("resize", onWindowResize, false);
 
-  window.requestAnimFrame(update);
+  rafID = window.requestAnimFrame(update);
 }
 
 function onWindowResize() {

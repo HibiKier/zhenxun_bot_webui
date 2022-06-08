@@ -24,25 +24,25 @@
 
 <script>
 import { getBase , setBase } from "@/utils/api";
-import { Rain , clearRain} from "@/assets/js/rain";
+import { Rain } from "@/assets/js/rain";
 
 export default {
   name: "MyApi",
   created(){
-    this.raincvs = Rain({
-    speed:[2,40],
-    hasBounce:true,
-    wind_direction:340,
-    gravity:0.05,
-    maxNum:80,
-    numLevel:5,
-    drop_chance:0.4,
-    cloud:false
-});
+    this.rainClass = new Rain({
+      speed:[2,40],
+      hasBounce:true,
+      wind_direction:340,
+      gravity:0.05,
+      maxNum:40,
+      numLevel:5,
+      drop_chance:0.4,
+      cloud:false
+    });
   },
   data(){
     return {
-        raincvs: null,
+        rainClass: null,
         rightshow: false,
         apiurl: getBase(),
         fromPageName:"",
@@ -85,7 +85,7 @@ export default {
       }
   },
   beforeDestroy(){
-    clearRain();
+    this.rainClass.clearRain();
   }
 } 
 
