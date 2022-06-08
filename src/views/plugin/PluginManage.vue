@@ -1,16 +1,16 @@
 <template>
   <div>
-    <el-tabs  v-model="activeName" type="card">
-      <el-tab-pane label="普通插件" name="NormalPlugin">
+    <el-tabs  v-model="activeName" type="card" >
+      <el-tab-pane label="普通插件" name="NormalPlugin" :lazy="true">
         <NormalPlugin />
       </el-tab-pane>
-      <el-tab-pane label="管理员插件" name="AdminPlugin">
+      <el-tab-pane label="管理员插件" name="AdminPlugin" :lazy="true">
         <AdminPlugin />
       </el-tab-pane>
-      <el-tab-pane label="超级用户插件" name="SuperPlugin">
+      <el-tab-pane label="超级用户插件" name="SuperPlugin" :lazy="true">
         <SuperPlugin />
       </el-tab-pane>
-      <el-tab-pane label="其他插件" name="OtherPlugin">
+      <el-tab-pane label="其他插件" name="OtherPlugin" :lazy="true">
         <OtherPlugin />
       </el-tab-pane>
     </el-tabs>

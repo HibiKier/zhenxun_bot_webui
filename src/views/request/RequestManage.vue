@@ -1,10 +1,10 @@
 <template>
   <div>
     <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="群组请求" name="GroupRequestMana">
+      <el-tab-pane label="群组请求" name="GroupRequestMana" :lazy="true">
         <GroupRequestMana />
       </el-tab-pane>
-      <el-tab-pane label="好友请求" name="PrivateRequestMana">
+      <el-tab-pane label="好友请求" name="PrivateRequestMana" :lazy="true">
         <PrivateRequestMana />
       </el-tab-pane>
     </el-tabs>
