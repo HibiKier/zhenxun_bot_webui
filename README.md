@@ -25,6 +25,12 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 ## 更新
+
+### 2022/6/18
+
+* 修复cookie储存异常的问题
+* 侧边栏在低分辨率屏幕下自动隐藏
+
 ### 2022/6/5 \[v0.1.0.3] (__务必使用zhenxun_bot_v0.1.5.9及以上版本！！！__)
 * 新增修改“webui请求api地址”的页面以及功能
 * 接口数据类型对齐zhenxun_bot_v0.1.5.9
