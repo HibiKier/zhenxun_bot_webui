@@ -61,6 +61,7 @@ export default {
 
 <style>
 .homeHeader {
+  position:relative;
   background-color: #409eff;
   display: flex;
   align-items: center;
@@ -138,6 +139,15 @@ export default {
   text-decoration: none;
   border-radius:100px;
   border: 5px solid #FFF;
+}
+
+@media screen  and (max-width:1750px) {
+  .menu-btn{display: flex;}
+  .left-aside{position: fixed;top:60px;left: 0;width: 0 !important;height: calc(100vh - 60px);z-index: 999999;}
+  .show{width: 8rem !important;}
+  .cover{position:fixed;top:60px;right: 0;height: calc(100vh - 60px);width:0%;background-color: #00000080;z-index: 9999;}
+  .covershow{width: 100%;}
+  .to-myapi{position:absolute; right: 5rem;}
 }
 @media screen  and (max-width:600px) {
   .menu-btn{display: flex;}
