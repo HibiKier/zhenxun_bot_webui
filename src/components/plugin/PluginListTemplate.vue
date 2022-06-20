@@ -3,20 +3,20 @@
     <div style="display: flex; margin-bottom: 10px">
       <el-button icon="el-icon-refresh" circle @click="refresh"></el-button>
     </div>
-    <el-table :data="pluginList" style="width: 100%">
-      <el-table-column prop="model" label="模块" width="150"> </el-table-column>
+    <el-table :data="pluginList" style="width: 100%;" height="calc(100vh - 213px)">
+      <el-table-column  prop="model" label="模块" width="150" > </el-table-column>
       <el-table-column
         prop="plugin_manager.plugin_name"
         label="插件名称"
         width="200"
       >
       </el-table-column>
-      <el-table-column prop="plugin_manager.author" label="作者" width="150">
+      <el-table-column prop="plugin_manager.author"  label="作者" width="150">
       </el-table-column>
-      <el-table-column prop="plugin_manager.version" label="版本" width="110">
+      <el-table-column prop="plugin_manager.version"  label="版本" width="110">
       </el-table-column>
       <template v-if="pluginType == 'normal'">
-        <el-table-column prop="plugin_manager.status" label="插件状态">
+        <el-table-column prop="plugin_manager.status"  label="插件状态">
           <template slot-scope="scope">
             <el-tag
               v-if="
@@ -29,7 +29,7 @@
             <el-tag v-else type="danger">禁用</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="plugin_manager.block_type" label="禁用类型">
+        <el-table-column prop="plugin_manager.block_type"  label="禁用类型">
           <template slot-scope="scope">
             <el-tag
               v-if="scope.row.plugin_manager.status == true"
@@ -41,9 +41,9 @@
             }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="plugin_settings.level" label="群权限">
+        <el-table-column prop="plugin_settings.level"  label="群权限">
         </el-table-column>
-        <el-table-column prop="plugin_settings.default_status" label="默认开关">
+        <el-table-column prop="plugin_settings.default_status"  label="默认开关">
           <template slot-scope="scope">
             <el-tag
               v-if="
@@ -58,6 +58,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          
           prop="plugin_settings.limit_superuser"
           label="限制超级用户"
         >
@@ -74,13 +75,13 @@
             <el-tag v-else type="danger">是</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="plugin_settings.cmd" label="别名">
+        <el-table-column prop="plugin_settings.cmd"  label="别名">
         </el-table-column>
-        <el-table-column prop="plugin_settings.cost_gold" label="花费金币">
+        <el-table-column prop="plugin_settings.cost_gold"  label="花费金币">
         </el-table-column>
-        <el-table-column prop="plugin_settings.plugin_type[0]" label="插件类型">
+        <el-table-column prop="plugin_settings.plugin_type[0]"  label="插件类型">
         </el-table-column>
-        <el-table-column prop="plugin_manager.error" label="加载状态">
+        <el-table-column prop="plugin_manager.error"  label="加载状态">
           <template slot-scope="scope">
             <el-tag
               v-if="
@@ -94,7 +95,7 @@
           </template>
         </el-table-column>
       </template>
-      <el-table-column label="配置项" width="150">
+      <el-table-column  label="配置项" width="150">
         <template slot-scope="scope">
           <span v-if="scope.row.plugin_config != null">
             <el-button size="small" @click="showPluginConfigEditVie(scope.row)"
@@ -103,8 +104,8 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="150">
-        <template slot-scope="scope" v-if="pluginType == 'normal'">
+      <el-table-column  label="操作" width="150" v-if="pluginType == 'normal'">
+        <template slot-scope="scope">
           <el-button
             v-if="
               scope.row.plugin_settings != null &&

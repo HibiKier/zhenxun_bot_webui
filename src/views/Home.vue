@@ -9,7 +9,7 @@
       <el-container class="layoutbox">
         <el-aside class="left-aside" :class="{show:asideshow}">
           <div class="myscrollbar">
-            <el-menu @select="handleSelect">
+            <el-menu class="border-right-none" @select="handleSelect">
               <el-menu-item index="/plugin">
                 <i class="el-icon-menu"></i>
                 <span slot="title">插件列表</span>
@@ -140,7 +140,9 @@ export default {
   border-radius:100px;
   border: 5px solid #FFF;
 }
-
+.border-right-none{
+  border-right: none !important;
+}
 @media screen  and (max-width:1750px) {
   .menu-btn{display: flex;}
   .left-aside{position: fixed;top:60px;left: 0;width: 0 !important;height: calc(100vh - 60px);z-index: 999999;}
