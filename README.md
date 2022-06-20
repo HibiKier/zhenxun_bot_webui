@@ -26,6 +26,9 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## 更新
 
+### 2022/6/20 \[v0.1.0.4] 
+* 优化普通插件列表在低宽度屏幕下的体验
+
 ### 2022/6/18
 
 * 修复cookie储存异常的问题
