@@ -1,294 +1,72 @@
 <template>
-  <div>
-    <div style="display: flex; margin-bottom: 10px">
-      <el-button icon="el-icon-refresh" circle @click="refresh"></el-button>
+  <div class="box-background">
+    <div v-for="(plugin,index) in pluginList.slice(0,4)" :key="index" class="card-box">
+        <div class="author-version">v0.1.0.0</div>
+        <div class="author-box">
+            <div class="plugin-name">幻影坦克</div>
+            <div class="author-name">@neigui1</div>
+        </div>
+        <div class="plugin-other-name">(nonebot_plugin_miragetank)</div>
+        <div class="options-box">
+            <div class="plugin-status">默认开关
+                <div class="switch" style="margin-left: 1rem;">
+                    <input id="switch-1" type="checkbox">
+                    <label for="switch-1"></label>
+                </div>
+            </div>
+            <div class="plugin-switch">
+                <PlayButton :pluginSta="pluginSta" @func="getMsgFormSon"></PlayButton>
+            </div>
+            <div class="plugin-super">限制超级用户
+                <div class="switch" style="margin-left: 1rem;">
+                    <input id="switch-2" type="checkbox">
+                    <label for="switch-2"></label>
+                </div>
+            </div>
+            <div class="plugin-cost">花费金币:
+                <div class="form">
+                    <input type="text" class="form__input" placeholder="5">
+                </div>
+            </div>
+            <div class="plugin-type">插件类型: 
+                <div class="chip">
+                    <p>群内小游戏</p>
+                    <div class="chip__close">
+                        <ion-icon name="close"></ion-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="plugin-Authority">群权限
+                <RateSlider></RateSlider>
+            </div>
+        </div>
+        
+        <div class="edit-btn">
+            <div class="btn btn__primary">
+                <p>配置项</p>
+            </div>
+            <div class="btn btn__secondary">
+                <p>编辑</p>
+            </div>
+        </div>
     </div>
-    <el-table :data="pluginList" style="width: 100%;" height="calc(100vh - 213px)">
-      <el-table-column  prop="model" label="模块" width="150" > </el-table-column>
-      <el-table-column
-        prop="plugin_manager.plugin_name"
-        label="插件名称"
-        width="200"
-      >
-      </el-table-column>
-      <el-table-column prop="plugin_manager.author"  label="作者" width="150">
-      </el-table-column>
-      <el-table-column prop="plugin_manager.version"  label="版本" width="110">
-      </el-table-column>
-      <template v-if="pluginType == 'normal'">
-        <el-table-column prop="plugin_manager.status"  label="插件状态">
-          <template slot-scope="scope">
-            <el-tag
-              v-if="
-                scope.row.plugin_manager != null &&
-                scope.row.plugin_manager.status == true
-              "
-              type="success"
-              >启用</el-tag
-            >
-            <el-tag v-else type="danger">禁用</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="plugin_manager.block_type"  label="禁用类型">
-          <template slot-scope="scope">
-            <el-tag
-              v-if="scope.row.plugin_manager.status == true"
-              type="success"
-              >未禁用</el-tag
-            >
-            <el-tag v-else type="danger">{{
-              scope.row.plugin_manager.block_type
-            }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="plugin_settings.level"  label="群权限">
-        </el-table-column>
-        <el-table-column prop="plugin_settings.default_status"  label="默认开关">
-          <template slot-scope="scope">
-            <el-tag
-              v-if="
-                scope.row.plugin_settings == null ||
-                scope.row.plugin_settings.default_status == true ||
-                scope.row.plugin_settings.level == null
-              "
-              type="success"
-              >开启</el-tag
-            >
-            <el-tag v-else type="danger">关闭</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          
-          prop="plugin_settings.limit_superuser"
-          label="限制超级用户"
-        >
-          <template slot-scope="scope">
-            <el-tag
-              v-if="
-                scope.row.plugin_settings == null ||
-                scope.row.plugin_settings.limit_superuser == false ||
-                scope.row.plugin_settings.level == null
-              "
-              type="success"
-              >否</el-tag
-            >
-            <el-tag v-else type="danger">是</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="plugin_settings.cmd"  label="别名">
-        </el-table-column>
-        <el-table-column prop="plugin_settings.cost_gold"  label="花费金币">
-        </el-table-column>
-        <el-table-column prop="plugin_settings.plugin_type[0]"  label="插件类型">
-        </el-table-column>
-        <el-table-column prop="plugin_manager.error"  label="加载状态">
-          <template slot-scope="scope">
-            <el-tag
-              v-if="
-                scope.row.plugin_manager != null &&
-                scope.row.plugin_manager.error == false
-              "
-              type="success"
-              >正常</el-tag
-            >
-            <el-tag v-else type="danger">错误</el-tag>
-          </template>
-        </el-table-column>
-      </template>
-      <el-table-column  label="配置项" width="150">
-        <template slot-scope="scope">
-          <span v-if="scope.row.plugin_config != null">
-            <el-button size="small" @click="showPluginConfigEditVie(scope.row)"
-              >配置项</el-button
-            >
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column  label="操作" width="150" v-if="pluginType == 'normal'">
-        <template slot-scope="scope">
-          <el-button
-            v-if="
-              scope.row.plugin_settings != null &&
-              scope.row.plugin_settings.level != null
-            "
-            size="small"
-            @click="showEditView(scope.row)"
-            >编辑</el-button
-          >
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-dialog title="编辑插件" :visible.sync="dialogVisible">
-      <table>
-        <tr>
-          <td>插件名称</td>
-          <td>
-            <el-input
-              v-model="pluginData.plugin_manager.plugin_name"
-              placeholder=""
-              size="small"
-            ></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>插件状态</td>
-          <td>
-            <el-switch
-              style="margin-right: 30px"
-              v-model="pluginData.plugin_manager.status"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="启用"
-              inactive-text="禁用"
-              size="small"
-            >
-            </el-switch>
-          </td>
-        </tr>
-        <tr>
-          <td>禁用类型</td>
-          <td>
-            <el-select
-              v-model="pluginData.plugin_manager.block_type"
-              size="small"
-              :disabled="pluginData.plugin_manager.status == true"
-            >
-              <el-option
-                v-for="item in blockType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </td>
-        </tr>
-        <tr>
-          <td>群权限</td>
-          <td>
-            <el-input
-              v-model="pluginData.plugin_settings.level"
-              placeholder=""
-              size="small"
-            ></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>默认开关</td>
-          <td>
-            <el-switch
-              style="margin-right: 30px"
-              v-model="pluginData.plugin_settings.default_status"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="开启"
-              inactive-text="关闭"
-              size="small"
-            >
-            </el-switch>
-          </td>
-        </tr>
-        <tr>
-          <td>限制超级用户</td>
-          <td>
-            <el-switch
-              style="margin-right: 30px"
-              v-model="pluginData.plugin_settings.limit_superuser"
-              active-color="#ff4949"
-              inactive-color="#13ce66"
-              active-text="是"
-              inactive-text="否"
-              size="small"
-            >
-            </el-switch>
-          </td>
-        </tr>
-        <tr>
-          <td>别名</td>
-          <td>
-            <el-input
-              v-model="pluginData.plugin_settings.cmd"
-              placeholder=""
-              size="small"
-            ></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>花费金币</td>
-          <td>
-            <el-input
-              v-model="pluginData.plugin_settings.cost_gold"
-              placeholder=""
-              size="small"
-            ></el-input>
-          </td>
-        </tr>
-        <tr>
-          <td>插件类型</td>
-          <td>
-            <el-input
-              v-model="pluginData.plugin_settings.plugin_type[0]"
-              placeholder=""
-              size="small"
-            ></el-input>
-          </td>
-        </tr>
-      </table>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="dialogVisible = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="doUpdate"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
-    <el-dialog
-      title="编辑配置项"
-      :visible.sync="configDialogVisible"
-      custom-class="edit-opt"
-    >
-      <table></table>
-      <el-table :data="pluginData.plugin_config">
-        <el-table-column prop="key" label="键"> </el-table-column>
-        <el-table-column label="值">
-          <template slot-scope="scope">
-            <el-input
-              v-model="pluginData.plugin_config[scope.row.id].value"
-              placeholder="请输入内容"
-              size="small"
-            ></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column prop="help_" label="说明"> </el-table-column>
-        <el-table-column label="默认值">
-          <template slot-scope="scope">
-            <span v-if="scope.row.default_value == true"> True </span>
-            <span v-else-if="scope.row.default_value == false"> False </span>
-            <span v-else>
-              {{ scope.row.default_value }}
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="configDialogVisible = false"
-          >取 消</el-button
-        >
-        <el-button size="small" type="primary" @click="doConfigUpdate"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import { verifyIdentity } from "@/utils/api";
-
+import RateSlider from "@/components/UI/RateSlider";
+import PlayButton from "@/components/UI/PlayButton";
 export default {
   name: "PluginListTemplate",
+  components: {
+    RateSlider,
+    PlayButton
+  },
   props: ["pluginType"],
   data() {
     return {
+      pluginSta:true,
       pluginList: [],
       dialogVisible: false,
       configDialogVisible: false,
@@ -331,6 +109,10 @@ export default {
     });
   },
   methods: {
+    getMsgFormSon(data){
+      this.pluginSta = data
+      console.log(this.pluginSta)
+    },
     refresh() {
       this.initPluginList();
       this.$message({
@@ -443,39 +225,356 @@ export default {
 </script>
 
 <style>
-
-.el-dialog__body{
+:root {
+    --primary-light: #8abdff;
+    --primary: #2ebb96;
+    --primary-dark: #238067;
+    --white: #FFFFFF;
+    --greyLight-1: #E4EBF5;
+    --greyLight-2: #c8d0e7;
+    --greyLight-3: #bec8e4;
+    --greyDark: #9baacf;
+}
+.box-background{
   display: flex;
+  width:100%;
+  height:100%;
   justify-content: center;
+  flex-flow: wrap;
+  background: var(--greyLight-1);
+}
+.card-box{
+  position: relative;
+  width: 25rem;
+  min-width: 25rem;
+  height: 20rem;
+  min-height: 20rem;
+  padding: 2rem;
+  overflow: hidden;
+  border-radius: 3rem;
+  margin: 1rem;
+  box-shadow: 0.8rem 0.8rem 1.4rem var(--greyLight-2), -0.2rem -0.2rem 1.8rem var(--white);
+}
+.author-version{
+    position: absolute;
+    line-height: 5rem;
+    width: 10rem;
+    height: 4rem;
+    right: -3rem;
+    top:0rem;
+    text-align: center;
+    background-color: #2da44e;
+    transform: rotate(45deg);
+    user-select: none;
+}
+.author-box{
+    display: flex;
+    height: 1.5rem;
+    line-height: 1.5rem;
+}
+.author-name{
+    margin-left: 0.5rem;
+    color: #57606a;
+}
+.plugin-name{
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0969da;
+}
+.plugin-other-name{
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0969da;
+    text-align: start;
+}
+.options-box>div{
+    font-size: 1.15rem;
+    margin:0.8rem 0;
+    user-select: none;
+}
+.edit-btn{
+    position: absolute;
+    display: flex;
+    width: 100%;
+    bottom: 1rem;
+    left: 0;
+    justify-content: space-around;
+}
+.plugin-status,.plugin-super{
+    display: flex;
+    align-items: center;
+}
+/*  PLAY BUTTON  */
+.circle {
+    position: absolute;
+    right: 0;
+    top:7rem;
+    width: 9rem;
+    height: 9rem;
+    border-radius: 1rem;
+}
+
+.circle__btn {
+    position: relative;
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 3.2rem;
+    color: var(--primary);
+    z-index: 300;
+    background: var(--greyLight-1);
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+    cursor: pointer;
+}
+
+.circle__btn.shadow {
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+.circle__btn .play {
+    position: absolute;
+    opacity: 0;
+    transition: all 0.2s linear;
+}
+
+.circle__btn .play.icon-visibility {
+    opacity: 1;
+}
+
+.circle__btn .pause {
+    position: absolute;
+    transition: all 0.2s linear;
+}
+
+.circle__btn .pause.icon-visibility {
+    opacity: 0;
+}
+
+.circle__back-1,
+.circle__back-2 {
+    position: absolute;
+    display: block;
+    top:0;
+    left: 0;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    filter: blur(1px);
+    z-index: 100;
+}
+
+.circle__back-1 {
+    box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
+    background: linear-gradient(to bottom right, var(--greyLight-2) 0%, var(--white) 100%);
+    -webkit-animation: waves 4s linear infinite;
+    animation: waves 4s linear infinite;
+}
+
+.circle__back-1.paused {
+    -webkit-animation-play-state: paused;
+    animation-play-state: paused;
+}
+
+.circle__back-2 {
+    box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
+    -webkit-animation: waves 4s linear 2s infinite;
+    animation: waves 4s linear 2s infinite;
+}
+
+.circle__back-2.paused {
+    -webkit-animation-play-state: paused;
+    animation-play-state: paused;
+}
+@keyframes waves {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+ /*  BUTTONS  */
+.btn {
+    width: 10rem;
+    height: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    transition: 0.3s ease;
+}
+
+.btn__primary {
+    background: var(--primary);
+    box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-light), inset -0.2rem -0.2rem 1rem var(--primary-dark), 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+    color: var(--greyLight-1);
+}
+
+.btn__primary:hover {
+    color: var(--white);
+}
+
+.btn__primary:active {
+    box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-dark), inset -0.2rem -0.2rem 1rem var(--primary-light);
+}
+
+.btn__secondary {
+    color: var(--greyDark);
+}
+
+.btn__secondary:hover {
+    color: var(--primary);
+}
+
+.btn__secondary:active {
+    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+.btn p {
+    font-size: 1.3rem;
+}
+
+ /*  SWITCH  */
+.switch {
+  width: 4rem;
+}
+
+.switch label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 2rem;
+  box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+  background: rgba(255, 255, 255, 0);
+  position: relative;
+  cursor: pointer;
+  border-radius: 1.6rem;
+}
+
+.switch label::after {
+  content: "";
+  position: absolute;
+  left: 0.4rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--greyDark);
+  transition: all 0.4s ease;
+}
+
+.switch label::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(330deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.switch input:checked~label::before {
+  opacity: 1;
+}
+
+.switch input {
+    display: none;
+}
+
+.switch input:checked~label::after {
+  left: 50%;
+  background: var(--greyLight-1);
+}
+
+/*  RANGE-SLIDER  */
+.plugin-Authority{
+  display: flex;
+  width: 100%;
+}
+/*  FORM  */
+.plugin-cost {
+  display: flex;
   align-items: center;
 }
-.el-dialog{
-  width: 25%;
+.form{
+  margin-left: 1rem;
 }
-.edit-opt{
-  width: 50%;
+
+.form__input {
+  width: 6rem;
+  height: 2rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.2rem;
+  padding:0 1.4rem;
+  box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+  background: none;
+  font-family: inherit;
+  color: var(--greyDark);
 }
-@media screen  and (max-width:600px) {
-  .el-dialog__body{
-    padding: 0!important;
-    width: 100%;
-  }
-  .el-dialog__body > table > tr >td{
-    padding-bottom: 0.5rem;
-  }
-  .el-dialog{
-    margin: 0 auto!important;
-    top:20%;
-    width: 90%!important;
-  }
-  .edit-opt{
-    margin: 0 auto!important;
-    top:25%;
-    width: 95%!important;
-  }
-  .edit-opt > .el-dialog__body{
-    padding: 0;
-    width: 100%;
-  }
+
+.form__input::-moz-placeholder {
+  color: var(--greyLight-3);
+}
+
+.form__input:-ms-input-placeholder {
+  color: var(--greyLight-3);
+}
+
+.form__input::placeholder {
+  color: var(--greyLight-3);
+}
+
+.form__input:focus {
+  outline: none;
+  box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
+}
+
+/*  CHIP  */
+.plugin-type{
+    display: flex;
+    align-items: center;
+}
+.chip {
+    margin-left: 1rem;
+    justify-self: center;
+    width: 9rem;
+    height: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chip p {
+    font-size: 1rem;
+    padding-left: 1rem;
+    color: var(--greyDark);
+}
+.chip__close {
+    width: 2rem;
+    height: 1rem;
+    display: flex;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    color: var(--greyLight-3);
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
 }
 </style>
