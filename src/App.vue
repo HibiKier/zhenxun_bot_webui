@@ -19,6 +19,16 @@ export default {
 
 <style>
 /* 清除浏览器默认样式 */
+:root {
+    --primary-light: #8abdff;
+    --primary: #2ebb96;
+    --primary-dark: #238067;
+    --white: #FFFFFF;
+    --greyLight-1: #E4EBF5;
+    --greyLight-2: #c8d0e7;
+    --greyLight-3: #bec8e4;
+    --greyDark: #9baacf;
+}
 *{
   margin: 0;
   padding: 0;

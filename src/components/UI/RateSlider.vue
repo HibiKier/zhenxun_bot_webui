@@ -3,7 +3,7 @@
         <div class="slider__box" ref="slider__box">
             <span class="slider__btn" ref="slider__btn"></span>
             <span class="slider__color" ref="slider__color"></span>
-            <span class="slider__tooltip" ref="slider__tooltip">50%</span>
+            <span class="slider__tooltip" ref="slider__tooltip">{{alevel}}</span>
         </div>
     </div>
 </template>
@@ -11,9 +11,10 @@
 <script>
 export default {
     name: 'RateSlider',
-
+    props: {level:Number,tindex:Number},
     data() {
         return {
+            alevel:this.level,
             container:null,
             btn:null,
             color:null,
@@ -24,18 +25,21 @@ export default {
     },
 
     mounted() {
-        // this.container = document.querySelector('.slider__box');
-        // this.btn = document.querySelector('.slider__btn');
-        // this.color = document.querySelector('.slider__color');
-        // this.tooltip = document.querySelector('.slider__tooltip');
         this.container = this.$refs.slider__box;
         this.btn =  this.$refs.slider__btn;
         this.color = this.$refs.slider__color;
         this.tooltip = this.$refs.slider__tooltip;
+        this.btnInit(this.container, this.btn);
         this.dragElement(this.container, this.btn);
     },
 
     methods: {
+        btnInit(target, btn){
+            let targetRect = target.getBoundingClientRect();
+            let percentPosition = this.alevel * targetRect.width / 10;
+            this.color.style.width = percentPosition + "px";
+            btn.style.left = percentPosition-12 + "px";
+        },
         dragElement(target, btn){
             this.onMouseMove = (e) => {
                 let targetRect = target.getBoundingClientRect();
@@ -46,30 +50,31 @@ export default {
                 btn.style.left = btn.x + 'px';
             
                 // get the position of the button inside the container (%)
-                let percentPosition = (btn.x + 10) / targetRect.width * 100;
+                let percentPosition = (btn.x + 15) / targetRect.width * 10;
             
                 // color width = position of button (%)
-                this.color.style.width = percentPosition + "%";
+                this.color.style.width = (Math.round(percentPosition)*100/10) + "%";
             
                 // move the tooltip when button moves, and show the tooltip
-                this.tooltip.style.left = btn.x - 5 + 'px';
+                // this.tooltip.style.left = btn.x - 5 + 'px';
                 this.tooltip.style.opacity = 1;
             
                 // show the percentage in the tooltip
-                this.tooltip.textContent = Math.round(percentPosition) + '%';
+                this.alevel = Math.round(percentPosition)-1;
             };
   
             this.onMouseUp = () => {
                 window.removeEventListener('mousemove', this.onMouseMove);
-                this.tooltip.style.opacity = 0;
+                this.$emit('func',this.tindex,this.alevel);
+                // this.tooltip.style.left = "90%";
             
-                btn.addEventListener('mouseover', ()=>{
-                    this.tooltip.style.opacity = 1;
-                });
+                // btn.addEventListener('mouseover', ()=>{
+                //     this.tooltip.style.opacity = 1;
+                // });
             
-                btn.addEventListener('mouseout', ()=>{
-                    this.tooltip.style.opacity = 0;
-                });
+                // btn.addEventListener('mouseout', ()=>{
+                //     this.tooltip.style.opacity = 0;
+                // });
             };
             let myOnMouseMove = this.onMouseMove;
             let myOnMouseUp = this.onMouseUp;
@@ -144,7 +149,7 @@ export default {
 
 .slider__tooltip {
   position: absolute;
-  left:4rem;
+  left:90%;
   margin-left: 2rem;
   height: 2.5rem;
   width: 3rem;
@@ -155,9 +160,8 @@ export default {
   font-size: 1.2rem;
   color: var(--primary);
   box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
-  opacity: 0;
+  opacity: 1;
   z-index: 100;
-  background-color: white;
   transition: opacity 0.3s ease;
 }
 </style>

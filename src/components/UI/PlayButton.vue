@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="circle">
-            <span class="circle__btn" @click="changeSta" :class="{shadow:btnboolean}">
-                <ion-icon class="pause" :class="{'icon-visibility':btnboolean}" name="pause"></ion-icon>
-                <ion-icon class="play" :class="{'icon-visibility':btnboolean}" name="play"></ion-icon>
+            <span class="circle__btn" @click="changeSta" :class="{shadow:!btnboolean}">
+                <ion-icon class="pause" :class="{'icon-visibility':!btnboolean}" name="pause"></ion-icon>
+                <ion-icon class="play" :class="{'icon-visibility':!btnboolean}" name="play"></ion-icon>
             </span>
-            <span class="circle__back-1" :class="{paused:btnboolean}"></span>
-            <span class="circle__back-2" :class="{paused:btnboolean}"></span>
+            <span class="circle__back-1" :class="{paused:!btnboolean}"></span>
+            <span class="circle__back-2" :class="{paused:!btnboolean}"></span>
         </div>
     </div>
 </template>
@@ -14,7 +14,7 @@
 <script>
 export default {
     name: 'PlayButton',
-    props: {pluginSta:Boolean},
+    props: {pluginSta:Boolean,tindex:Number},
     data() {
         return {
             btnboolean:this.pluginSta,
@@ -22,13 +22,12 @@ export default {
     },
 
     mounted() {
-        
     },
 
     methods: {
         changeSta(){
             this.btnboolean = !this.btnboolean;
-            this.$emit('func',this.btnboolean);
+            this.$emit('func',this.tindex,this.btnboolean);
         }
     },
 };
@@ -44,7 +43,6 @@ export default {
     height: 9rem;
     border-radius: 1rem;
 }
-
 .circle__btn {
     position: relative;
     width: 6rem;
@@ -68,19 +66,23 @@ export default {
 .circle__btn .play {
     position: absolute;
     opacity: 0;
+    visibility: visible;
     transition: all 0.2s linear;
 }
 
 .circle__btn .play.icon-visibility {
     opacity: 1;
+    visibility: visible;
 }
 
 .circle__btn .pause {
     position: absolute;
     transition: all 0.2s linear;
+    visibility: visible;
 }
 
 .circle__btn .pause.icon-visibility {
+    visibility: visible;
     opacity: 0;
 }
 

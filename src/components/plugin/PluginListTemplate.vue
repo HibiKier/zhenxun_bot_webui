@@ -1,52 +1,64 @@
 <template>
   <div class="box-background">
-    <div v-for="(plugin,index) in pluginList.slice(0,4)" :key="index" class="card-box">
-        <div class="author-version">v0.1.0.0</div>
+    <div v-for="(plugin,index) in pluginEditList.slice(0,4)" :key="index" class="card-box">
+        <div class="author-version">{{'v'+plugin.plugin_manager.version}}</div>
         <div class="author-box">
-            <div class="plugin-name">幻影坦克</div>
-            <div class="author-name">@neigui1</div>
+            <div class="plugin-name">{{plugin.plugin_manager.plugin_name}}</div>
+            <div class="author-name">{{'@'+plugin.plugin_manager.author}}</div>
         </div>
-        <div class="plugin-other-name">(nonebot_plugin_miragetank)</div>
+        <div class="plugin-other-name">{{'('+plugin.model+')'}}</div>
         <div class="options-box">
-            <div class="plugin-status">默认开关
+            <div class="plugin-status" :class="{disabled:!isEdit[index]}">默认开关
                 <div class="switch" style="margin-left: 1rem;">
-                    <input id="switch-1" type="checkbox">
-                    <label for="switch-1"></label>
+                    <input :id="'switch-'+index" v-model="plugin.plugin_settings.default_status" type="checkbox">
+                    <label :for="'switch-'+index"></label>
                 </div>
             </div>
-            <div class="plugin-switch">
-                <PlayButton :pluginSta="pluginSta" @func="getMsgFormSon"></PlayButton>
+            <div class="plugin-switch" :class="{disabled:!isEdit[index]}">
+                <PlayButton :pluginSta="plugin.plugin_manager.status" :tindex="index" @func="getMsgFormPlayButton"></PlayButton>
             </div>
-            <div class="plugin-super">限制超级用户
-                <div class="switch" style="margin-left: 1rem;">
-                    <input id="switch-2" type="checkbox">
-                    <label for="switch-2"></label>
+            <div class="plugin-super" :class="{disabled:!isEdit[index]}">限制超级用户
+                <div class="switch"  style="margin-left: 1rem;">
+                    <input :id="'switch1-'+index" v-model="plugin.plugin_settings.limit_superuser" type="checkbox">
+                    <label :for="'switch1-'+index"></label>
                 </div>
             </div>
-            <div class="plugin-cost">花费金币:
+            <div class="plugin-cost" :class="{disabled:!isEdit[index]}">花费金币:
                 <div class="form">
-                    <input type="text" class="form__input" placeholder="5">
+                    <input type="text" v-model="plugin.plugin_settings.cost_gold" class="form__input" placeholder="5">
                 </div>
             </div>
-            <div class="plugin-type">插件类型: 
-                <div class="chip">
+            <div class="plugin-type" :class="{disabled:!isEdit[index]}">插件类型: 
+              <div class="form">
+                    <input type="text" v-model="plugin.plugin_settings.plugin_type[0]" class="form__input" placeholder="5">
+                </div>
+                <!-- <div class="chip">
                     <p>群内小游戏</p>
                     <div class="chip__close">
                         <ion-icon name="close"></ion-icon>
                     </div>
-                </div>
+                </div> -->
             </div>
-            <div class="plugin-Authority">群权限
-                <RateSlider></RateSlider>
+            <div class="plugin-Authority" :class="{disabled:!isEdit[index]}">群权限
+                <RateSlider :level="plugin.plugin_settings.level" :tindex="index" @func="getMsgFormRateSlider"></RateSlider>
             </div>
         </div>
         
-        <div class="edit-btn">
+        <div v-if="!isEdit[index]" class="edit-btn">
             <div class="btn btn__primary">
                 <p>配置项</p>
             </div>
-            <div class="btn btn__secondary">
+            <div class="btn btn__secondary" @click="isEdit.splice(index,1,true)">
                 <p>编辑</p>
+            </div>
+        </div>
+
+        <div v-if="isEdit[index]" class="edit-btn">
+            <div class="btn btn__primary">
+                <p>保存</p>
+            </div>
+            <div class="btn btn__secondary" @click="cancelEdit(index)">
+                <p>取消</p>
             </div>
         </div>
     </div>
@@ -66,7 +78,9 @@ export default {
   props: ["pluginType"],
   data() {
     return {
+      isEdit:null,
       pluginSta:true,
+      pluginEditList: [],
       pluginList: [],
       dialogVisible: false,
       configDialogVisible: false,
@@ -109,9 +123,16 @@ export default {
     });
   },
   methods: {
-    getMsgFormSon(data){
-      this.pluginSta = data
-      console.log(this.pluginSta)
+    cancelEdit(index){
+      // this.initPluginList();
+      this.isEdit.splice(index,1,false);
+      this.pluginEditList[index] = this.pluginList[index];
+    },
+    getMsgFormPlayButton(index,data){
+      this.pluginList[index].plugin_manager.status = data;
+    },
+    getMsgFormRateSlider(index,data){
+      this.pluginList[index].plugin_settings.level = data;
     },
     refresh() {
       this.initPluginList();
@@ -125,6 +146,8 @@ export default {
         (resp) => {
           if (resp) {
             this.pluginList = resp.data;
+            this.pluginEditList = JSON.parse(JSON.stringify(this.pluginList));
+            this.isEdit = new Array(this.pluginList.length).fill(false);
           } else {
             this.$message.error("获取数据失败！");
           }
@@ -224,16 +247,10 @@ export default {
 };
 </script>
 
-<style>
-:root {
-    --primary-light: #8abdff;
-    --primary: #2ebb96;
-    --primary-dark: #238067;
-    --white: #FFFFFF;
-    --greyLight-1: #E4EBF5;
-    --greyLight-2: #c8d0e7;
-    --greyLight-3: #bec8e4;
-    --greyDark: #9baacf;
+<style scoped>
+.disabled {
+    pointer-events: none;
+    cursor: default;
 }
 .box-background{
   display: flex;
@@ -262,6 +279,7 @@ export default {
     height: 4rem;
     right: -3rem;
     top:0rem;
+    font-size: 1.2rem;
     text-align: center;
     background-color: #2da44e;
     transform: rotate(45deg);
@@ -303,105 +321,6 @@ export default {
 .plugin-status,.plugin-super{
     display: flex;
     align-items: center;
-}
-/*  PLAY BUTTON  */
-.circle {
-    position: absolute;
-    right: 0;
-    top:7rem;
-    width: 9rem;
-    height: 9rem;
-    border-radius: 1rem;
-}
-
-.circle__btn {
-    position: relative;
-    width: 6rem;
-    height: 6rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    font-size: 3.2rem;
-    color: var(--primary);
-    z-index: 300;
-    background: var(--greyLight-1);
-    box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
-    cursor: pointer;
-}
-
-.circle__btn.shadow {
-    box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
-}
-
-.circle__btn .play {
-    position: absolute;
-    opacity: 0;
-    transition: all 0.2s linear;
-}
-
-.circle__btn .play.icon-visibility {
-    opacity: 1;
-}
-
-.circle__btn .pause {
-    position: absolute;
-    transition: all 0.2s linear;
-}
-
-.circle__btn .pause.icon-visibility {
-    opacity: 0;
-}
-
-.circle__back-1,
-.circle__back-2 {
-    position: absolute;
-    display: block;
-    top:0;
-    left: 0;
-    width: 6rem;
-    height: 6rem;
-    border-radius: 50%;
-    filter: blur(1px);
-    z-index: 100;
-}
-
-.circle__back-1 {
-    box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
-    background: linear-gradient(to bottom right, var(--greyLight-2) 0%, var(--white) 100%);
-    -webkit-animation: waves 4s linear infinite;
-    animation: waves 4s linear infinite;
-}
-
-.circle__back-1.paused {
-    -webkit-animation-play-state: paused;
-    animation-play-state: paused;
-}
-
-.circle__back-2 {
-    box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
-    -webkit-animation: waves 4s linear 2s infinite;
-    animation: waves 4s linear 2s infinite;
-}
-
-.circle__back-2.paused {
-    -webkit-animation-play-state: paused;
-    animation-play-state: paused;
-}
-@keyframes waves {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(2);
-        opacity: 0;
-    }
 }
 
  /*  BUTTONS  */
