@@ -23,20 +23,25 @@ export default {
             onMouseUp:null
         };
     },
-
+    watch: {
+      level(newLevel) {
+        this.alevel = newLevel;
+        this.btnInit(this.container, this.btn, this.alevel+1);
+      },
+    },
     mounted() {
         this.container = this.$refs.slider__box;
         this.btn =  this.$refs.slider__btn;
         this.color = this.$refs.slider__color;
         this.tooltip = this.$refs.slider__tooltip;
-        this.btnInit(this.container, this.btn);
+        this.btnInit(this.container, this.btn, this.alevel);
         this.dragElement(this.container, this.btn);
     },
 
     methods: {
-        btnInit(target, btn){
+        btnInit(target, btn, alevel){
             let targetRect = target.getBoundingClientRect();
-            let percentPosition = this.alevel * targetRect.width / 10;
+            let percentPosition = alevel * targetRect.width / 10;
             this.color.style.width = percentPosition + "px";
             btn.style.left = percentPosition-12 + "px";
         },
@@ -53,8 +58,8 @@ export default {
                 let percentPosition = (btn.x + 15) / targetRect.width * 10;
             
                 // color width = position of button (%)
-                this.color.style.width = (Math.round(percentPosition)*100/10) + "%";
-            
+                // this.color.style.width = (Math.round(percentPosition)*100/10) + "%";
+                this.color.style.width = x + "px";
                 // move the tooltip when button moves, and show the tooltip
                 // this.tooltip.style.left = btn.x - 5 + 'px';
                 this.tooltip.style.opacity = 1;
@@ -99,7 +104,7 @@ export default {
 
 .slider__box {
   margin-left: 1rem;
-  width: 50%;
+  width: 77%;
   height: 1rem;
   cursor: pointer;
   box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
@@ -149,7 +154,7 @@ export default {
 
 .slider__tooltip {
   position: absolute;
-  left:90%;
+  left:94%;
   margin-left: 2rem;
   height: 2.5rem;
   width: 3rem;

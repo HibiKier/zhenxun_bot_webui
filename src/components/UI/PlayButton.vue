@@ -20,7 +20,11 @@ export default {
             btnboolean:this.pluginSta,
         };
     },
-
+    watch:{
+        pluginSta(newPluginSta){
+            this.btnboolean = newPluginSta;
+        }
+    },
     mounted() {
     },
 
@@ -36,11 +40,8 @@ export default {
 <style scoped>
 /*  PLAY BUTTON  */
 .circle {
-    position: absolute;
-    right: 0;
-    top:7rem;
-    width: 9rem;
-    height: 9rem;
+    width: 10rem;
+    height: 7.3rem;
     border-radius: 1rem;
 }
 .circle__btn {

@@ -1,12 +1,12 @@
 <template>
   <div class="box-background">
-    <div v-for="(plugin,index) in pluginEditList.slice(0,4)" :key="index" class="card-box">
-        <div class="author-version">{{'v'+plugin.plugin_manager.version}}</div>
+    <div v-for="(plugin,index) in pluginEditList.slice(0,4)" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
+        <div class="plugin-version" >{{'v'+plugin.plugin_manager.version}}</div>
         <div class="author-box">
             <div class="plugin-name">{{plugin.plugin_manager.plugin_name}}</div>
             <div class="author-name">{{'@'+plugin.plugin_manager.author}}</div>
         </div>
-        <div class="plugin-other-name">{{'('+plugin.model+')'}}</div>
+        <div class="plugin-model-name">{{'('+plugin.model+')'}}</div>
         <div class="options-box">
             <div class="plugin-status" :class="{disabled:!isEdit[index]}">默认开关
                 <div class="switch" style="margin-left: 1rem;">
@@ -16,6 +16,10 @@
             </div>
             <div class="plugin-switch" :class="{disabled:!isEdit[index]}">
                 <PlayButton :pluginSta="plugin.plugin_manager.status" :tindex="index" @func="getMsgFormPlayButton"></PlayButton>
+                <div style="margin-left:-1rem;" v-show="plugin.plugin_manager.block_type">
+                  <div class="block-type">禁用类型</div>
+                  <SegmentedControl :block_type="plugin.plugin_manager.block_type" :tindex="index" @func="getMsgFormSegmentedControl"></SegmentedControl>
+                </div>
             </div>
             <div class="plugin-super" :class="{disabled:!isEdit[index]}">限制超级用户
                 <div class="switch"  style="margin-left: 1rem;">
@@ -25,12 +29,12 @@
             </div>
             <div class="plugin-cost" :class="{disabled:!isEdit[index]}">花费金币:
                 <div class="form">
-                    <input type="text" v-model="plugin.plugin_settings.cost_gold" class="form__input" placeholder="5">
+                    <input type="text" v-model="plugin.plugin_settings.cost_gold" class="form__input" placeholder="0">
                 </div>
             </div>
             <div class="plugin-type" :class="{disabled:!isEdit[index]}">插件类型: 
               <div class="form">
-                    <input type="text" v-model="plugin.plugin_settings.plugin_type[0]" class="form__input" placeholder="5">
+                    <input type="text" v-model="plugin.plugin_settings.plugin_type[0]" class="form__input" placeholder="无">
                 </div>
                 <!-- <div class="chip">
                     <p>群内小游戏</p>
@@ -38,6 +42,11 @@
                         <ion-icon name="close"></ion-icon>
                     </div>
                 </div> -->
+            </div>
+            <div class="plugin-other-name" :class="{disabled:!isEdit[index]}">插件别名: 
+              <div class="form">
+                    <input type="text" v-model="plugin.plugin_settings.cmd" class="form__input" placeholder="无">
+                </div>
             </div>
             <div class="plugin-Authority" :class="{disabled:!isEdit[index]}">群权限
                 <RateSlider :level="plugin.plugin_settings.level" :tindex="index" @func="getMsgFormRateSlider"></RateSlider>
@@ -69,11 +78,13 @@
 import { verifyIdentity } from "@/utils/api";
 import RateSlider from "@/components/UI/RateSlider";
 import PlayButton from "@/components/UI/PlayButton";
+import SegmentedControl from "@/components/UI/SegmentedControl";
 export default {
   name: "PluginListTemplate",
   components: {
     RateSlider,
-    PlayButton
+    PlayButton,
+    SegmentedControl
   },
   props: ["pluginType"],
   data() {
@@ -126,13 +137,22 @@ export default {
     cancelEdit(index){
       // this.initPluginList();
       this.isEdit.splice(index,1,false);
-      this.pluginEditList[index] = this.pluginList[index];
+      this.pluginEditList.splice(index,1,JSON.parse(JSON.stringify(this.pluginList[index])));
+      // this.pluginEditList[index] = this.pluginList[index];
     },
     getMsgFormPlayButton(index,data){
-      this.pluginList[index].plugin_manager.status = data;
+      this.pluginEditList[index].plugin_manager.status = data;
+      if(this.pluginEditList[index].plugin_manager.status == false && this.pluginEditList[index].plugin_manager.block_type == null){
+        this.pluginEditList[index].plugin_manager.block_type = "全部";
+      }else if(this.pluginEditList[index].plugin_manager.status == true){
+        this.pluginEditList[index].plugin_manager.block_type = null;
+      }
+    },
+    getMsgFormSegmentedControl(index,data){
+      this.pluginEditList[index].plugin_manager.block_type = data;
     },
     getMsgFormRateSlider(index,data){
-      this.pluginList[index].plugin_settings.level = data;
+      this.pluginEditList[index].plugin_settings.level = data;
     },
     refresh() {
       this.initPluginList();
@@ -264,15 +284,15 @@ export default {
   position: relative;
   width: 25rem;
   min-width: 25rem;
-  height: 20rem;
-  min-height: 20rem;
+  height: 23rem;
+  min-height: 23rem;
   padding: 2rem;
   overflow: hidden;
   border-radius: 3rem;
   margin: 1rem;
   box-shadow: 0.8rem 0.8rem 1.4rem var(--greyLight-2), -0.2rem -0.2rem 1.8rem var(--white);
 }
-.author-version{
+.plugin-version{
     position: absolute;
     line-height: 5rem;
     width: 10rem;
@@ -281,9 +301,14 @@ export default {
     top:0rem;
     font-size: 1.2rem;
     text-align: center;
-    background-color: #2da44e;
+    /* background-color: #2da44e; */
+    background-color: var(--primary);
     transform: rotate(45deg);
     user-select: none;
+}
+.card-box.pstatus {
+  --primary: hsla(356,72%,44%,1);
+  --primary-dark: rgba(207,34,46,1);
 }
 .author-box{
     display: flex;
@@ -299,7 +324,12 @@ export default {
     font-weight: 700;
     color: #0969da;
 }
-.plugin-other-name{
+.plugin-switch{
+  position: absolute;
+  right: 2rem;
+  top:3rem;
+}
+.plugin-model-name{
     font-size: 1.25rem;
     font-weight: 700;
     color: #0969da;
@@ -322,7 +352,12 @@ export default {
     display: flex;
     align-items: center;
 }
-
+.block-type{
+  text-align:start ;
+  height: 2rem;
+  line-height: 2rem;
+  margin: 0.5rem 0 0.8rem 0.5rem;
+}
  /*  BUTTONS  */
 .btn {
     width: 10rem;
@@ -425,16 +460,19 @@ export default {
   width: 100%;
 }
 /*  FORM  */
-.plugin-cost {
+.plugin-cost , .plugin-other-name{
   display: flex;
   align-items: center;
+}
+.plugin-other-name .form__input{
+  width: 100%;
 }
 .form{
   margin-left: 1rem;
 }
 
 .form__input {
-  width: 6rem;
+  width: 5rem;
   height: 2rem;
   border: none;
   border-radius: 1rem;
