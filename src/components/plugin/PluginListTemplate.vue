@@ -1,6 +1,6 @@
 <template>
   <div class="box-background">
-    <div v-for="(plugin,index) in pluginEditList.slice(0,4)" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
+    <div v-for="(plugin,index) in pluginEditList.slice(0,9)" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
         <div class="plugin-version" >{{'v'+plugin.plugin_manager.version}}</div>
         <div class="author-box">
             <div class="plugin-name">{{plugin.plugin_manager.plugin_name}}</div>
@@ -54,7 +54,7 @@
         </div>
         
         <div v-if="!isEdit[index]" class="edit-btn">
-            <div class="btn btn__primary">
+            <div class="btn btn__primary" @click="editOptShow = true" v-if="plugin.plugin_config">
                 <p>配置项</p>
             </div>
             <div class="btn btn__secondary" @click="isEdit.splice(index,1,true)">
@@ -63,7 +63,7 @@
         </div>
 
         <div v-if="isEdit[index]" class="edit-btn">
-            <div class="btn btn__primary">
+            <div class="btn btn__primary" @click="doUpdate(index)">
                 <p>保存</p>
             </div>
             <div class="btn btn__secondary" @click="cancelEdit(index)">
@@ -71,6 +71,7 @@
             </div>
         </div>
     </div>
+    <EditOpt v-if="editOptShow" @close="closeEditOptShow"></EditOpt>
   </div>
 </template>
 
@@ -79,16 +80,20 @@ import { verifyIdentity } from "@/utils/api";
 import RateSlider from "@/components/UI/RateSlider";
 import PlayButton from "@/components/UI/PlayButton";
 import SegmentedControl from "@/components/UI/SegmentedControl";
+import EditOpt from "@/components/UI/EditOpt";
+
 export default {
   name: "PluginListTemplate",
   components: {
     RateSlider,
     PlayButton,
-    SegmentedControl
+    SegmentedControl,
+    EditOpt
   },
   props: ["pluginType"],
   data() {
     return {
+      editOptShow: false,
       isEdit:null,
       pluginSta:true,
       pluginEditList: [],
@@ -134,6 +139,9 @@ export default {
     });
   },
   methods: {
+    closeEditOptShow(){
+      this.editOptShow = false;
+    },
     cancelEdit(index){
       // this.initPluginList();
       this.isEdit.splice(index,1,false);
@@ -142,10 +150,10 @@ export default {
     },
     getMsgFormPlayButton(index,data){
       this.pluginEditList[index].plugin_manager.status = data;
-      if(this.pluginEditList[index].plugin_manager.status == false && this.pluginEditList[index].plugin_manager.block_type == null){
+      if(this.pluginEditList[index].plugin_manager.status == false && this.pluginEditList[index].plugin_manager.block_type == ""){
         this.pluginEditList[index].plugin_manager.block_type = "全部";
       }else if(this.pluginEditList[index].plugin_manager.status == true){
-        this.pluginEditList[index].plugin_manager.block_type = null;
+        this.pluginEditList[index].plugin_manager.block_type = "";
       }
     },
     getMsgFormSegmentedControl(index,data){
@@ -210,9 +218,10 @@ export default {
       }
       this.dialogVisible = true;
     },
-    doUpdate() {
+    doUpdate(index) {
+      this.isEdit[index] = false;
       // 修复回传数据列表变成字符串的问题
-      let postConfigData =JSON.parse(JSON.stringify(this.pluginData));//不提交原配置项而是一个副本
+      let postConfigData =JSON.parse(JSON.stringify(this.pluginEditList[index]));//不提交原配置项而是一个副本
       if (postConfigData.plugin_manager.status) {
         postConfigData.plugin_manager.block_type = "";
       }
@@ -237,7 +246,7 @@ export default {
           this.initPluginList();
         }
       });
-      this.dialogVisible = false;
+      
     },
     doConfigUpdate() {
       let pluginConfigData = JSON.parse(JSON.stringify(this.pluginData));
