@@ -1,6 +1,6 @@
 <template>
   <div class="box-background">
-    <div v-for="(plugin,index) in pluginEditList.slice(0,9)" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
+    <div v-for="(plugin,index) in pluginEditList.slice(0,49)" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
         <div class="plugin-version" >{{'v'+plugin.plugin_manager.version}}</div>
         <div class="author-box">
             <div class="plugin-name">{{plugin.plugin_manager.plugin_name}}</div>
@@ -54,7 +54,7 @@
         </div>
         
         <div v-if="!isEdit[index]" class="edit-btn">
-            <div class="btn btn__primary" @click="editOptShow = true" v-if="plugin.plugin_config">
+            <div class="btn btn__primary" @click="showEditOpt(plugin.plugin_config,index)" v-if="plugin.plugin_config">
                 <p>配置项</p>
             </div>
             <div class="btn btn__secondary" @click="isEdit.splice(index,1,true)">
@@ -71,7 +71,7 @@
             </div>
         </div>
     </div>
-    <EditOpt v-if="editOptShow" @close="closeEditOptShow"></EditOpt>
+    <EditOpt v-if="editOptShow" :editOptData="editOpt" @close="closeEditOptShow" @changeOpt="changeEditOpt"></EditOpt>
   </div>
 </template>
 
@@ -93,8 +93,12 @@ export default {
   props: ["pluginType"],
   data() {
     return {
+      editOpt:{
+        data:{},
+        index:-1
+      },
       editOptShow: false,
-      isEdit:null,
+      isEdit:[],
       pluginSta:true,
       pluginEditList: [],
       pluginList: [],
@@ -104,7 +108,7 @@ export default {
         model: "",
         plugin_settings: {
           level: 0,
-          default_status: null,
+          default_status: false,
           limit_superuser: null,
           cmd: "",
           cost_gold: 0,
@@ -139,7 +143,42 @@ export default {
     });
   },
   methods: {
+    changeEditOpt(data,index){
+      console.log(index);
+      let pluginConfigData = JSON.parse(JSON.stringify(this.pluginEditList[index]));
+      pluginConfigData.plugin_config = data;
+      pluginConfigData.plugin_manager = null;
+      pluginConfigData.plugin_settings = null;
+
+
+      this.postRequest("/webui/plugins", pluginConfigData).then((resp) => {
+        if (resp && resp.code == 200) {
+          this.$message({
+            message: "修改成功",
+            type: "success",
+          });
+          this.initPluginList();
+        } else {
+           //修改失败也刷新一次配置
+          if(resp && resp.data)
+            this.$message.error(resp.data);
+          else
+            this.$message.error("修改失败");
+          this.initPluginList();
+        }
+      });
+      this.closeEditOptShow();
+    },
+    showEditOpt(data,index){
+      this.editOpt.index = index;
+      this.editOpt.data = data;
+      this.editOptShow = true;
+    },
     closeEditOptShow(){
+      this.editOpt = {
+        data:{},
+        index:-1
+      },
       this.editOptShow = false;
     },
     cancelEdit(index){
