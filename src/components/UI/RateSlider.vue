@@ -169,4 +169,19 @@ export default {
   z-index: 100;
   transition: opacity 0.3s ease;
 }
+@media screen  and (max-width:600px) {
+  .slider {
+    width: 70%;
+  }
+  .slider__tooltip{
+    margin-left: 1.5rem;
+    height: 1.5rem;
+    width: 2rem;
+    font-size: 0.9rem;
+  }
+  .slider__box{
+    width: 82.5%;
+  }
+}
+
 </style>

@@ -28,6 +28,12 @@ export default {
     --greyLight-2: #c8d0e7;
     --greyLight-3: #bec8e4;
     --greyDark: #9baacf;
+    --titleH1: 1.5rem;
+    --titleH2: 1.2rem;
+    --contentP: 1.15rem;
+    --contentBtn: 1.3rem;
+    --content: 1rem;
+    --contentHeight: 2rem;
 }
 *{
   margin: 0;

@@ -137,4 +137,21 @@ export default {
         opacity: 0;
     }
 }
+@media screen  and (max-width:600px) {
+    .circle {
+        width: 6rem;
+        height: 4rem;
+        border-radius: 1rem;
+    }
+    .circle__btn{
+        width: 4rem;
+        height: 4rem;
+        font-size: 2rem;
+    }
+    .circle__back-1,
+    .circle__back-2 {
+        width: 4rem;
+        height: 4rem;
+    }
+}
 </style>

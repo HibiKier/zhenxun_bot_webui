@@ -113,4 +113,22 @@ export default {
     transform: translateX(6rem);
     transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   }
+  @media screen  and (max-width:600px) {
+      
+    .segmented-control {
+      width: 6rem;
+      height: 1.5rem;
+    }
+    .segmented-control__1,
+    .segmented-control__2,
+    .segmented-control__3 {
+      width: 2rem;
+      height: 1rem;
+      font-size: 0.5rem;
+    }
+    .segmented-control__color {
+      height: 1rem;
+      width: 2rem;
+    }
+  }
 </style>

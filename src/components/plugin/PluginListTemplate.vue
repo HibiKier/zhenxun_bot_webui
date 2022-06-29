@@ -16,7 +16,7 @@
             </div>
             <div class="plugin-switch" :class="{disabled:!isEdit[index]}">
                 <PlayButton :pluginSta="plugin.plugin_manager.status" :tindex="index" @func="getMsgFormPlayButton"></PlayButton>
-                <div style="margin-left:-1rem;" v-show="plugin.plugin_manager.block_type">
+                <div class="m-left-1" v-show="plugin.plugin_manager.block_type">
                   <div class="block-type">禁用类型</div>
                   <SegmentedControl :block_type="plugin.plugin_manager.block_type" :tindex="index" @func="getMsgFormSegmentedControl"></SegmentedControl>
                 </div>
@@ -144,7 +144,6 @@ export default {
   },
   methods: {
     changeEditOpt(data,index){
-      console.log(index);
       let pluginConfigData = JSON.parse(JSON.stringify(this.pluginEditList[index]));
       pluginConfigData.plugin_config = data;
       pluginConfigData.plugin_manager = null;
@@ -347,7 +346,7 @@ export default {
     height: 4rem;
     right: -3rem;
     top:0rem;
-    font-size: 1.2rem;
+    font-size: var(--titleH2);
     text-align: center;
     /* background-color: #2da44e; */
     background-color: var(--primary);
@@ -360,15 +359,16 @@ export default {
 }
 .author-box{
     display: flex;
-    height: 1.5rem;
-    line-height: 1.5rem;
+    height: var(--titleH1);
+    line-height: var(--titleH1);
 }
 .author-name{
     margin-left: 0.5rem;
     color: #57606a;
+    font-size: var(--content);
 }
 .plugin-name{
-    font-size: 1.5rem;
+    font-size: var(--titleH1);
     font-weight: 700;
     color: #0969da;
 }
@@ -378,13 +378,13 @@ export default {
   top:3rem;
 }
 .plugin-model-name{
-    font-size: 1.25rem;
+    font-size: var(--titleH2);
     font-weight: 700;
     color: #0969da;
     text-align: start;
 }
 .options-box>div{
-    font-size: 1.15rem;
+    font-size: var(--contentP);
     margin:0.8rem 0;
     user-select: none;
 }
@@ -402,8 +402,8 @@ export default {
 }
 .block-type{
   text-align:start ;
-  height: 2rem;
-  line-height: 2rem;
+  height: var(--contentHeight);
+  line-height: var(--contentHeight);
   margin: 0.5rem 0 0.8rem 0.5rem;
 }
  /*  BUTTONS  */
@@ -448,7 +448,7 @@ export default {
 }
 
 .btn p {
-    font-size: 1.3rem;
+    font-size: var(--contentBtn);
 }
 
  /*  SWITCH  */
@@ -460,7 +460,7 @@ export default {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 2rem;
+  height: var(--contentHeight);
   box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
   background: rgba(255, 255, 255, 0);
   position: relative;
@@ -472,8 +472,8 @@ export default {
   content: "";
   position: absolute;
   left: 0.4rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: calc(var(--contentHeight) - 0.5rem);
+  height: calc(var(--contentHeight) - 0.5rem);
   border-radius: 50%;
   background: var(--greyDark);
   transition: all 0.4s ease;
@@ -521,10 +521,10 @@ export default {
 
 .form__input {
   width: 5rem;
-  height: 2rem;
+  height: var(--contentHeight);
   border: none;
   border-radius: 1rem;
-  font-size: 1.2rem;
+  font-size: var(--contentP);
   padding:0 1.4rem;
   box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
   background: none;
@@ -558,7 +558,7 @@ export default {
     margin-left: 1rem;
     justify-self: center;
     width: 9rem;
-    height: 2rem;
+    height: var(--contentHeight);
     border-radius: 1rem;
     box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
     display: flex;
@@ -567,7 +567,7 @@ export default {
 }
 
 .chip p {
-    font-size: 1rem;
+    font-size: var(--content);
     padding-left: 1rem;
     color: var(--greyDark);
 }
@@ -575,11 +575,62 @@ export default {
     width: 2rem;
     height: 1rem;
     display: flex;
-    font-size: 1rem;
+    font-size: var(--content);
     margin-right: 0.5rem;
     color: var(--greyLight-3);
     cursor: pointer;
     justify-content: center;
     align-items: center;
+}
+.m-left-1{
+  margin-left: -1rem;
+}
+
+@media screen  and (max-width:600px) {
+  .box-background {
+    --titleH1: 1rem;
+    --titleH2: 0.7rem;
+    --contentP: 0.65rem;
+    --contentBtn: 0.8rem;
+    --content: 0.5rem;
+    --contentHeight: 1.5rem;
+}
+  .card-box{
+    position: relative;
+    width: 80%;
+    min-width: 80%;
+    height: 19rem;
+    min-height: 19rem;
+    padding: 1.5rem 1.5rem;
+    margin: 1rem 0 0 0;
+  }
+  .plugin-other-name .form__input {
+    width: 80%;
+  }
+  .switch {
+    width: 2.8rem;
+  }
+  .plugin-version{
+    height: 3rem;
+    line-height: 3.5rem;
+    width: 8rem;
+    right: -2.5rem
+  }
+  .btn{
+    width: 40%;
+  }
+  .plugin-switch{
+    right: 2rem;
+    top:2rem;
+  }
+  .block-type{
+    margin-top: 1.9rem;
+  }
+  .form__input {
+    width: 3rem;
+  }
+  .m-left-1{
+    margin: 0;
+  }
 }
 </style>
