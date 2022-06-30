@@ -116,7 +116,7 @@ export default {
   @media screen  and (max-width:600px) {
       
     .segmented-control {
-      width: 6rem;
+      width: 7rem;
       height: 1.5rem;
     }
     .segmented-control__1,
@@ -129,6 +129,17 @@ export default {
     .segmented-control__color {
       height: 1rem;
       width: 2rem;
+    }
+    .tab-1:checked~.segmented-control__color {
+      transform: translateX(0);
+    }
+
+    .tab-2:checked~.segmented-control__color {
+      transform: translateX(2rem);
+    }
+
+    .tab-3:checked~.segmented-control__color {
+      transform: translateX(4rem);
     }
   }
 </style>

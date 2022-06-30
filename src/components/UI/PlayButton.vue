@@ -44,6 +44,7 @@ export default {
     height: 7.3rem;
     border-radius: 1rem;
 }
+
 .circle__btn {
     position: relative;
     width: 6rem;

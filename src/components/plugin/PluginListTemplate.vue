@@ -1,6 +1,6 @@
 <template>
   <div class="box-background">
-    <div v-for="(plugin,index) in pluginEditList.slice(0,49)" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
+    <div v-for="(plugin,index) in pluginEditList" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
         <div class="plugin-version" >{{'v'+plugin.plugin_manager.version}}</div>
         <div class="author-box">
             <div class="plugin-name">{{plugin.plugin_manager.plugin_name}}</div>
@@ -8,7 +8,7 @@
         </div>
         <div class="plugin-model-name">{{'('+plugin.model+')'}}</div>
         <div class="options-box">
-            <div class="plugin-status" :class="{disabled:!isEdit[index]}">默认开关
+            <div class="plugin-status" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">默认开关
                 <div class="switch" style="margin-left: 1rem;">
                     <input :id="'switch-'+index" v-model="plugin.plugin_settings.default_status" type="checkbox">
                     <label :for="'switch-'+index"></label>
@@ -16,48 +16,50 @@
             </div>
             <div class="plugin-switch" :class="{disabled:!isEdit[index]}">
                 <PlayButton :pluginSta="plugin.plugin_manager.status" :tindex="index" @func="getMsgFormPlayButton"></PlayButton>
-                <div class="m-left-1" v-show="plugin.plugin_manager.block_type">
+                <!-- <div class="m-left-1" v-show="plugin.plugin_manager.block_type">
                   <div class="block-type">禁用类型</div>
                   <SegmentedControl :block_type="plugin.plugin_manager.block_type" :tindex="index" @func="getMsgFormSegmentedControl"></SegmentedControl>
-                </div>
+                </div> -->
             </div>
-            <div class="plugin-super" :class="{disabled:!isEdit[index]}">限制超级用户
+            <div class="plugin-super" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">限制超级用户
                 <div class="switch"  style="margin-left: 1rem;">
                     <input :id="'switch1-'+index" v-model="plugin.plugin_settings.limit_superuser" type="checkbox">
                     <label :for="'switch1-'+index"></label>
                 </div>
             </div>
-            <div class="plugin-cost" :class="{disabled:!isEdit[index]}">花费金币:
-                <div class="form">
-                    <input type="text" v-model="plugin.plugin_settings.cost_gold" class="form__input" placeholder="0">
-                </div>
-            </div>
-            <div class="plugin-type" :class="{disabled:!isEdit[index]}">插件类型: 
-              <div class="form">
-                    <input type="text" v-model="plugin.plugin_settings.plugin_type[0]" class="form__input" placeholder="无">
-                </div>
-                <!-- <div class="chip">
-                    <p>群内小游戏</p>
-                    <div class="chip__close">
-                        <ion-icon name="close"></ion-icon>
+            <div style="display:flex;align-items: center;">
+                <div class="plugin-cost" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">花费
+                    <div class="form">
+                        <input type="text" v-model="plugin.plugin_settings.cost_gold" class="form__input" placeholder="0">
                     </div>
-                </div> -->
+                </div>
+                 <div v-show="plugin.plugin_manager.block_type" class="block-type">禁用类型</div>
             </div>
-            <div class="plugin-other-name" :class="{disabled:!isEdit[index]}">插件别名: 
+            
+            <div style="display:flex;align-items: center;">
+              <div class="plugin-type" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">类型 
+                <div class="form">
+                      <input type="text" v-model="plugin.plugin_settings.plugin_type[0]" class="form__input" placeholder="无">
+                  </div>
+              </div>
+              <SegmentedControl v-show="plugin.plugin_manager.block_type" :block_type="plugin.plugin_manager.block_type" :tindex="index" @func="getMsgFormSegmentedControl"></SegmentedControl>
+            </div>
+            
+            <div class="plugin-other-name" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">别名
               <div class="form">
                     <input type="text" v-model="plugin.plugin_settings.cmd" class="form__input" placeholder="无">
                 </div>
             </div>
-            <div class="plugin-Authority" :class="{disabled:!isEdit[index]}">群权限
+            <div class="plugin-Authority" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">群权限
                 <RateSlider :level="plugin.plugin_settings.level" :tindex="index" @func="getMsgFormRateSlider"></RateSlider>
             </div>
         </div>
         
         <div v-if="!isEdit[index]" class="edit-btn">
-            <div class="btn btn__primary" @click="showEditOpt(plugin.plugin_config,index)" v-if="plugin.plugin_config">
+            <div class="btn btn__primary" @click="showEditOpt(plugin.plugin_config,index,plugin.plugin_manager.plugin_name)" v-if="plugin.plugin_config">
                 <p>配置项</p>
             </div>
-            <div class="btn btn__secondary" @click="isEdit.splice(index,1,true)">
+            <div class="btn btn__secondary" @click="isEdit.splice(index,1,true)" >
                 <p>编辑</p>
             </div>
         </div>
@@ -94,6 +96,7 @@ export default {
   data() {
     return {
       editOpt:{
+        pluginName:"",
         data:{},
         index:-1
       },
@@ -148,8 +151,7 @@ export default {
       pluginConfigData.plugin_config = data;
       pluginConfigData.plugin_manager = null;
       pluginConfigData.plugin_settings = null;
-
-
+      
       this.postRequest("/webui/plugins", pluginConfigData).then((resp) => {
         if (resp && resp.code == 200) {
           this.$message({
@@ -168,13 +170,15 @@ export default {
       });
       this.closeEditOptShow();
     },
-    showEditOpt(data,index){
+    showEditOpt(data,index,name){
       this.editOpt.index = index;
       this.editOpt.data = data;
       this.editOptShow = true;
+      this.editOpt.pluginName = name;
     },
     closeEditOptShow(){
       this.editOpt = {
+        pluginName:"",
         data:{},
         index:-1
       },
@@ -188,7 +192,7 @@ export default {
     },
     getMsgFormPlayButton(index,data){
       this.pluginEditList[index].plugin_manager.status = data;
-      if(this.pluginEditList[index].plugin_manager.status == false && this.pluginEditList[index].plugin_manager.block_type == ""){
+      if(this.pluginEditList[index].plugin_manager.status == false && (this.pluginEditList[index].plugin_manager.block_type == "" || this.pluginEditList[index].plugin_manager.block_type == null)){
         this.pluginEditList[index].plugin_manager.block_type = "全部";
       }else if(this.pluginEditList[index].plugin_manager.status == true){
         this.pluginEditList[index].plugin_manager.block_type = "";
@@ -331,9 +335,10 @@ export default {
   position: relative;
   width: 25rem;
   min-width: 25rem;
-  height: 23rem;
-  min-height: 23rem;
+  /* height: 23rem; */
+  min-height: 14rem;
   padding: 2rem;
+  padding-bottom: 1rem;
   overflow: hidden;
   border-radius: 3rem;
   margin: 1rem;
@@ -377,11 +382,15 @@ export default {
   right: 2rem;
   top:3rem;
 }
+
 .plugin-model-name{
     font-size: var(--titleH2);
     font-weight: 700;
     color: #0969da;
     text-align: start;
+}
+.options-box{
+  min-height: 6rem;
 }
 .options-box>div{
     font-size: var(--contentP);
@@ -389,11 +398,9 @@ export default {
     user-select: none;
 }
 .edit-btn{
-    position: absolute;
     display: flex;
     width: 100%;
-    bottom: 1rem;
-    left: 0;
+    margin-top: 1rem;
     justify-content: space-around;
 }
 .plugin-status,.plugin-super{
@@ -404,7 +411,7 @@ export default {
   text-align:start ;
   height: var(--contentHeight);
   line-height: var(--contentHeight);
-  margin: 0.5rem 0 0.8rem 0.5rem;
+  margin-left: 1.5rem;
 }
  /*  BUTTONS  */
 .btn {
@@ -506,6 +513,7 @@ export default {
 .plugin-Authority{
   display: flex;
   width: 100%;
+  align-items: center;
 }
 /*  FORM  */
 .plugin-cost , .plugin-other-name{
@@ -517,10 +525,11 @@ export default {
 }
 .form{
   margin-left: 1rem;
+  width:69%;
 }
 
 .form__input {
-  width: 5rem;
+  width: 6rem;
   height: var(--contentHeight);
   border: none;
   border-radius: 1rem;
@@ -553,6 +562,7 @@ export default {
 .plugin-type{
     display: flex;
     align-items: center;
+    margin-right: 1rem;
 }
 .chip {
     margin-left: 1rem;
@@ -582,9 +592,9 @@ export default {
     justify-content: center;
     align-items: center;
 }
-.m-left-1{
+/* .m-left-1{
   margin-left: -1rem;
-}
+} */
 
 @media screen  and (max-width:600px) {
   .box-background {
@@ -599,10 +609,13 @@ export default {
     position: relative;
     width: 80%;
     min-width: 80%;
-    height: 19rem;
-    min-height: 19rem;
-    padding: 1.5rem 1.5rem;
+    /* height: 18.5rem; */
+    min-height: 6rem;
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
     margin: 1rem 0 0 0;
+  }
+  .card-box:nth-last-child(1){
+    margin: 1rem 0 1rem 0;
   }
   .plugin-other-name .form__input {
     width: 80%;
@@ -617,20 +630,25 @@ export default {
     right: -2.5rem
   }
   .btn{
-    width: 40%;
+    width: 35%;
+    height: 2.5rem;
   }
   .plugin-switch{
-    right: 2rem;
-    top:2rem;
-  }
-  .block-type{
-    margin-top: 1.9rem;
+    right: 1rem;
+    top:3rem;
   }
   .form__input {
     width: 3rem;
   }
-  .m-left-1{
-    margin: 0;
+  .options-box{
+    min-height: 4rem;
   }
+  .form{
+    flex:1;
+    margin-left: 0.5rem;
+  }
+  /* .m-left-1{
+    margin: 0;
+  } */
 }
 </style>

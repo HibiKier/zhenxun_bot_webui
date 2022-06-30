@@ -3,8 +3,8 @@
         <div class="slider__box" ref="slider__box">
             <span class="slider__btn" ref="slider__btn"></span>
             <span class="slider__color" ref="slider__color"></span>
-            <span class="slider__tooltip" ref="slider__tooltip">{{alevel}}</span>
         </div>
+        <span class="slider__tooltip" ref="slider__tooltip">{{alevel}}</span>
     </div>
 </template>
 
@@ -97,8 +97,8 @@ export default {
 /*  RANGE-SLIDER  */
 .slider {
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 20rem;
 }
 
@@ -153,29 +153,25 @@ export default {
 }
 
 .slider__tooltip {
-  position: absolute;
-  left:94%;
   margin-left: 2rem;
   height: 2.5rem;
   width: 3rem;
   border-radius: 0.6rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
+  line-height: 2.5rem;
   font-size: 1.2rem;
   color: var(--primary);
   box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
-  opacity: 1;
-  z-index: 100;
   transition: opacity 0.3s ease;
 }
 @media screen  and (max-width:600px) {
   .slider {
-    width: 70%;
+    flex: 1;
   }
   .slider__tooltip{
     margin-left: 1.5rem;
     height: 1.5rem;
+    line-height: 1.5rem;
     width: 2rem;
     font-size: 0.9rem;
   }

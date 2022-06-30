@@ -2,7 +2,7 @@
     <div>
         <div class="optbox">
             <div class="title"> 
-                <span class="tspan">编辑配置项</span>
+                <span class="tspan">{{editOptData.pluginName}}</span>
             </div>
             <div class="flex-box opt-item opt-title">
                 <div><span>键</span></div>
@@ -92,7 +92,6 @@ export default {
 }
 .tspan , .flex-box{
     border-radius: 1rem;
-    font-size: 1.2rem;
     padding:0 1.8rem;
     box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
     background: none;
@@ -215,5 +214,35 @@ export default {
 
 .btn p {
     font-size: 1.3rem;
+}
+@media screen  and (max-width:800px) {
+    .optbox{
+        width: 90%;
+        padding: 1rem 0.5rem;
+    }
+    .flex-box{
+        padding: 0 1rem;
+        font-size: 0.8rem;
+    }
+    .title{
+        padding: 0px 0px 1rem 0px;
+    }
+    .btn{
+        width: 35%;
+        height: 2.5rem;
+    }
+    .btn p {
+        font-size: 0.8rem;
+    }
+    .scroll-box{
+        margin-bottom: 0.8rem;
+    }
+    .form__input{
+        font-size: 0.7rem;
+    }
+    .tspan{
+        font-size: 1rem;
+        padding: 0.25rem 1rem;
+    }
 }
 </style>
