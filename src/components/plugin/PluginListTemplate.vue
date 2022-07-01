@@ -363,7 +363,7 @@ export default {
 }
 .pbnn{
   right: 0rem;
-  top:5rem;
+  top:4rem;
 }
 .plugin-model-name{
     font-size: var(--titleH2);
