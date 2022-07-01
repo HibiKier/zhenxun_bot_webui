@@ -38,6 +38,14 @@ export default {
 *{
   margin: 0;
   padding: 0;
+  /* touch-action: none; */
+}
+body{ 
+   -webkit-tap-highlight-color:rgba(0,0,0,0); 
+}
+a:focus,input:focus,p:focus,div:focus{
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    -webkit-user-modify:read-write-plaintext-only; 
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

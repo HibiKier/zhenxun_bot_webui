@@ -145,6 +145,8 @@ export default {
     align-items: center;
     text-align: left;
     padding: 0.9rem 0rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .opt-item > div:nth-child(2){
     margin-right: 0.3rem;

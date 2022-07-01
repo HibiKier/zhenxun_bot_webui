@@ -69,7 +69,7 @@ export default {
             };
   
             this.onMouseUp = () => {
-                window.removeEventListener('mousemove', this.onMouseMove);
+                window.removeEventListener('mousemove', myOnMouseMove);
                 this.$emit('func',this.tindex,this.alevel);
                 // this.tooltip.style.left = "90%";
             
@@ -81,13 +81,38 @@ export default {
                 //     this.tooltip.style.opacity = 0;
                 // });
             };
+            this.onTouchEnd = ()=>{
+              this.$emit('func',this.tindex,this.alevel);
+              window.removeEventListener('touchmove', myOnTouchMove);
+            }
+            this.onTouchMove = (e)=>{
+              e.preventDefault();
+              const EV = e.touches[0];
+              let targetRect = target.getBoundingClientRect();
+              let x = EV.pageX - targetRect.left + 10;
+              if (x > targetRect.width) { x = targetRect.width }
+              if (x < 0) { x = 0 }
+              btn.x = x - 10;
+              btn.style.left = btn.x + 'px';
+              let percentPosition = (btn.x + 15) / targetRect.width * 10;
+              this.color.style.width = x + "px";
+              this.tooltip.style.opacity = 1;
+              this.alevel = Math.round(percentPosition)-1;
+            }
             let myOnMouseMove = this.onMouseMove;
             let myOnMouseUp = this.onMouseUp;
+            let myOnTouchMove = this.onTouchMove;
+            let myOnTouchEnd = this.onTouchEnd;
             target.addEventListener('mousedown', (e) => {
                 myOnMouseMove(e);
                 window.addEventListener('mousemove', myOnMouseMove,{passive:false});
                 window.addEventListener('mouseup', myOnMouseUp,{passive:false});
             });
+            target.addEventListener('touchstart', (e) => {
+                myOnTouchMove(e);
+                target.addEventListener('touchend', myOnTouchEnd, {passive:false});
+                target.addEventListener('touchmove', myOnTouchMove, {passive:false});
+            },{passive:false});
         }
     },
 };
