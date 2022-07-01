@@ -2,7 +2,7 @@
   <div class="box-background">
     <div v-for="(plugin,index) in pluginEditList" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
         <div class="plugin-version" >{{'v'+plugin.plugin_manager.version}}</div>
-        <div class="author-box">
+        <div class="author-box" :class="{flexd:pluginType != 'normal'}">
             <div class="plugin-name">{{plugin.plugin_manager.plugin_name}}</div>
             <div class="author-name">{{'@'+plugin.plugin_manager.author}}</div>
         </div>
@@ -14,7 +14,7 @@
                     <label :for="'switch-'+index"></label>
                 </div>
             </div>
-            <div class="plugin-switch" :class="{disabled:!isEdit[index]}">
+            <div class="plugin-switch" :class="{disabled:!isEdit[index],pbnn:pluginType != 'normal'}">
                 <PlayButton :pluginSta="plugin.plugin_manager.status" :tindex="index" @func="getMsgFormPlayButton"></PlayButton>
                 <!-- <div class="m-left-1" v-show="plugin.plugin_manager.block_type">
                   <div class="block-type">禁用类型</div>
@@ -42,7 +42,7 @@
                       <input type="text" v-model="plugin.plugin_settings.plugin_type[0]" class="form__input" placeholder="无">
                   </div>
               </div>
-              <SegmentedControl v-show="plugin.plugin_manager.block_type" :block_type="plugin.plugin_manager.block_type" :tindex="index" @func="getMsgFormSegmentedControl"></SegmentedControl>
+              <SegmentedControl :pluginType="pluginType" v-show="plugin.plugin_manager.block_type" :block_type="plugin.plugin_manager.block_type" :tindex="index" @func="getMsgFormSegmentedControl"></SegmentedControl>
             </div>
             
             <div class="plugin-other-name" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">别名
@@ -55,7 +55,7 @@
             </div>
         </div>
         
-        <div v-if="!isEdit[index]" class="edit-btn">
+        <div v-if="!isEdit[index]" class="edit-btn" :class="{'no-setting':!plugin.plugin_settings}">
             <div class="btn btn__primary" @click="showEditOpt(plugin.plugin_config,index,plugin.plugin_manager.plugin_name)" v-if="plugin.plugin_config">
                 <p>配置项</p>
             </div>
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        <div v-if="isEdit[index]" class="edit-btn">
+        <div v-if="isEdit[index]" class="edit-btn" :class="{'no-setting':!plugin.plugin_settings}">
             <div class="btn btn__primary" @click="doUpdate(index)">
                 <p>保存</p>
             </div>
@@ -224,32 +224,6 @@ export default {
         }
       );
     },
-    showPluginConfigEditVie(data) {
-      // 假数据
-      if (data.plugin_settings == null) {
-        data.plugin_settings = {
-          level: null,
-          default_status: null,
-          limit_superuser: null,
-          cmd: "",
-          cost_gold: 0,
-          plugin_type: "",
-        };
-      }
-      this.pluginData = JSON.parse(JSON.stringify(data));
-      for (var i = 0; i < this.pluginData.plugin_config.length; i++) {
-        if (this.pluginData.plugin_config[i].value instanceof Array) {
-          this.pluginData.plugin_config[i].value =
-            this.pluginData.plugin_config[i].value.join(",");
-          this.configsType.push({ index: i, type: "list" });
-        } else {
-          this.pluginData.plugin_config[i].value = String(
-            this.pluginData.plugin_config[i].value
-          );
-        }
-      }
-      this.configDialogVisible = true;
-    },
     showEditView(data) {
       this.pluginData = JSON.parse(JSON.stringify(data));
       if (
@@ -268,7 +242,7 @@ export default {
         postConfigData.plugin_manager.block_type = "";
       }
       postConfigData.plugin_config = null;
-      if(postConfigData.plugin_settings.cmd){
+      if(postConfigData.plugin_settings && postConfigData.plugin_settings.cmd){
         postConfigData.plugin_settings.cmd = postConfigData.plugin_settings.cmd.replace('，', ',');//逗号转换
       }
       this.postRequest("/webui/plugins", postConfigData).then((resp) => {
@@ -367,6 +341,11 @@ export default {
     height: var(--titleH1);
     line-height: var(--titleH1);
 }
+.flexd{
+  flex-direction: column;
+  height: auto;
+  align-items: flex-start;
+}
 .author-name{
     margin-left: 0.5rem;
     color: #57606a;
@@ -379,10 +358,13 @@ export default {
 }
 .plugin-switch{
   position: absolute;
-  right: 2rem;
+  right: 0.5rem;
   top:3rem;
 }
-
+.pbnn{
+  right: 0rem;
+  top:5rem;
+}
 .plugin-model-name{
     font-size: var(--titleH2);
     font-weight: 700;
@@ -402,6 +384,11 @@ export default {
     width: 100%;
     margin-top: 1rem;
     justify-content: space-around;
+}
+.edit-btn.no-setting{
+  position: absolute;
+  left: 0;
+  bottom: 1rem;
 }
 .plugin-status,.plugin-super{
     display: flex;
@@ -610,7 +597,7 @@ export default {
     width: 80%;
     min-width: 80%;
     /* height: 18.5rem; */
-    min-height: 6rem;
+    min-height: 11rem;
     padding: 1.5rem 1.5rem 1rem 1.5rem;
     margin: 1rem 0 0 0;
   }

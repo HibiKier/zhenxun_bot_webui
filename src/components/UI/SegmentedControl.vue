@@ -1,18 +1,18 @@
 <template>
     <div class="segmented-control" @change="changeValue">
 
-        <input type="radio" name="segmented-control" :id="'segmented-control-'+tindex+'-1'" value="全部" class="tab-1" v-model='checkValue' />
-        <label :for="'segmented-control-'+tindex+'-1'" class="segmented-control__1">
+        <input type="radio" name="segmented-control" :id="pluginType+'segmented-control-'+tindex+'-1'" value="全部" class="tab-1" v-model='checkValue' />
+        <label :for="pluginType+'segmented-control-'+tindex+'-1'" class="segmented-control__1">
           <p>全部</p>
         </label>
 
-        <input type="radio" name="segmented-control" :id="'segmented-control-'+tindex+'-2'" value="群组" class="tab-2" v-model='checkValue'/>
-        <label :for="'segmented-control-'+tindex+'-2'" class="segmented-control__2">
+        <input type="radio" name="segmented-control" :id="pluginType+'segmented-control-'+tindex+'-2'" value="群组" class="tab-2" v-model='checkValue'/>
+        <label :for="pluginType+'segmented-control-'+tindex+'-2'" class="segmented-control__2">
           <p>群组</p>
         </label>
 
-        <input type="radio" name="segmented-control" :id="'segmented-control-'+tindex+'-3'" value="私聊" class="tab-3" v-model='checkValue'/>
-        <label :for="'segmented-control-'+tindex+'-3'" class="segmented-control__3">
+        <input type="radio" name="segmented-control" :id="pluginType+'segmented-control-'+tindex+'-3'" value="私聊" class="tab-3" v-model='checkValue'/>
+        <label :for="pluginType+'segmented-control-'+tindex+'-3'" class="segmented-control__3">
           <p>私聊</p>
         </label>
 
@@ -23,7 +23,7 @@
 <script>
 export default {
     name: 'SegmentedControl',
-    props:['block_type','tindex'],
+    props:['pluginType','block_type','tindex'],
     data() {
         return {
             checkValue:this.block_type,
