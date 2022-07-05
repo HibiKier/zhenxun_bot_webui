@@ -13,7 +13,7 @@
             <div class="scroll-box">
                 <div class="flex-box opt-item" v-for="(optdata) in editOptDataScoped" :key="optdata.id">
                     <div><span>{{optdata.key}}</span></div>
-                    <div><input type="text" v-model="optdata.value" class="form__input" placeholder="无"></div>
+                    <div><input type="text" v-model="optdata.value" class="form__input" placeholder=""></div>
                     <div><span>{{optdata.help_}}</span></div>
                     <div><span>{{optdata.default_value}}</span></div>
                 </div>
@@ -135,6 +135,8 @@ export default {
     border-radius: 0.8rem;
     box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2), inset -0.2rem -0.2rem 0.5rem var(--white);
     pointer-events: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .opt-item{
     margin-bottom: 1rem;
@@ -145,8 +147,6 @@ export default {
     align-items: center;
     text-align: left;
     padding: 0.9rem 0rem;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 .opt-item > div:nth-child(2){
     margin-right: 0.3rem;
