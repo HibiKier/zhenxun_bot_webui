@@ -1,8 +1,10 @@
 # 开发环境使用方式（请先进入webui根目录文件夹下再使用命令）
 
+****
+
 ### 开发环境需要下载nodejs，未安装请移步链接 https://nodejs.org/zh-cn/download/
 
-****
+
 
 ## 使用npm（nodejs自带）
 
@@ -21,7 +23,6 @@ npm run serve
 ```
 npm run build
 ```
-****
 
 ## 使用yarn（需要下载）
 
