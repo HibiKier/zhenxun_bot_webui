@@ -2,7 +2,7 @@
 
 ****
 
-### 开发环境用于修改和测试源码，启动开发服务器会占用一定的资源和性能
+### 开发环境用于修改和测试源码，启动开发服务会占用一定的资源和性能
 ### 开发环境需要下载nodejs，未安装请移步链接 https://nodejs.org/zh-cn/download/
 
 
@@ -15,7 +15,7 @@
 npm install
 ```
 
-### 启动开发服务器
+### 启动开发服务
 ```
 npm run serve
 ```
@@ -39,7 +39,7 @@ npm install --global yarn
 yarn install
 ```
 
-### 启动开发服务器
+### 启动开发服务
 ```
 yarn serve
 ```
