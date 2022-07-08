@@ -1,13 +1,18 @@
 # hi～这里是小真寻的webui捏
 ### 欢迎使用小真寻的webui，这里介绍一下简易的部署方法
+<div align=center><img width="320" height="320" src="https://raw.githubusercontent.com/HibiKier/zhenxun_bot/main/logo.png"/></div>
+
+![maven](https://img.shields.io/badge/Vue-2.6.14-blue)
 
 ## 开发环境使用方式（请先进入webui根目录文件夹下再使用命令）
 
 ****
-
-### 开发环境用于修改和测试源码，启动开发服务会占用一定的资源和性能
-### 开发环境需要下载nodejs，未安装请移步链接 https://nodejs.org/zh-cn/download/
-
+### 开发环境说明：
+### &ensp; &ensp; 开发环境用于修改和测试源码，启动开发服务会占用一定的资源和性能
+****
+### 部署准备：
+### &ensp; &ensp; 开发环境需要下载nodejs，未安装请移步链接 https://nodejs.org/zh-cn/download/
+****
 
 
 ## 使用npm（nodejs自带）
@@ -55,18 +60,19 @@ yarn build
 
 ## 生产环境使用方式
 ****
-### 生产环境用于webui的日常使用场景，更新只需要覆盖打包的资源即可
-### 生产环境的部署方式很多，这里使用nginx示例
+### 生产环境说明：
+### &ensp; &ensp; 生产环境用于webui的日常使用场景，更新只需要覆盖打包的资源即可
+### &ensp; &ensp; 生产环境的部署方式很多，这里使用nginx示例
 
 ****
-
-### 下载nginx并安装，移步 http://nginx.org/en/download.html
-### 下载webui最新releas或者使用源码中的dist文件夹资源
+### 部署准备：
+### &ensp; &ensp; 下载nginx并安装，移步 http://nginx.org/en/download.html
+### &ensp; &ensp; 下载webui最新releas或者使用源码中的dist文件夹资源
 
 ****
 ### 简易部署
 
-#### 把下载好的webui资源复制到nginx根目录下的html文件夹，复制前可先删除html文件夹原有的html文件。
+#### 把下载好的webui资源(css/js/html)复制到nginx根目录下的html文件夹，复制前可先删除html文件夹原有的html文件。
 *  window环境下进入解压后的nginx根目录点击nginx.exe即可启动
 *  linux环境下进入编译安装后的nginx更目录下输入
 ```
