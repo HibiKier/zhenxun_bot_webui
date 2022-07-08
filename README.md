@@ -26,6 +26,12 @@ npm run build
 
 ## 使用yarn（需要下载）
 
+### 使用npm安装yarn
+
+```
+npm install --global yarn
+```
+
 ### 下载webui开发依赖
 
 ```
