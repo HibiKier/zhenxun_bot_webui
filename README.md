@@ -1,27 +1,51 @@
 # web-ui
 
-## Project setup
+## 开发环境使用方式（请先进入webui根目录文件夹下再使用命令）
+****
+##使用npm（nodejs自带）
+
+###下载webui开发依赖
+```
+npm install
+```
+
+### 启动开发服务器
+```
+npm run serve
+```
+
+### 打包生产环境资源
+```
+npm run build
+```
+****
+##使用yarn（需要下载）
+
+###下载webui开发依赖
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### 启动开发服务器
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
+### 打包生产环境资源
 ```
 yarn build
 ```
+****
+
+
+
+
 
 ### Lints and fixes files
 ```
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
 ## 更新
