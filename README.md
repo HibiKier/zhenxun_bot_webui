@@ -1,4 +1,7 @@
-# 开发环境使用方式（请先进入webui根目录文件夹下再使用命令）
+# hi～这里是小真寻的webui捏
+### 欢迎使用小真寻的webui，这里介绍一下简易的部署方法
+
+## 开发环境使用方式（请先进入webui根目录文件夹下再使用命令）
 
 ****
 
@@ -50,15 +53,15 @@ yarn build
 ```
 
 
-# 生产环境使用方式
+## 生产环境使用方式
 ****
 ### 生产环境用于webui的日常使用场景，更新只需要覆盖打包的资源即可
 ### 生产环境的部署方式很多，这里使用nginx示例
 
 ****
 
-## 下载nginx并安装，移步 http://nginx.org/en/download.html
-## 下载webui最新releas或者使用源码中的dist文件夹资源
+### 下载nginx并安装，移步 http://nginx.org/en/download.html
+### 下载webui最新releas或者使用源码中的dist文件夹资源
 
 ****
 ### 简易部署
@@ -70,11 +73,13 @@ yarn build
 ./sbin/nginx
 ```
 
-****
+
 #### nginx启动成功后打开浏览器，输入链接
 ```
 localhost
 ```
+
+****
 
 
 
