@@ -48,10 +48,33 @@ yarn serve
 ```
 yarn build
 ```
+
+
+# 生产环境使用方式
+****
+### 生产环境用于webui的日常使用场景，更新只需要覆盖打包的资源即可
+### 生产环境的部署方式很多，这里使用nginx示例
+
 ****
 
+## 下载nginx并安装，移步 http://nginx.org/en/download.html
+## 下载webui最新releas或者使用源码中的dist文件夹资源
 
+****
+### 简易部署
 
+#### 把下载好的webui资源复制到nginx根目录下的html文件夹，复制前可先删除html文件夹原有的html文件。
+*  window环境下进入解压后的nginx根目录点击nginx.exe即可启动
+*  linux环境下进入编译安装后的nginx更目录下输入
+```
+./sbin/nginx
+```
+
+****
+#### nginx启动成功后打开浏览器，输入链接
+```
+localhost
+```
 
 
 
