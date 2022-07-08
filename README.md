@@ -3,9 +3,9 @@
 ## 开发环境使用方式（请先进入webui根目录文件夹下再使用命令）
 ****
 
-##使用npm（nodejs自带）
+## 使用npm（nodejs自带）
 
-###下载webui开发依赖
+### 下载webui开发依赖
 
 ```
 npm install
@@ -22,9 +22,9 @@ npm run build
 ```
 ****
 
-##使用yarn（需要下载）
+## 使用yarn（需要下载）
 
-###下载webui开发依赖
+### 下载webui开发依赖
 
 ```
 yarn install
@@ -43,12 +43,6 @@ yarn build
 
 
 
-
-
-### Lints and fixes files
-```
-yarn lint
-```
 
 
 
