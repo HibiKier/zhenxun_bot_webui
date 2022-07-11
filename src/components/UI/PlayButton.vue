@@ -6,7 +6,7 @@
                 <ion-icon class="play" :class="{'icon-visibility':!btnboolean}" name="play"></ion-icon>
             </span>
             <span class="circle__back-1" :class="{paused:!btnboolean}"></span>
-            <span class="circle__back-2" :class="{paused:!btnboolean}"></span>
+            <!-- <span class="circle__back-2" :class="{paused:!btnboolean}"></span> -->
         </div>
     </div>
 </template>
@@ -104,8 +104,10 @@ export default {
 .circle__back-1 {
     box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
     background: linear-gradient(to bottom right, var(--greyLight-2) 0%, var(--white) 100%);
-    -webkit-animation: waves 4s linear infinite;
-    animation: waves 4s linear infinite;
+    opacity: 0.5;
+    transform: scale(1.4);
+    /* -webkit-animation: waves 4s linear infinite;
+    animation: waves 4s linear infinite; */
 }
 
 .circle__back-1.paused {
@@ -115,8 +117,10 @@ export default {
 
 .circle__back-2 {
     box-shadow: 0.4rem 0.4rem 0.8rem var(--greyLight-2), -0.4rem -0.4rem 0.8rem var(--white);
-    -webkit-animation: waves 4s linear 2s infinite;
-    animation: waves 4s linear 2s infinite;
+    opacity: 0.7;
+    transform: scale(1.15);
+    /* -webkit-animation: waves 4s linear 2s infinite;
+    animation: waves 4s linear 2s infinite; */
 }
 
 .circle__back-2.paused {

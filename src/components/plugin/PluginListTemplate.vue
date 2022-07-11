@@ -1,13 +1,13 @@
 <template>
   <div class="box-background">
-    <div v-for="(plugin,index) in pluginEditList" :key="index" :class="{pstatus:!plugin.plugin_manager.status}" class="card-box">
-        <div class="plugin-version" >{{'v'+plugin.plugin_manager.version}}</div>
+    <div v-for="(plugin,index) in pluginEditList" :key="index" :class="{pstatus:!plugin.plugin_manager.status,disabled:isOptReq}" class="card-box" >
+        <div class="plugin-version" v-if="plugin.plugin_manager.version">{{'v'+plugin.plugin_manager.version}}</div>
         <div class="author-box" :class="{flexd:pluginType != 'normal'}">
             <div class="plugin-name">{{plugin.plugin_manager.plugin_name}}</div>
-            <div class="author-name">{{'@'+plugin.plugin_manager.author}}</div>
+            <div class="author-name" v-if="plugin.plugin_manager.author">{{'@'+plugin.plugin_manager.author}}</div>
         </div>
         <div class="plugin-model-name">{{'('+plugin.model+')'}}</div>
-        <div class="options-box">
+        <div class="options-box" >
             <div class="plugin-status" :class="{disabled:!isEdit[index]}" v-if="plugin.plugin_settings">默认开关
                 <div class="switch" style="margin-left: 1rem;">
                     <input :id="'switch-'+index" v-model="plugin.plugin_settings.default_status" type="checkbox">
@@ -73,7 +73,7 @@
             </div>
         </div>
     </div>
-    <EditOpt v-if="editOptShow" :editOptData="editOpt" @close="closeEditOptShow" @changeOpt="changeEditOpt"></EditOpt>
+    <EditOpt v-if="editOptShow" :class="{disabled:isEditReq}" :editOptData="editOpt" @close="closeEditOptShow" @changeOpt="changeEditOpt"></EditOpt>
   </div>
 </template>
 
@@ -100,6 +100,8 @@ export default {
         data:{},
         index:-1
       },
+      isOptReq:false,
+      isEditReq:false,
       editOptShow: false,
       isEdit:[],
       pluginSta:true,
@@ -141,12 +143,13 @@ export default {
   mounted() {
     verifyIdentity().then((res)=>{
       if(res == "true"){
-        this.initPluginList();
+        this.initPluginList(true);
       }
     });
   },
   methods: {
     changeEditOpt(data,index){
+      this.isEditReq = true;
       let pluginConfigData = JSON.parse(JSON.stringify(this.pluginEditList[index]));
       pluginConfigData.plugin_config = data;
       pluginConfigData.plugin_manager = null;
@@ -158,17 +161,18 @@ export default {
             message: "修改成功",
             type: "success",
           });
+          this.isEditReq = false;
+          this.closeEditOptShow();
           this.initPluginList();
         } else {
-           //修改失败也刷新一次配置
           if(resp && resp.data)
             this.$message.error(resp.data);
           else
             this.$message.error("修改失败");
-          this.initPluginList();
+          this.isEditReq = false;
+          // this.initPluginList();
         }
       });
-      this.closeEditOptShow();
     },
     showEditOpt(data,index,name){
       this.editOpt.index = index;
@@ -211,13 +215,15 @@ export default {
         type: "success",
       });
     },
-    initPluginList() {
+    initPluginList(isFirst = false) {
       this.getRequest("/webui/plugins?type_=" + this.pluginType).then(
         (resp) => {
           if (resp) {
             this.pluginList = resp.data;
-            this.pluginEditList = JSON.parse(JSON.stringify(this.pluginList));
-            this.isEdit = new Array(this.pluginList.length).fill(false);
+            if(isFirst){
+              this.pluginEditList = JSON.parse(JSON.stringify(this.pluginList));
+              this.isEdit = new Array(this.pluginList.length).fill(false);
+            }
           } else {
             this.$message.error("获取数据失败！");
           }
@@ -235,7 +241,7 @@ export default {
       this.dialogVisible = true;
     },
     doUpdate(index) {
-      this.isEdit[index] = false;
+      this.isOptReq = true;
       // 修复回传数据列表变成字符串的问题
       let postConfigData =JSON.parse(JSON.stringify(this.pluginEditList[index]));//不提交原配置项而是一个副本
       if (postConfigData.plugin_manager.status) {
@@ -252,6 +258,8 @@ export default {
             message: "修改成功",
             type: "success",
           });
+          this.isOptReq = false;
+          this.isEdit.splice(index,1,false);
           this.initPluginList();
         } else {
           //修改失败也刷新一次配置
@@ -259,35 +267,35 @@ export default {
             this.$message.error(resp.data);
           else
             this.$message.error("修改失败");
-          this.initPluginList();
+          this.isOptReq = false;
+          // this.initPluginList();
         }
       });
-      
     },
-    doConfigUpdate() {
-      let pluginConfigData = JSON.parse(JSON.stringify(this.pluginData));
-      pluginConfigData.plugin_manager = null;
-      pluginConfigData.plugin_settings = null;
+    // doConfigUpdate() {
+    //   let pluginConfigData = JSON.parse(JSON.stringify(this.pluginData));
+    //   pluginConfigData.plugin_manager = null;
+    //   pluginConfigData.plugin_settings = null;
 
 
-      this.postRequest("/webui/plugins", pluginConfigData).then((resp) => {
-        if (resp && resp.code == 200) {
-          this.$message({
-            message: "修改成功",
-            type: "success",
-          });
-          this.initPluginList();
-        } else {
-           //修改失败也刷新一次配置
-          if(resp && resp.data)
-            this.$message.error(resp.data);
-          else
-            this.$message.error("修改失败");
-          this.initPluginList();
-        }
-      });
-      this.configDialogVisible = false;
-    },
+    //   this.postRequest("/webui/plugins", pluginConfigData).then((resp) => {
+    //     if (resp && resp.code == 200) {
+    //       this.$message({
+    //         message: "修改成功",
+    //         type: "success",
+    //       });
+    //       this.initPluginList();
+    //     } else {
+    //        //修改失败也刷新一次配置
+    //       if(resp && resp.data)
+    //         this.$message.error(resp.data);
+    //       else
+    //         this.$message.error("修改失败");
+    //       this.initPluginList();
+    //     }
+    //   });
+    //   this.configDialogVisible = false;
+    // },
   },
 };
 </script>
