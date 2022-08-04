@@ -74,7 +74,7 @@ yarn build
 
 #### 把下载好的webui资源(css/js/html)复制到nginx根目录下的html文件夹，复制前可先删除html文件夹原有的html文件。
 *  window环境下进入解压后的nginx根目录点击nginx.exe即可启动
-*  linux环境下进入编译安装后的nginx更目录下输入
+*  linux环境下进入编译安装后的nginx根目录下输入
 ```
 ./sbin/nginx
 ```
