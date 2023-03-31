@@ -36,8 +36,9 @@
             type="text"
             v-model="loginForm.username"
             placeholder="请输入用户名"
+            class="input-border"
           >
-            <i slot="prefix"> <SvgIcon icon-class="account" /></i>
+            <i slot="prefix"> <SvgIcon icon-class="account" class="icon" /></i>
           </el-input>
         </el-form-item>
         <el-form-item prop="password" label="密码">
@@ -45,29 +46,31 @@
             type="password"
             v-model="loginForm.password"
             placeholder="请输入密码"
+            class="input-border"
           >
-            <i slot="prefix"> <SvgIcon icon-class="password" /></i>
+            <i slot="prefix"> <SvgIcon icon-class="password" class="icon" /></i>
           </el-input>
           <!-- 关闭输入密码在打开时默认获取焦点 -->
         </el-form-item>
         <div style="display: flex">
           <el-button
             type="primary"
-            style="width: 50%"
+            style="width: 50%; border-radius: 12px"
+            native-type="submit"
+            @click="submitLogin"
+            plain
+            >更换API</el-button
+          >
+          <el-button
+            type="primary"
+            style="width: 50%; border-radius: 12px"
             native-type="submit"
             @click="submitLogin"
             >登录</el-button
           >
-          <el-button
-            type="primary"
-            style="width: 50%"
-            native-type="submit"
-            @click="submitLogin"
-            >更换API</el-button
-          >
         </div>
       </el-form>
-      <div style="float: right">
+      <div class="forget-pwd">
         <el-button type="text">忘记密码</el-button>
       </div>
     </div>
@@ -142,27 +145,45 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.forget-pwd {
+  float: right;
+  margin-left: 10px;
+}
+.icon {
+  margin-left: 10px;
+  color: #aa9ea5;
+}
+.el-form {
+  width: 500px;
+}
+/deep/ .el-input--prefix .el-input__inner {
+  padding-left: 40px;
+  border: 1px solid #e9dfe5;
+  border-radius: 12px;
+}
+.input-border {
+  height: 46px;
+}
 .border {
-  background: url("../assets/image/login_bk2.jpg");
+  background: url("../assets/image/login_bk4.png");
   width: 100%;
   height: 100vh;
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  display: flex;
+  /* 水平垂直居中 */
+  justify-content: center;
+  align-items: center;
 }
 .bk-img-border {
   height: 100%;
   width: 100%;
-  // overflow: hidden;
-  // position: absolute;
   z-index: -1;
 }
 
 .bk-img {
   width: 100%;
-  // object-fit: cover;
-  // position: absolute;
-  // z-index: -1;
 }
 .head-border {
   width: 80px;
@@ -206,22 +227,19 @@ export default {
 }
 
 .left-form {
-  display: flex;
+  background-color: rgba(255, 255, 255, 0.85);
+  height: 100%;
+  width: 20%;
+  padding: 50px;
   flex-direction: column;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.8);
-  width: 30%;
-  height: calc(100% - 201px);
-  border-top: 1px solid black;
-  padding: 100px;
+  height: 42%;
+  min-width: 500px;
+  min-height: 541px;
 }
 
 /deep/ .el-form-item__label {
   font-weight: bold;
-}
-
-/deep/ .el-input__inner {
-  background-color: #fefbc8;
 }
 
 /* .homeHeader {
