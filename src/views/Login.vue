@@ -145,7 +145,7 @@ export default {
 .border {
   background: url("../assets/image/login_bk2.jpg");
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -206,9 +206,12 @@ export default {
 }
 
 .left-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: rgba(255, 255, 255, 0.8);
-  height: 100%;
   width: 30%;
+  height: calc(100% - 201px);
   border-top: 1px solid black;
   padding: 100px;
 }
