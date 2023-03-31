@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex">
+  <div class="border">
     <!-- <el-header class="homeHeader">
       <div class="title">小真寻的后台捏</div>
       <router-link class="to-myapi" :to="{ name: 'MyApi' }"
@@ -71,9 +71,9 @@
         <el-button type="text">忘记密码</el-button>
       </div>
     </div>
-    <div class="bk-img-border">
-      <img class="bk-img" src="../assets/image/login_bk1.jpg" />
-    </div>
+    <!-- <div class="bk-img-border">
+      <img class="bk-img" src="../assets/image/login_bk2.jpg" />
+    </div> -->
   </div>
 </template>
 
@@ -142,15 +142,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.border {
+  background: url("../assets/image/login_bk2.jpg");
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
 .bk-img-border {
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  // overflow: hidden;
+  // position: absolute;
+  z-index: -1;
 }
 
 .bk-img {
   width: 100%;
-  object-fit: cover;
+  // object-fit: cover;
+  // position: absolute;
+  // z-index: -1;
 }
 .head-border {
   width: 80px;
@@ -194,6 +206,7 @@ export default {
 }
 
 .left-form {
+  background-color: rgba(255, 255, 255, 0.8);
   height: 100%;
   width: 30%;
   border-top: 1px solid black;

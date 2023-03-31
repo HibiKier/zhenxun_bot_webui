@@ -5,11 +5,11 @@
 </template>
 
 <script>
-import { getBaseUrlLocalStorage , setBase } from "@/utils/api";
+import { getBaseUrlLocalStorage, setBase } from "@/utils/api";
 export default {
   name: "App",
-  created(){
-    if(getBaseUrlLocalStorage()){
+  created() {
+    if (getBaseUrlLocalStorage()) {
       setBase(getBaseUrlLocalStorage());
     }
   },
@@ -19,15 +19,17 @@ export default {
 
 <style>
 /* 清除浏览器默认样式 */
-*{
+* {
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
 }
 </style>
