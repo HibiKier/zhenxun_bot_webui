@@ -82,8 +82,6 @@
 </template>
 
 <script>
-import { verifyIdentity } from "@/utils/api";
-
 export default {
   name: "GroupMana",
   props: ["pluginType"],
@@ -103,11 +101,7 @@ export default {
     };
   },
   mounted() {
-    verifyIdentity().then((res)=>{
-      if(res == "true"){
-        this.initGroupList();
-      }
-    });
+    this.initGroupList();
   },
   methods: {
     refresh() {
@@ -118,8 +112,9 @@ export default {
       });
     },
     initGroupList() {
-      this.getRequest("/webui/group").then((resp) => {
+      this.getRequest("/zhenxun/api/get_group").then((resp) => {
         if (resp) {
+          this.$message.success(resp.info);
           this.groupList = resp.data;
         } else {
           this.$message.error("获取群数据失败！");
@@ -131,12 +126,14 @@ export default {
       this.dialogVisible = true;
     },
     doUpdate() {
-      this.postRequest("/webui/group", this.group).then((resp) => {
+      const sendData = {
+        group_id: this.group.group.group_id,
+        status: this.group.status,
+        level: this.group.level,
+      };
+      this.postRequest("/zhenxun/api/update_group", sendData).then((resp) => {
         if (resp) {
-          this.$message({
-            message: "修改成功",
-            type: "success",
-          });
+          this.$message.success(resp.info);
           this.initGroupList();
         }
       });

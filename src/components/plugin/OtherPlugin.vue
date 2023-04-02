@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PluginListTemplate :plugin-type="type" />
+    <PluginListTemplate plugin-type="hidden" />
   </div>
 </template>
 
@@ -10,11 +10,6 @@ export default {
   name: "OtherPlugin",
   components: {
     PluginListTemplate,
-  },
-  data() {
-    return {
-      type: "hidden",
-    };
   },
 };
 </script>

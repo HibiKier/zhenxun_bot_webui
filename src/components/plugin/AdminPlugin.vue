@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PluginListTemplate :plugin-type="type" />
+    <PluginListTemplate plugin-type="admin" />
   </div>
 </template>
 
@@ -10,11 +10,6 @@ export default {
   name: "AdminPlugin",
   components: {
     PluginListTemplate,
-  },
-  data() {
-    return {
-      type: "admin",
-    };
   },
 };
 </script>

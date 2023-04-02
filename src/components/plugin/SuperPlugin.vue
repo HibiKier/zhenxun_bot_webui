@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PluginListTemplate :plugin-type="type" />
+    <PluginListTemplate plugin-type="superuser" />
   </div>
 </template>
 
@@ -10,12 +10,6 @@ export default {
   name: "SuperPlugin",
   components: {
     PluginListTemplate,
-  },
-  data() {
-    return {
-      pluginList: [],
-      type: "superuser",
-    };
   },
 };
 </script>

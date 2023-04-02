@@ -7,11 +7,14 @@ import "element-ui/lib/theme-chalk/index.css";
 import * as echarts from "echarts";
 import "default-passive-events"; //处理ele-ui警告
 import "./assets/icons/index";
+import { message } from "@/utils/message";
 
-import { postRequest } from "@/utils/api";
-import { putRequest } from "@/utils/api";
-import { getRequest } from "@/utils/api";
-import { deleteRequest } from "@/utils/api";
+import {
+  postRequest,
+  putRequest,
+  getRequest,
+  deleteRequest,
+} from "@/utils/api";
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
@@ -21,6 +24,7 @@ Vue.prototype.putRequest = putRequest;
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.deleteRequest = deleteRequest;
 Vue.prototype.$echarts = echarts;
+Vue.prototype.$message = message;
 
 new Vue({
   router,

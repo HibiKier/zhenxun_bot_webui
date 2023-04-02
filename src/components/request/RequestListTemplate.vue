@@ -59,7 +59,6 @@
 </template>
 
 <script>
-import { verifyIdentity } from "@/utils/api";
 export default {
   name: "RequestListTemplate",
   props: ["requestType"],
@@ -75,11 +74,7 @@ export default {
     };
   },
   mounted() {
-    verifyIdentity().then((res)=>{
-      if(res == "true"){
-        this.initRequestList();
-      }
-    });
+    this.initRequestList();
   },
   methods: {
     refresh() {
@@ -90,15 +85,16 @@ export default {
       });
     },
     initRequestList() {
-      this.getRequest("/webui/request?type_=" + this.requestType).then(
-        (resp) => {
-          if (resp) {
-            this.requestList = resp.data;
-          } else {
-            this.$message.error("获取请求数据失败！");
-          }
+      this.getRequest(
+        "/zhenxun/api/get_request?request_type=" + this.requestType
+      ).then((resp) => {
+        if (resp.suc) {
+          this.$message.success(resp.info);
+          this.requestList = resp.data;
+        } else {
+          this.$message.error("获取请求数据失败！");
         }
-      );
+      });
     },
     clear() {
       this.$confirm("确认清空全部请求?", "提示", {
@@ -107,23 +103,17 @@ export default {
         type: "warning",
       })
         .then(() => {
-          this.deleteRequest("/webui/request?type_=" + this.requestType).then(
-            (resp) => {
-              if (resp) {
-                this.initRequestList();
-                this.$message({
-                  message: "清空成功",
-                  type: "success",
-                });
-              }
+          this.deleteRequest(
+            "/zhenxun/api/clear_request?request_type=" + this.requestType
+          ).then((resp) => {
+            if (resp) {
+              this.initRequestList();
+              this.$message.success(resp.info);
             }
-          );
+          });
         })
         .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
+          this.$message.success("已取消操作");
         });
     },
     approveHandler(data) {
@@ -154,26 +144,22 @@ export default {
         }
       )
         .then(() => {
-          this.postRequest("/webui/request", this.request).then((resp) => {
-            if (resp) {
-              if (resp.data == "ok") {
-                this.initRequestList();
-                this.$message({
-                  message: "操作成功",
-                  type: "success",
-                });
-              } else {
-                this.$message.error(resp.data);
-                this.initRequestList();
+          this.postRequest("/zhenxun/api/handle_request", this.request).then(
+            (resp) => {
+              if (resp) {
+                if (resp.suc) {
+                  this.initRequestList();
+                  this.$message.success(resp.info);
+                } else {
+                  this.$message.error(resp.info);
+                  this.initRequestList();
+                }
               }
             }
-          });
+          );
         })
         .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
+          this.$message.success("已取消操作");
         });
     },
   },
@@ -181,8 +167,8 @@ export default {
 </script>
 
 <style>
-@media screen  and (max-width:600px) {
-  .el-message-box{
+@media screen and (max-width: 600px) {
+  .el-message-box {
     width: 90vw;
   }
 }

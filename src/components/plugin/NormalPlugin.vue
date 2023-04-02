@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PluginListTemplate :plugin-type="type" />
+    <PluginListTemplate plugin-type="normal" />
   </div>
 </template>
 
@@ -10,11 +10,6 @@ export default {
   name: "NormalPlugin",
   components: {
     PluginListTemplate,
-  },
-  data() {
-    return {
-      type: "normal",
-    };
   },
 };
 </script>

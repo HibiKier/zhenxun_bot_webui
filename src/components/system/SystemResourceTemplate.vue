@@ -26,8 +26,8 @@ export default {
     };
   },
   mounted() {
-    verifyIdentity().then((res)=>{
-      if(res == "true"){
+    verifyIdentity().then((res) => {
+      if (res == "true") {
         this.initData();
       }
     });
@@ -37,7 +37,7 @@ export default {
       if (this.myChart == null) {
         this.myChart = this.$echarts.init(this.$refs.echarts);
       }
-      this.getRequest("/webui/system/disk").then((resp) => {
+      this.getRequest("/zhenxun/api/system/disk").then((resp) => {
         if (resp && resp.code == 200) {
           this.data = {
             image: resp.data.image_dir_size,
@@ -211,22 +211,24 @@ export default {
         } else if (param.name == "临时文件") {
           type = "temp";
         }
-        this.getRequest("/webui/system/disk?type_=" + type).then((resp) => {
-          if (this.ccw.chart == null) {
-            this.ccw.chart = this.$echarts.init(this.$refs.ccwEcharts);
-          }
-          if (resp && resp.code == 200) {
-            this.ccw.title = param.name;
-            this.ccw.data = resp.data;
-            this.ccw.total_size = 0;
-            for (var key in resp.data) {
-              if (key != "check_time") {
-                this.ccw.total_size += resp.data[key];
-              }
+        this.getRequest("/zhenxun/api/system/disk?type_=" + type).then(
+          (resp) => {
+            if (this.ccw.chart == null) {
+              this.ccw.chart = this.$echarts.init(this.$refs.ccwEcharts);
             }
-            this.drawPie("ccw");
+            if (resp && resp.code == 200) {
+              this.ccw.title = param.name;
+              this.ccw.data = resp.data;
+              this.ccw.total_size = 0;
+              for (var key in resp.data) {
+                if (key != "check_time") {
+                  this.ccw.total_size += resp.data[key];
+                }
+              }
+              this.drawPie("ccw");
+            }
           }
-        });
+        );
       }
     },
   },
@@ -234,10 +236,12 @@ export default {
 </script>
 
 <style>
-  .resbox{
-    height: 100%;
+.resbox {
+  height: 100%;
+}
+@media screen and (max-width: 600px) {
+  .resbox {
+    height: 35rem;
   }
-  @media screen  and (max-width:600px) {
-  .resbox{height: 35rem;}
-  }
+}
 </style>

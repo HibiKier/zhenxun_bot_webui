@@ -1,11 +1,5 @@
 <template>
   <div class="border">
-    <!-- <el-header class="homeHeader">
-      <div class="title">小真寻的后台捏</div>
-      <router-link class="to-myapi" :to="{ name: 'MyApi' }"
-        >修改api地址</router-link
-      >
-    </el-header> -->
     <div class="left-form">
       <div class="head-border">
         <img
@@ -93,16 +87,28 @@ export default {
     verifyIdentity();
   },
   data() {
+    const validateName = (rules, value, callback) => {
+      if (!value) {
+        callback(new Error("账号捏账号捏!"));
+      } else {
+        callback();
+      }
+    };
+    const validatePwd = (rules, value, callback) => {
+      if (!value) {
+        callback(new Error("不会有人忘记密码了吧!"));
+      } else {
+        callback();
+      }
+    };
     return {
       loginForm: {
         username: "",
         password: "",
       },
       rules: {
-        // username: [
-        //   { required: true, message: "请输入用户名", trigger: "blur" },
-        // ],
-        // password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        username: [{ validator: validateName }],
+        password: [{ validator: validatePwd }],
       },
       loading: false,
     };
@@ -113,7 +119,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.postRequest(
-            "/webui/login",
+            "/zhenxun/api/login",
             qs.stringify({
               username: this.loginForm.username,
               password: this.loginForm.password,
@@ -121,8 +127,8 @@ export default {
             { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
           ).then((resp) => {
             if (resp) {
-              // this.loading = false;
-              const tokenStr = resp.token_type + " " + resp.access_token;
+              const tokenStr =
+                resp.data.token_type + " " + resp.data.access_token;
               if (getCookie) {
                 clearCookie("tokenStr");
               }
@@ -227,15 +233,16 @@ export default {
 }
 
 .left-form {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.6);
   height: 100%;
   width: 20%;
   padding: 50px;
   flex-direction: column;
   justify-content: center;
-  height: 42%;
+  height: 36%;
   min-width: 500px;
-  min-height: 541px;
+  min-height: 490px;
+  border-radius: 10px;
 }
 
 /deep/ .el-form-item__label {

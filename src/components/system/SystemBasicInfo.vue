@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     initStatusData() {
-      this.getRequest("/webui/system/statusList").then((resp) => {
+      this.getRequest("/zhenxun/api/system/statusList").then((resp) => {
         if (resp && resp.code == 200) {
           this.data = resp.data;
         }
@@ -69,15 +69,20 @@ export default {
 </script>
 
 <style>
-.grid-wrapper{
+.grid-wrapper {
   display: flex;
   height: 100%;
   overflow: hidden;
 }
 
-@media screen  and (max-width:600px) {
-  .grid-wrapper{display: flex;flex-direction: column;}
-  .grid-content {flex: 0!important;}
+@media screen and (max-width: 600px) {
+  .grid-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  .grid-content {
+    flex: 0 !important;
+  }
 }
 .bg-purple-dark {
   background: #99a9bf;
