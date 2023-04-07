@@ -242,7 +242,8 @@ export default {
   height: 36%;
   min-width: 500px;
   min-height: 490px;
-  border-radius: 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
 }
 
 /deep/ .el-form-item__label {
