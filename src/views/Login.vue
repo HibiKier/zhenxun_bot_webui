@@ -51,7 +51,7 @@
             type="primary"
             style="width: 50%; border-radius: 12px"
             native-type="submit"
-            @click="submitLogin"
+            @click="changeApi"
             plain
             >更换API</el-button
           >
@@ -146,6 +146,9 @@ export default {
         this.loading = false;
       });
     },
+    changeApi(){
+      this.$router.replace("/myapi");
+    }
   },
 };
 </script>
@@ -235,12 +238,11 @@ export default {
 .left-form {
   background-color: rgba(255, 255, 255, 0.6);
   height: 100%;
-  width: 20%;
+  width: 500px;
   padding: 50px;
   flex-direction: column;
   justify-content: center;
   height: 36%;
-  min-width: 500px;
   min-height: 490px;
   border-radius: 20px;
   backdrop-filter: blur(5px);
