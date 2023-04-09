@@ -6,11 +6,61 @@
           <div class="gf-item">
             <svg-icon icon-class="friend" />
             <span>好友数量</span>
-            <span>900</span>
+            <span>{{ botInfo.friend_count }}</span>
           </div>
           <el-divider></el-divider>
-          <div class="gf-item"></div>
+          <div class="gf-item">
+            <svg-icon icon-class="group" />
+            <span>群聊数量</span>
+            <span>{{ botInfo.group_count }}</span>
+          </div>
         </div>
+        <div class="info-item">
+          <div class="msg-item">
+            <!-- <svg-icon icon-class="friend" /> -->
+            <span>接收消息</span>
+            <span>{{ botInfo.received_messages }}</span>
+          </div>
+          <div class="msg-item">
+            <!-- <svg-icon icon-class="group" /> -->
+            <span>日接收消息</span>
+            <span>{{ botInfo.received_messages_day }}</span>
+          </div>
+          <div class="msg-item">
+            <!-- <svg-icon icon-class="group" /> -->
+            <span>周接收消息</span>
+            <span>{{ botInfo.received_messages_week }}</span>
+          </div>
+          <div class="msg-item">
+            <!-- <svg-icon icon-class="group" /> -->
+            <span>月接收消息</span>
+            <span>{{ botInfo.received_messages_month }}</span>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="msg-item">
+            <!-- <svg-icon icon-class="friend" /> -->
+            <span>加载插件</span>
+            <span>{{ botInfo.plugin_count }}</span>
+          </div>
+          <div class="msg-item">
+            <!-- <svg-icon icon-class="group" /> -->
+            <span>加载成功</span>
+            <span>{{ botInfo.success_plugin_count }}</span>
+          </div>
+          <div class="msg-item">
+            <!-- <svg-icon icon-class="group" /> -->
+            <span>加载失败</span>
+            <span>{{ botInfo.fail_plugin_count }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="center-log">
+        <el-scrollbar style="height: 100%" ref="scr">
+          <p v-for="(log, index) in logs" :key="index">
+            {{ log }}
+          </p>
+        </el-scrollbar>
       </div>
     </div>
     <div class="right-manage">
@@ -36,13 +86,43 @@ export default {
   data() {
     return {
       botList: [],
-      botInfo: null,
+      botInfo: {},
+      ws: null,
+      logs: [],
     }
   },
   mounted() {
+    this.WS_URL = "ws://localhost:8080/logs"
     this.getBotInfo()
+    this.initWebSocket()
   },
   methods: {
+    initWebSocket() {
+      this.ws = new WebSocket(this.WS_URL)
+      this.ws.onopen = this.wsOnopen
+      this.ws.onmessage = this.wsOnmessage
+      this.ws.onerror = this.wsOnerror
+      this.ws.onclose = this.wsClose
+    },
+    wsOnopen() {
+      console.log("WebSocket 已连接")
+    },
+    wsOnmessage(event) {
+      this.logs.push(event.data)
+      console.log("收到 WebSocket 消息：", event.data)
+      this.$nextTick(() => {
+        // 滚动条至底部
+        const div = this.$refs["scr"].$refs["wrap"]
+        div.scrollTop = div.scrollHeight
+      })
+    },
+    wsOnerror() {},
+    // 连接关闭后的回调
+    wsClose() {},
+    // 向服务器发送数据
+    wsSend(data) {
+      console.log("clickkk", data)
+    },
     getBotInfo(self_id = "") {
       this.getRequest("/zhenxun/api/get_bot_info?self_id=" + self_id).then(
         (resp) => {
@@ -114,7 +194,7 @@ export default {
     float: left;
 
     .top-info {
-      background-color: #fff;
+      // background-color: #fff;
       height: 20%;
       align-content: center;
       justify-content: center;
@@ -123,22 +203,33 @@ export default {
       .info-item {
         width: 200px;
         height: 180px;
-        background-color: #edf0f3;
-        margin-top: auto;
-        margin-bottom: auto;
+        // background-color: #edf0f3;
+        background-color: #fff;
+        margin: auto 10px;
+
+        .svg-icon {
+          width: 35px;
+          height: 35px;
+          margin-top: 10px;
+        }
+
         .gf-item {
           height: 50%;
-
-          .svg-icon {
-            width: 35px;
-            height: 35px;
-            margin-top: 10px;
-          }
         }
+
+        .msg-item {
+        }
+
         /deep/ .el-divider--horizontal {
           margin: 0;
         }
       }
+    }
+
+    .center-log {
+      height: 600px;
+      width: 100%;
+      background-color: #24292f;
     }
   }
 
