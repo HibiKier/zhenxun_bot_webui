@@ -5,7 +5,7 @@
         <div class="info-item">
           <div class="gf-item">
             <svg-icon icon-class="friend" />
-            <span>好友数量</span>
+            <span class="gf-text">好友</span>
             <span>{{ botInfo.friend_count }}</span>
           </div>
           <el-divider></el-divider>
@@ -56,10 +56,11 @@
         </div>
       </div>
       <div class="center-log">
-        <el-scrollbar style="height: 100%" ref="scr">
-          <p v-for="(log, index) in logs" :key="index">
+        <el-scrollbar style="height: 100%" ref="scr" id="console">
+          <div id="console"></div>
+          <!-- <p v-for="(log, index) in logs" :key="index">
             {{ log }}
-          </p>
+          </p> -->
         </el-scrollbar>
       </div>
     </div>
@@ -80,6 +81,8 @@
 </template>
 
 <script>
+import { default as AnsiUp } from "ansi_up"
+
 export default {
   name: "MainCommand",
 
@@ -89,9 +92,12 @@ export default {
       botInfo: {},
       ws: null,
       logs: [],
+      logTxt: "",
+      ansi_up: null,
     }
   },
   mounted() {
+    this.ansi_up = new AnsiUp()
     this.WS_URL = "ws://localhost:8080/logs"
     this.getBotInfo()
     this.initWebSocket()
@@ -108,8 +114,15 @@ export default {
       console.log("WebSocket 已连接")
     },
     wsOnmessage(event) {
-      this.logs.push(event.data)
-      console.log("收到 WebSocket 消息：", event.data)
+      const log = this.ansi_up.ansi_to_html(event.data)
+      this.logs.push(log)
+      console.log("收到 WebSocket 消息：", log)
+      this.logTxt += log + "\n"
+
+      var cdiv = document.getElementById("console")
+
+      cdiv.innerHTML = this.logTxt
+
       this.$nextTick(() => {
         // 滚动条至底部
         const div = this.$refs["scr"].$refs["wrap"]
@@ -206,6 +219,7 @@ export default {
         // background-color: #edf0f3;
         background-color: #fff;
         margin: auto 10px;
+        border-radius: 10px;
 
         .svg-icon {
           width: 35px;
@@ -215,6 +229,14 @@ export default {
 
         .gf-item {
           height: 50%;
+          justify-content: center;
+          align-content: center;
+          display: flex;
+
+          .gf-text {
+            // font-size: 30px;
+            // font-weight: 600;
+          }
         }
 
         .msg-item {
@@ -228,8 +250,15 @@ export default {
 
     .center-log {
       height: 600px;
-      width: 100%;
+      width: 99%;
       background-color: #24292f;
+      border-radius: 10px;
+      padding: 10px;
+      white-space: pre-wrap;
+
+      /deep/ .el-scrollbar__wrap {
+        overflow-x: hidden;
+      }
     }
   }
 
