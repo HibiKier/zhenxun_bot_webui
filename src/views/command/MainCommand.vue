@@ -56,8 +56,8 @@
         </div>
       </div>
       <div class="center-log">
-        <el-scrollbar style="height: 100%" ref="scr" id="console">
-          <div id="console"></div>
+        <el-scrollbar style="height: 100%" ref="scr" >
+          <div id="clg" ></div>
           <!-- <p v-for="(log, index) in logs" :key="index">
             {{ log }}
           </p> -->
@@ -94,9 +94,11 @@ export default {
       logs: [],
       logTxt: "",
       ansi_up: null,
+      clgDiv: null
     }
   },
   mounted() {
+    this.clgDiv = document.getElementById("clg");
     this.ansi_up = new AnsiUp()
     this.WS_URL = "ws://localhost:8080/logs"
     this.getBotInfo()
@@ -115,17 +117,14 @@ export default {
     },
     wsOnmessage(event) {
       const log = this.ansi_up.ansi_to_html(event.data)
-      this.logs.push(log)
-      console.log("收到 WebSocket 消息：", log)
-      this.logTxt += log + "\n"
-
-      var cdiv = document.getElementById("console")
-
-      cdiv.innerHTML = this.logTxt
+      let childDom = document.createElement("div")
+      childDom.innerHTML = log
+      this.clgDiv.appendChild(childDom)
 
       this.$nextTick(() => {
         // 滚动条至底部
         const div = this.$refs["scr"].$refs["wrap"]
+        console.log(div)
         div.scrollTop = div.scrollHeight
       })
     },
