@@ -8,6 +8,7 @@ axios.interceptors.request.use(
     if (getCookie("tokenStr")) {
       //请求携带自定义token
       config.headers["Authorization"] = getCookie("tokenStr")
+      config.url = "/zhenxun/api/" + config.url
     }
     return config
   },
@@ -48,7 +49,11 @@ axios.interceptors.response.use(
         router.replace("/")
       }
     } else {
-      Message.error({ message: "未知错误" })
+      if (data && data.detail && data.detail.length) {
+        Message.error({ message: data.detail[0].msg })
+      } else {
+        Message.error({ message: "发生错误啦!" })
+      }
     }
     return
   }
@@ -91,6 +96,15 @@ export const putRequest = (url, params) => {
 }
 //传递json的get请求
 export const getRequest = (url, params) => {
+  if (params && Object.keys(params).length) {
+    url += "?"
+    Object.keys(params).forEach((e) => {
+      if (params[e] != null) {
+        url += e + "=" + params[e] + "&"
+      }
+    })
+    url = url.substring(0, url.length - 1)
+  }
   return axios({
     method: "get",
     url: `${base}${url}`,

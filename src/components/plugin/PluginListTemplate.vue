@@ -1,777 +1,254 @@
 <template>
-  <div class="box-background">
-    <div
-      v-for="(plugin, index) in pluginEditList"
-      :key="index"
-      :class="{ pstatus: !plugin.plugin_manager.status, disabled: isOptReq }"
-      class="card-box"
-    >
-      <div class="plugin-version" v-if="plugin.plugin_manager.version">
-        {{ "v" + plugin.plugin_manager.version }}
-      </div>
-      <div class="author-box" :class="{ flexd: pluginType != 'normal' }">
-        <div class="plugin-name">{{ plugin.plugin_manager.plugin_name }}</div>
-        <div class="author-name" v-if="plugin.plugin_manager.author">
-          {{ "@" + plugin.plugin_manager.author }}
-        </div>
-      </div>
-      <div class="plugin-model-name">{{ "(" + plugin.model + ")" }}</div>
-      <div class="options-box">
-        <div
-          class="plugin-status"
-          :class="{ disabled: !isEdit[index] }"
-          v-if="plugin.plugin_settings"
-        >
-          默认开关
-          <div class="switch" style="margin-left: 1rem">
-            <input
-              :id="'switch-' + index"
-              v-model="plugin.plugin_settings.default_status"
-              type="checkbox"
-            />
-            <label :for="'switch-' + index"></label>
-          </div>
-        </div>
-        <div
-          class="plugin-switch"
-          :class="{ disabled: !isEdit[index], pbnn: pluginType != 'normal' }"
-        >
-          <PlayButton
-            :pluginSta="plugin.plugin_manager.status"
-            :tindex="index"
-            @func="getMsgFormPlayButton"
-          ></PlayButton>
-          <!-- <div class="m-left-1" v-show="plugin.plugin_manager.block_type">
-                  <div class="block-type">禁用类型</div>
-                  <SegmentedControl :block_type="plugin.plugin_manager.block_type" :tindex="index" @func="getMsgFormSegmentedControl"></SegmentedControl>
-                </div> -->
-        </div>
-        <div
-          class="plugin-super"
-          :class="{ disabled: !isEdit[index] }"
-          v-if="plugin.plugin_settings"
-        >
-          限制超级用户
-          <div class="switch" style="margin-left: 1rem">
-            <input
-              :id="'switch1-' + index"
-              v-model="plugin.plugin_settings.limit_superuser"
-              type="checkbox"
-            />
-            <label :for="'switch1-' + index"></label>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center">
-          <div
-            class="plugin-cost"
-            :class="{ disabled: !isEdit[index] }"
-            v-if="plugin.plugin_settings"
-          >
-            花费
-            <div class="form">
-              <input
-                type="text"
-                v-model="plugin.plugin_settings.cost_gold"
-                class="form__input"
-                placeholder="0"
-              />
-            </div>
-          </div>
-          <div v-show="plugin.plugin_manager.block_type" class="block-type">
-            禁用类型
-          </div>
-        </div>
-
-        <div style="display: flex; align-items: center">
-          <div
-            class="plugin-type"
-            :class="{ disabled: !isEdit[index] }"
-            v-if="plugin.plugin_settings"
-          >
-            类型
-            <div class="form">
-              <input
-                type="text"
-                v-model="plugin.plugin_settings.plugin_type[0]"
-                class="form__input"
-                placeholder="无"
-              />
-            </div>
-          </div>
-          <SegmentedControl
-            :pluginType="pluginType"
-            v-show="plugin.plugin_manager.block_type"
-            :block_type="plugin.plugin_manager.block_type"
-            :tindex="index"
-            @func="getMsgFormSegmentedControl"
-          ></SegmentedControl>
-        </div>
-
-        <div
-          class="plugin-other-name"
-          :class="{ disabled: !isEdit[index] }"
-          v-if="plugin.plugin_settings"
-        >
-          别名
-          <div class="form">
-            <input
-              type="text"
-              v-model="plugin.plugin_settings.cmd"
-              class="form__input"
-              placeholder="无"
-            />
-          </div>
-        </div>
-        <div
-          class="plugin-Authority"
-          :class="{ disabled: !isEdit[index] }"
-          v-if="plugin.plugin_settings"
-        >
-          群权限
-          <RateSlider
-            :level="plugin.plugin_settings.level"
-            :tindex="index"
-            @func="getMsgFormRateSlider"
-          ></RateSlider>
-        </div>
-      </div>
-
+  <div class="list-box">
+    <div v-for="data in dataList" :key="data.module" class="plugin-card">
       <div
-        v-if="!isEdit[index]"
-        class="edit-btn"
-        :class="{ 'no-setting': !plugin.plugin_settings }"
-      >
-        <div
-          class="btn btn__primary"
-          @click="
-            showEditOpt(
-              plugin.plugin_config,
-              index,
-              plugin.plugin_manager.plugin_name
-            )
-          "
-          v-if="plugin.plugin_config"
-        >
-          <p>配置项</p>
+        class="plugin-status"
+        :style="{ 'background-color': data.status ? '#3cc07d' : '#757175' }"
+      ></div>
+      <div class="base-info">
+        <div class="base-info-box">
+          <p class="plugin-name-class">
+            {{ data.plugin_name
+            }}<span class="version-class">v{{ data.version }}</span>
+          </p>
+          <p style="color: #b8bac0">
+            {{ data.module
+            }}<span class="author-class" v-if="data.author"
+              >@{{ data.author }}</span
+            >
+          </p>
         </div>
-        <div
-          class="btn btn__secondary"
-          v-if="plugin.plugin_settings"
-          @click="isEdit.splice(index, 1, true)"
-        >
-          <p>编辑</p>
+
+        <div class="setting">
+          <span @click="changeSwitch(data)">
+            <svg-icon
+              v-if="pluginType != 'other'"
+              :icon-class="data.status ? 'power-open' : 'power-close'"
+              class="power-icon"
+            />
+          </span>
+          <span @click="openSetting(data)">
+            <svg-icon icon-class="setting" class="setting-icon" />
+          </span>
         </div>
       </div>
-
-      <div
-        v-if="isEdit[index]"
-        class="edit-btn"
-        :class="{ 'no-setting': !plugin.plugin_settings }"
-      >
-        <div class="btn btn__primary" @click="doUpdate(index)">
-          <p>保存</p>
+      <el-divider />
+      <div class="plugin-info">
+        <div class="plugin-box">
+          <div class="plugin-info-box-item">
+            <p class="plugin-info-item-text">
+              <svg-icon
+                :icon-class="data.default_switch ? 'yes-green' : 'no-red'"
+              />
+            </p>
+            <p class="base-small-title">默认开关</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="plugin-info-box-item">
+            <p class="plugin-info-item-text">
+              <svg-icon
+                :icon-class="data.limit_superuser ? 'yes-green' : 'no-red'"
+              />
+            </p>
+            <p class="base-small-title">限制超级用户</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="plugin-info-box-item">
+            <p class="plugin-info-item-text">
+              {{ data.cost_gold }}
+            </p>
+            <p class="base-small-title">花费金币</p>
+          </div>
         </div>
-        <div class="btn btn__secondary" @click="cancelEdit(index)">
-          <p>取消</p>
+        <el-divider />
+        <div class="plugin-box">
+          <div class="plugin-info-box-item">
+            <p class="plugin-info-item-text">
+              {{ data.level }}
+            </p>
+            <p class="base-small-title">群权限</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="plugin-info-box-item" style="width: 214px">
+            <p class="plugin-info-item-text">
+              {{ data.menu_type }}
+            </p>
+            <p class="base-small-title">菜单类型</p>
+          </div>
         </div>
       </div>
     </div>
-    <EditOpt
-      v-if="editOptShow"
-      :class="{ disabled: isEditReq }"
-      :editOptData="editOpt"
-      @close="closeEditOptShow"
-      @changeOpt="changeEditOpt"
-    ></EditOpt>
+    <UpdateDialog
+      v-if="dialogVisible"
+      :data="pluginData"
+      @close="closeSetting"
+    />
   </div>
 </template>
 
 <script>
-import RateSlider from "@/components/UI/RateSlider";
-import PlayButton from "@/components/UI/PlayButton";
-import SegmentedControl from "@/components/UI/SegmentedControl";
-import EditOpt from "@/components/UI/EditOpt";
-
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
+import UpdateDialog from "./UpdateDialog"
 export default {
   name: "PluginListTemplate",
-  components: {
-    RateSlider,
-    PlayButton,
-    SegmentedControl,
-    EditOpt,
-  },
-  props: ["pluginType"],
+  props: { pluginType: String, menuType: String },
+  components: { SvgIcon, UpdateDialog },
   data() {
     return {
-      editOpt: {
-        pluginName: "",
-        data: {},
-        index: -1,
-      },
-      isOptReq: false,
-      isEditReq: false,
-      editOptShow: false,
-      isEdit: [],
-      pluginSta: true,
-      pluginEditList: [],
-      pluginList: [],
+      dataList: [],
+      pluginData: null,
       dialogVisible: false,
-      configDialogVisible: false,
-      pluginData: {
-        model: "",
-        plugin_settings: {
-          level: 0,
-          default_status: false,
-          limit_superuser: null,
-          cmd: "",
-          cost_gold: 0,
-          plugin_type: "",
-        },
-        plugin_manager: {
-          plugin_name: "",
-          status: null,
-          error: null,
-          version: 0,
-          author: "",
-          block_type: "all",
-        },
-        plugin_config: [],
-        cd_limit: null,
-        block_limit: null,
-        count_limit: null,
-      },
-      configsType: [],
-      blockType: [
-        { value: "all", label: "全部" },
-        { value: "group", label: "群组" },
-        { value: "private", label: "私聊" },
-      ],
-    };
+    }
   },
   mounted() {
-    this.initPluginList(true);
+    this.getPluginList()
   },
   methods: {
-    changeEditOpt(data) {
-      this.isEditReq = true;
-
-      this.postRequest("/zhenxun/api/update_config", data).then((resp) => {
-        if (resp && resp.code == 200) {
-          this.$message.success(resp.info);
-          this.isEditReq = false;
-          this.closeEditOptShow();
-          this.initPluginList();
-        } else {
-          if (resp && resp.data) this.$message.error(resp.data);
-          else this.$message.error("修改失败");
-          this.isEditReq = false;
-          // this.initPluginList();
-        }
-      });
-    },
-    showEditOpt(data, index, name) {
-      this.editOpt.index = index;
-      this.editOpt.data = data;
-      this.editOptShow = true;
-      this.editOpt.pluginName = name;
-    },
-    closeEditOptShow() {
-      (this.editOpt = {
-        pluginName: "",
-        data: {},
-        index: -1,
-      }),
-        (this.editOptShow = false);
-    },
-    cancelEdit(index) {
-      // this.initPluginList();
-      this.isEdit.splice(index, 1, false);
-      this.pluginEditList.splice(
-        index,
-        1,
-        JSON.parse(JSON.stringify(this.pluginList[index]))
-      );
-      // this.pluginEditList[index] = this.pluginList[index];
-    },
-    getMsgFormPlayButton(index, data) {
-      this.pluginEditList[index].plugin_manager.status = data;
-      if (
-        this.pluginEditList[index].plugin_manager.status == false &&
-        (this.pluginEditList[index].plugin_manager.block_type == "" ||
-          this.pluginEditList[index].plugin_manager.block_type == null)
-      ) {
-        this.pluginEditList[index].plugin_manager.block_type = "全部";
-      } else if (this.pluginEditList[index].plugin_manager.status == true) {
-        this.pluginEditList[index].plugin_manager.block_type = "";
-      }
-    },
-    getMsgFormSegmentedControl(index, data) {
-      this.pluginEditList[index].plugin_manager.block_type = data;
-    },
-    getMsgFormRateSlider(index, data) {
-      this.pluginEditList[index].plugin_settings.level = data;
-    },
-    refresh() {
-      this.initPluginList();
-    },
-    initPluginList(isFirst = false) {
-      this.getRequest(
-        "/zhenxun/api/get_plugins?plugin_type=" + this.pluginType
-      ).then((resp) => {
-        if (resp) {
-          this.$message.success(resp.info);
-          this.pluginList = resp.data;
-          if (isFirst) {
-            this.pluginEditList = JSON.parse(JSON.stringify(this.pluginList));
-            this.isEdit = new Array(this.pluginList.length).fill(false);
+    getPluginList() {
+      this.getRequest("get_plugin_list", {
+        plugin_type: this.pluginType,
+        menu_type: this.menuType,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.dataList = resp.data
           }
         } else {
-          this.$message.error("获取数据失败！");
+          this.$message.error(resp.info)
         }
-      });
+      })
     },
-    showEditView(data) {
-      this.pluginData = JSON.parse(JSON.stringify(data));
-      if (
-        this.pluginData.plugin_manager.block_type == "" ||
-        this.pluginData.plugin_manager.block_type == null
-      ) {
-        this.pluginData.plugin_manager.block_type = "all";
-      }
-      this.dialogVisible = true;
-    },
-    doUpdate(index) {
-      this.isOptReq = true;
-      // 修复回传数据列表变成字符串的问题
-      let postConfigData = JSON.parse(
-        JSON.stringify(this.pluginEditList[index])
-      ); //不提交原配置项而是一个副本
-      console.log("postConfigData", postConfigData);
-      let cmd = postConfigData?.plugin_settings?.cmd;
-      if (cmd && !Array.isArray(cmd)) {
-        cmd = cmd.split(",");
-      }
-      const sendData = {
-        module: postConfigData.model,
-        default_status: postConfigData?.plugin_settings?.default_status,
-        limit_superuser: postConfigData?.plugin_settings?.limit_superuser,
-        cost_gold: postConfigData?.plugin_settings?.cost_gold,
-        cmd: cmd,
-        menu_type: postConfigData?.plugin_settings?.plugin_type[0],
-        group_level: postConfigData?.plugin_settings?.level,
-        block_type: postConfigData?.plugin_manager?.status
-          ? ""
-          : postConfigData?.plugin_manager?.block_type,
-      };
-      console.log("sendData", sendData);
-      this.postRequest("/zhenxun/api/update_plugins", sendData).then((resp) => {
-        //先判断是否有返回数据
-        if (resp && resp.code == 200) {
-          this.$message.success(resp.info);
-          // this.$message({
-          //   message: "修改成功",
-          //   type: "success",
-          // });
-          this.isOptReq = false;
-          this.isEdit.splice(index, 1, false);
-          this.initPluginList();
+    changeSwitch(data) {
+      this.postRequest("change_switch", {
+        module: data.module,
+        status: !data.status,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.getPluginList()
+          }
         } else {
-          //修改失败也刷新一次配置
-          if (resp && resp.data) this.$message.error(resp.data);
-          else this.$message.error("修改失败");
-          this.isOptReq = false;
-          // this.initPluginList();
+          this.$message.error(resp.info)
         }
-      });
+      })
     },
-    // doConfigUpdate() {
-    //   let pluginConfigData = JSON.parse(JSON.stringify(this.pluginData));
-    //   pluginConfigData.plugin_manager = null;
-    //   pluginConfigData.plugin_settings = null;
-
-    //   this.postRequest("/webui/plugins", pluginConfigData).then((resp) => {
-    //     if (resp && resp.code == 200) {
-    //       this.$message({
-    //         message: "修改成功",
-    //         type: "success",
-    //       });
-    //       this.initPluginList();
-    //     } else {
-    //        //修改失败也刷新一次配置
-    //       if(resp && resp.data)
-    //         this.$message.error(resp.data);
-    //       else
-    //         this.$message.error("修改失败");
-    //       this.initPluginList();
-    //     }
-    //   });
-    //   this.configDialogVisible = false;
-    // },
+    openSetting(data) {
+      this.pluginData = JSON.parse(JSON.stringify(data))
+      this.dialogVisible = true
+    },
+    closeSetting() {
+      this.pluginData = null
+      this.dialogVisible = false
+    },
   },
-};
+}
 </script>
 
-<style scoped>
-.disabled {
-  pointer-events: none;
-  cursor: default;
-}
-.box-background {
-  display: flex;
+<style lang="scss" scoped>
+.list-box {
   width: 100%;
   height: 100%;
-  justify-content: center;
-  flex-flow: wrap;
-  background: var(--greyLight-1);
-}
-.card-box {
-  position: relative;
-  width: 25rem;
-  min-width: 25rem;
-  /* height: 23rem; */
-  min-height: 14rem;
-  padding: 2rem;
-  padding-bottom: 1rem;
-  overflow: hidden;
-  border-radius: 3rem;
-  margin: 1rem;
-  box-shadow: 0.8rem 0.8rem 1.4rem var(--greyLight-2),
-    -0.2rem -0.2rem 1.8rem var(--white);
-}
-.plugin-version {
-  position: absolute;
-  line-height: 5rem;
-  width: 10rem;
-  height: 4rem;
-  right: -3rem;
-  top: 0rem;
-  font-size: var(--titleH2);
-  text-align: center;
-  /* background-color: #2da44e; */
-  background-color: var(--primary);
-  transform: rotate(45deg);
-  user-select: none;
-}
-.card-box.pstatus {
-  --primary: hsla(356, 72%, 44%, 1);
-  --primary-dark: rgba(207, 34, 46, 1);
-}
-.author-box {
-  display: flex;
-  height: var(--titleH1);
-  line-height: var(--titleH1);
-}
-.flexd {
-  flex-direction: column;
-  height: auto;
-  align-items: flex-start;
-}
-.author-name {
-  margin-left: 0.5rem;
-  color: #57606a;
-  font-size: var(--content);
-}
-.plugin-name {
-  font-size: var(--titleH1);
-  font-weight: 700;
-  color: #0969da;
-}
-.plugin-switch {
-  position: absolute;
-  right: 0.5rem;
-  top: 3rem;
-}
-.pbnn {
-  right: 0rem;
-  top: 4rem;
-}
-.plugin-model-name {
-  font-size: var(--titleH2);
-  font-weight: 700;
-  color: #0969da;
-  text-align: start;
-}
-.options-box {
-  min-height: 6rem;
-}
-.options-box > div {
-  font-size: var(--contentP);
-  margin: 0.8rem 0;
-  user-select: none;
-}
-.edit-btn {
-  display: flex;
-  width: 100%;
-  margin-top: 1rem;
-  justify-content: space-around;
-}
-.edit-btn.no-setting {
-  position: absolute;
-  left: 0;
-  bottom: 1rem;
-}
-.plugin-status,
-.plugin-super {
-  display: flex;
-  align-items: center;
-}
-.block-type {
-  text-align: start;
-  height: var(--contentHeight);
-  line-height: var(--contentHeight);
-  margin-left: 1.5rem;
-}
-/*  BUTTONS  */
-.btn {
-  width: 10rem;
-  height: 3rem;
-  border-radius: 1rem;
-  box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2),
-    -0.2rem -0.2rem 0.5rem var(--white);
-  justify-self: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
-  transition: 0.3s ease;
-}
 
-.btn__primary {
-  background: var(--primary);
-  box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-light),
-    inset -0.2rem -0.2rem 1rem var(--primary-dark),
-    0.3rem 0.3rem 0.6rem var(--greyLight-2), -0.2rem -0.2rem 0.5rem var(--white);
-  color: var(--greyLight-1);
-}
+  .plugin-card {
+    padding: 0 30px 30px 30px;
+    float: left;
+    height: 240px;
+    width: 390px;
+    background-color: #ffffff;
+    margin: 10px 40px;
+    border-radius: 5px;
 
-.btn__primary:hover {
-  color: var(--white);
-}
+    .plugin-status {
+      width: 100%;
+      height: 3px;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
 
-.btn__primary:active {
-  box-shadow: inset 0.2rem 0.2rem 1rem var(--primary-dark),
-    inset -0.2rem -0.2rem 1rem var(--primary-light);
-}
+    .base-info {
+      width: 390px;
+      height: 44px;
+      margin-top: 30px;
 
-.btn__secondary {
-  color: var(--greyDark);
-}
+      .plugin-name-class {
+        font-size: 20px;
+        font-weight: bold;
+      }
 
-.btn__secondary:hover {
-  color: var(--primary);
-}
+      .version-class {
+        font-size: 16px;
+        font-weight: 400;
+        margin-left: 17px;
+        color: #939395;
+      }
 
-.btn__secondary:active {
-  box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2),
-    inset -0.2rem -0.2rem 0.5rem var(--white);
-}
+      .author-class {
+        margin-left: 10px;
+      }
 
-.btn p {
-  font-size: var(--contentBtn);
-}
+      .base-info-box {
+        float: left;
+      }
 
-/*  SWITCH  */
-.switch {
-  width: 4rem;
-}
+      .setting {
+        float: right;
+      }
 
-.switch label {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: var(--contentHeight);
-  box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2),
-    -0.2rem -0.2rem 0.5rem var(--white);
-  background: rgba(255, 255, 255, 0);
-  position: relative;
-  cursor: pointer;
-  border-radius: 1.6rem;
-}
+      .setting-icon {
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+      }
 
-.switch label::after {
-  content: "";
-  position: absolute;
-  left: 0.4rem;
-  width: calc(var(--contentHeight) - 0.5rem);
-  height: calc(var(--contentHeight) - 0.5rem);
-  border-radius: 50%;
-  background: var(--greyDark);
-  transition: all 0.4s ease;
-}
+      .power-icon {
+        width: 35px;
+        height: 35px;
+        margin-right: 30px;
+        cursor: pointer;
+      }
+    }
+    ::v-deep .el-divider--horizontal {
+      margin: 12px 0 5px 0 !important;
+    }
 
-.switch label::before {
-  content: "";
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(
-    330deg,
-    var(--primary-dark) 0%,
-    var(--primary) 50%,
-    var(--primary-light) 100%
-  );
-  opacity: 0;
-  transition: all 0.4s ease;
-}
+    .plugin-info {
+      .base-small-title {
+        color: #afb2b9;
+        font-size: 13px;
+      }
 
-.switch input:checked ~ label::before {
-  opacity: 1;
-}
+      ::v-deep .el-divider--horizontal {
+        margin: 0 !important;
+      }
 
-.switch input {
-  display: none;
-}
+      .plugin-box {
+        display: flex;
 
-.switch input:checked ~ label::after {
-  left: 50%;
-  background: var(--greyLight-1);
-}
+        ::v-deep .el-divider--vertical {
+          height: 75px;
+        }
 
-/*  RANGE-SLIDER  */
-.plugin-Authority {
-  display: flex;
-  width: 100%;
-  align-items: center;
-}
-/*  FORM  */
-.plugin-cost,
-.plugin-other-name {
-  display: flex;
-  align-items: center;
-}
-.plugin-other-name .form__input {
-  width: 100%;
-}
-.form {
-  margin-left: 1rem;
-  width: 69%;
-}
+        .plugin-info-box-item {
+          display: flex;
+          flex-direction: column;
+          text-align: center;
+          margin: 10px 20px;
+          height: 55px;
+          width: 79px;
 
-.form__input {
-  width: 6rem;
-  height: var(--contentHeight);
-  border: none;
-  border-radius: 1rem;
-  font-size: var(--contentP);
-  padding: 0 1.4rem;
-  box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2),
-    -0.2rem -0.2rem 0.5rem var(--white);
-  background: none;
-  font-family: inherit;
-  color: var(--greyDark);
-}
-
-.form__input::-moz-placeholder {
-  color: var(--greyLight-3);
-}
-
-.form__input:-ms-input-placeholder {
-  color: var(--greyLight-3);
-}
-
-.form__input::placeholder {
-  color: var(--greyLight-3);
-}
-
-.form__input:focus {
-  outline: none;
-  box-shadow: inset 0.2rem 0.2rem 0.5rem var(--greyLight-2),
-    inset -0.2rem -0.2rem 0.5rem var(--white);
-}
-
-/*  CHIP  */
-.plugin-type {
-  display: flex;
-  align-items: center;
-  margin-right: 1rem;
-}
-.chip {
-  margin-left: 1rem;
-  justify-self: center;
-  width: 9rem;
-  height: var(--contentHeight);
-  border-radius: 1rem;
-  box-shadow: 0.3rem 0.3rem 0.6rem var(--greyLight-2),
-    -0.2rem -0.2rem 0.5rem var(--white);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.chip p {
-  font-size: var(--content);
-  padding-left: 1rem;
-  color: var(--greyDark);
-}
-.chip__close {
-  width: 2rem;
-  height: 1rem;
-  display: flex;
-  font-size: var(--content);
-  margin-right: 0.5rem;
-  color: var(--greyLight-3);
-  cursor: pointer;
-  justify-content: center;
-  align-items: center;
-}
-/* .m-left-1{
-  margin-left: -1rem;
-} */
-
-@media screen and (max-width: 600px) {
-  .box-background {
-    --titleH1: 1rem;
-    --titleH2: 0.7rem;
-    --contentP: 0.65rem;
-    --contentBtn: 0.8rem;
-    --content: 0.5rem;
-    --contentHeight: 1.5rem;
+          .plugin-info-item-text {
+            font-size: 21px;
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
   }
-  .card-box {
-    position: relative;
-    width: 80%;
-    min-width: 80%;
-    /* height: 18.5rem; */
-    min-height: 11rem;
-    padding: 1.5rem 1.5rem 1rem 1.5rem;
-    margin: 1rem 0 0 0;
-  }
-  .card-box:nth-last-child(1) {
-    margin: 1rem 0 1rem 0;
-  }
-  .plugin-other-name .form__input {
-    width: 80%;
-  }
-  .switch {
-    width: 2.8rem;
-  }
-  .plugin-version {
-    height: 3rem;
-    line-height: 3.5rem;
-    width: 8rem;
-    right: -2.5rem;
-  }
-  .btn {
-    width: 35%;
-    height: 2.5rem;
-  }
-  .plugin-switch {
-    right: 1rem;
-    top: 3rem;
-  }
-  .form__input {
-    width: 3rem;
-  }
-  .options-box {
-    min-height: 4rem;
-  }
-  .form {
-    flex: 1;
-    margin-left: 0.5rem;
-  }
-  /* .m-left-1{
-    margin: 0;
-  } */
 }
 </style>

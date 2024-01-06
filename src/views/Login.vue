@@ -75,32 +75,32 @@
 </template>
 
 <script>
-import qs from "qs";
+import qs from "qs"
 // 导入cookie的获取和设置方法
-import { setCookie, clearCookie, getCookie, verifyIdentity } from "@/utils/api";
+import { setCookie, clearCookie, getCookie, verifyIdentity } from "@/utils/api"
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   created() {
     //进入登录页面先验证是否已经登录
-    verifyIdentity();
+    verifyIdentity()
   },
   data() {
     const validateName = (rules, value, callback) => {
       if (!value) {
-        callback(new Error("账号捏账号捏!"));
+        callback(new Error("账号捏账号捏!"))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePwd = (rules, value, callback) => {
       if (!value) {
-        callback(new Error("不会有人忘记密码了吧!"));
+        callback(new Error("不会有人忘记密码了吧!"))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
       loginForm: {
         username: "",
@@ -111,15 +111,15 @@ export default {
         password: [{ validator: validatePwd }],
       },
       loading: false,
-    };
+    }
   },
   methods: {
     submitLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.postRequest(
-            "/zhenxun/api/login",
+            "login",
             qs.stringify({
               username: this.loginForm.username,
               password: this.loginForm.password,
@@ -128,29 +128,29 @@ export default {
           ).then((resp) => {
             if (resp) {
               const tokenStr =
-                resp.data.token_type + " " + resp.data.access_token;
+                resp.data.token_type + " " + resp.data.access_token
               if (getCookie) {
-                clearCookie("tokenStr");
+                clearCookie("tokenStr")
               }
-              setCookie("tokenStr", tokenStr);
+              setCookie("tokenStr", tokenStr)
               // // 页面跳转
-              let path = this.$route.query.redirect;
+              let path = this.$route.query.redirect
               this.$router.replace(
                 path == "/" || path == undefined ? "/home" : path
-              );
+              )
             }
-          });
+          })
         } else {
-          return false;
+          return false
         }
-        this.loading = false;
-      });
+        this.loading = false
+      })
     },
-    changeApi(){
-      this.$router.replace("/myapi");
-    }
+    changeApi() {
+      this.$router.replace("/myapi")
+    },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
