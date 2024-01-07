@@ -39,7 +39,7 @@ axios.interceptors.response.use(
     const { status, data } = error.response
     if (status == 504 || status == 404) {
       Message.error({ message: "服务器被吃了┭┮﹏┭┮" })
-    } else if (status == 405 || status == 500) {
+    } else if (status == 405) {
       Message.error({ message: "真寻的api地址不正确捏" })
     } else if (status == 400) {
       Message.error(data.detail)

@@ -80,7 +80,7 @@
     </div>
     <UpdateDialog
       v-if="dialogVisible"
-      :data="pluginData"
+      :module="pluginModule"
       @close="closeSetting"
     />
   </div>
@@ -96,7 +96,7 @@ export default {
   data() {
     return {
       dataList: [],
-      pluginData: null,
+      pluginModule: null,
       dialogVisible: false,
     }
   },
@@ -139,12 +139,15 @@ export default {
       })
     },
     openSetting(data) {
-      this.pluginData = JSON.parse(JSON.stringify(data))
+      this.pluginModule = data.module
       this.dialogVisible = true
     },
-    closeSetting() {
-      this.pluginData = null
+    closeSetting(isRefresh) {
+      this.pluginModule = null
       this.dialogVisible = false
+      if (isRefresh) {
+        this.getPluginList()
+      }
     },
   },
 }
