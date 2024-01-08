@@ -144,12 +144,12 @@
                 </template>
               </el-table-column>
               <el-table-column label="值" min-width="140px">
-                <template slot-scope="{ row }">
+                <template slot-scope="scope">
                   <AutoComponent
-                    ref="autoComponent"
-                    v-model="row.value"
-                    :type="row.type"
-                    :typeInner="row.type_inner"
+                    :ref="'autoComponent_' + scope.$index"
+                    v-model="scope.row.value"
+                    :type="scope.row.type"
+                    :typeInner="scope.row.type_inner"
                   />
                 </template>
               </el-table-column>
@@ -265,40 +265,48 @@ export default {
       })
     },
     commit() {
-      const refs = this.$refs["autoComponent"]
-      console.log("refs", JSON.parse(JSON.stringify(refs)))
-      return
+      if (this.updateData.config_list && this.updateData.config_list) {
+        for (let i = 0; i < this.updateData.config_list.length; i++) {
+          const ref = this.$refs["autoComponent_" + i]
+          if (ref) {
+            const flag = ref.validate()
+            if (!flag) {
+              return this.$message.warning("配置项填写错误...")
+            }
+          }
+        }
+      }
+      this.$refs["form"].validate((valid) => {
+        if (valid) {
+          const data = JSON.parse(JSON.stringify(this.updateData))
+          console.log("ddd", JSON.parse(JSON.stringify(data.config_list)))
+          if (data.config_list && data.config_list.length) {
+            const configs = {}
+            data.config_list.forEach((e) => {
+              configs[e.key] = e.value
+            })
+            data.configs = configs
+            data.config_list = null
+          }
 
-      // this.$refs["form"].validate((valid) => {
-      //   if (valid) {
-      //     const data = JSON.parse(JSON.stringify(this.updateData))
-      //     if (data.config_list && data.config_list.length) {
-      //       const configs = {}
-      //       data.config_list.forEach((e) => {
-      //         configs[e.key] = e.value
-      //       })
-      //       data.configs = configs
-      //       data.config_list = null
-      //     }
+          data.block_type = data.block_type || null
 
-      //     data.block_type = data.block_type || null
-
-      //     this.postRequest("update_plugin", data).then((resp) => {
-      //       if (resp.suc) {
-      //         if (resp.warning) {
-      //           this.$message.warning(resp.warning)
-      //         } else {
-      //           this.$message.success(resp.info)
-      //           this.$emit("close", true)
-      //         }
-      //       } else {
-      //         this.$message.error(resp.info)
-      //       }
-      //     })
-      //   } else {
-      //     return false
-      //   }
-      // })
+          this.postRequest("update_plugin", data).then((resp) => {
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning(resp.warning)
+              } else {
+                this.$message.success(resp.info)
+                this.$emit("close", true)
+              }
+            } else {
+              this.$message.error(resp.info)
+            }
+          })
+        } else {
+          return false
+        }
+      })
     },
   },
 }

@@ -25,7 +25,6 @@ export default {
   },
 }
 </script>
-<!-- @input="$emit('input', $event.target.value)" -->
 <style lang="scss" scoped>
 * {
   user-select: none;

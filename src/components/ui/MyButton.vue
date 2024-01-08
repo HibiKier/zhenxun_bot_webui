@@ -10,15 +10,21 @@
       style="width: 100%; height: 100%"
     >
       {{ text }}
+      <span v-if="icon">
+        <svg-icon :icon-class="icon" />
+      </span>
     </button>
   </div>
 </template>
 
 <script>
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
 export default {
+  components: { SvgIcon },
   name: "MyButton",
   props: {
     text: String,
+    icon: String,
     width: {
       type: Number,
       default: 66,
