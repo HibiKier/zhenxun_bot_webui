@@ -1,8 +1,17 @@
 <template>
-  <div class="button r" id="button-1">
+  <div
+    class="button r"
+    id="button-1"
+    :style="{ 'pointer-events': disabled ? 'none' : null }"
+  >
     <input
       v-model="myValue"
-      @input="() => $emit('input', myValue)"
+      @input="
+        () => {
+          $emit('input', myValue)
+          $emit('change', myValue)
+        }
+      "
       type="checkbox"
       class="checkbox"
     />
@@ -14,7 +23,7 @@
 <script>
 export default {
   name: "MySwitch",
-  props: ["value"],
+  props: ["value", "disabled"],
   data() {
     return {
       myValue: true,

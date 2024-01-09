@@ -1,10 +1,6 @@
 <template>
-  <div>
-    <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="群组管理" name="FriendGroupMana">
-        <FriendGroupMana />
-      </el-tab-pane>
-    </el-tabs>
+  <div style="height: 100%; width: 100%">
+    <FriendGroupMana />
   </div>
 </template>
 

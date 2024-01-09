@@ -261,6 +261,7 @@ export default {
   background-color: #ffffff;
   width: 14rem !important;
   transition: all 0.2s ease;
+  // border-right: 1px solid #000000;
 }
 
 .myscrollbar {

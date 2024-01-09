@@ -5,13 +5,7 @@
     :visible.sync="visible"
     @close="close"
   >
-    <p class="tip">
-      <svg-icon
-        icon-class="magic"
-        style="height: 20px; width: 20px"
-      />施展了来自奇迹的魔法
-    </p>
-    <el-divider />
+    <OneMark />
     <div class="main">
       <div>
         <p class="plugin-name-class">
@@ -174,6 +168,7 @@
 <script>
 import MySwitch from "@/components/ui/MySwitch"
 import MyButton from "@/components/ui/MyButton"
+import OneMark from "@/components/ui/OneMark"
 import AutoComponent from "./AutoComponent.vue"
 import { checkConfig } from "@/utils/check"
 
@@ -186,6 +181,7 @@ export default {
     MySwitch,
     MyButton,
     AutoComponent,
+    OneMark,
   },
   data() {
     var checkCostGold = (rule, value, callback) => {
@@ -279,7 +275,6 @@ export default {
       this.$refs["form"].validate((valid) => {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.updateData))
-          console.log("ddd", JSON.parse(JSON.stringify(data.config_list)))
           if (data.config_list && data.config_list.length) {
             const configs = {}
             data.config_list.forEach((e) => {

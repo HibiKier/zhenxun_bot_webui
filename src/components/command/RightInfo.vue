@@ -165,7 +165,6 @@ export default {
               normal: {
                 //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
                 color: (params) => {
-                  console.log("params", params)
                   var colorList = [
                     "#855BD7",
                     "#4B6FB8",
@@ -248,16 +247,16 @@ export default {
           } else {
             this.$message.success(resp.info)
             const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
-            const hot_plugin_list = []
+            const hotPluginList = []
             const data = resp.data.map((e) => {
-              hot_plugin_list.push(e.name)
+              hotPluginList.push(e.name)
               return {
                 name: e.name,
                 value: e.count,
               }
             })
             tmpOpt.xAxis.name = "插件"
-            tmpOpt.xAxis.data = hot_plugin_list
+            tmpOpt.xAxis.data = hotPluginList
             tmpOpt.series[0].data = data
             this.hotPluginChart.setOption(tmpOpt)
           }

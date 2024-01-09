@@ -1,17 +1,28 @@
 <template>
   <div
     class="button-wrapper"
-    :style="{ width: width + 'px', height: height + 'px' }"
+    :style="{
+      width: width + 'px',
+      height: height + 'px',
+    }"
   >
     <button
       class="button-class"
       role="button"
       @click="() => this.$emit('click')"
-      style="width: 100%; height: 100%"
+      :style="{
+        width: '100%',
+        height: '100%',
+        'background-color': backgroundColor,
+        color: color,
+      }"
     >
       {{ text }}
       <span v-if="icon">
-        <svg-icon :icon-class="icon" />
+        <svg-icon
+          :icon-class="icon"
+          :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
+        />
       </span>
     </button>
   </div>
@@ -25,6 +36,9 @@ export default {
   props: {
     text: String,
     icon: String,
+    iconWidth: { type: String, default: "23" },
+    iconHeight: { type: String, default: "23" },
+    type: String,
     width: {
       type: Number,
       default: 66,
@@ -33,6 +47,27 @@ export default {
       type: Number,
       default: 40,
     },
+  },
+  data() {
+    return {
+      color: "#000000",
+      backgroundColor: null,
+    }
+  },
+  mounted() {
+    if (this.type == "success") {
+      this.color = "#ffffff"
+      this.backgroundColor = "#67C23A"
+    } else if (this.type == "error") {
+      this.color = "#ffffff"
+      this.backgroundColor = "#F56C6C"
+    } else if (this.type == "warn") {
+      this.color = "#ffffff"
+      this.backgroundColor = "#E6A23C"
+    } else if (this.type == "main") {
+      this.color = "#ffffff"
+      this.backgroundColor = "#409EFF"
+    }
   },
 }
 </script>
