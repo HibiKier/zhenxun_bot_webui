@@ -1,18 +1,31 @@
 <template>
   <div class="chat-window">
+    <meta name="referrer" content="never" />
     <template v-if="isStartChat">
       <p class="title">{{ chatInfo.name }}</p>
       <el-divider />
       <div class="chat-area" id="chat" :key="reloadKey">
         <div
-          v-for="(data, index) in msgObj[chatId]"
+          v-for="(data, index) in chatObj[chatId]"
           :key="index"
           class="msg-item"
         >
           <el-avatar :src="data.ava_url" class="ava"></el-avatar>
           <div class="msg-box">
             <p class="user-name">{{ data.name }}</p>
-            <p class="msg-text">{{ data.message }}</p>
+            <p class="msg-text">
+              <span v-for="(msg, index) in data.message" :key="index">
+                <img
+                  v-if="msg.type == 'img'"
+                  :src="msg.msg"
+                  :style="{
+                    width: msg.width + 'px',
+                    height: msg.height + 'px',
+                  }"
+                />
+                <span v-else>{{ msg.msg }}</span>
+              </span>
+            </p>
           </div>
         </div>
       </div>
@@ -61,10 +74,10 @@ export default {
       isStartChat: false,
       chatInfo: {},
       chatWs: null,
-      msgObj: { default: [] },
       botInfo: null,
       chatId: "default",
       reloadKey: 0,
+      chatObj: { default: [] },
     }
   },
   created() {
@@ -78,8 +91,26 @@ export default {
     this.destroyWebsocket()
   },
   methods: {
+    getImageSize(imageUrl) {
+      return new Promise((resolve, reject) => {
+        const img = new Image()
+        // 设置加载完成后的处理函数
+        img.onload = function () {
+          resolve({ width: this.width, height: this.height })
+        }
+        // 设置加载失败时的错误处理函数
+        img.onerror = function () {
+          reject("Failed to load image")
+        }
+        // 开始加载图像
+        img.src = imageUrl
+      })
+    },
     sendMessage() {
-      this.postRequest("send_message", {
+      if (!this.message) {
+        return
+      }
+      this.postRequest("manage/send_message", {
         bot_id: this.botInfo.self_id,
         group_id: this.chatInfo.group_id,
         user_id: this.chatInfo.user_id,
@@ -90,16 +121,21 @@ export default {
             this.$message.warning(resp.warning)
           } else {
             this.$message.success(resp.info)
-            if (!this.chatInfo.group_id && this.chatInfo.user_id) {
-              this.msgObj[this.chatId].push({
-                user_id: this.chatInfo.user_id,
-                message: this.message,
-                name: this.botInfo.name,
-                ava_url: `http://q1.qlogo.cn/g?b=qq&nk=${this.botInfo.self_id}&s=160`,
-              })
-            }
+            // if (!this.chatInfo.group_id && this.chatInfo.user_id) {
+            this.chatObj[this.chatId].push({
+              user_id: this.chatInfo.user_id,
+              message: [{ type: "text", msg: this.message }],
+              name: this.botInfo.name,
+              ava_url: `http://q1.qlogo.cn/g?b=qq&nk=${this.botInfo.self_id}&s=160`,
+            })
+            // }
             this.message = ""
             this.reloadKey++
+            this.$nextTick(() => {
+              var divElement = document.getElementById("chat")
+              divElement.scrollTop = divElement.scrollHeight
+            })
+            console.log("this.chatObj", this.chatObj)
           }
         } else {
           this.$message.error(resp.info)
@@ -109,8 +145,8 @@ export default {
     startChat(data) {
       this.chatInfo = data
       const chatId = data.group_id || data.user_id
-      if (!this.msgObj[chatId]) {
-        this.msgObj[chatId] = []
+      if (!this.chatObj[chatId]) {
+        this.chatObj[chatId] = []
       }
       this.chatId = chatId
       this.isStartChat = true
@@ -118,13 +154,7 @@ export default {
     },
     initChatWebSocket() {
       if (!this.chatWs) {
-        let param = ""
-        if (this.chatInfo.user_id) {
-          param = "?user_id=" + this.chatInfo.user_id
-        } else {
-          param = "?group_id=" + this.chatInfo.group_id
-        }
-        this.chatWs = new WebSocket(this.CHAT_WS_URL + param)
+        this.chatWs = new WebSocket(this.CHAT_WS_URL)
         this.chatWs.onopen = () => {
           console.log("chat WebSocket 已连接...")
         }
@@ -134,17 +164,35 @@ export default {
         }
       }
     },
-    chatWsOnmessage(event) {
-      console.log("this.chatId", this.chatId, event)
-
+    async chatWsOnmessage(event) {
       const data = JSON.parse(event.data)
-      this.msgObj[this.chatId].push(data)
-      this.reloadKey++
+      console.log("data", data)
+      for (let i = 0; i < data.message.length; i++) {
+        const e = data.message[i]
+        if (e.type == "img") {
+          const img = await this.getImageSize(e.msg)
+          if (img.width > 280) {
+            const n = img.width / 280 - 0.01
+            img.width = Math.floor(img.width / n)
+            img.height = Math.floor(img.height / n)
+            console.log("111", img)
+          }
+          e.width = img.width
+          e.height = img.height
+        }
+      }
+      if (Object.keys(this.chatObj).includes(data.object_id)) {
+        this.chatObj[data.object_id].push(data)
+        if (this.chatObj[data.object_id].length > 50) {
+          this.chatObj[data.object_id].splice(0, 1)
+        }
+        this.reloadKey++
+      }
       this.$nextTick(() => {
         var divElement = document.getElementById("chat")
         divElement.scrollTop = divElement.scrollHeight
       })
-      console.log("this", this.msgObj)
+      console.log("this.chatObj", this.chatObj)
     },
     destroyWebsocket() {
       if (this.chatWs && this.chatWs.readyState === WebSocket.OPEN) {

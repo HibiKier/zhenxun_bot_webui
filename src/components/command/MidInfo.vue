@@ -180,7 +180,7 @@ export default {
     getChCount(bot_id) {
       // 获取聊天历史记录数量
       if (bot_id) {
-        this.getRequest("get_all_ch_count", { bot_id }).then((resp) => {
+        this.getRequest("main/get_all_ch_count", { bot_id }).then((resp) => {
           if (resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)

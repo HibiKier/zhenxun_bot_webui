@@ -1,10 +1,6 @@
 <template>
-  <div>
-    <el-tabs v-model="activeName" type="card">
-      <el-tab-pane label="数据库管理" name="DatabaseMana">
-        <DatabaseMana />
-      </el-tab-pane>
-    </el-tabs>
+  <div style="height: 100%; width: 100%">
+    <DatabaseMana />
   </div>
 </template>
 

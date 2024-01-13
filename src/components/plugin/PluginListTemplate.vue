@@ -105,8 +105,8 @@ export default {
   },
   methods: {
     getPluginList() {
-      this.getRequest("get_plugin_list", {
-        plugin_type: this.pluginType,
+      this.getRequest("plugin/get_plugin_list", {
+        plugin_type: [this.pluginType],
         menu_type: this.menuType,
       }).then((resp) => {
         if (resp.suc) {
@@ -122,7 +122,7 @@ export default {
       })
     },
     changeSwitch(data) {
-      this.postRequest("change_switch", {
+      this.postRequest("plugin/change_switch", {
         module: data.module,
         status: !data.status,
       }).then((resp) => {

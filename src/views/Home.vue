@@ -158,7 +158,7 @@ export default {
       this.coverShow = !this.coverShow
     },
     async getBotInfo(bot_id) {
-      this.getRequest("get_base_info", { bot_id }).then((resp) => {
+      this.getRequest("main/get_base_info", { bot_id }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)

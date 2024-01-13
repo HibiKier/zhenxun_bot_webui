@@ -109,7 +109,7 @@ export default {
       }
     },
     getRequestCount() {
-      this.getRequest("get_request_count").then((resp) => {
+      this.getRequest("manage/get_request_count").then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)
@@ -168,42 +168,42 @@ export default {
     },
     getGroupList() {
       // 获取群组列表
-      this.getRequest("get_group_list", { bot_id: this.botInfo.self_id }).then(
-        (resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-              this.dataList = resp.data.map((e) => {
-                return { id: e.group_id, ...e }
-              })
-            }
+      this.getRequest("manage/get_group_list", {
+        bot_id: this.botInfo.self_id,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
           } else {
-            this.$message.error(resp.info)
+            this.$message.success(resp.info)
+            this.dataList = resp.data.map((e) => {
+              return { id: e.group_id, ...e }
+            })
           }
+        } else {
+          this.$message.error(resp.info)
         }
-      )
+      })
     },
     getFriendList() {
       // 获取好友列表
       // [ { user_id: "66600000", nickname: "babyQ", remark: "babyQ" }]
-      this.getRequest("get_friend_list", { bot_id: this.botInfo.self_id }).then(
-        (resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-              this.dataList = resp.data.map((e) => {
-                return { id: e.user_id, ...e }
-              })
-            }
+      this.getRequest("manage/get_friend_list", {
+        bot_id: this.botInfo.self_id,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
           } else {
-            this.$message.error(resp.info)
+            this.$message.success(resp.info)
+            this.dataList = resp.data.map((e) => {
+              return { id: e.user_id, ...e }
+            })
           }
+        } else {
+          this.$message.error(resp.info)
         }
-      )
+      })
     },
   },
 }

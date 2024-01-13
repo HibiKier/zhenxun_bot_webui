@@ -9,14 +9,7 @@ import "default-passive-events" //处理ele-ui警告
 import "./assets/icons/index"
 import { message } from "@/utils/message"
 import { postRequest, putRequest, getRequest, deleteRequest } from "@/utils/api"
-import websocket from "vue-native-websocket"
-Vue.use(websocket, "", {
-  connectManually: true, // 手动连接
-  format: "json", // json格式
-  reconnection: true, // 是否自动重连
-  reconnectionAttempts: 5, // 自动重连次数
-  reconnectionDelay: 2000, // 重连间隔时间
-})
+
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 // 插件形式使用请求

@@ -1,12 +1,18 @@
 <template>
-  <div></div>
+  <div class="main">
+    <div class="left-table">
+      <table-list />
+    </div>
+  </div>
 </template>
 
 <script>
+import TableList from "./TableList.vue"
 export default {
+  components: { TableList },
   name: "DatabaseMana",
   mounted() {
-    this.execSql()
+    // this.execSql()
   },
   methods: {
     execSql() {
@@ -49,4 +55,16 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  .left-table {
+    width: 17%;
+    height: 100%;
+    background-color: #f4f5fa;
+    overflow: auto;
+  }
+}
+</style>

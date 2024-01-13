@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     approve(data) {
-      this.postRequest("approve_request", {
+      this.postRequest("manage/approve_request", {
         bot_id: data.bot_id,
         request_type: data.type,
         flag: data.flag,
@@ -111,7 +111,7 @@ export default {
       })
     },
     refuse(data) {
-      this.postRequest("refuse_request", {
+      this.postRequest("manage/refuse_request", {
         bot_id: data.bot_id,
         request_type: data.type,
         flag: data.flag,
@@ -129,7 +129,7 @@ export default {
       })
     },
     deleteReq(data) {
-      this.postRequest("delete_request", {
+      this.postRequest("manage/delete_request", {
         request_type: data.type,
         flag: data.flag,
       }).then((resp) => {
@@ -146,7 +146,7 @@ export default {
       })
     },
     getReqList() {
-      this.getRequest("get_request_list").then((resp) => {
+      this.getRequest("manage/get_request_list").then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)

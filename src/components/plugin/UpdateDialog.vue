@@ -227,7 +227,7 @@ export default {
       this.$emit("close")
     },
     getPluginDetail() {
-      this.getRequest("get_plugin", {
+      this.getRequest("plugin/get_plugin", {
         module: this.module,
       }).then((resp) => {
         if (resp.suc) {
@@ -248,7 +248,7 @@ export default {
       })
     },
     getPluginMenuType() {
-      this.getRequest("get_plugin_menu_type").then((resp) => {
+      this.getRequest("plugin/get_plugin_menu_type").then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)
@@ -286,7 +286,7 @@ export default {
 
           data.block_type = data.block_type || null
 
-          this.postRequest("update_plugin", data).then((resp) => {
+          this.postRequest("plugin/update_plugin", data).then((resp) => {
             if (resp.suc) {
               if (resp.warning) {
                 this.$message.warning(resp.warning)

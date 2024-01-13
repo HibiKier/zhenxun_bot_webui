@@ -142,7 +142,7 @@
                   multiple
                 >
                   <el-option
-                    v-for="n in data.close_plugins"
+                    v-for="n in tmpAllPluginList"
                     :label="n.plugin_name"
                     :value="n.module"
                     :key="n.module"
@@ -187,6 +187,8 @@ export default {
       data: {},
       botId: null,
       detailType: null,
+      allPluginList: [],
+      tmpAllPluginList: [],
       likePluginChart: null,
       chartOpt: {
         tooltip: {}, // 工具提示组件
@@ -234,6 +236,22 @@ export default {
     this.botId = this.$store.state.botInfo.self_id
   },
   methods: {
+    getAllPluginList() {
+      this.getRequest("plugin/get_plugin_list", {
+        plugin_type: ["normal", "admin"],
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.allPluginList = resp.data
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+      })
+    },
     commit() {
       const data = {
         group_id: this.data.group_id,
@@ -242,7 +260,7 @@ export default {
         task: this.data.task_status,
         close_plugins: this.data.plugin_status,
       }
-      this.postRequest("update_group", data).then((resp) => {
+      this.postRequest("manage/update_group", data).then((resp) => {
         if (resp) {
           if (resp.warning) {
             this.$message.warning(resp.warning)
@@ -256,7 +274,7 @@ export default {
       })
     },
     getFriend(user_id) {
-      this.getRequest("get_friend_detail", {
+      this.getRequest("manage/get_friend_detail", {
         bot_id: this.botId,
         user_id: user_id,
       }).then((resp) => {
@@ -295,8 +313,11 @@ export default {
         }
       })
     },
-    getGroup(group_id) {
-      this.getRequest("get_group_detail", {
+    async getGroup(group_id) {
+      if (!this.allPluginList.length) {
+        await this.getAllPluginList()
+      }
+      this.getRequest("manage/get_group_detail", {
         bot_id: this.botId,
         group_id: group_id,
       }).then((resp) => {
@@ -304,6 +325,9 @@ export default {
           if (resp.warning) {
             this.$message.warning(resp.warning)
           } else {
+            this.tmpAllPluginList = JSON.parse(
+              JSON.stringify(this.allPluginList)
+            )
             this.$message.success(resp.info)
             resp.data.task_status = resp.data.task
               .filter((e) => {
@@ -316,6 +340,20 @@ export default {
               return e.module
             })
             this.data = resp.data
+            if (this.data.close_plugins.length) {
+              let sbList = []
+              this.data.close_plugins.forEach((e) => {
+                if (e.is_super_block) {
+                  sbList.push(e.module)
+                }
+              })
+
+              this.tmpAllPluginList.forEach((e) => {
+                if (sbList.includes(e.module)) {
+                  e.plugin_name = e.plugin_name + "(SUPER_BLOCK)"
+                }
+              })
+            }
             this.detailType = "group"
             this.$nextTick(() => {
               this.likePluginChart = this.$echarts.init(

@@ -100,7 +100,13 @@ export const getRequest = (url, params) => {
     url += "?"
     Object.keys(params).forEach((e) => {
       if (params[e] != null) {
-        url += e + "=" + params[e] + "&"
+        if (Array.isArray(params[e])) {
+          params[e].forEach((x) => {
+            url += e + "=" + x + "&"
+          })
+        } else {
+          url += e + "=" + params[e] + "&"
+        }
       }
     })
     url = url.substring(0, url.length - 1)

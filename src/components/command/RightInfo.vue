@@ -207,7 +207,7 @@ export default {
       this.getActiveGroupData(type)
     },
     getActiveGroupData(date_type) {
-      this.getRequest("get_active_group", { date_type }).then((resp) => {
+      this.getRequest("main/get_active_group", { date_type }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.info)
@@ -240,7 +240,7 @@ export default {
       this.getHotPlugin(type)
     },
     getHotPlugin(date_type) {
-      this.getRequest("get_hot_plugin", { date_type }).then((resp) => {
+      this.getRequest("main/get_hot_plugin", { date_type }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.info)

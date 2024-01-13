@@ -94,7 +94,7 @@ export default {
       this.pltKey++
     },
     getPluginCount() {
-      this.getRequest("get_plugin_count").then((resp) => {
+      this.getRequest("plugin/get_plugin_count").then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)
@@ -107,7 +107,7 @@ export default {
       })
     },
     getPluginMenuType() {
-      this.getRequest("get_plugin_menu_type").then((resp) => {
+      this.getRequest("plugin/get_plugin_menu_type").then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)
