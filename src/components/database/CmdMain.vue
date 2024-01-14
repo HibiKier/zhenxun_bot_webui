@@ -137,7 +137,7 @@ export default {
   },
   methods: {
     getCommonSql() {
-      this.postRequest("database/get_common_sql").then((resp) => {
+      this.getRequest("database/get_common_sql").then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)

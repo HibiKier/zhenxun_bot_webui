@@ -1,105 +1,41 @@
 <template>
-  <!-- dom结构优化，左右两个图片盒子高度对齐 -->
-  <div class="grid-wrapper">
-    <div class="grid-content bg-purple">
-      <el-row>
-        <SystemStatusTemplate :status-type="type[0]" :getData="getData" />
-      </el-row>
-      <el-row>
-        <SystemStatusTemplate :status-type="type[1]" :getData="getData" />
-      </el-row>
-      <el-row>
-        <SystemStatusTemplate :status-type="type[2]" :getData="getData" />
-      </el-row>
+  <div class="system">
+    <div class="status">
+      <system-status />
     </div>
-    <div class="grid-content bg-purple-light">
-      <SystemResourceTemplate />
+    <el-divider direction="vertical" />
+    <div class="tree">
+      <dir-tree />
     </div>
   </div>
 </template>
 
 <script>
-import SystemStatusTemplate from "@/components/system/SystemStatusTemplate";
-import SystemResourceTemplate from "@/components/system/SystemResourceTemplate";
+import DirTree from "./DirTree.vue"
+import SystemStatus from "./SystemStatus.vue"
 export default {
-  name: "SystemBasicInfo",
-  components: {
-    SystemStatusTemplate,
-    SystemResourceTemplate,
-  },
-  data() {
-    return {
-      type: ["cpu", "memory", "disk"],
-      data: null,
-      timer: null,
-    };
-  },
-  mounted() {
-    this.initStatusData();
-    this.timer = setInterval(() => {
-      setTimeout(this.initStatusData);
-    }, 1000 * 5);
-  },
-  methods: {
-    initStatusData() {
-      this.getRequest("/zhenxun/api/system/statusList").then((resp) => {
-        if (resp && resp.code == 200) {
-          this.data = resp.data;
-        }
-      });
-    },
-    getData(type) {
-      if (this.data == null) {
-        return {};
-      }
-      if (type == "cpu") {
-        return this.data.cpu_data;
-      } else if (type == "memory") {
-        return this.data.memory_data;
-      } else {
-        return this.data.disk_data;
-      }
-    },
-  },
-  destroyed() {
-    clearInterval(this.timer);
-    this.timer = null;
-  },
-};
+  components: { SystemStatus, DirTree },
+}
 </script>
 
-<style>
-.grid-wrapper {
+<style lang="scss" scoped>
+.system {
   display: flex;
   height: 100%;
-  overflow: hidden;
-}
+  width: 100%;
+  .status {
+    height: 100%;
+    width: 40%;
+  }
 
-@media screen and (max-width: 600px) {
-  .grid-wrapper {
-    display: flex;
-    flex-direction: column;
+  .tree {
+    height: 100%;
+    width: 60%;
   }
-  .grid-content {
-    flex: 0 !important;
+
+  ::v-deep .el-divider--vertical {
+    height: calc(100% - 40px);
+    margin: 20px 0;
   }
-}
-.bg-purple-dark {
-  background: #99a9bf;
-}
-.bg-purple {
-  background: #d3dce6;
-}
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.grid-content {
-  flex: 1;
-  border-radius: 4px;
-  min-height: 36px;
-}
-.row-bg {
-  padding: 10px 0;
-  background-color: #f9fafc;
 }
 </style>

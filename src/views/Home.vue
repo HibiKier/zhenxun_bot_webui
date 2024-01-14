@@ -173,7 +173,7 @@ export default {
               }
             }
           }
-          if (this.$route.path == "/command") {
+          if (["/command", "/manage"].includes(this.$route.path)) {
             this.rvKey++
           }
           this.curSelectMenu = this.$route.path.substring(

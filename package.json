@@ -19,6 +19,7 @@
     "qs": "^6.11.1",
     "sass-loader": "^13.2.2",
     "svg-sprite-loader": "^6.0.11",
+    "uuid": "^9.0.1",
     "vue": "^2.6.14",
     "vue-router": "3.0.1",
     "vuex": "3.6.0",

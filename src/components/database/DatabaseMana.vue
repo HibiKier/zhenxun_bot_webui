@@ -24,13 +24,13 @@ export default {
   height: 100%;
   display: flex;
   .left-table {
-    width: 17%;
+    width: 25%;
     height: 100%;
     background-color: #f4f5fa;
   }
 
   .right-main {
-    width: 82%;
+    width: 74%;
     height: 100%;
   }
 }
