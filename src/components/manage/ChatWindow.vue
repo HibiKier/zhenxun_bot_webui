@@ -166,7 +166,6 @@ export default {
     },
     async chatWsOnmessage(event) {
       const data = JSON.parse(event.data)
-      console.log("data", data)
       for (let i = 0; i < data.message.length; i++) {
         const e = data.message[i]
         if (e.type == "img") {
@@ -175,7 +174,6 @@ export default {
             const n = img.width / 280 - 0.01
             img.width = Math.floor(img.width / n)
             img.height = Math.floor(img.height / n)
-            console.log("111", img)
           }
           e.width = img.width
           e.height = img.height
@@ -192,7 +190,6 @@ export default {
         var divElement = document.getElementById("chat")
         divElement.scrollTop = divElement.scrollHeight
       })
-      console.log("this.chatObj", this.chatObj)
     },
     destroyWebsocket() {
       if (this.chatWs && this.chatWs.readyState === WebSocket.OPEN) {

@@ -1,28 +1,37 @@
 <template>
   <div class="table-list">
-    <div v-for="(table, index) in tableList" :key="index" class="table-box">
-      <p class="table-name" @click="selectTable(table.name)">
-        {{ table.name }}
-      </p>
-      <p class="table-desc">{{ table.desc || "-" }}</p>
-      <div v-if="table.showColum" class="colum-list">
-        <el-table :data="tableColumn[table.name]" border>
-          <el-table-column label="名称" prop="column_name"></el-table-column>
-          <el-table-column label="类型" prop="data_type"></el-table-column>
-          <el-table-column label="最大长度" prop="max_length"></el-table-column>
-          <el-table-column
-            label="是否为空"
-            prop="is_nullable"
-          ></el-table-column>
-        </el-table>
+    <one-mark text="接続コンソール" style="margin-top: 10px" />
+    <p class="title">数据表</p>
+    <div class="table-list-box">
+      <div v-for="(table, index) in tableList" :key="index" class="table-box">
+        <p class="table-name" @click="selectTable(table.name)">
+          {{ table.name }}
+        </p>
+        <p class="table-desc">{{ table.desc || "-" }}</p>
+        <div v-if="table.showColum" class="colum-list">
+          <el-table :data="tableColumn[table.name]" border>
+            <el-table-column label="名称" prop="column_name"></el-table-column>
+            <el-table-column label="类型" prop="data_type"></el-table-column>
+            <el-table-column
+              label="最大长度"
+              prop="max_length"
+            ></el-table-column>
+            <el-table-column
+              label="是否为空"
+              prop="is_nullable"
+            ></el-table-column>
+          </el-table>
+        </div>
+        <el-divider></el-divider>
       </div>
-      <el-divider></el-divider>
     </div>
   </div>
 </template>
 
 <script>
+import OneMark from "../ui/OneMark.vue"
 export default {
+  components: { OneMark },
   name: "TableList",
   data() {
     return {
@@ -77,29 +86,44 @@ export default {
 
 <style lang="scss" scoped>
 .table-list {
-  .table-box {
-    // width: 100%;
-    // height: 50px;
-    padding: 10px 20px;
+  height: calc(100% - 140px);
+  .title {
+    font-size: 20px;
+    color: #939395;
+    text-align: center;
+    border: 1px solid #d3d3d4;
+    padding: 5px;
+    border-radius: 10px;
+    margin: 10px;
+  }
 
-    ::v-deep .el-divider--horizontal {
-      margin: 10px 0;
-    }
+  .table-list-box {
+    overflow: auto;
+    height: 100%;
+    .table-box {
+      // width: 100%;
+      // height: 50px;
+      padding: 10px 20px;
 
-    .table-name {
-      font-weight: bold;
-      font-size: 20px;
-      cursor: pointer;
-    }
+      ::v-deep .el-divider--horizontal {
+        margin: 10px 0;
+      }
 
-    .table-desc {
-      font-size: 14px;
-      color: #9f9f9f;
-      margin-top: 5px;
-    }
+      .table-name {
+        font-weight: bold;
+        font-size: 20px;
+        cursor: pointer;
+      }
 
-    .colum-list {
-      height: 100px;
+      .table-desc {
+        font-size: 14px;
+        color: #9f9f9f;
+        margin-top: 5px;
+      }
+
+      .colum-list {
+        // height: 100px;
+      }
     }
   }
 }

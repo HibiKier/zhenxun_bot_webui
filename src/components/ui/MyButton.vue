@@ -6,7 +6,35 @@
       height: height + 'px',
     }"
   >
+    <el-tooltip
+      v-if="content"
+      class="item"
+      effect="dark"
+      :content="content"
+      placement="top-start"
+    >
+      <button
+        class="button-class"
+        role="button"
+        @click="() => this.$emit('click')"
+        :style="{
+          width: '100%',
+          height: '100%',
+          'background-color': backgroundColor,
+          color: color,
+        }"
+      >
+        {{ text }}
+        <span v-if="icon" style="margin-top: 5px">
+          <svg-icon
+            :icon-class="icon"
+            :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
+          />
+        </span>
+      </button>
+    </el-tooltip>
     <button
+      v-else
       class="button-class"
       role="button"
       @click="() => this.$emit('click')"
@@ -18,7 +46,7 @@
       }"
     >
       {{ text }}
-      <span v-if="icon">
+      <span v-if="icon" style="margin-top: 5px">
         <svg-icon
           :icon-class="icon"
           :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
@@ -36,6 +64,7 @@ export default {
   props: {
     text: String,
     icon: String,
+    content: String,
     iconWidth: { type: String, default: "23" },
     iconHeight: { type: String, default: "23" },
     type: String,

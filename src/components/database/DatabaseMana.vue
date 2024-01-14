@@ -3,55 +3,18 @@
     <div class="left-table">
       <table-list />
     </div>
+    <div class="right-main">
+      <cmd-main />
+    </div>
   </div>
 </template>
 
 <script>
+import CmdMain from "./CmdMain.vue"
 import TableList from "./TableList.vue"
 export default {
-  components: { TableList },
+  components: { TableList, CmdMain },
   name: "DatabaseMana",
-  mounted() {
-    // this.execSql()
-  },
-  methods: {
-    execSql() {
-      // 执行sql
-      this.postRequest("exec_sql", {
-        // sql: "update chat_history set text=9111233923339 where id=15",
-        sql: "SELECT * FROM public.pixiv",
-      }).then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-            console.log("exec_sql", resp)
-          }
-        } else {
-          this.$message.error(resp.info)
-        }
-      })
-    },
-    getSqlLog() {
-      // 获取sql日志
-      this.postRequest("get_sql_log", {
-        index: 3,
-        size: 3,
-      }).then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-            console.log("get_sql_log", resp)
-          }
-        } else {
-          this.$message.error(resp.info)
-        }
-      })
-    },
-  },
 }
 </script>
 
@@ -64,7 +27,11 @@ export default {
     width: 17%;
     height: 100%;
     background-color: #f4f5fa;
-    overflow: auto;
+  }
+
+  .right-main {
+    width: 82%;
+    height: 100%;
   }
 }
 </style>
