@@ -1,9 +1,16 @@
 <template>
   <div class="main">
     <div class="mid-info">
-      <!-- <one-mark :showDivider="false" text="这是一个标记的魔法" /> -->
-      <div class="chart-box">
-        <div ref="resourcesChart" class="base-chart"></div>
+      <div class="mid-box">
+        <one-mark text="这是一个标记的魔法" style="margin-top: 10px" />
+        <div style="margin-left: 10px; margin-bottom: 20px">
+          <span v-for="(path, i) in pathList" :key="i">
+            <span class="path-item" @click="clickPath(i)">{{ path }}</span> /
+          </span>
+        </div>
+        <div class="chart-box">
+          <div ref="resourcesChart" class="base-chart"></div>
+        </div>
       </div>
     </div>
     <div class="main-tree">
@@ -22,15 +29,16 @@
 
 <script>
 // import { v4 } from "uuid"
-// import OneMark from "../ui/OneMark.vue"
+import OneMark from "../ui/OneMark.vue"
 export default {
-  // components: { OneMark },
+  components: { OneMark },
   name: "DirTree",
   data() {
     return {
       treeData: [],
       resourcesChart: null,
       loadKey: 0,
+      pathList: ["/"],
       props: {
         label: "name",
         children: "children",
@@ -70,37 +78,47 @@ export default {
   },
   mounted() {
     this.resourcesChart = this.$echarts.init(this.$refs.resourcesChart)
-    this.getDir()
+    // this.getDir()
     this.getResourcesSize()
   },
   methods: {
-    getResourcesSize() {
-      this.getRequest("system/get_resources_size").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-            const tmpOpt = JSON.parse(JSON.stringify(this.option))
-            if (resp.data) {
-              tmpOpt.series[0].data = [
-                { value: resp.data.font_dir_size.toFixed(2), name: "字体" },
-                { value: resp.data.image_dir_size.toFixed(2), name: "图片" },
-                { value: resp.data.text_dir_size.toFixed(2), name: "文本" },
-                { value: resp.data.record_dir_size.toFixed(2), name: "语音" },
-                { value: resp.data.temp_dir_size.toFixed(2), name: "临时文件" },
-                { value: resp.data.data_dir_size.toFixed(2), name: "数据" },
-                { value: resp.data.log_dir_size.toFixed(2), name: "日志" },
-              ]
-              this.resourcesChart.setOption(tmpOpt)
-              console.log("ddd", resp.data)
-              this.loadKey++
+    clickPath(i) {
+      this.pathList = this.pathList.splice(0, i + 1)
+      const tmpPath = [...this.pathList]
+      tmpPath.shift()
+
+      this.getResourcesSize(tmpPath.join("/"))
+    },
+    showFolderSize(param) {
+      const data = param.data
+      if (data.is_dir) {
+        this.pathList.push(data.name)
+        this.getResourcesSize(data.full_path)
+      }
+    },
+    getResourcesSize(full_path) {
+      this.getRequest("system/get_resources_size", { full_path }).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              const tmpOpt = JSON.parse(JSON.stringify(this.option))
+              if (resp.data) {
+                tmpOpt.series[0].data = resp.data.map((e) => {
+                  return { value: e.size.toFixed(2), ...e }
+                })
+                this.resourcesChart.setOption(tmpOpt)
+                // console.log("ddd", resp.data)
+                this.resourcesChart.on("click", this.showFolderSize)
+              }
             }
+          } else {
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
         }
-      })
+      )
     },
     async getDir(parent) {
       const resp = await this.getRequest("system/get_dir_list", {
@@ -111,9 +129,9 @@ export default {
           this.$message.warning(resp.warning)
         } else {
           this.$message.success(resp.info)
-          if (!parent) {
-            this.treeData = resp.data
-          }
+          // if (!parent) {
+          //   this.treeData = resp.data
+          // }
           // resp.data.forEach((e) => {
           //   // e.uid = v4()
           // })
@@ -147,15 +165,23 @@ export default {
     justify-content: center;
     align-items: center;
 
-    .chart-box {
+    .mid-box {
       height: 100%;
       width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .base-chart {
+      .path-item {
+        color: #61c4fe;
+        cursor: pointer;
+      }
+      .chart-box {
+        height: calc(100% - 120px);
         width: 100%;
-        height: 900px;
+        // display: flex;
+        // justify-content: center;
+        // align-items: center;
+        .base-chart {
+          width: 100%;
+          height: 700px;
+        }
       }
     }
   }
