@@ -227,7 +227,8 @@ export default {
       this.$emit("close")
     },
     getPluginDetail() {
-      this.getRequest("plugin/get_plugin", {
+      const loading = this.getLoading(".el-dialog")
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin`, {
         module: this.module,
       }).then((resp) => {
         if (resp.suc) {
@@ -245,20 +246,23 @@ export default {
           this.$message.error(resp.info)
           this.$emit("close")
         }
+        loading.close()
       })
     },
     getPluginMenuType() {
-      this.getRequest("plugin/get_plugin_menu_type").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_menu_type`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.menuTypeList = resp.data
+            }
           } else {
-            this.menuTypeList = resp.data
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
         }
-      })
+      )
     },
     commit() {
       if (this.updateData.config_list && this.updateData.config_list) {
@@ -285,8 +289,12 @@ export default {
           }
 
           data.block_type = data.block_type || null
+          const loading = this.getLoading(".el-dialog")
 
-          this.postRequest("plugin/update_plugin", data).then((resp) => {
+          this.postRequest(
+            `${this.$root.prefix}/plugin/update_plugin`,
+            data
+          ).then((resp) => {
             if (resp.suc) {
               if (resp.warning) {
                 this.$message.warning(resp.warning)
@@ -297,6 +305,7 @@ export default {
             } else {
               this.$message.error(resp.info)
             }
+            loading.close()
           })
         } else {
           return false

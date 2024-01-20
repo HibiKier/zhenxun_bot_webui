@@ -1,7 +1,7 @@
 <template>
   <div class="chat-window">
     <meta name="referrer" content="never" />
-    <template v-if="isStartChat">
+    <div class="inner-chat-box" v-if="isStartChat">
       <p class="title">{{ chatInfo.name }}</p>
       <el-divider />
       <div class="chat-area" id="chat" :key="reloadKey">
@@ -49,7 +49,7 @@
           </span>
         </div>
       </div>
-    </template>
+    </div>
     <template v-else>
       <div class="empty">
         <el-empty
@@ -110,7 +110,8 @@ export default {
       if (!this.message) {
         return
       }
-      this.postRequest("manage/send_message", {
+      const loading = this.getLoading(".el-textarea")
+      this.postRequest(`${this.$root.prefix}/manage/send_message`, {
         bot_id: this.botInfo.self_id,
         group_id: this.chatInfo.group_id,
         user_id: this.chatInfo.user_id,
@@ -140,9 +141,11 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
     startChat(data) {
+      // const loading = this.getLoading(".chat-window")
       this.chatInfo = data
       const chatId = data.group_id || data.user_id
       if (!this.chatObj[chatId]) {
@@ -151,6 +154,7 @@ export default {
       this.chatId = chatId
       this.isStartChat = true
       this.initChatWebSocket()
+      // loading.close()
     },
     initChatWebSocket() {
       if (!this.chatWs) {
@@ -206,6 +210,11 @@ export default {
   width: calc(100% - 40px);
   background-color: #fff;
   padding: 30px 20px;
+
+  .inner-chat-box {
+    height: 100%;
+    width: 100%;
+  }
 
   .title {
     color: #939395;

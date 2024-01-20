@@ -1,6 +1,6 @@
 <template>
   <div class="table-list">
-    <one-mark text="接続コンソール" style="margin-top: 10px" />
+    <one-mark text="风灵月影的魔法" style="margin-top: 10px" />
     <p class="title">数据表</p>
     <div class="table-list-box">
       <!-- <div v-for="(table, index) in tableList" :key="index" class="table-box">
@@ -84,9 +84,12 @@ export default {
   methods: {
     async selectTable(tableName) {
       if (!Object.keys(this.tableColumn).includes(tableName)) {
-        const resp = await this.getRequest("database/get_table_column", {
-          table_name: tableName,
-        })
+        const resp = await this.getRequest(
+          `${this.$root.prefix}/database/get_table_column`,
+          {
+            table_name: tableName,
+          }
+        )
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)
@@ -107,18 +110,22 @@ export default {
       this.$forceUpdate()
     },
     getTableList() {
-      this.getRequest("database/get_table_list").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      const loading = this.getLoading(".table-list-box")
+      this.getRequest(`${this.$root.prefix}/database/get_table_list`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              this.tableList = resp.data
+            }
           } else {
-            this.$message.success(resp.info)
-            this.tableList = resp.data
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
+          loading.close()
         }
-      })
+      )
     },
   },
 }

@@ -8,6 +8,7 @@ import * as echarts from "echarts"
 import "default-passive-events" //处理ele-ui警告
 import "./assets/icons/index"
 import { message } from "@/utils/message"
+import { loading } from "@/utils/loading"
 import { postRequest, putRequest, getRequest, deleteRequest } from "@/utils/api"
 
 Vue.use(ElementUI)
@@ -19,9 +20,13 @@ Vue.prototype.getRequest = getRequest
 Vue.prototype.deleteRequest = deleteRequest
 Vue.prototype.$echarts = echarts
 Vue.prototype.$message = message
+Vue.prototype.getLoading = loading
 
 new Vue({
   router,
   store,
+  data: {
+    prefix: "/zhenxun/api",
+  },
   render: (h) => h(App),
 }).$mount("#app")

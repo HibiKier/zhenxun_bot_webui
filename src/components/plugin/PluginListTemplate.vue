@@ -105,7 +105,8 @@ export default {
   },
   methods: {
     getPluginList() {
-      this.getRequest("plugin/get_plugin_list", {
+      const loading = this.getLoading(".list-box")
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
         plugin_type: [this.pluginType],
         menu_type: this.menuType,
       }).then((resp) => {
@@ -119,10 +120,11 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
     changeSwitch(data) {
-      this.postRequest("plugin/change_switch", {
+      this.postRequest(`${this.$root.prefix}/plugin/change_switch`, {
         module: data.module,
         status: !data.status,
       }).then((resp) => {

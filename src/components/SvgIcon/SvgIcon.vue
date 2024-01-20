@@ -3,8 +3,8 @@
     <use :xlink:href="iconName" />
   </svg>
 </template>
-  
-  <script>
+
+<script>
 export default {
   name: "SvgIcon",
   props: {
@@ -15,12 +15,12 @@ export default {
   },
   computed: {
     iconName() {
-      return "#icon-" + this.iconClass;
+      return "#icon-" + this.iconClass
     },
   },
-};
+}
 </script>
-  
+
 <style>
 .svg-icon {
   width: 1em;

@@ -135,6 +135,7 @@ export default {
       botList: [],
       botInfo: {},
       curSelectMenu: null,
+      firstLoad: true,
     }
   },
   created() {
@@ -158,7 +159,9 @@ export default {
       this.coverShow = !this.coverShow
     },
     async getBotInfo(bot_id) {
-      this.getRequest("main/get_base_info", { bot_id }).then((resp) => {
+      this.getRequest(`${this.$root.prefix}/main/get_base_info`, {
+        bot_id,
+      }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.warning)
@@ -174,6 +177,11 @@ export default {
             }
           }
           if (["/command", "/manage"].includes(this.$route.path)) {
+            if (this.$route.path == "/command" && !this.firstLoad) {
+              this.firstLoad = false
+              return
+            }
+            // this.firstLoad = false
             this.rvKey++
           }
           this.curSelectMenu = this.$route.path.substring(

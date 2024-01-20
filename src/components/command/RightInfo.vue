@@ -207,7 +207,10 @@ export default {
       this.getActiveGroupData(type)
     },
     getActiveGroupData(date_type) {
-      this.getRequest("main/get_active_group", { date_type }).then((resp) => {
+      const loading = this.getLoading(".active-group")
+      this.getRequest(`${this.$root.prefix}/main/get_active_group`, {
+        date_type,
+      }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.info)
@@ -230,6 +233,7 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
     clickHotPluginType(type) {
@@ -240,7 +244,10 @@ export default {
       this.getHotPlugin(type)
     },
     getHotPlugin(date_type) {
-      this.getRequest("main/get_hot_plugin", { date_type }).then((resp) => {
+      const loading = this.getLoading(".hot-plugin")
+      this.getRequest(`${this.$root.prefix}/main/get_hot_plugin`, {
+        date_type,
+      }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
             this.$message.warning(resp.info)
@@ -263,6 +270,7 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
   },
@@ -326,7 +334,7 @@ export default {
   }
   .base-chart {
     width: 100%;
-    height: 600px;
+    height: 360px;
   }
 
   .active-group {

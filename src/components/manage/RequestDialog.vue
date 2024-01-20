@@ -93,7 +93,8 @@ export default {
   },
   methods: {
     approve(data) {
-      this.postRequest("manage/approve_request", {
+      const loading = this.getLoading(".el-dialog")
+      this.postRequest(`${this.$root.prefix}/manage/approve_request`, {
         bot_id: data.bot_id,
         request_type: data.type,
         flag: data.flag,
@@ -107,11 +108,13 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
         this.getReqList()
       })
     },
     refuse(data) {
-      this.postRequest("manage/refuse_request", {
+      const loading = this.getLoading(".el-dialog")
+      this.postRequest(`${this.$root.prefix}/manage/refuse_request`, {
         bot_id: data.bot_id,
         request_type: data.type,
         flag: data.flag,
@@ -125,11 +128,13 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
         this.getReqList()
       })
     },
     deleteReq(data) {
-      this.postRequest("manage/delete_request", {
+      const loading = this.getLoading(".el-dialog")
+      this.postRequest(`${this.$root.prefix}/manage/delete_request`, {
         request_type: data.type,
         flag: data.flag,
       }).then((resp) => {
@@ -142,22 +147,27 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
         this.getReqList()
       })
     },
     getReqList() {
-      this.getRequest("manage/get_request_list").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      const loading = this.getLoading(".el-dialog")
+      this.getRequest(`${this.$root.prefix}/manage/get_request_list`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              this.dataObj = resp.data
+            }
           } else {
-            this.$message.success(resp.info)
-            this.dataObj = resp.data
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
+          loading.close()
         }
-      })
+      )
     },
     close() {
       this.$emit("close")

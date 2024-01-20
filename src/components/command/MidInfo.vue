@@ -180,7 +180,11 @@ export default {
     getChCount(bot_id) {
       // 获取聊天历史记录数量
       if (bot_id) {
-        this.getRequest("main/get_all_ch_count", { bot_id }).then((resp) => {
+        const loading = this.getLoading(".ch-count")
+
+        this.getRequest(`${this.$root.prefix}/main/get_all_ch_count`, {
+          bot_id,
+        }).then((resp) => {
           if (resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)
@@ -191,11 +195,13 @@ export default {
           } else {
             this.$message.error(resp.info)
           }
+          loading.close()
         })
       }
     },
     initLogWebSocket() {
       if (!this.logWs) {
+        const loading = this.getLoading(".center-log")
         this.logWs = new WebSocket(this.LOG_WS_URL)
         this.logWs.onopen = () => {
           console.log("Log WebSocket 已连接...")
@@ -204,6 +210,7 @@ export default {
         this.logWs.onclose = () => {
           this.$message.warning("Log WebSocket 已断开...")
         }
+        loading.close()
       }
     },
     logWsOnmessage(event) {

@@ -109,18 +109,20 @@ export default {
       }
     },
     getRequestCount() {
-      this.getRequest("manage/get_request_count").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      this.getRequest(`${this.$root.prefix}/manage/get_request_count`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              this.requestCount = resp.data.friend_count + resp.data.group_count
+            }
           } else {
-            this.$message.success(resp.info)
-            this.requestCount = resp.data.friend_count + resp.data.group_count
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
         }
-      })
+      )
     },
     deleteHandle(id) {
       this.$confirm("确认删除/退出?", "提示", {
@@ -138,7 +140,7 @@ export default {
           url = "leave_group"
           data = { bot_id: this.botInfo.self_id, group_id: id }
         }
-        this.postRequest(url, data).then((resp) => {
+        this.postRequest(`${this.$root.prefix}/${url}`, data).then((resp) => {
           if (resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)
@@ -168,7 +170,8 @@ export default {
     },
     getGroupList() {
       // 获取群组列表
-      this.getRequest("manage/get_group_list", {
+      const loading = this.getLoading(".data-list-border")
+      this.getRequest(`${this.$root.prefix}/manage/get_group_list`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
         if (resp.suc) {
@@ -183,12 +186,14 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
     getFriendList() {
       // 获取好友列表
+      const loading = this.getLoading(".data-list-border")
       // [ { user_id: "66600000", nickname: "babyQ", remark: "babyQ" }]
-      this.getRequest("manage/get_friend_list", {
+      this.getRequest(`${this.$root.prefix}/manage/get_friend_list`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
         if (resp.suc) {
@@ -203,6 +208,7 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
   },
@@ -215,7 +221,7 @@ export default {
   padding: 50px 30px 10px 30px;
   // overflow: auto;
   // width: 100%;
-  // height: 100%;
+  height: calc(100% - 130px);
   position: relative;
 
   .request {
@@ -264,6 +270,7 @@ export default {
 
   .data-list-border {
     margin-top: 80px;
+    height: 100%;
     // border: #4d7cfe solid 1px;
     // border-radius: 5px;
 

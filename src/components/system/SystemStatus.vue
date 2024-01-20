@@ -92,6 +92,7 @@ export default {
     },
     initSystemStatusWebSocket() {
       if (!this.statusWs) {
+        const loading = this.getLoading(".system-status")
         this.statusWs = new WebSocket(this.STATUS_WS_URL + "?sleep=3")
         this.statusWs.onopen = () => {
           console.log("系统状态 WebSocket 已连接...")
@@ -100,6 +101,7 @@ export default {
         this.statusWs.onclose = () => {
           this.$message.warning("系统状态 WebSocket 已断开...")
         }
+        loading.close()
       }
     },
     statusWsOnmessage(event) {

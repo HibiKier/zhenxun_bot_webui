@@ -119,7 +119,7 @@ export default {
         if (valid) {
           this.loading = true
           this.postRequest(
-            "login",
+            `${this.$root.prefix}/login`,
             qs.stringify({
               username: this.loginForm.username,
               password: this.loginForm.password,

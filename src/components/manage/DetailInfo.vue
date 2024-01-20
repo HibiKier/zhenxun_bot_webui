@@ -237,7 +237,7 @@ export default {
   },
   methods: {
     getAllPluginList() {
-      this.getRequest("plugin/get_plugin_list", {
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
         plugin_type: ["normal", "admin"],
       }).then((resp) => {
         if (resp.suc) {
@@ -260,21 +260,26 @@ export default {
         task: this.data.task_status,
         close_plugins: this.data.plugin_status,
       }
-      this.postRequest("manage/update_group", data).then((resp) => {
-        if (resp) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      const loading = this.getLoading(".detail-info")
+      this.postRequest(`${this.$root.prefix}/manage/update_group`, data).then(
+        (resp) => {
+          if (resp) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              this.getGroup(data.group_id)
+            }
           } else {
-            this.$message.success(resp.info)
-            this.getGroup(data.group_id)
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
+          loading.close()
         }
-      })
+      )
     },
     getFriend(user_id) {
-      this.getRequest("manage/get_friend_detail", {
+      const loading = this.getLoading(".detail-info")
+      this.getRequest(`${this.$root.prefix}/manage/get_friend_detail`, {
         bot_id: this.botId,
         user_id: user_id,
       }).then((resp) => {
@@ -311,13 +316,15 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
     async getGroup(group_id) {
       if (!this.allPluginList.length) {
         await this.getAllPluginList()
       }
-      this.getRequest("manage/get_group_detail", {
+      const loading = this.getLoading(".detail-info")
+      this.getRequest(`${this.$root.prefix}/manage/get_group_detail`, {
         bot_id: this.botId,
         group_id: group_id,
       }).then((resp) => {
@@ -380,6 +387,7 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
   },

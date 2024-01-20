@@ -94,30 +94,34 @@ export default {
       this.pltKey++
     },
     getPluginCount() {
-      this.getRequest("plugin/get_plugin_count").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_count`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.pluginCount = resp.data
+            }
           } else {
-            this.pluginCount = resp.data
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
         }
-      })
+      )
     },
     getPluginMenuType() {
-      this.getRequest("plugin/get_plugin_menu_type").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_menu_type`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.menuTypeList = resp.data
+            }
           } else {
-            this.menuTypeList = resp.data
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
         }
-      })
+      )
     },
     selectMenuType() {
       this.pltKey++
@@ -133,8 +137,8 @@ export default {
 
 .base-box {
   padding: 50px;
-  // width: 100%;
-  // height: 100%;
+  width: calc(100% - 100px);
+  height: calc(100% - 210px);
 
   .top-select {
     width: 100%;

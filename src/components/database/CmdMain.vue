@@ -137,18 +137,20 @@ export default {
   },
   methods: {
     getCommonSql() {
-      this.getRequest("database/get_common_sql").then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      this.getRequest(`${this.$root.prefix}/database/get_common_sql`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              this.commonSqlList = resp.data
+            }
           } else {
-            this.$message.success(resp.info)
-            this.commonSqlList = resp.data
+            this.$message.error(resp.info)
           }
-        } else {
-          this.$message.error(resp.info)
         }
-      })
+      )
     },
     copyHistory(n) {
       this.$message.success("复制成功")
@@ -161,8 +163,9 @@ export default {
       if (!this.sqlMessage || !this.sqlMessage.trim()) {
         return
       }
+      const loading = this.getLoading(".result-box")
       // 执行sql
-      this.postRequest("database/exec_sql", {
+      this.postRequest(`${this.$root.prefix}/database/exec_sql`, {
         sql: this.sqlMessage,
       }).then((resp) => {
         if (resp.suc) {
@@ -186,11 +189,13 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
     getSqlLog() {
       // 获取sql日志
-      this.postRequest("database/get_sql_log", {
+      const loading = this.getLoading(".history")
+      this.postRequest(`${this.$root.prefix}/database/get_sql_log`, {
         index: this.historyIndex,
         size: 7,
       }).then((resp) => {
@@ -206,6 +211,7 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
+        loading.close()
       })
     },
   },

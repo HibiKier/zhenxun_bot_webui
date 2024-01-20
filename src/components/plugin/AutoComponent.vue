@@ -99,8 +99,6 @@ export default {
     }
   },
   created() {
-    console.log("tttt", this.value, this.type, this.typeInner)
-
     this.formObj.myValue = this.value
   },
   methods: {

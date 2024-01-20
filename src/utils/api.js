@@ -8,7 +8,6 @@ axios.interceptors.request.use(
     if (getCookie("tokenStr")) {
       //请求携带自定义token
       config.headers["Authorization"] = getCookie("tokenStr")
-      config.url = "/zhenxun/api/" + config.url
     }
     return config
   },
