@@ -15,6 +15,77 @@
     </div>
     <div class="main-tree">
       <p class="tree-title">目录结构树</p>
+      <div class="btn-group">
+        <my-button
+          icon="add-file"
+          class="btn"
+          :width="40"
+          :height="32"
+          content="添加文件"
+          @click="clickRootAddFile"
+        />
+        <my-button
+          icon="add-folder"
+          content="添加文件夹"
+          class="btn"
+          :width="40"
+          :height="32"
+          @click="clickRootAddFolder"
+        />
+        <my-button
+          icon="refresh"
+          content="刷新"
+          class="btn"
+          :width="40"
+          :height="32"
+          @click="treeKey++"
+        />
+      </div>
+      <one-mark
+        :showDivider="false"
+        text="这是一个标记的魔法"
+        style="height: 42px"
+        v-if="!showAddFile && !showAddFolder"
+      />
+      <div class="rename-input" v-if="showAddFile">
+        <el-input v-model="addFileName" placeholder="请输入文件名称"></el-input
+        ><my-button
+          text="确定"
+          :height="30"
+          :width="50"
+          @click="addFile({ createName: addFileName })"
+        />
+        <my-button
+          text="取消"
+          :height="30"
+          :width="50"
+          @click="
+            showAddFile = false
+            addFileName = ''
+          "
+        />
+      </div>
+      <div class="rename-input" v-if="showAddFolder">
+        <el-input
+          v-model="addFileName"
+          placeholder="请输入文件夹名称"
+        ></el-input
+        ><my-button
+          text="确定"
+          :height="30"
+          :width="50"
+          @click="addFolder({ createFolderName: addFileName })"
+        />
+        <my-button
+          text="取消"
+          :height="30"
+          :width="50"
+          @click="
+            showAddFolder = false
+            addFileName = ''
+          "
+        />
+      </div>
       <el-tree
         ref="tree"
         :data="treeData"
@@ -37,9 +108,16 @@
             />{{ node.label }}</span
           >
           <span>
-            <el-popover placement="right" width="100" trigger="click">
+            <el-popover
+              placement="right"
+              width="100"
+              trigger="click"
+              :ref="`popover-${data.full_path}`"
+              @hide="hidePopover(data)"
+            >
               <template v-if="data.is_file">
-                <p class="pop-select">查看</p>
+                <p class="pop-select" @click="editCode(data, true)">查看</p>
+                <p class="pop-select" @click="editCode(data, false)">编辑</p>
                 <p class="pop-select" @click="showRename(data)">重命名</p>
                 <div class="rename-input" v-if="data.showRename">
                   <el-input v-model="data.rename"></el-input
@@ -69,6 +147,18 @@
                     @click="addFile(data)"
                   />
                 </div>
+                <p class="pop-select" @click="showCreateFolder(data)">
+                  新建文件夹
+                </p>
+                <div class="rename-input" v-if="data.showCreateFolder">
+                  <el-input v-model="data.createFolderName"></el-input
+                  ><my-button
+                    text="确定"
+                    :height="30"
+                    :width="50"
+                    @click="addFolder(data)"
+                  />
+                </div>
                 <p class="pop-select" @click="showRename(data)">重命名</p>
                 <div class="rename-input" v-if="data.showRename">
                   <el-input v-model="data.rename"></el-input
@@ -89,6 +179,7 @@
               </template>
               <svg-icon
                 :iconClass="data.is_file ? 'file-settings' : 'folder-settings'"
+                @click.native.stop="clickPopover"
                 slot="reference"
               />
             </el-popover>
@@ -96,6 +187,17 @@
         </span>
       </el-tree>
     </div>
+    <edit-file
+      v-if="editVisible"
+      @close="
+        editVisible = false
+        codeFullPath = ''
+        codeFileName = ''
+      "
+      :name="codeFileName"
+      :fullPath="codeFullPath"
+      :onlyRead="onlyRead"
+    />
   </div>
 </template>
 
@@ -104,16 +206,24 @@ import SvgIcon from "../SvgIcon/SvgIcon.vue"
 import MyButton from "../ui/MyButton.vue"
 // import { v4 } from "uuid"
 import OneMark from "../ui/OneMark.vue"
+import EditFile from "./EditFile.vue"
 export default {
-  components: { OneMark, SvgIcon, MyButton },
+  components: { OneMark, SvgIcon, MyButton, EditFile },
   name: "DirTree",
   data() {
     return {
+      codeFullPath: "",
+      codeFileName: "",
+      onlyRead: false,
       defaultExpandedKeys: [],
       treeData: [],
       resourcesChart: null,
+      editVisible: false,
       treeKey: 0,
       vscodeIcons: [],
+      showAddFile: false,
+      showAddFolder: false,
+      addFileName: "",
       pathList: ["/"],
       props: {
         label: "name",
@@ -159,13 +269,49 @@ export default {
     this.getResourcesSize()
   },
   methods: {
+    editCode(data, onlyRead) {
+      this.codeFullPath = data.full_path
+      this.codeFileName = data.name
+      this.onlyRead = onlyRead
+      this.editVisible = true
+    },
+    hidePopover(data) {
+      data.createName = ""
+      data.createFolderName = ""
+      data.rename = ""
+      data.showRename = false
+      data.showCreate = false
+      data.showCreateFolder = false
+    },
+    clickRootAddFile() {
+      this.showAddFolder = false
+      this.showAddFile = !this.showAddFile
+    },
+    clickRootAddFolder() {
+      this.showAddFile = false
+      this.showAddFolder = !this.showAddFolder
+    },
+    clickPopover() {
+      for (const key in this.$refs) {
+        if (key.indexOf("popover-") !== -1 && this.$refs[key]) {
+          this.$refs[key].doClose()
+        }
+      }
+    },
     showRename(data) {
+      data.showCreateFolder = false
       data.showCreate = false
       data.showRename = !data.showRename
     },
     showCreate(data) {
+      data.showCreateFolder = false
       data.showRename = false
       data.showCreate = !data.showCreate
+    },
+    showCreateFolder(data) {
+      data.showRename = false
+      data.showCreate = false
+      data.showCreateFolder = !data.showCreateFolder
     },
     // 刷新树节点
     refreshNode(key) {
@@ -186,9 +332,36 @@ export default {
         this.defaultExpandedKeys.splice(index, 1)
       }
     },
+    addFolder(data) {
+      if (!data.createFolderName || !data.createFolderName.trim()) {
+        return
+      }
+      const loading = this.getLoading(".main-tree")
+      this.postRequest(`${this.$root.prefix}/system/add_folder`, {
+        parent: data.full_path,
+        name: data.createFolderName,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        this.refreshNode(data.parent)
+        loading.close()
+      })
+      this.addFileName = ""
+      this.showAddFolder = false
+      data.createName = ""
+      data.showCreate = false
+    },
     addFile(data) {
-      console.log("data", data)
-
+      if (!data.createName || !data.createName.trim()) {
+        return
+      }
       const loading = this.getLoading(".main-tree")
       this.postRequest(`${this.$root.prefix}/system/add_file`, {
         parent: data.full_path,
@@ -208,6 +381,8 @@ export default {
       })
       data.createName = ""
       data.showCreate = false
+      this.showAddFile = false
+      this.addFileName = ""
     },
     deleteFolder(data) {
       this.$confirm("确认删除文件夹吗?", "提示", {
@@ -403,6 +578,10 @@ export default {
           ...e,
           showRename: false,
           showCreate: false,
+          showCreateFolder: false,
+          rename: "",
+          createName: "",
+          createFolderName: "",
           full_path: e.parent ? `${e.parent}/${e.name}` : e.name,
         }
       })
@@ -416,7 +595,7 @@ export default {
 <style lang="scss" scoped>
 .pop-select {
   cursor: pointer;
-  margin-bottom: 5px;
+  padding: 6px;
 }
 
 .pop-select:hover {
@@ -474,13 +653,24 @@ export default {
     }
   }
   .main-tree {
-    height: calc(100% - 120px);
+    height: calc(100% - 110px);
     width: calc(30% - 60px);
     padding: 30px;
     // border: 1px solid #d3d3d4;
     border-radius: 10px;
     margin-top: 20px;
     background-color: #fff;
+
+    .btn-group {
+      display: flex;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #dcdfe6;
+      border-radius: 5px;
+      padding-bottom: 5px;
+      .btn {
+        margin-right: 5px;
+      }
+    }
 
     .tree-title {
       // color: #939395;
@@ -502,7 +692,7 @@ export default {
       padding-right: 8px;
     }
     .tree-class {
-      height: calc(100% - 50px);
+      height: calc(100% - 125px);
       overflow: auto;
       border-radius: 5px;
       // border: 1px solid #d3d3d4;

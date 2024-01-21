@@ -7,6 +7,7 @@ import "element-ui/lib/theme-chalk/index.css"
 import * as echarts from "echarts"
 import "default-passive-events" //处理ele-ui警告
 import "./assets/icons/index"
+import "./assets/css/global.css"
 import { message } from "@/utils/message"
 import { loading } from "@/utils/loading"
 import { postRequest, putRequest, getRequest, deleteRequest } from "@/utils/api"

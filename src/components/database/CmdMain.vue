@@ -2,7 +2,7 @@
   <div class="cmd-main">
     <div class="btn-group">
       <my-button
-        icon="play-black"
+        icon="play"
         class="btn"
         :width="40"
         :height="32"
@@ -10,7 +10,7 @@
         content="执行"
       />
       <my-button
-        icon="delete-black"
+        icon="delete"
         content="删除"
         class="btn"
         :width="40"
@@ -39,7 +39,7 @@
         </div>
         <my-button
           slot="reference"
-          icon="notebook-black"
+          icon="notebook"
           class="btn"
           :width="40"
           :height="32"

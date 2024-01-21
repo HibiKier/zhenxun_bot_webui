@@ -182,6 +182,7 @@ export default {
           e.width = img.width
           e.height = img.height
         }
+        e.msg = e.msg.replace("&#91;", "[").replace("&#93;", "]")
       }
       if (Object.keys(this.chatObj).includes(data.object_id)) {
         this.chatObj[data.object_id].push(data)
