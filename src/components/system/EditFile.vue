@@ -10,7 +10,7 @@
     <div>
       <div class="btn-group" v-if="!onlyRead">
         <span style="display: flex">
-          <my-button text="保存" style="margin-right: 10px" />
+          <my-button text="保存" style="margin-right: 10px" @click="saveFile" />
           <my-button
             text="清空"
             @click="clearFile"
@@ -27,7 +27,7 @@
       <code-editor
         ref="codeEditor"
         :key="codeKey"
-        :value="text"
+        v-model="text"
         :language="language"
         class="code-edit"
         :onlyRead="onlyRead"
@@ -93,8 +93,27 @@ export default {
       this.codeKey++
       this.$message.success("清空成功!")
     },
+    saveFile() {
+      const loading = this.getLoading(".CodeMirror")
+      this.postRequest(`${this.$root.prefix}/system/save_file`, {
+        full_path: this.fullPath,
+        content: this.text,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
+    },
     readFile() {
       const loading = this.getLoading(".CodeMirror")
+
       this.getRequest(`${this.$root.prefix}/system/read_file`, {
         full_path: this.fullPath,
       }).then((resp) => {
