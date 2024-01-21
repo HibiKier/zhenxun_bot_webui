@@ -177,12 +177,12 @@ export default {
             }
           }
           if (["/command", "/manage"].includes(this.$route.path)) {
-            if (this.$route.path == "/command" && !this.firstLoad) {
+            if (this.$route.path == "/command" && this.firstLoad) {
               this.firstLoad = false
-              return
+            } else {
+              // this.firstLoad = false
+              this.rvKey++
             }
-            // this.firstLoad = false
-            this.rvKey++
           }
           this.curSelectMenu = this.$route.path.substring(
             1,

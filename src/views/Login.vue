@@ -126,18 +126,25 @@ export default {
             }),
             { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
           ).then((resp) => {
-            if (resp) {
-              const tokenStr =
-                resp.data.token_type + " " + resp.data.access_token
-              if (getCookie) {
-                clearCookie("tokenStr")
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning(resp.warning)
+              } else {
+                this.$message.success(resp.info)
+                const tokenStr =
+                  resp.data.token_type + " " + resp.data.access_token
+                if (getCookie) {
+                  clearCookie("tokenStr")
+                }
+                setCookie("tokenStr", tokenStr)
+                // // 页面跳转
+                let path = this.$route.query.redirect
+                this.$router.replace(
+                  path == "/" || path == undefined ? "/home" : path
+                )
               }
-              setCookie("tokenStr", tokenStr)
-              // // 页面跳转
-              let path = this.$route.query.redirect
-              this.$router.replace(
-                path == "/" || path == undefined ? "/home" : path
-              )
+            } else {
+              this.$message.error(resp.info)
             }
           })
         } else {
