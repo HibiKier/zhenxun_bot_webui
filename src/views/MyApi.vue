@@ -4,9 +4,9 @@
       <div class="bg-cover">
         <div class="api-box">
           <div class="api-title" :class="{ rightshow: rightshow }">
-            <span>真寻的api地址</span>
+            <span>端口</span>
           </div>
-          <div class="api-input">
+          <!-- <div class="api-input">
             <input
               v-model.trim="apiurl"
               @focus="inpOnfocus"
@@ -15,18 +15,28 @@
               placeholder="api地址 ip:port"
               spellcheck="false"
             />
+          </div> -->
+          <div class="api-input">
+            <input
+              v-model.trim="port"
+              @focus="inpOnfocus"
+              @blur="inpOnBlur"
+              type="text"
+              placeholder="端口"
+              spellcheck="false"
+            />
           </div>
           <div class="tips">
             <p>注意事项：</p>
             <p>①开发环境中修改api地址一样生效，即覆盖代理服务器的转发</p>
-            <p>
+            <!-- <p>
               ②如果生产环境部署的资源和真寻本体<ins><b>在</b></ins
               >同一个机器上，则输入空。如果修改过真寻的默认端口，则输入<ins
                 ><b>“http://localhost:你的真寻端口”</b></ins
               >
-            </p>
+            </p> -->
             <p>
-              ③如果生产环境部署的资源和真寻本体<ins><b>不在</b></ins
+              ②如果生产环境部署的资源和真寻本体<ins><b>不在</b></ins
               >同一个机器上，则输入你的服务器接口地址以及真寻的端口。最后记得修改防火墙设置哦
             </p>
           </div>
@@ -43,7 +53,7 @@
 </template>
 
 <script>
-import { getBase, setBase } from "@/utils/api"
+import { getBase, getPort, setPort } from "@/utils/api"
 import { Rain } from "@/assets/js/rain"
 
 export default {
@@ -62,6 +72,7 @@ export default {
   },
   data() {
     return {
+      port: getPort(),
       rainClass: null,
       rightshow: false,
       apiurl: getBase(),
@@ -93,7 +104,8 @@ export default {
       this.$refs.myapi.appendChild(span)
       setTimeout(() => {
         span.remove()
-        setBase(this.apiurl)
+        // setBase(this.apiurl)
+        setPort(this.port)
         this.$router.replace("/")
       }, 500)
     },

@@ -60,6 +60,14 @@ axios.interceptors.response.use(
 
 let base = ""
 
+export const setPort = (port) => {
+  localStorage.setItem("port", port)
+}
+
+export const getPort = () => {
+  return localStorage.getItem("port")
+}
+
 export const setBase = (url) => {
   if (url[url.length - 1] == "/" || url[url.length - 1] == "\\") {
     url = url.slice(0, -1)

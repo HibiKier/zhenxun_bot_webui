@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { getPort } from "@/utils/api"
 export default {
   name: "SystemStatus",
   data() {
@@ -70,7 +71,8 @@ export default {
   },
   mounted() {
     const host = location.host.split(":")[0] || ""
-    this.STATUS_WS_URL = `ws://${host}:8080/zhenxun/socket/system_status` // 系统状态ws
+    const port = getPort() || "8080"
+    this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
     this.cpuChart = this.$echarts.init(this.$refs.cpuChart)
     this.memoryChart = this.$echarts.init(this.$refs.memoryChart)
     this.diskChart = this.$echarts.init(this.$refs.diskChart)

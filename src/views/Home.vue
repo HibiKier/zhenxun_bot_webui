@@ -82,7 +82,7 @@
         <el-header class="homeHeader">
           <!-- <div class="title">小真寻的小房间</div> -->
           <router-link class="to-myapi" :to="{ name: 'MyApi' }"
-            >修改api地址</router-link
+            >端口设置</router-link
           >
           <div class="menu-btn" @click="showMenu">
             <div class="btn-logo" :class="{ show: asideShow }"></div>

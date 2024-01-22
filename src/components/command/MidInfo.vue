@@ -128,6 +128,7 @@
 
 <script>
 import { default as AnsiUp } from "ansi_up"
+import { getPort } from "@/utils/api"
 export default {
   name: "MidInfo",
   data() {
@@ -147,9 +148,10 @@ export default {
   },
   created() {
     const host = location.host.split(":")[0] || ""
+    const port = getPort() || "8080"
     this.botInfo = this.$store.state.botInfo || {}
-    this.STATUS_WS_URL = `ws://${host}:8080/zhenxun/socket/system_status` // 系统状态ws
-    this.LOG_WS_URL = `ws://${host}:8080/zhenxun/socket/logs` // 日志ws
+    this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
+    this.LOG_WS_URL = `ws://${host}:${port}/zhenxun/socket/logs` // 日志ws
   },
   mounted() {
     this.clgDiv = document.getElementById("clg")

@@ -64,6 +64,7 @@
 
 <script>
 import MyButton from "../ui/MyButton.vue"
+import { getPort } from "@/utils/api"
 
 export default {
   name: "ChatWindow",
@@ -85,7 +86,8 @@ export default {
   },
   mounted() {
     const host = location.host.split(":")[0] || ""
-    this.CHAT_WS_URL = `ws://${host}:8080/zhenxun/socket/chat` // 日志ws
+    const port = getPort() || "8080"
+    this.CHAT_WS_URL = `ws://${host}:${port}/zhenxun/socket/chat` // 日志ws
   },
   beforeDestroy() {
     this.destroyWebsocket()
