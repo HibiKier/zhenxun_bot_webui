@@ -47,21 +47,25 @@ export default {
   background-color: #f4f5fa;
   height: 100%;
   width: 17%;
+  min-width: 367px;
 }
 
 .main-info {
   height: 100%;
   width: 62%;
+  min-width: 1080px;
 }
 
 .test {
   ::v-deep .el-divider--vertical {
     height: 100%;
     margin-left: 40px;
+    height: c;
   }
 }
 
 .config-info {
   height: 100%;
+  min-width: 501px;
 }
 </style>

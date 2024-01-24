@@ -148,7 +148,7 @@ export default {
   },
   created() {
     const host = location.host.split(":")[0] || ""
-    const port = getPort() || "8080"
+    const port = getPort() || window.location.port
     this.botInfo = this.$store.state.botInfo || {}
     this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
     this.LOG_WS_URL = `ws://${host}:${port}/zhenxun/socket/logs` // 日志ws
@@ -331,7 +331,7 @@ export default {
 
   .title-box {
     margin-top: 5px;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     display: flex;
 
     .title-text {

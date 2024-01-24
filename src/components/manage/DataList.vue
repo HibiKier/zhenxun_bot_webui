@@ -126,10 +126,10 @@ export default {
     },
     deleteHandle(id) {
       this.$confirm("确认删除/退出?", "提示", {
-        confirmButtonText: "确认", //确认按钮文字更换
-        cancelButtonText: "取消", //取消按钮文字更换
-        showClose: true, //是否显示右上角关闭按钮
-        type: "warning", //提示类型  success/info/warning/error
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        showClose: true,
+        type: "warning",
       }).then(() => {
         let url = null
         let data = null

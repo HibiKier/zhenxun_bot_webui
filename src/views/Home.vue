@@ -115,7 +115,7 @@
             <el-image :src="botInfo.ava_url" class="head-img" />
           </div>
         </el-header>
-        <el-main style="padding: 0px"
+        <el-main class="my-main"
           ><router-view class="homeRouterView" :key="rvKey"
         /></el-main>
       </el-container>
@@ -171,7 +171,7 @@ export default {
             for (const bot of this.botList) {
               if (bot.is_select) {
                 this.botInfo = bot
-                this.$store.commit("setBot", bot)
+                this.$store.commit("SET_BOT", bot)
                 break
               }
             }
@@ -198,6 +198,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.my-main {
+  padding: 0px;
+  min-width: 2336px;
+  min-height: 1167px;
+}
 .el-menu-item {
   span {
     margin-left: 10px;

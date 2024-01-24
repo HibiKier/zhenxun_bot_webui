@@ -334,7 +334,7 @@ export default {
   }
   .base-chart {
     width: 100%;
-    height: 360px;
+    height: 350px;
   }
 
   .active-group {

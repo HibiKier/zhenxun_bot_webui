@@ -2,11 +2,16 @@
   <div class="chat-window">
     <meta name="referrer" content="never" />
     <div class="inner-chat-box" v-if="isStartChat">
-      <p class="title">{{ chatInfo.name }}</p>
+      <div class="top-box">
+        <p class="title">{{ chatInfo.name }}</p>
+        <div class="btn-group">
+          <my-button text="清空记录" @click="clearMessage" :width="110" />
+        </div>
+      </div>
       <el-divider />
       <div class="chat-area" id="chat" :key="reloadKey">
         <div
-          v-for="(data, index) in chatObj[chatId]"
+          v-for="(data, index) in $store.state.chatObj[chatId]"
           :key="index"
           class="msg-item"
         >
@@ -85,69 +90,36 @@ export default {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    const host = location.host.split(":")[0] || ""
-    const port = getPort() || "8080"
-    this.CHAT_WS_URL = `ws://${host}:${port}/zhenxun/socket/chat` // 日志ws
+    this.$chatWebSocket.initWebSocket()
   },
   beforeDestroy() {
-    this.destroyWebsocket()
+    // this.$chatWebSocket.destroyWebsocket()
   },
   methods: {
-    getImageSize(imageUrl) {
-      return new Promise((resolve, reject) => {
-        const img = new Image()
-        // 设置加载完成后的处理函数
-        img.onload = function () {
-          resolve({ width: this.width, height: this.height })
-        }
-        // 设置加载失败时的错误处理函数
-        img.onerror = function () {
-          reject("Failed to load image")
-        }
-        // 开始加载图像
-        img.src = imageUrl
-      })
-    },
-    sendMessage() {
+    async sendMessage() {
       if (!this.message) {
         return
       }
       const loading = this.getLoading(".el-textarea")
-      this.postRequest(`${this.$root.prefix}/manage/send_message`, {
-        bot_id: this.botInfo.self_id,
-        group_id: this.chatInfo.group_id,
-        user_id: this.chatInfo.user_id,
-        message: this.message,
-      }).then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-            // if (!this.chatInfo.group_id && this.chatInfo.user_id) {
-            this.chatObj[this.chatId].push({
-              user_id: this.chatInfo.user_id,
-              message: [{ type: "text", msg: this.message }],
-              name: this.botInfo.name,
-              ava_url: `http://q1.qlogo.cn/g?b=qq&nk=${this.botInfo.self_id}&s=160`,
-            })
-            // }
-            this.message = ""
-            this.reloadKey++
-            this.$nextTick(() => {
-              var divElement = document.getElementById("chat")
-              divElement.scrollTop = divElement.scrollHeight
-            })
-            console.log("this.chatObj", this.chatObj)
-          }
-        } else {
-          this.$message.error(resp.info)
-        }
-        loading.close()
-      })
+
+      this.$chatWebSocket
+        .sendMessage(
+          this.botInfo,
+          this.chatInfo.group_id,
+          this.chatInfo.user_id,
+          this.message
+        )
+        .then((resp) => {
+          this.message = ""
+          this.reloadKey++
+          this.$nextTick(() => {
+            var divElement = document.getElementById("chat")
+            divElement.scrollTop = divElement.scrollHeight
+          })
+          loading.close()
+        })
     },
     startChat(data) {
-      // const loading = this.getLoading(".chat-window")
       this.chatInfo = data
       const chatId = data.group_id || data.user_id
       if (!this.chatObj[chatId]) {
@@ -155,53 +127,21 @@ export default {
       }
       this.chatId = chatId
       this.isStartChat = true
-      this.initChatWebSocket()
-      // loading.close()
-    },
-    initChatWebSocket() {
-      if (!this.chatWs) {
-        this.chatWs = new WebSocket(this.CHAT_WS_URL)
-        this.chatWs.onopen = () => {
-          console.log("chat WebSocket 已连接...")
-        }
-        this.chatWs.onmessage = this.chatWsOnmessage
-        this.chatWs.onclose = () => {
-          this.$message.warning("chat WebSocket 已断开...")
-        }
-      }
-    },
-    async chatWsOnmessage(event) {
-      const data = JSON.parse(event.data)
-      for (let i = 0; i < data.message.length; i++) {
-        const e = data.message[i]
-        if (e.type == "img") {
-          const img = await this.getImageSize(e.msg)
-          if (img.width > 280) {
-            const n = img.width / 280 - 0.01
-            img.width = Math.floor(img.width / n)
-            img.height = Math.floor(img.height / n)
-          }
-          e.width = img.width
-          e.height = img.height
-        }
-        e.msg = e.msg.replace("&#91;", "[").replace("&#93;", "]")
-      }
-      if (Object.keys(this.chatObj).includes(data.object_id)) {
-        this.chatObj[data.object_id].push(data)
-        if (this.chatObj[data.object_id].length > 50) {
-          this.chatObj[data.object_id].splice(0, 1)
-        }
-        this.reloadKey++
-      }
       this.$nextTick(() => {
         var divElement = document.getElementById("chat")
         divElement.scrollTop = divElement.scrollHeight
       })
     },
-    destroyWebsocket() {
-      if (this.chatWs && this.chatWs.readyState === WebSocket.OPEN) {
-        this.chatWs.close()
-      }
+    clearMessage() {
+      this.$confirm("确认清空聊天记录?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        showClose: true,
+        type: "warning",
+      }).then(() => {
+        this.$store.commit("CLEAR_CHAT", this.chatId)
+        this.$message.success("清空记录成功!")
+      })
     },
   },
 }
@@ -218,11 +158,19 @@ export default {
     height: 100%;
     width: 100%;
   }
+  .top-box {
+    height: 25px;
+  }
 
   .title {
     color: #939395;
     font-size: 20px;
     margin-left: 30px;
+    float: left;
+  }
+
+  .btn-group {
+    float: right;
   }
 
   .chat-area {

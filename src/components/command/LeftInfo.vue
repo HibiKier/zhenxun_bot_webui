@@ -58,13 +58,25 @@
         </div>
         <el-divider direction="vertical" />
         <div class="base-info-box-item">
+          <p class="base-info-item-text">{{ botInfo.day_call }}</p>
+          <p class="base-small-title">今日调用</p>
+        </div>
+      </div>
+      <el-divider />
+      <div class="base-info-box">
+        <div class="base-info-box-item">
+          <p class="base-info-item-text">{{ botInfo.version }}</p>
+          <p class="base-small-title">版本</p>
+        </div>
+        <el-divider direction="vertical" />
+        <div class="base-info-box-item">
           <p class="base-info-item-text">{{ connectTime }}</p>
           <p class="base-small-title">连接时长</p>
         </div>
       </div>
       <el-divider />
       <div class="base-info-box" style="margin-top: 18px">
-        <div class="base-info-box-item">
+        <div class="base-info-box-item" style="width: 240px">
           <p class="base-info-item-text">{{ botInfo.connect_date }}</p>
           <p class="base-small-title">连接日期</p>
         </div>
@@ -164,6 +176,7 @@ export default {
   // background-color: #f4f5fa;
   // height: 100%;
   // width: 17%;
+  // min-height: 1080px;
 
   .ava-info {
     align-items: center;
@@ -261,7 +274,7 @@ export default {
       display: flex;
 
       ::v-deep .el-divider--vertical {
-        margin: 0 50px;
+        margin: 0;
         height: 73px;
       }
 
@@ -269,6 +282,8 @@ export default {
         display: flex;
         flex-direction: column;
         text-align: center;
+        justify-content: center;
+        width: 150px;
 
         .base-info-item-text {
           font-size: 25px;
