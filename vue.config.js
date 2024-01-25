@@ -1,10 +1,10 @@
-const { defineConfig } = require("@vue/cli-service");
-const path = require("path");
+const { defineConfig } = require("@vue/cli-service")
+const path = require("path")
 module.exports = defineConfig({
   transpileDependencies: true,
-});
+})
 
-let proxyObj = {};
+let proxyObj = {}
 
 proxyObj["/"] = {
   target: "http://localhost:8080", //真寻酱的端口捏
@@ -13,7 +13,7 @@ proxyObj["/"] = {
     "^/": "/",
   },
   ws: false,
-};
+}
 
 module.exports = {
   productionSourceMap: false,
@@ -24,13 +24,13 @@ module.exports = {
   },
   chainWebpack: (config) => {
     config.plugin("html").tap((args) => {
-      args[0].title = "真寻酱的后台捏";
-      return args;
-    });
+      args[0].title = "真寻酱的后台捏"
+      return args
+    })
     config.module
       .rule("svg")
       .exclude.add(path.join(__dirname, "src/assets/icons/svg"))
-      .end();
+      .end()
 
     config.module
       .rule("icons") // 定义一个名叫 icons 的规则
@@ -43,6 +43,6 @@ module.exports = {
         // 该 svg-sprite-loader 的配置
         symbolId: "icon-[name]",
       })
-      .end();
+      .end()
   },
-};
+}

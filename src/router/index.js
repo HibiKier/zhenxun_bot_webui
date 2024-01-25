@@ -5,8 +5,8 @@ import Home from "@/views/Home"
 import MyApi from "@/views/MyApi"
 import PluginManage from "@/views/plugin/PluginManage"
 import MainCommand from "@/views/command/MainCommand"
-import GroupManage from "@/views/group/GroupManage"
-import RequestManage from "@/views/request/RequestManage"
+import FriendGroupManage from "@/views/manage/FriendGroupManage"
+import DatabaseManage from "@/views/database/DatabaseManage"
 import SystemInfo from "@/views/system/SystemInfo"
 
 Vue.use(VueRouter)
@@ -30,8 +30,8 @@ const routes = [
     children: [
       { path: "/command", name: "控制台", component: MainCommand },
       { path: "/plugin", name: "插件列表", component: PluginManage },
-      { path: "/group", name: "群组管理", component: GroupManage },
-      { path: "/request", name: "请求管理", component: RequestManage },
+      { path: "/manage", name: "好友/群组", component: FriendGroupManage },
+      { path: "/database", name: "数据库管理", component: DatabaseManage },
       { path: "/system", name: "系统信息", component: SystemInfo },
     ],
   },

@@ -31,6 +31,7 @@
             v-model="loginForm.username"
             placeholder="请输入用户名"
             class="input-border"
+            @keyup.enter="submitLogin"
           >
             <i slot="prefix"> <SvgIcon icon-class="account" class="icon" /></i>
           </el-input>
@@ -41,6 +42,7 @@
             v-model="loginForm.password"
             placeholder="请输入密码"
             class="input-border"
+            @keyup.enter="submitLogin"
           >
             <i slot="prefix"> <SvgIcon icon-class="password" class="icon" /></i>
           </el-input>
@@ -53,7 +55,7 @@
             native-type="submit"
             @click="changeApi"
             plain
-            >更换API</el-button
+            >更换端口</el-button
           >
           <el-button
             type="primary"
@@ -64,7 +66,14 @@
           >
         </div>
       </el-form>
-      <div class="forget-pwd">
+      <div
+        class="forget-pwd-left"
+        v-if="forgetPwd"
+        @mouseenter="forgetPwd = false"
+      >
+        <el-button type="text">忘记密码</el-button>
+      </div>
+      <div class="forget-pwd-right" v-else @mouseenter="forgetPwd = true">
         <el-button type="text">忘记密码</el-button>
       </div>
     </div>
@@ -75,33 +84,34 @@
 </template>
 
 <script>
-import qs from "qs";
+import qs from "qs"
 // 导入cookie的获取和设置方法
-import { setCookie, clearCookie, getCookie, verifyIdentity } from "@/utils/api";
+import { setCookie, clearCookie, getCookie, verifyIdentity } from "@/utils/api"
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   created() {
     //进入登录页面先验证是否已经登录
-    verifyIdentity();
+    verifyIdentity()
   },
   data() {
     const validateName = (rules, value, callback) => {
       if (!value) {
-        callback(new Error("账号捏账号捏!"));
+        callback(new Error("账号捏账号捏!"))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     const validatePwd = (rules, value, callback) => {
       if (!value) {
-        callback(new Error("不会有人忘记密码了吧!"));
+        callback(new Error("不会有人忘记密码了吧!"))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     return {
+      forgetPwd: false,
       loginForm: {
         username: "",
         password: "",
@@ -111,52 +121,72 @@ export default {
         password: [{ validator: validatePwd }],
       },
       loading: false,
-    };
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      document.addEventListener("keydown", (event) => {
+        if (event.code === "Enter") {
+          event.preventDefault()
+          this.submitLogin()
+        }
+      })
+    })
   },
   methods: {
     submitLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.postRequest(
-            "/zhenxun/api/login",
+            `${this.$root.prefix}/login`,
             qs.stringify({
               username: this.loginForm.username,
               password: this.loginForm.password,
             }),
             { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
           ).then((resp) => {
-            if (resp) {
-              const tokenStr =
-                resp.data.token_type + " " + resp.data.access_token;
-              if (getCookie) {
-                clearCookie("tokenStr");
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning(resp.warning)
+              } else {
+                this.$message.success(resp.info)
+                const tokenStr =
+                  resp.data.token_type + " " + resp.data.access_token
+                if (getCookie) {
+                  clearCookie("tokenStr")
+                }
+                setCookie("tokenStr", tokenStr)
+                // // 页面跳转
+                let path = this.$route.query.redirect
+                this.$router.replace(
+                  path == "/" || path == undefined ? "/home" : path
+                )
               }
-              setCookie("tokenStr", tokenStr);
-              // // 页面跳转
-              let path = this.$route.query.redirect;
-              this.$router.replace(
-                path == "/" || path == undefined ? "/home" : path
-              );
+            } else {
+              this.$message.error(resp.info)
             }
-          });
+          })
         } else {
-          return false;
+          return false
         }
-        this.loading = false;
-      });
+        this.loading = false
+      })
     },
-    changeApi(){
-      this.$router.replace("/myapi");
-    }
+    changeApi() {
+      this.$router.replace("/myapi")
+    },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
-.forget-pwd {
+.forget-pwd-right {
   float: right;
   margin-left: 10px;
+}
+.forget-pwd-left {
+  float: left;
 }
 .icon {
   margin-left: 10px;

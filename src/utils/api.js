@@ -38,7 +38,7 @@ axios.interceptors.response.use(
     const { status, data } = error.response
     if (status == 504 || status == 404) {
       Message.error({ message: "服务器被吃了┭┮﹏┭┮" })
-    } else if (status == 405 || status == 500) {
+    } else if (status == 405) {
       Message.error({ message: "真寻的api地址不正确捏" })
     } else if (status == 400) {
       Message.error(data.detail)
@@ -48,13 +48,25 @@ axios.interceptors.response.use(
         router.replace("/")
       }
     } else {
-      Message.error({ message: "未知错误" })
+      if (data && data.detail && data.detail.length) {
+        Message.error({ message: data.detail[0].msg })
+      } else {
+        Message.error({ message: "发生错误啦!" })
+      }
     }
     return
   }
 )
 
 let base = ""
+
+export const setPort = (port) => {
+  localStorage.setItem("port", port)
+}
+
+export const getPort = () => {
+  return localStorage.getItem("port")
+}
 
 export const setBase = (url) => {
   if (url[url.length - 1] == "/" || url[url.length - 1] == "\\") {
@@ -91,6 +103,21 @@ export const putRequest = (url, params) => {
 }
 //传递json的get请求
 export const getRequest = (url, params) => {
+  if (params && Object.keys(params).length) {
+    url += "?"
+    Object.keys(params).forEach((e) => {
+      if (params[e] != null) {
+        if (Array.isArray(params[e])) {
+          params[e].forEach((x) => {
+            url += e + "=" + x + "&"
+          })
+        } else {
+          url += e + "=" + params[e] + "&"
+        }
+      }
+    })
+    url = url.substring(0, url.length - 1)
+  }
   return axios({
     method: "get",
     url: `${base}${url}`,
