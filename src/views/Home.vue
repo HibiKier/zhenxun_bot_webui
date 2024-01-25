@@ -176,6 +176,7 @@ export default {
               }
             }
           }
+          this.$store.commit("CLEAR_CHAT")
           if (["/command", "/manage"].includes(this.$route.path)) {
             if (this.$route.path == "/command" && this.firstLoad) {
               this.firstLoad = false

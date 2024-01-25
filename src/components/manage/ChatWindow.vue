@@ -11,7 +11,7 @@
       <el-divider />
       <div class="chat-area" id="chat" :key="reloadKey">
         <div
-          v-for="(data, index) in $store.state.chatObj[chatId]"
+          v-for="(data, index) in $store.state.chatObj[chatId].msgList || []"
           :key="index"
           class="msg-item"
         >
@@ -126,6 +126,8 @@ export default {
         this.chatObj[chatId] = []
       }
       this.chatId = chatId
+      this.$store.commit("SET_CHAT_ID", chatId)
+      this.$store.commit("ADD_CHAT_MSG", { chatId })
       this.isStartChat = true
       this.$nextTick(() => {
         var divElement = document.getElementById("chat")

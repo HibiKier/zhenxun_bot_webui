@@ -19,6 +19,56 @@ async function getImageSize(imageUrl) {
   })
 }
 
+var ws = null
+var heartbeatInterval = null
+
+function startHeartbeat() {
+  heartbeatInterval = setInterval(() => {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send("ping") // 发送心跳消息
+    }
+  }, 5000)
+}
+
+function stopHeartbeat() {
+  if (heartbeatInterval) {
+    clearInterval(heartbeatInterval) // 停止心跳检测定时器
+  }
+}
+
+async function chatWebsocketOnmessage(event) {
+  const data = JSON.parse(event.data)
+  for (let i = 0; i < data.message.length; i++) {
+    const e = data.message[i]
+    if (e.type == "img") {
+      const img = await getImageSize(e.msg)
+      if (img) {
+        if (img.width > 280) {
+          const n = img.width / 280 - 0.01
+          img.width = Math.floor(img.width / n)
+          img.height = Math.floor(img.height / n)
+        }
+        e.width = img.width
+        e.height = img.height
+      }
+    }
+    e.msg = e.msg.replace("&#91;", "[").replace("&#93;", "]")
+  }
+  const bot_id = vue.$store.state.botInfo.self_id
+  if (data.user_id != bot_id) {
+    vue.$store.commit("ADD_CHAT_MSG", { chatId: data.object_id, obj: data })
+    const type = data.group_id ? "group" : "private"
+
+    window.sortFriendGroupList(type)
+    vue.$nextTick(() => {
+      var divElement = document.getElementById("chat")
+      if (divElement) {
+        divElement.scrollTop = divElement.scrollHeight
+      }
+    })
+  }
+}
+
 export default {
   ws: null,
   //发送ws方法
@@ -69,63 +119,40 @@ export default {
   },
   //初始化ws
   initWebSocket: function () {
-    if (!this.ws) {
+    if (!ws) {
       const host = location.host.split(":")[0] || ""
       const port = getPort() || window.location.port
       const CHAT_WS_URL = `ws://${host}:${port}/zhenxun/socket/chat` // 日志ws
-      const ws = new WebSocket(CHAT_WS_URL)
-      ws.onopen = () => {
+      const websocket = new WebSocket(CHAT_WS_URL)
+      startHeartbeat()
+      websocket.onopen = () => {
         console.log("chat WebSocket 已连接...")
       }
-      ws.onmessage = this.chatWebsocketOnmessage
-      ws.onclose = () => {
+      websocket.onmessage = chatWebsocketOnmessage
+      websocket.onclose = () => {
         vue.$message.warning("chat WebSocket 已断开...")
+        stopHeartbeat()
+        setTimeout(() => {
+          this.initWebSocket()
+        }, 3000)
       }
-      ws.onerror = function (err) {
-        console.log("websocket 断开: " + err, ws.readyState)
-        if (ws.readyState != 0) {
-          setTimeout(() => {
-            this.initWebSocket()
-          }, 1000)
-        }
-      }
-      this.ws = ws
-    }
-  },
-  async chatWebsocketOnmessage(event) {
-    const data = JSON.parse(event.data)
-    for (let i = 0; i < data.message.length; i++) {
-      const e = data.message[i]
-      if (e.type == "img") {
-        const img = await getImageSize(e.msg)
-        if (img) {
-          if (img.width > 280) {
-            const n = img.width / 280 - 0.01
-            img.width = Math.floor(img.width / n)
-            img.height = Math.floor(img.height / n)
-          }
-          e.width = img.width
-          e.height = img.height
-        }
-      }
-      e.msg = e.msg.replace("&#91;", "[").replace("&#93;", "]")
-    }
-    const bot_id = vue.$store.state.botInfo.self_id
-    if (data.user_id != bot_id) {
-      vue.$store.commit("ADD_CHAT_MSG", { chatId: data.object_id, obj: data })
-      vue.$nextTick(() => {
-        var divElement = document.getElementById("chat")
-        if (divElement) {
-          divElement.scrollTop = divElement.scrollHeight
-        }
-      })
+      // ws.onerror = function (err) {
+      //   console.log("Chat websocket 错误: " + err, ws.readyState)
+      //   stopHeartbeat()
+      //   if (ws.readyState != 0) {
+      //     setTimeout(() => {
+      //       this.initWebSocket()
+      //     }, 3000)
+      //   }
+      // }
+      ws = websocket
     }
   },
   //断开socked方法
-  closeWebSocket: function () {
-    console.log("关闭ws")
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.close()
-    }
-  },
+  // closeWebSocket: function () {
+  //   console.log("关闭ws")
+  //   if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+  //     this.ws.close()
+  //   }
+  // },
 }

@@ -8,11 +8,11 @@
     </div>
     <div class="fg-select">
       <div :class="getItemClass('private')" @click="clickListType('private')">
-        好友
+        好友({{ botInfo.friend_count - 1 }})
       </div>
       <el-divider direction="vertical" />
       <div :class="getItemClass('group')" @click="clickListType('group')">
-        群组
+        群组({{ botInfo.group_count }})
       </div>
     </div>
     <div class="data-list-border">
@@ -32,6 +32,9 @@
             </p>
             <p class="uid">{{ data.id }}</p>
           </div>
+        </div>
+        <div class="new-msg" v-if="getUnreadCount(data.id)">
+          {{ getUnreadCount(data.id) }}
         </div>
         <el-dropdown
           class="more-icon"
@@ -74,11 +77,36 @@ export default {
   },
   mounted() {
     this.refresh()
+    window.sortFriendGroupList = this.sortFriendGroupList
   },
   methods: {
+    sortFriendGroupList(type) {
+      if (type == this.activeBtn && this.dataList.length) {
+        this.dataList.forEach((e) => {
+          const chat = this.$store.state.chatObj[e.id]
+          if (chat) {
+            e.time = chat.time
+          }
+        })
+        this.dataList = this.dataList.sort((a, b) => {
+          return a.time < b.time ? 1 : -1
+        })
+      }
+    },
+    getUnreadCount(id) {
+      const chat = this.$store.state.chatObj[id]
+      if (chat) {
+        const unreadCount = chat.unreadCount
+        if (unreadCount > 99) {
+          return "99+"
+        }
+        return chat.unreadCount
+      }
+    },
     getDetail(data) {
       this.detailId = data.id
       this.$emit("getDetail", this.activeBtn, data.id)
+      this.$store.commit("READ_CHAT", data.id)
     },
     refresh() {
       this.getRequestCount()
@@ -180,8 +208,9 @@ export default {
           } else {
             this.$message.success(resp.info)
             this.dataList = resp.data.map((e) => {
-              return { id: e.group_id, ...e }
+              return { id: e.group_id, time: 0, ...e }
             })
+            this.sortFriendGroupList("group")
           }
         } else {
           this.$message.error(resp.info)
@@ -202,8 +231,9 @@ export default {
           } else {
             this.$message.success(resp.info)
             this.dataList = resp.data.map((e) => {
-              return { id: e.user_id, ...e }
+              return { id: e.user_id, time: 0, ...e }
             })
+            this.sortFriendGroupList("private")
           }
         } else {
           this.$message.error(resp.info)
@@ -283,6 +313,19 @@ export default {
 
       ::v-deep .el-divider--horizontal {
         margin: 10px;
+      }
+
+      .new-msg {
+        position: absolute;
+        right: 7px;
+        top: 50px;
+        border-radius: 100px;
+        // background-color: #cfcdcd;
+        background-color: #ff3b30;
+        color: #f8f7f8;
+        font-size: 14px;
+        width: 23px;
+        text-align: center;
       }
 
       .more-icon {

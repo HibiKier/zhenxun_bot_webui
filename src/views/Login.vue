@@ -31,6 +31,7 @@
             v-model="loginForm.username"
             placeholder="请输入用户名"
             class="input-border"
+            @keyup.enter="submitLogin"
           >
             <i slot="prefix"> <SvgIcon icon-class="account" class="icon" /></i>
           </el-input>
@@ -41,6 +42,7 @@
             v-model="loginForm.password"
             placeholder="请输入密码"
             class="input-border"
+            @keyup.enter="submitLogin"
           >
             <i slot="prefix"> <SvgIcon icon-class="password" class="icon" /></i>
           </el-input>
@@ -64,7 +66,14 @@
           >
         </div>
       </el-form>
-      <div class="forget-pwd">
+      <div
+        class="forget-pwd-left"
+        v-if="forgetPwd"
+        @mouseenter="forgetPwd = false"
+      >
+        <el-button type="text">忘记密码</el-button>
+      </div>
+      <div class="forget-pwd-right" v-else @mouseenter="forgetPwd = true">
         <el-button type="text">忘记密码</el-button>
       </div>
     </div>
@@ -102,6 +111,7 @@ export default {
       }
     }
     return {
+      forgetPwd: false,
       loginForm: {
         username: "",
         password: "",
@@ -112,6 +122,16 @@ export default {
       },
       loading: false,
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      document.addEventListener("keydown", (event) => {
+        if (event.code === "Enter") {
+          event.preventDefault()
+          this.submitLogin()
+        }
+      })
+    })
   },
   methods: {
     submitLogin() {
@@ -161,9 +181,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.forget-pwd {
+.forget-pwd-right {
   float: right;
   margin-left: 10px;
+}
+.forget-pwd-left {
+  float: left;
 }
 .icon {
   margin-left: 10px;
