@@ -3,30 +3,30 @@
     <div class="top-select">
       <div class="top-select-btn-box">
         <div
-          :class="getTopItemClass('normal')"
-          @click="clickPluginType('normal')"
+          :class="getTopItemClass('NORMAL')"
+          @click="clickPluginType('NORMAL')"
           style="border-top-left-radius: 5px; border-bottom-left-radius: 5px"
         >
           普通插件({{ pluginCount.normal }})
         </div>
         <el-divider direction="vertical" />
         <div
-          :class="getTopItemClass('admin')"
-          @click="clickPluginType('admin')"
+          :class="getTopItemClass('ADMIN')"
+          @click="clickPluginType('ADMIN')"
         >
           管理员插件({{ pluginCount.admin }})
         </div>
         <el-divider direction="vertical" />
         <div
-          :class="getTopItemClass('superuser')"
-          @click="clickPluginType('superuser')"
+          :class="getTopItemClass('SUPERUSER')"
+          @click="clickPluginType('SUPERUSER')"
         >
           超级用户插件({{ pluginCount.superuser }})
         </div>
         <el-divider direction="vertical" />
         <div
-          :class="getTopItemClass('hidden')"
-          @click="clickPluginType('hidden')"
+          :class="getTopItemClass('HIDDEN')"
+          @click="clickPluginType('HIDDEN')"
           style="border-top-right-radius: 5px; border-bottom-right-radius: 5px"
         >
           其他插件({{ pluginCount.other }})
@@ -69,7 +69,7 @@ export default {
     return {
       activeName: "NormalPlugin",
       pluginCount: { normal: 0, admin: 0, superuser: 0, other: 0 },
-      activeBtn: "normal",
+      activeBtn: "NORMAL",
       pltKey: 0,
       menuTypeList: [],
       searchMenuType: null,

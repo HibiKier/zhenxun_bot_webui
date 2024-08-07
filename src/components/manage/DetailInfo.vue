@@ -238,7 +238,7 @@ export default {
   methods: {
     getAllPluginList() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
-        plugin_type: ["normal", "admin"],
+        plugin_type: ["NORMAL", "ADMIN"],
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
