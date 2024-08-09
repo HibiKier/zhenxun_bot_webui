@@ -53,7 +53,9 @@
             <div class="base-info-item" style="width: 49%">
               <div class="label">群号</div>
               <el-divider direction="vertical" />
-              <div class="value">{{ data.group_id }}</div>
+              <div class="value" style="margin-left: 5px">
+                {{ data.group_id }}
+              </div>
             </div>
             <div class="base-info-item" style="width: 49%">
               <div class="label">状态</div>

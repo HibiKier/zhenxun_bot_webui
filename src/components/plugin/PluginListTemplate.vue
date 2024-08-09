@@ -38,7 +38,7 @@
           <div class="plugin-info-box-item">
             <p class="plugin-info-item-text">
               <svg-icon
-                :icon-class="data.default_switch ? 'yes-green' : 'no-red'"
+                :icon-class="data.default_status ? 'yes-green' : 'no-red'"
               />
             </p>
             <p class="base-small-title">默认开关</p>

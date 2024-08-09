@@ -101,9 +101,9 @@
                       placeholder="禁用类型"
                       clearable
                     >
-                      <el-option label="全部" value="all"></el-option>
-                      <el-option label="群聊" value="group"></el-option>
-                      <el-option label="私聊" value="private"></el-option>
+                      <el-option label="全部" value="ALL"></el-option>
+                      <el-option label="群聊" value="GROUP"></el-option>
+                      <el-option label="私聊" value="PRIVATE"></el-option>
                     </el-select>
                   </div>
                 </el-form-item>

@@ -16,7 +16,15 @@
       <el-divider />
       <div class="nb-config-box">
         <div class="nb-config-box-item">
-          <p class="config-info-item-text">{{ botConfig.driver }}</p>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            placement="top"
+            :content="botConfig.driver || ''"
+            :disabled="botConfig.driver.length < 5"
+          >
+            <p class="config-info-item-text">{{ botConfig.driver }}</p>
+          </el-tooltip>
           <p class="config-small-title">driver</p>
         </div>
         <el-divider direction="vertical" />
@@ -328,6 +336,9 @@ export default {
           font-size: 25px;
           margin-bottom: 10px;
           margin-top: 10px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
     }

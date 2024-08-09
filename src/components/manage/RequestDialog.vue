@@ -96,8 +96,7 @@ export default {
       const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/approve_request`, {
         bot_id: data.bot_id,
-        request_type: data.type,
-        flag: data.flag,
+        id: data.oid,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
@@ -116,8 +115,7 @@ export default {
       const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/refuse_request`, {
         bot_id: data.bot_id,
-        request_type: data.type,
-        flag: data.flag,
+        id: data.oid,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
@@ -135,8 +133,7 @@ export default {
     deleteReq(data) {
       const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/delete_request`, {
-        request_type: data.type,
-        flag: data.flag,
+        id: data.oid,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
@@ -195,6 +192,8 @@ export default {
   }
   .request-main {
     display: flex;
+    height: 500px;
+    overflow: auto;
   }
 
   ::v-deep .el-divider--vertical {

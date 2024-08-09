@@ -38,6 +38,8 @@ function stopHeartbeat() {
 
 async function chatWebsocketOnmessage(event) {
   const data = JSON.parse(event.data)
+  console.log("收到消息：", data)
+
   for (let i = 0; i < data.message.length; i++) {
     const e = data.message[i]
     if (e.type == "img") {

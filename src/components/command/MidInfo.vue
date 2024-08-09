@@ -153,6 +153,8 @@ export default {
     this.botInfo = this.$store.state.botInfo || {}
     this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
     this.LOG_WS_URL = `ws://${host}:${port}/zhenxun/socket/logs` // 日志ws
+    console.log("this.STATUS_WS_URL", this.STATUS_WS_URL)
+    console.log("this.LOG_WS_URL", this.LOG_WS_URL)
   },
   mounted() {
     this.clgDiv = document.getElementById("clg")
@@ -204,6 +206,8 @@ export default {
     },
     initLogWebSocket() {
       if (!this.logWs) {
+        console.log("初始化日志WebSocket", this.LOG_WS_URL)
+
         const loading = this.getLoading(".center-log")
         this.logWs = new WebSocket(this.LOG_WS_URL)
         this.logWs.onopen = () => {
@@ -232,6 +236,7 @@ export default {
     },
     initSystemStatusWebSocket() {
       if (!this.statusWs) {
+        console.log("初始化日志WebSocket", this.STATUS_WS_URL)
         this.statusWs = new WebSocket(this.STATUS_WS_URL)
         this.statusWs.onopen = () => {
           console.log("系统状态 WebSocket 已连接...")
