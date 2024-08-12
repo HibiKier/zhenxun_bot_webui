@@ -117,7 +117,13 @@
             >
               <template v-if="data.is_file">
                 <p class="pop-select" @click="editCode(data, true)">查看</p>
-                <p class="pop-select" @click="editCode(data, false)">编辑</p>
+                <p
+                  class="pop-select"
+                  v-if="!data.is_image"
+                  @click="editCode(data, false)"
+                >
+                  编辑
+                </p>
                 <p class="pop-select" @click="showRename(data)">重命名</p>
                 <div class="rename-input" v-if="data.showRename">
                   <el-input v-model="data.rename"></el-input
@@ -198,6 +204,16 @@
       :fullPath="codeFullPath"
       :onlyRead="onlyRead"
     />
+    <image-view
+      v-if="imageVisible"
+      @close="
+        imageVisible = false
+        codeFullPath = ''
+        codeFileName = ''
+      "
+      :name="codeFileName"
+      :fullPath="codeFullPath"
+    />
   </div>
 </template>
 
@@ -207,11 +223,13 @@ import MyButton from "../ui/MyButton.vue"
 // import { v4 } from "uuid"
 import OneMark from "../ui/OneMark.vue"
 import EditFile from "./EditFile.vue"
+import ImageView from "./ImageView.vue"
 export default {
-  components: { OneMark, SvgIcon, MyButton, EditFile },
+  components: { OneMark, SvgIcon, MyButton, EditFile, ImageView },
   name: "DirTree",
   data() {
     return {
+      imageExtensions: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
       codeFullPath: "",
       codeFileName: "",
       onlyRead: false,
@@ -219,6 +237,7 @@ export default {
       treeData: [],
       resourcesChart: null,
       editVisible: false,
+      imageVisible: false,
       treeKey: 0,
       vscodeIcons: [],
       showAddFile: false,
@@ -272,8 +291,12 @@ export default {
     editCode(data, onlyRead) {
       this.codeFullPath = data.full_path
       this.codeFileName = data.name
-      this.onlyRead = onlyRead
-      this.editVisible = true
+      if (this.imageExtensions.includes("." + this.codeFileName)) {
+        this.onlyRead = onlyRead
+        this.editVisible = true
+      } else {
+        this.imageVisible = true
+      }
     },
     hidePopover(data) {
       data.createName = ""

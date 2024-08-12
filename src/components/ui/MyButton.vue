@@ -45,13 +45,13 @@
         color: color,
       }"
     >
-      {{ text }}
       <span v-if="icon" style="margin-top: 5px">
         <svg-icon
           :icon-class="icon"
           :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
         />
       </span>
+      {{ text }}
     </button>
   </div>
 </template>
