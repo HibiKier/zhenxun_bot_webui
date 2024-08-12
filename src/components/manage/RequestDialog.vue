@@ -3,7 +3,7 @@
     <OneMark text="是来自何处的羁绊呢" />
     <div class="request-main">
       <div class="friend-req">
-        <div style="display: flex">
+        <div style="float: left; width: 100%">
           <p class="base-title">好友请求</p>
           <MyButton
             text="清空"
@@ -11,7 +11,7 @@
             icon="clear2"
             :width="90"
             :height="34"
-            style="margin-left: 230px"
+            style="float: right"
           />
         </div>
         <div class="friend-req-list">
@@ -43,7 +43,7 @@
       </div>
       <el-divider direction="vertical" />
       <div class="group-req">
-        <div style="display: flex">
+        <div style="float: left; width: 100%">
           <p class="base-title">群组请求</p>
           <MyButton
             text="清空"
@@ -51,7 +51,7 @@
             icon="clear2"
             :width="90"
             :height="34"
-            style="margin-left: 230px"
+            style="float: right"
           />
         </div>
         <div class="group-req-list">
@@ -235,6 +235,7 @@ export default {
     font-size: 18px;
     margin-left: 25px;
     margin-top: 5px;
+    float: left;
   }
 
   .request-main {
