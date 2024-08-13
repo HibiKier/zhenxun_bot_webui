@@ -229,7 +229,6 @@ export default {
   name: "DirTree",
   data() {
     return {
-      imageExtensions: ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"],
       codeFullPath: "",
       codeFileName: "",
       onlyRead: false,
@@ -289,9 +288,11 @@ export default {
   },
   methods: {
     editCode(data, onlyRead) {
+      console.log("data", data)
+
       this.codeFullPath = data.full_path
       this.codeFileName = data.name
-      if (this.imageExtensions.includes("." + this.codeFileName)) {
+      if (!data.is_image) {
         this.onlyRead = onlyRead
         this.editVisible = true
       } else {

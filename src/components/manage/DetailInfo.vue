@@ -102,6 +102,7 @@
                   placeholder=""
                   style="width: 62px"
                 >
+                  <el-option :label="-1" :value="-1"></el-option>
                   <el-option
                     v-for="n in 10"
                     :label="n"

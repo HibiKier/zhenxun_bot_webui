@@ -40,7 +40,7 @@ export default {
   },
   methods: {
     getImage() {
-      // const loading = this.getLoading(".CodeMirror")
+      const loading = this.getLoading(".el-dialog")
       this.getRequest(`${this.$root.prefix}/system/get_image`, {
         full_path: this.fullPath,
       }).then((resp) => {
@@ -55,7 +55,7 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
-        //   loading.close()
+        loading.close()
       })
     },
     close() {

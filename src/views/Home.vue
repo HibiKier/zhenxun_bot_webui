@@ -168,11 +168,20 @@ export default {
           } else {
             this.$message.success(resp.info)
             this.botList = resp.data
-            for (const bot of this.botList) {
-              if (bot.is_select) {
-                this.botInfo = bot
-                this.$store.commit("SET_BOT", bot)
-                break
+
+            if (this.$store.state.botInfo && !bot_id) {
+              this.botInfo = this.$store.state.botInfo
+              console.log("---------", JSON.parse(JSON.stringify(this.botInfo)))
+              for (const bot of this.botList) {
+                bot.is_select = bot.self_id == this.botInfo.self_id
+              }
+            } else {
+              for (const bot of this.botList) {
+                if (bot.is_select) {
+                  this.botInfo = bot
+                  this.$store.commit("SET_BOT", bot)
+                  break
+                }
               }
             }
           }

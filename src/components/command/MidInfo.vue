@@ -227,6 +227,7 @@ export default {
       let childDom = document.createElement("div")
       childDom.innerHTML = log
       this.clgDiv.appendChild(childDom)
+      this.clgDiv
 
       this.$nextTick(() => {
         // 滚动条至底部
