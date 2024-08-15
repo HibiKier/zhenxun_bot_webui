@@ -201,9 +201,13 @@ export default {
         }).then((resp) => {
           if (resp.suc) {
             if (resp.warning) {
-              this.$message.warning(resp.warning)
+              if (loading) {
+                this.$message.warning(resp.warning)
+              }
             } else {
-              this.$message.success(resp.info)
+              if (loading) {
+                this.$message.success(resp.info)
+              }
               this.chCnt = resp.data
             }
           } else {

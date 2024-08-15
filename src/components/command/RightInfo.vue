@@ -233,9 +233,13 @@ export default {
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
-            this.$message.warning(resp.info)
+            if (loading) {
+              this.$message.warning(resp.info)
+            }
           } else {
-            this.$message.success(resp.info)
+            if (loading) {
+              this.$message.success(resp.info)
+            }
             const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
             const group_list = []
             const data = resp.data.map((e) => {
