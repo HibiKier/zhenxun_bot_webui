@@ -209,7 +209,7 @@ export default {
     this.getHotPlugin()
     this.groupCntInterval = setInterval(() => {
       this.getActiveGroupData(this.selectGroupType, true)
-    }, 10000)
+    }, 25000)
   },
   destroyed() {
     if (this.groupCntInterval) {
@@ -255,7 +255,9 @@ export default {
             this.groupChart.setOption(tmpOpt)
           }
         } else {
-          this.$message.error(resp.info)
+          if (loading) {
+            this.$message.error(resp.info)
+          }
         }
         if (loading) {
           loading.close()

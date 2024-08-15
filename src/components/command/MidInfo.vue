@@ -165,7 +165,7 @@ export default {
     this.getChCount(this.botInfo.self_id)
     this.chatCntInterval = setInterval(() => {
       this.getChCount(this.botInfo.self_id, true)
-    }, 10000)
+    }, 30000)
   },
   beforeDestroy() {
     this.destroyWebsocket()
@@ -211,7 +211,9 @@ export default {
               this.chCnt = resp.data
             }
           } else {
-            this.$message.error(resp.info)
+            if (loading) {
+              this.$message.error(resp.info)
+            }
           }
           if (loading) {
             loading.close()
