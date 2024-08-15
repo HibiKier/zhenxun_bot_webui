@@ -152,6 +152,7 @@ export default {
       selectHotPluginType: "all",
       groupChart: null,
       hotPluginChart: null,
+      groupCntInterval: null, //活跃数量定时器
       chartOpt: {
         tooltip: {}, // 工具提示组件
         xAxis: {
@@ -206,17 +207,27 @@ export default {
     this.hotPluginChart = this.$echarts.init(this.$refs.hotPluginChart)
     this.getActiveGroupData()
     this.getHotPlugin()
+    this.groupCntInterval = setInterval(() => {
+      this.getActiveGroupData(this.selectGroupType, true)
+    }, 10000)
+  },
+  destroyed() {
+    if (this.groupCntInterval) {
+      clearInterval(this.groupCntInterval)
+    }
   },
   methods: {
     clickGroupType(type) {
       this.selectGroupType = type
-      if (type == "all") {
-        type = null
-      }
       this.getActiveGroupData(type)
     },
-    getActiveGroupData(date_type) {
-      const loading = this.getLoading(".active-group")
+    getActiveGroupData(date_type, no_loading) {
+      if (date_type == "all") {
+        date_type = null
+      }
+      if (!no_loading) {
+        var loading = this.getLoading(".active-group")
+      }
       this.getRequest(`${this.$root.prefix}/main/get_active_group`, {
         date_type,
       }).then((resp) => {
@@ -242,7 +253,9 @@ export default {
         } else {
           this.$message.error(resp.info)
         }
-        loading.close()
+        if (loading) {
+          loading.close()
+        }
       })
     },
     clickHotPluginType(type) {

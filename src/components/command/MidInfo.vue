@@ -144,6 +144,7 @@ export default {
       logWs: null,
       ansi_up: null,
       clgDiv: null,
+      chatCntInterval: null, //聊天数量定时器
     }
   },
   created() {
@@ -162,9 +163,15 @@ export default {
     this.initSystemStatusWebSocket()
     this.initLogWebSocket()
     this.getChCount(this.botInfo.self_id)
+    this.chatCntInterval = setInterval(() => {
+      this.getChCount(this.botInfo.self_id, true)
+    }, 10000)
   },
   beforeDestroy() {
     this.destroyWebsocket()
+    if (this.chatCntInterval) {
+      clearInterval(this.chatCntInterval)
+    }
   },
   methods: {
     getPercentage(type) {
@@ -182,10 +189,12 @@ export default {
     formatProcess() {
       return this.chCnt.num
     },
-    getChCount(bot_id) {
+    getChCount(bot_id, no_loading) {
       // 获取聊天历史记录数量
       if (bot_id) {
-        const loading = this.getLoading(".ch-count")
+        if (!no_loading) {
+          var loading = this.getLoading(".ch-count")
+        }
 
         this.getRequest(`${this.$root.prefix}/main/get_all_ch_count`, {
           bot_id,
@@ -200,7 +209,9 @@ export default {
           } else {
             this.$message.error(resp.info)
           }
-          loading.close()
+          if (loading) {
+            loading.close()
+          }
         })
       }
     },
@@ -227,7 +238,12 @@ export default {
       let childDom = document.createElement("div")
       childDom.innerHTML = log
       this.clgDiv.appendChild(childDom)
-      this.clgDiv
+      let children = this.clgDiv.children
+
+      if (children.length > 150) {
+        console.log("日志数量超过100，移除日志...")
+        this.clgDiv.removeChild(children[0])
+      }
 
       this.$nextTick(() => {
         // 滚动条至底部
