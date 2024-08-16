@@ -168,11 +168,35 @@ export default {
           } else {
             this.$message.success(resp.info)
             this.botList = resp.data
-            for (const bot of this.botList) {
-              if (bot.is_select) {
-                this.botInfo = bot
-                this.$store.commit("SET_BOT", bot)
-                break
+            if (!this.botList.length) {
+              this.$store.state.botInfo = null
+            } else {
+              if (this.$store.state.botInfo) {
+                // 判断store中的bot是否存在botList中
+                let is_in = false
+                for (const bot of this.botList) {
+                  if (bot.self_id == this.$store.state.botInfo.self_id) {
+                    is_in = true
+                    break
+                  }
+                }
+                if (!is_in) {
+                  this.$store.state.botInfo = null
+                }
+              }
+              if (this.$store.state.botInfo && !bot_id) {
+                this.botInfo = this.$store.state.botInfo
+                for (const bot of this.botList) {
+                  bot.is_select = bot.self_id == this.botInfo.self_id
+                }
+              } else {
+                for (const bot of this.botList) {
+                  if (bot.is_select) {
+                    this.botInfo = bot
+                    this.$store.commit("SET_BOT", bot)
+                    break
+                  }
+                }
               }
             }
           }

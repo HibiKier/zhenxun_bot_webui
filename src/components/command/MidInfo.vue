@@ -144,14 +144,18 @@ export default {
       logWs: null,
       ansi_up: null,
       clgDiv: null,
+      chatCntInterval: null, //聊天数量定时器
     }
   },
   created() {
     const host = location.host.split(":")[0] || ""
     const port = getPort() || window.location.port
+
     this.botInfo = this.$store.state.botInfo || {}
     this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
     this.LOG_WS_URL = `ws://${host}:${port}/zhenxun/socket/logs` // 日志ws
+    console.log("this.STATUS_WS_URL", this.STATUS_WS_URL)
+    console.log("this.LOG_WS_URL", this.LOG_WS_URL)
   },
   mounted() {
     this.clgDiv = document.getElementById("clg")
@@ -159,9 +163,15 @@ export default {
     this.initSystemStatusWebSocket()
     this.initLogWebSocket()
     this.getChCount(this.botInfo.self_id)
+    this.chatCntInterval = setInterval(() => {
+      this.getChCount(this.botInfo.self_id, true)
+    }, 30000)
   },
   beforeDestroy() {
     this.destroyWebsocket()
+    if (this.chatCntInterval) {
+      clearInterval(this.chatCntInterval)
+    }
   },
   methods: {
     getPercentage(type) {
@@ -179,30 +189,42 @@ export default {
     formatProcess() {
       return this.chCnt.num
     },
-    getChCount(bot_id) {
+    getChCount(bot_id, no_loading) {
       // 获取聊天历史记录数量
       if (bot_id) {
-        const loading = this.getLoading(".ch-count")
+        if (!no_loading) {
+          var loading = this.getLoading(".ch-count")
+        }
 
         this.getRequest(`${this.$root.prefix}/main/get_all_ch_count`, {
           bot_id,
         }).then((resp) => {
           if (resp.suc) {
             if (resp.warning) {
-              this.$message.warning(resp.warning)
+              if (loading) {
+                this.$message.warning(resp.warning)
+              }
             } else {
-              this.$message.success(resp.info)
+              if (loading) {
+                this.$message.success(resp.info)
+              }
               this.chCnt = resp.data
             }
           } else {
-            this.$message.error(resp.info)
+            if (loading) {
+              this.$message.error(resp.info)
+            }
           }
-          loading.close()
+          if (loading) {
+            loading.close()
+          }
         })
       }
     },
     initLogWebSocket() {
       if (!this.logWs) {
+        console.log("初始化日志WebSocket", this.LOG_WS_URL)
+
         const loading = this.getLoading(".center-log")
         this.logWs = new WebSocket(this.LOG_WS_URL)
         this.logWs.onopen = () => {
@@ -222,6 +244,12 @@ export default {
       let childDom = document.createElement("div")
       childDom.innerHTML = log
       this.clgDiv.appendChild(childDom)
+      let children = this.clgDiv.children
+
+      if (children.length > 150) {
+        console.log("日志数量超过100，移除日志...")
+        this.clgDiv.removeChild(children[0])
+      }
 
       this.$nextTick(() => {
         // 滚动条至底部
@@ -231,6 +259,7 @@ export default {
     },
     initSystemStatusWebSocket() {
       if (!this.statusWs) {
+        console.log("初始化日志WebSocket", this.STATUS_WS_URL)
         this.statusWs = new WebSocket(this.STATUS_WS_URL)
         this.statusWs.onopen = () => {
           console.log("系统状态 WebSocket 已连接...")

@@ -53,7 +53,9 @@
             <div class="base-info-item" style="width: 49%">
               <div class="label">群号</div>
               <el-divider direction="vertical" />
-              <div class="value">{{ data.group_id }}</div>
+              <div class="value" style="margin-left: 5px">
+                {{ data.group_id }}
+              </div>
             </div>
             <div class="base-info-item" style="width: 49%">
               <div class="label">状态</div>
@@ -100,6 +102,7 @@
                   placeholder=""
                   style="width: 62px"
                 >
+                  <el-option :label="-1" :value="-1"></el-option>
                   <el-option
                     v-for="n in 10"
                     :label="n"
@@ -238,7 +241,7 @@ export default {
   methods: {
     getAllPluginList() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
-        plugin_type: ["normal", "admin"],
+        plugin_type: ["NORMAL", "ADMIN"],
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {

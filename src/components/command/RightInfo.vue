@@ -16,7 +16,15 @@
       <el-divider />
       <div class="nb-config-box">
         <div class="nb-config-box-item">
-          <p class="config-info-item-text">{{ botConfig.driver }}</p>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            placement="top"
+            :content="botConfig.driver || ''"
+            :disabled="botConfig.driver.length < 5"
+          >
+            <p class="config-info-item-text">{{ botConfig.driver }}</p>
+          </el-tooltip>
           <p class="config-small-title">driver</p>
         </div>
         <el-divider direction="vertical" />
@@ -144,6 +152,7 @@ export default {
       selectHotPluginType: "all",
       groupChart: null,
       hotPluginChart: null,
+      groupCntInterval: null, //活跃数量定时器
       chartOpt: {
         tooltip: {}, // 工具提示组件
         xAxis: {
@@ -152,6 +161,7 @@ export default {
           data: null,
           axisLabel: {
             interval: 0, //强制显示所有标签
+            // rotate: 15,
           },
         }, // X轴
         yAxis: { type: "value" }, // Y轴
@@ -197,25 +207,39 @@ export default {
     this.hotPluginChart = this.$echarts.init(this.$refs.hotPluginChart)
     this.getActiveGroupData()
     this.getHotPlugin()
+    this.groupCntInterval = setInterval(() => {
+      this.getActiveGroupData(this.selectGroupType, true)
+    }, 25000)
+  },
+  destroyed() {
+    if (this.groupCntInterval) {
+      clearInterval(this.groupCntInterval)
+    }
   },
   methods: {
     clickGroupType(type) {
       this.selectGroupType = type
-      if (type == "all") {
-        type = null
-      }
       this.getActiveGroupData(type)
     },
-    getActiveGroupData(date_type) {
-      const loading = this.getLoading(".active-group")
+    getActiveGroupData(date_type, no_loading) {
+      if (date_type == "all") {
+        date_type = null
+      }
+      if (!no_loading) {
+        var loading = this.getLoading(".active-group")
+      }
       this.getRequest(`${this.$root.prefix}/main/get_active_group`, {
         date_type,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
-            this.$message.warning(resp.info)
+            if (loading) {
+              this.$message.warning(resp.info)
+            }
           } else {
-            this.$message.success(resp.info)
+            if (loading) {
+              this.$message.success(resp.info)
+            }
             const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
             const group_list = []
             const data = resp.data.map((e) => {
@@ -231,9 +255,13 @@ export default {
             this.groupChart.setOption(tmpOpt)
           }
         } else {
-          this.$message.error(resp.info)
+          if (loading) {
+            this.$message.error(resp.info)
+          }
         }
-        loading.close()
+        if (loading) {
+          loading.close()
+        }
       })
     },
     clickHotPluginType(type) {
@@ -328,6 +356,9 @@ export default {
           font-size: 25px;
           margin-bottom: 10px;
           margin-top: 10px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
     }

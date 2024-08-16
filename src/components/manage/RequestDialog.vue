@@ -3,7 +3,17 @@
     <OneMark text="是来自何处的羁绊呢" />
     <div class="request-main">
       <div class="friend-req">
-        <p class="base-title">好友请求</p>
+        <div style="float: left; width: 100%">
+          <p class="base-title">好友请求</p>
+          <MyButton
+            text="清空"
+            @click="clear_request('FRIEND')"
+            icon="clear2"
+            :width="90"
+            :height="34"
+            style="float: right"
+          />
+        </div>
         <div class="friend-req-list">
           <div v-for="data in dataObj.friend" :key="data.flag" class="req-item">
             <div class="ava-box">
@@ -33,7 +43,17 @@
       </div>
       <el-divider direction="vertical" />
       <div class="group-req">
-        <p class="base-title">群聊邀请</p>
+        <div style="float: left; width: 100%">
+          <p class="base-title">群组请求</p>
+          <MyButton
+            text="清空"
+            @click="clear_request('GROUP')"
+            icon="clear2"
+            :width="90"
+            :height="34"
+            style="float: right"
+          />
+        </div>
         <div class="group-req-list">
           <div class="friend-req-list">
             <div
@@ -92,12 +112,36 @@ export default {
     this.getReqList()
   },
   methods: {
+    clear_request(request_type) {
+      this.$confirm("确认清空所有请求?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        showClose: true,
+        type: "warning",
+      }).then(() => {
+        const loading = this.getLoading(".el-dialog")
+        this.postRequest(`${this.$root.prefix}/manage/clear_request`, {
+          request_type,
+        }).then((resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+            }
+          } else {
+            this.$message.error(resp.info)
+          }
+          loading.close()
+          this.getReqList()
+        })
+      })
+    },
     approve(data) {
       const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/approve_request`, {
         bot_id: data.bot_id,
-        request_type: data.type,
-        flag: data.flag,
+        id: data.oid,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
@@ -116,8 +160,7 @@ export default {
       const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/refuse_request`, {
         bot_id: data.bot_id,
-        request_type: data.type,
-        flag: data.flag,
+        id: data.oid,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
@@ -135,8 +178,7 @@ export default {
     deleteReq(data) {
       const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/delete_request`, {
-        request_type: data.type,
-        flag: data.flag,
+        id: data.oid,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
@@ -192,9 +234,14 @@ export default {
     margin-bottom: 5px;
     font-size: 18px;
     margin-left: 25px;
+    margin-top: 5px;
+    float: left;
   }
+
   .request-main {
     display: flex;
+    height: 500px;
+    overflow: auto;
   }
 
   ::v-deep .el-divider--vertical {
