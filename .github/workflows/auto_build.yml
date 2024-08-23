@@ -22,8 +22,7 @@ jobs:
         run: |
           git checkout --orphan dist
           mv dist ../
-          rm -rf ./*
-          rm -rf ./.*
+          rm -rf ./.github ./.gitignore ./*
           mv ../dist ./dist
           git config --local user.email 'l1040186796@gmail.com'
           git config --local user.name 'AkashiCoin'
