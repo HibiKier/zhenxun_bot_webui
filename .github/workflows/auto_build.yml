@@ -1,0 +1,38 @@
+name: 自动构建并上传
+
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install and Build
+        run: |
+          yarn install
+          yarn build
+  
+      - name: Commit dist
+        run: |
+          git checkout --orphan dist
+          mv dist ../
+          rm -rf ./*
+          mv ../dist ./
+          git config --local user.email 'l1040186796@gmail.com'
+          git config --local user.name 'AkashiCoin'
+          git add .
+          git commit -m "chore(dist): upload dist"
+
+      - name: Upload dist files
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: dist
+          repository: HibiKier/zhenxun_bot_webui
+          force: true
