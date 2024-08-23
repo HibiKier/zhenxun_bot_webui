@@ -15,7 +15,7 @@
         <p class="title-des">真尋の小部屋へようこそ、お兄さん</p>
       </div>
       <el-form
-        @submit.native.prevent
+        @submit.prevent
         v-loading="loading"
         element-loading-text="正在登录..."
         element-loading-spinner="el-icon-loading"
@@ -151,32 +151,31 @@ export default {
                 this.$message.warning(resp.warning)
               } else {
                 this.$message.success(resp.info)
-                const tokenStr =
-                  resp.data.token_type + " " + resp.data.access_token
+                const tokenStr = resp.data.token_type + " " + resp.data.access_token
                 if (getCookie) {
                   clearCookie("tokenStr")
                 }
                 setCookie("tokenStr", tokenStr)
-                // // 页面跳转
+                // 页面跳转
                 let path = this.$route.query.redirect
-                this.$router.replace(
-                  path == "/" || path == undefined ? "/home" : path
-                )
-              }
-            } else {
-              this.$message.error(resp.info)
+              this.$router.replace(path == "/" || path == undefined ? "/home" : path)
             }
-          })
-        } else {
-          return false
-        }
-        this.loading = false
-      })
-    },
-    changeApi() {
-      this.$router.replace("/myapi")
-    },
+          } else {
+            this.$message.error(resp.info)
+          }
+        }).finally(() => {
+          this.loading = false
+        })
+      } else {
+        return false
+      }
+    })
   },
+  changeApi() {
+    this.$router.replace("/myapi")
+  },
+}
+
 }
 </script>
 
@@ -195,7 +194,7 @@ export default {
 .el-form {
   width: 500px;
 }
-/deep/ .el-input--prefix .el-input__inner {
+::v-deep .el-input--prefix .el-input__inner {
   padding-left: 40px;
   border: 1px solid #e9dfe5;
   border-radius: 12px;
@@ -277,8 +276,7 @@ export default {
   border-radius: 20px;
   backdrop-filter: blur(5px);
 }
-
-/deep/ .el-form-item__label {
+::v-deep .el-form-item__label {
   font-weight: bold;
 }
 

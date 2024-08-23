@@ -185,7 +185,7 @@
               </template>
               <svg-icon
                 :iconClass="data.is_file ? 'file-settings' : 'folder-settings'"
-                @click.native.stop="clickPopover"
+                @click.stop="clickPopover"
                 slot="reference"
               />
             </el-popover>

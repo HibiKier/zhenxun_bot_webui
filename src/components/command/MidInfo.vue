@@ -383,7 +383,7 @@ export default {
     white-space: pre-wrap;
     color: #ffffff;
 
-    /deep/ .el-scrollbar__wrap {
+    ::v-deep .el-scrollbar__wrap {
       overflow-x: hidden;
     }
   }
