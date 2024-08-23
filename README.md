@@ -11,7 +11,7 @@
 ### &ensp; &ensp; 开发环境用于修改和测试源码，启动开发服务会占用一定的资源和性能`>50mb`
 ****
 ### 部署准备：
-### &ensp; &ensp; 开发环境需要下载NodeJs 16，未安装请移步链接下载 [https://nodejs.org](https://nodejs.org/dist/v16.20.2/node-v16.20.2-x64.msi)
+### &ensp; &ensp; 开发环境需要下载NodeJs 16.X，未安装请移步链接下载 [https://nodejs.org](https://nodejs.org/zh-cn/download/prebuilt-installer))
 ****
 
 
