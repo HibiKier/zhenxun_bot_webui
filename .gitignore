@@ -23,3 +23,5 @@ pnpm-debug.log*
 *.sw?
 
 dist
+package-lock.json
+yarn.lock
