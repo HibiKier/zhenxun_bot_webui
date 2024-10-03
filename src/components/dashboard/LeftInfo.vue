@@ -12,8 +12,11 @@
             />
             <div class="item-info">
               <div class="info-name">
-                <span class="line-line" style="background-color: #15bb00"></span
-                >{{ bot.nickname }}
+                <span
+                  class="line-line"
+                  style="background-color: #15bb00"
+                ></span>
+                <span class="bot-name">{{ bot.nickname }} </span>
               </div>
               <div class="info-id">
                 <span class="line-line" style="background-color: #5c87ff"></span
@@ -292,6 +295,13 @@ export default {
         font-size: 30px;
         font-weight: 700;
         display: flex;
+      }
+
+      .bot-name {
+        white-space: nowrap; /* 防止文字换行 */
+        overflow: hidden; /* 隐藏溢出的文字 */
+        text-overflow: ellipsis; /* 显示省略号 */
+        width: 200px; /* 设置宽度，超出部分会显示省略号 */
       }
 
       .info-id {
