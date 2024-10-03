@@ -15,14 +15,19 @@
         </div>
         <div class="line"></div>
         <div class="fg-cnt-item">
+          <p class="fg-cnt-text"><svg-icon icon-class="power-open" /></p>
+          <p class="base-small-title">全局开关</p>
+        </div>
+        <div class="line"></div>
+        <div class="fg-cnt-item">
           <p class="fg-cnt-text">{{ botInfo.group_count }}</p>
           <p class="base-small-title">群组数量</p>
         </div>
       </div>
+      <div class="u-test"></div>
     </div>
-    <el-divider style="margin: 60px 0"></el-divider>
-    <p class="left-title-text">插件加载状态</p>
     <div class="plugin-load-status">
+      <p class="left-title-text">插件加载状态</p>
       <div class="process">
         <span class="plugin-load-status-text">插件数量</span>
         <div class="plugin-load-status-process">
@@ -48,37 +53,40 @@
         </div>
       </div>
     </div>
-    <el-divider style="margin: 60px 0"></el-divider>
-    <p class="left-title-text">基础信息</p>
     <div class="base-info">
-      <div class="base-info-box">
-        <div class="base-info-box-item">
-          <p class="base-info-item-text">{{ botInfo.received_messages }}</p>
-          <p class="base-small-title">今日消息</p>
+      <p class="left-title-text">基础信息</p>
+      <div class="base-border">
+        <div class="base-info-box">
+          <div class="base-info-box-item">
+            <p class="base-info-item-text">{{ botInfo.received_messages }}</p>
+            <p class="base-small-title">今日消息</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="base-info-box-item">
+            <p class="base-info-item-text">{{ botInfo.day_call }}</p>
+            <p class="base-small-title">今日调用</p>
+          </div>
         </div>
-        <el-divider direction="vertical" />
-        <div class="base-info-box-item">
-          <p class="base-info-item-text">{{ botInfo.day_call }}</p>
-          <p class="base-small-title">今日调用</p>
+        <el-divider />
+        <div class="base-info-box">
+          <div class="base-info-box-item">
+            <p class="base-info-item-text">{{ 34 }}</p>
+            <p class="base-small-title">累计登录</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="base-info-box-item">
+            <p class="base-info-item-text">{{ botInfo.connectTime }}</p>
+            <p class="base-small-title">连接时长</p>
+          </div>
         </div>
-      </div>
-      <el-divider />
-      <div class="base-info-box">
-        <div class="base-info-box-item">
-          <p class="base-info-item-text">{{ botInfo.version }}</p>
-          <p class="base-small-title">版本</p>
-        </div>
-        <el-divider direction="vertical" />
-        <div class="base-info-box-item">
-          <p class="base-info-item-text">{{ connectTime }}</p>
-          <p class="base-small-title">连接时长</p>
-        </div>
-      </div>
-      <el-divider />
-      <div class="base-info-box" style="margin-top: 18px">
-        <div class="base-info-box-item" style="width: 240px">
-          <p class="base-info-item-text">{{ botInfo.connect_date }}</p>
-          <p class="base-small-title">连接日期</p>
+        <el-divider />
+        <div class="base-info-box" style="margin-top: 18px">
+          <div class="base-info-box-item" style="width: 240px">
+            <p class="base-info-item-text" style="font-size: 22px">
+              {{ botInfo.connect_date }}
+            </p>
+            <p class="base-small-title">连接日期</p>
+          </div>
         </div>
       </div>
     </div>
@@ -93,18 +101,8 @@ export default {
       botInfo: {},
       sucPluginPer: "100%",
       failPluginPer: "100%",
-      conTime: 0,
       timer: null,
     }
-  },
-  computed: {
-    connectTime() {
-      if (this.botInfo && this.botInfo.connect_time) {
-        const time = this.conTime - this.botInfo.connect_time
-        return this.formateSeconds(time)
-      }
-      return "00:00"
-    },
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
@@ -121,12 +119,17 @@ export default {
           "%"
       }
       if (this.botInfo.connect_time) {
+        this.botInfo.connectTime = "00:00"
         this.conTime = new Date().getTime() / 1000
         if (!this.timer) {
           clearTimeout(this.timer)
         }
         this.timer = setInterval(() => {
-          this.conTime++
+          const time = Math.floor(new Date().getTime() / 1000)
+          this.botInfo.connectTime = this.formateSeconds(
+            time - this.botInfo.connect_time
+          )
+          this.$forceUpdate()
         }, 1000)
       }
     }
@@ -163,8 +166,7 @@ export default {
 
 .left-title-text {
   color: #9f9fa1;
-  margin-bottom: 50px;
-  margin-left: 50px;
+  margin-bottom: 30px;
 }
 
 .base-small-title {
@@ -177,20 +179,28 @@ export default {
   // height: 100%;
   // width: 17%;
   // min-height: 1080px;
+  padding: 0 20px;
 
   .ava-info {
     align-items: center;
-    width: 100%;
     height: 30%;
     padding: auto;
     display: flex;
     flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+
+    .u-test {
+      height: 36px;
+    }
 
     .ava-img {
       width: 46px;
       height: 46px;
       border-radius: 50%;
       margin-top: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       // margin-bottom: 30px;
     }
 
@@ -234,7 +244,9 @@ export default {
     margin-top: 20px;
     padding: 0 50px;
     height: 15%;
-    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
 
     .process {
       display: flex;
@@ -261,10 +273,19 @@ export default {
 
   .base-info {
     padding: 0 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+
+    border-radius: 10px;
+    background-color: white;
+    margin-top: 20px;
+    padding: 30px;
+    height: 370px;
+
+    .base-border {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
     ::v-deep .el-divider--horizontal {
       margin: 0;

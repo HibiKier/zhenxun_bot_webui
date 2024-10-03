@@ -13,20 +13,18 @@
 </template>
 
 <script>
-import LeftInfo from "@/components/command/LeftInfo.vue"
-import MidInfo from "@/components/command/MidInfo.vue"
-import RightInfo from "@/components/command/RightInfo.vue"
+import LeftInfo from "@/components/dashboard/LeftInfo.vue"
+import MidInfo from "@/components/dashboard/MidInfo.vue"
+import RightInfo from "@/components/dashboard/RightInfo.vue"
 export default {
-  name: "MainCommand",
+  name: "MainDashboard",
   data() {
     return {
       botInfo: {},
     }
   },
   components: { LeftInfo, MidInfo, RightInfo },
-  created() {
-    this.botInfo = this.$store.state.botInfo || {}
-  },
+  created() {},
   mounted() {},
   methods: {},
 }
@@ -52,19 +50,13 @@ export default {
   width: 62%;
   min-width: 1080px;
   background-color: #f5f6f8;
-}
-
-.test {
-  ::v-deep .el-divider--vertical {
-    height: 100%;
-    margin-left: 40px;
-    height: c;
-  }
+  overflow: auto;
+  padding: 0 10px;
 }
 
 .config-info {
-  // height: 100%;
+  height: 100%;
   min-width: 501px;
-  background-color: #f4f5fa;
+  background-color: #f5f6f8;
 }
 </style>

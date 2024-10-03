@@ -1,21 +1,46 @@
 <template>
   <div
-    class="button-wrapper"
+    :class="{ disabled: disabled }"
     :style="{
       width: width + 'px',
       height: height + 'px',
     }"
   >
-    <el-tooltip
-      v-if="content"
-      class="item"
-      effect="dark"
-      :content="content"
-      placement="top-start"
-    >
+    <span class="content">
+      <el-tooltip
+        v-if="content"
+        class="item"
+        effect="dark"
+        :content="content"
+        placement="top-start"
+      >
+        <button
+          class="button-class"
+          role="button"
+          :class="{ disabled: disabled }"
+          @click="() => this.$emit('click')"
+          :style="{
+            width: '100%',
+            height: '100%',
+            'background-color': backgroundColor,
+            color: color,
+          }"
+        >
+          {{ text }}
+          <span v-if="icon" style="margin-top: 5px">
+            <svg-icon
+              :icon-class="icon"
+              :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
+            />
+          </span>
+        </button>
+      </el-tooltip>
       <button
+        v-else
         class="button-class"
         role="button"
+        :class="{ disabled: disabled }"
+        :disabled="disabled"
         @click="() => this.$emit('click')"
         :style="{
           width: '100%',
@@ -24,35 +49,15 @@
           color: color,
         }"
       >
-        {{ text }}
         <span v-if="icon" style="margin-top: 5px">
           <svg-icon
             :icon-class="icon"
             :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
           />
         </span>
+        <span style="margin-left: 5px">{{ text }}</span>
       </button>
-    </el-tooltip>
-    <button
-      v-else
-      class="button-class"
-      role="button"
-      @click="() => this.$emit('click')"
-      :style="{
-        width: '100%',
-        height: '100%',
-        'background-color': backgroundColor,
-        color: color,
-      }"
-    >
-      <span v-if="icon" style="margin-top: 5px">
-        <svg-icon
-          :icon-class="icon"
-          :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
-        />
-      </span>
-      {{ text }}
-    </button>
+    </span>
   </div>
 </template>
 
@@ -65,8 +70,8 @@ export default {
     text: String,
     icon: String,
     content: String,
-    iconWidth: { type: String, default: "23" },
-    iconHeight: { type: String, default: "23" },
+    iconWidth: { type: Number, default: 23 },
+    iconHeight: { type: Number, default: 23 },
     type: String,
     width: {
       type: Number,
@@ -76,6 +81,7 @@ export default {
       type: Number,
       default: 40,
     },
+    disabled: { type: Boolean, default: false },
   },
   data() {
     return {
@@ -128,6 +134,28 @@ export default {
   touch-action: manipulation;
   vertical-align: top;
   white-space: nowrap;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+}
+
+.disabled {
+  cursor: not-allowed;
+  position: relative;
+}
+
+.disabled::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1); /* 灰色遮罩的颜色和透明度 */
+  z-index: 1; /* 确保遮罩在内容之上 */
+  border-radius: 5px;
 }
 
 .button-class:active {

@@ -2,14 +2,12 @@
   <div class="system-status">
     <div class="chart-item">
       <p class="title">CPU</p>
-      <el-divider />
       <div class="cpu">
         <div ref="cpuChart" class="base-chart"></div>
       </div>
     </div>
     <div class="chart-item">
       <p class="title">MEMORY</p>
-      <el-divider />
       <div class="memory">
         <div ref="memoryChart" class="base-chart"></div>
       </div>
@@ -17,7 +15,6 @@
 
     <div class="chart-item">
       <p class="title">DISK</p>
-      <el-divider />
       <div class="disk">
         <div ref="diskChart" class="base-chart"></div>
       </div>
@@ -43,6 +40,7 @@ export default {
       memoryOpt: null,
       diskOpt: null,
       chartOpt: {
+        backgroundColor: "#fff",
         // x 轴 类型与数据
         xAxis: {
           type: "category",
@@ -78,6 +76,11 @@ export default {
     this.diskChart = this.$echarts.init(this.$refs.diskChart)
     this.initSystemStatusWebSocket()
     this.initSystemStatus()
+    window.onresize = function () {
+      this.cpuChart.resize()
+      this.memoryChart.resize()
+      this.diskChart.resize()
+    }
   },
   methods: {
     initSystemStatus() {
@@ -91,6 +94,9 @@ export default {
       this.diskOpt = JSON.parse(JSON.stringify(this.chartOpt))
       this.diskOpt.series[0].data = this.diskList
       this.diskOpt.xAxis.data = this.timeList
+      this.cpuChart.resize()
+      this.memoryChart.resize()
+      this.diskChart.resize()
     },
     initSystemStatusWebSocket() {
       if (!this.statusWs) {
@@ -130,11 +136,16 @@ export default {
 <style lang="scss" scoped>
 .system-status {
   padding: 20px;
+  display: flex;
+  // width: 100%;
+  justify-content: space-between;
+
   .chart-item {
-    background-color: #f6f9fe;
+    background-color: #fff;
     border-radius: 10px;
     padding: 10px;
     margin-top: 10px;
+    width: calc(33% - 27px);
   }
 
   .title {
@@ -144,7 +155,8 @@ export default {
     font-size: 20px;
   }
   .base-chart {
-    width: 100%;
+    // width: calc(24% - 27px);
+    // width: 500px;
     height: 240px;
   }
 }

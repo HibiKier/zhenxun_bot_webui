@@ -1,176 +1,289 @@
 <template>
   <div class="mid-info">
-    <div class="head">
-      <p class="head-text">Hello 欢迎来到真寻的小房间！</p>
-      <p class="head-tip">这是一场传奇的冒险旅途...</p>
-    </div>
-    <div class="system-status">
-      <div class="system-status-item">
-        <svg-icon icon-class="cpu" class="system-status-icon" />
-        <span class="system-status-tip">CPU</span>
-        <span class="system-status-text">{{ systemStatus.cpu }}%</span>
-      </div>
-      <div class="system-status-item">
-        <svg-icon icon-class="memory" class="system-status-icon" />
-        <span class="system-status-tip">MEMORY</span>
-        <span class="system-status-text">{{ systemStatus.memory }}%</span>
-      </div>
-      <div class="system-status-item">
-        <svg-icon icon-class="disk" class="system-status-icon" />
-        <span class="system-status-tip">DISK</span>
-        <span class="system-status-text">{{ systemStatus.disk }}%</span>
+    <div class="top-border">
+      <div class="head">
+        <p class="head-text">一位勇者的磨砺...</p>
+        <p class="head-tip">挥剑吧...</p>
       </div>
     </div>
-    <el-divider />
-    <div class="title-box">
-      <p class="title-text">消息接收</p>
-      <span class="title-tip">勇者结识伙伴，收到的问候，口才+1</span>
+    <div class="ch-count-border">
+      <div class="title-box">
+        <p class="title-text">消息接收</p>
+        <span class="title-tip">勇者结识伙伴，收到的问候，口才+1</span>
+      </div>
+      <div class="ch-count">
+        <div class="circle-box">
+          <el-progress
+            color="#4cbeff"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('num')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(chCnt.num)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">总数</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#5c87ff"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('day')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(chCnt.day)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一日内</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#af5eff"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('week')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(chCnt.week)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一周内</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#53ca74"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('month')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(chCnt.month)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一月内</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#f97d6e"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('year')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(chCnt.year)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一年内</p>
+        </div>
+      </div>
     </div>
-    <div class="ch-count">
-      <div class="circle-box">
-        <el-progress
-          color="#4cbeff"
-          type="circle"
-          :stroke-width="10"
-          :percentage="getPercentage('num')"
-          :width="167"
-          :height="167"
-          :format="
-            () => {
-              return String(chCnt.num)
-            }
-          "
-        >
-        </el-progress>
-        <p class="ch-count-text">总数</p>
+    <div class="ch-count-border">
+      <div class="title-box">
+        <p class="title-text">功能调用</p>
+        <span class="title-tip">勇者磨砺自身，辛勤的汗水，力量+1</span>
       </div>
-      <div class="circle-box">
-        <el-progress
-          color="#5c87ff"
-          type="circle"
-          :stroke-width="10"
-          :percentage="getPercentage('day')"
-          :width="167"
-          :height="167"
-          :format="
-            () => {
-              return String(chCnt.day)
-            }
-          "
-        >
-        </el-progress>
-        <p class="ch-count-text">一日内</p>
-      </div>
-      <div class="circle-box">
-        <el-progress
-          color="#af5eff"
-          type="circle"
-          :stroke-width="10"
-          :percentage="getPercentage('week')"
-          :width="167"
-          :height="167"
-          :format="
-            () => {
-              return String(chCnt.week)
-            }
-          "
-        >
-        </el-progress>
-        <p class="ch-count-text">一周内</p>
-      </div>
-      <div class="circle-box">
-        <el-progress
-          color="#53ca74"
-          type="circle"
-          :stroke-width="10"
-          :percentage="getPercentage('month')"
-          :width="167"
-          :height="167"
-          :format="
-            () => {
-              return String(chCnt.month)
-            }
-          "
-        >
-        </el-progress>
-        <p class="ch-count-text">一月内</p>
-      </div>
-      <div class="circle-box">
-        <el-progress
-          color="#f97d6e"
-          type="circle"
-          :stroke-width="10"
-          :percentage="getPercentage('year')"
-          :width="167"
-          :height="167"
-          :format="
-            () => {
-              return String(chCnt.year)
-            }
-          "
-        >
-        </el-progress>
-        <p class="ch-count-text">一年内</p>
+      <div class="ch-count">
+        <div class="circle-box">
+          <el-progress
+            color="#4cbeff"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('num')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(callCnt.num)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">总数</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#5c87ff"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('day')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(callCnt.day)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一日内</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#af5eff"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('week')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(callCnt.week)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一周内</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#53ca74"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('month')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(callCnt.month)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一月内</p>
+        </div>
+        <div class="circle-box">
+          <el-progress
+            color="#f97d6e"
+            type="circle"
+            :stroke-width="10"
+            :percentage="getPercentage('year')"
+            :width="167"
+            :height="167"
+            :format="
+              () => {
+                return String(callCnt.year)
+              }
+            "
+          >
+          </el-progress>
+          <p class="ch-count-text">一年内</p>
+        </div>
       </div>
     </div>
-    <el-divider />
-    <div class="title-box">
-      <p class="title-text">后台日志</p>
-      <span class="title-tip">虽然不知道为什么，但是视力+1</span>
-    </div>
-    <div class="center-log">
-      <el-scrollbar style="height: 100%" ref="scr">
-        <div id="clg"></div>
-      </el-scrollbar>
+    <div class="chart-border">
+      <div ref="chart" class="chart"></div>
     </div>
   </div>
 </template>
 
 <script>
 import { default as AnsiUp } from "ansi_up"
-import { getPort } from "@/utils/api"
 export default {
   name: "MidInfo",
   data() {
     return {
       botInfo: null,
-      statusWs: null,
-      systemStatus: {
-        cpu: 0,
-        memory: 0,
-        disk: 0,
-      },
       chCnt: { num: 0, day: 0, week: 0, month: 0, year: 0 },
-      logWs: null,
+      callCnt: { num: 0, day: 0, week: 0, month: 0, year: 0 },
       ansi_up: null,
       clgDiv: null,
       chatCntInterval: null, //聊天数量定时器
+      callInterval: null,
+      chart: null,
+      chatAndCallMonth: {},
+      chartOpt: {
+        title: {
+          text: "消息/调用统计",
+        },
+        tooltip: {
+          trigger: "axis",
+        },
+        legend: {
+          data: ["消息统计", "调用统计"],
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: [],
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [
+          {
+            name: "消息统计",
+            type: "line",
+            stack: "Total",
+            data: [],
+          },
+          {
+            name: "调用统计",
+            type: "line",
+            stack: "Total",
+            data: [],
+          },
+        ],
+      },
     }
   },
   created() {
-    const host = location.host.split(":")[0] || ""
-    const port = getPort() || window.location.port
-
     this.botInfo = this.$store.state.botInfo || {}
-    this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
-    this.LOG_WS_URL = `ws://${host}:${port}/zhenxun/socket/logs` // 日志ws
-    console.log("this.STATUS_WS_URL", this.STATUS_WS_URL)
-    console.log("this.LOG_WS_URL", this.LOG_WS_URL)
   },
   mounted() {
     this.clgDiv = document.getElementById("clg")
     this.ansi_up = new AnsiUp()
-    this.initSystemStatusWebSocket()
-    this.initLogWebSocket()
     this.getChCount(this.botInfo.self_id)
+    this.getCallCount(this.botInfo.self_id)
+    this.getMonthChatAndCallCount(this.botInfo.self_id)
     this.chatCntInterval = setInterval(() => {
       this.getChCount(this.botInfo.self_id, true)
     }, 30000)
+    this.chart = this.$echarts.init(this.$refs.chart)
+    this.callInterval = setInterval(() => {
+      this.getCallCount(this.botInfo.self_id, true)
+    }, 30000)
+    this.chart = this.$echarts.init(this.$refs.chart)
   },
   beforeDestroy() {
     this.destroyWebsocket()
     if (this.chatCntInterval) {
       clearInterval(this.chatCntInterval)
+    }
+    if (this.callInterval) {
+      clearInterval(this.callInterval)
     }
   },
   methods: {
@@ -188,6 +301,33 @@ export default {
     },
     formatProcess() {
       return this.chCnt.num
+    },
+    getMonthChatAndCallCount(bot_id) {
+      var loading = this.getLoading(".chart")
+      this.getRequest(
+        `${this.$root.prefix}/dashboard/get_chat_and_call_month`,
+        { bot_id: bot_id }
+      ).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.chatAndCallMonth = resp.data
+            this.chatAndCallMonth.call[0] = 123
+            this.chatAndCallMonth.call[1] = 66
+            const chartOpt = JSON.parse(JSON.stringify(this.chartOpt))
+            chartOpt.xAxis.data = this.chatAndCallMonth.date
+            chartOpt.series[0].data = this.chatAndCallMonth.chat
+            chartOpt.series[1].data = this.chatAndCallMonth.call
+            this.chart.setOption(chartOpt)
+            this.chart.resize()
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
     },
     getChCount(bot_id, no_loading) {
       // 获取聊天历史记录数量
@@ -221,64 +361,36 @@ export default {
         })
       }
     },
-    initLogWebSocket() {
-      if (!this.logWs) {
-        console.log("初始化日志WebSocket", this.LOG_WS_URL)
-
-        const loading = this.getLoading(".center-log")
-        this.logWs = new WebSocket(this.LOG_WS_URL)
-        this.logWs.onopen = () => {
-          console.log("Log WebSocket 已连接...")
+    getCallCount(bot_id, no_loading) {
+      // 获取聊天历史记录数量
+      if (bot_id) {
+        if (!no_loading) {
+          var loading = this.getLoading(".ch-count")
         }
-        this.logWs.onmessage = this.logWsOnmessage
-        this.logWs.onclose = () => {
-          this.$message.warning("Log WebSocket 已断开...")
-        }
-        loading.close()
-      }
-    },
-    logWsOnmessage(event) {
-      let log = this.ansi_up.ansi_to_html(event.data)
-      log = log.replace("color:rgb(0,0,187)", "color:rgb(55,186,255)")
 
-      let childDom = document.createElement("div")
-      childDom.innerHTML = log
-      this.clgDiv.appendChild(childDom)
-      let children = this.clgDiv.children
-
-      if (children.length > 150) {
-        console.log("日志数量超过100，移除日志...")
-        this.clgDiv.removeChild(children[0])
-      }
-
-      this.$nextTick(() => {
-        // 滚动条至底部
-        const div = this.$refs["scr"].$refs["wrap"]
-        div.scrollTop = div.scrollHeight
-      })
-    },
-    initSystemStatusWebSocket() {
-      if (!this.statusWs) {
-        console.log("初始化日志WebSocket", this.STATUS_WS_URL)
-        this.statusWs = new WebSocket(this.STATUS_WS_URL)
-        this.statusWs.onopen = () => {
-          console.log("系统状态 WebSocket 已连接...")
-        }
-        this.statusWs.onmessage = this.statusWsOnmessage
-        this.statusWs.onclose = () => {
-          this.$message.warning("系统状态 WebSocket 已断开...")
-        }
-      }
-    },
-    statusWsOnmessage(event) {
-      this.systemStatus = JSON.parse(event.data)
-    },
-    destroyWebsocket() {
-      if (this.statusWs && this.statusWs.readyState === WebSocket.OPEN) {
-        this.statusWs.close()
-      }
-      if (this.logWs && this.logWs.readyState === WebSocket.OPEN) {
-        this.logWs.close()
+        this.getRequest(`${this.$root.prefix}/main/get_all_call_count`, {
+          bot_id,
+        }).then((resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              if (loading) {
+                this.$message.warning(resp.warning)
+              }
+            } else {
+              if (loading) {
+                this.$message.success(resp.info)
+              }
+              this.callCnt = resp.data
+            }
+          } else {
+            if (loading) {
+              this.$message.error(resp.info)
+            }
+          }
+          if (loading) {
+            loading.close()
+          }
+        })
       }
     },
   },
@@ -291,9 +403,6 @@ export default {
 }
 
 .mid-info {
-  padding-left: 40px;
-  padding-top: 40px;
-
   .head {
     .head-text {
       font-size: 27px;
@@ -307,34 +416,17 @@ export default {
     }
   }
 
-  .system-status {
-    display: flex;
-    margin-top: 50px;
-
-    .system-status-item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .system-status-text {
-        font-size: 20px;
-        margin-right: 70px;
-      }
-
-      .system-status-icon {
-        width: 30px;
-        height: 30px;
-        margin-right: 5px;
-      }
-
-      .system-status-tip {
-        font-size: 20px;
-        color: #b8bac0;
-        margin-right: 15px;
-      }
-    }
+  .top-border {
+    background-color: white;
+    padding: 10px 30px;
+    border-radius: 10px;
   }
-
+  .ch-count-border {
+    border-radius: 10px;
+    background-color: white;
+    padding: 30px;
+    margin-top: 20px;
+  }
   .ch-count {
     display: flex;
     justify-content: center;
@@ -374,18 +466,16 @@ export default {
     }
   }
 
-  .center-log {
-    height: 310px;
-    width: 99%;
-    background-color: #282c34;
+  .chart-border {
     border-radius: 10px;
-    padding: 10px;
-    white-space: pre-wrap;
-    color: #ffffff;
-
-    /deep/ .el-scrollbar__wrap {
-      overflow-x: hidden;
-    }
+    background-color: white;
+    padding: 30px;
+    margin-top: 20px;
+    height: 308px;
+  }
+  .chart {
+    height: 308px;
+    width: 100%;
   }
 }
 </style>

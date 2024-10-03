@@ -1,8 +1,65 @@
 <template>
   <div class="right-info">
-    <div class="login-log">
-      <OneMark />
+    <div class="base-border">
+      <p class="base-title">NoneBot配置</p>
+      <div class="nb-config">
+        <div class="nb-config-box">
+          <div class="nb-config-box-item">
+            <p class="config-info-item-text">{{ botConfig.host }}</p>
+            <p class="config-small-title">host</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="nb-config-box-item">
+            <p class="config-info-item-text">{{ botConfig.port }}</p>
+            <p class="config-small-title">port</p>
+          </div>
+        </div>
+        <el-divider />
+        <div class="nb-config-box">
+          <div class="nb-config-box-item">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              placement="top"
+              :content="botConfig.driver || ''"
+              :disabled="botConfig.driver.length < 5"
+            >
+              <p class="config-info-item-text">{{ botConfig.driver }}</p>
+            </el-tooltip>
+            <p class="config-small-title">driver</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="nb-config-box-item">
+            <p class="config-info-item-text">{{ botConfig.log_level }}</p>
+            <p class="config-small-title">log_level</p>
+          </div>
+        </div>
+        <el-divider />
+        <div class="nb-config-box">
+          <div class="nb-config-box-item">
+            <p class="config-info-item-text">{{ botConfig.api_timeout }}</p>
+            <p class="config-small-title">api_timeout</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="nb-config-box-item">
+            <p class="config-info-item-text">
+              {{ botConfig.session_expire_timeout }}
+            </p>
+            <p class="config-small-title">session_expire_timeout</p>
+          </div>
+        </div>
+        <el-divider />
+        <div class="nb-config-box">
+          <div class="nb-config-box-item" style="width: 100%">
+            <p class="config-info-item-text" style="max-width: 390px">
+              {{ botConfig.nicknames }}
+            </p>
+            <p class="config-small-title">NICKNAME</p>
+          </div>
+        </div>
+      </div>
     </div>
+    <!-- <el-divider /> -->
     <div class="base-border" style="margin-top: 18px">
       <div class="active-group">
         <div style="height: 40px">
@@ -95,17 +152,10 @@
 </template>
 
 <script>
-import OneMark from "../ui/OneMark.vue"
-
 export default {
   name: "RightInfo",
-  components: { OneMark },
   data() {
     return {
-      tableData: [
-        { date: "2025/10/3", ip: "0.0.0.0", time: "11:45:14" },
-        { date: "2025/10/2", ip: "127.0.0.1", time: "11:45:14" },
-      ],
       botInfo: null,
       botConfig: {},
       selectGroupType: "all",
@@ -160,6 +210,10 @@ export default {
     this.botInfo = this.$store.state.botInfo || {}
     if (this.botInfo) {
       this.botConfig = this.botInfo.config || {}
+      this.botConfig.nicknames = ""
+      if (this.botConfig.nickname) {
+        this.botConfig.nicknames = this.botConfig.nickname.join(",")
+      }
     }
   },
   mounted() {
@@ -267,13 +321,8 @@ export default {
 
 <style lang="scss" scoped>
 .right-info {
-  padding: 0 20px;
+  padding: 0 10px;
 
-  .base-border {
-    border-radius: 10px;
-    padding: 20px;
-    background-color: white;
-  }
   ::v-deep .el-divider--horizontal {
     margin: 10px 0;
   }
@@ -292,15 +341,51 @@ export default {
     margin-bottom: 30px;
   }
 
-  .login-log {
-    padding: 30px;
+  .base-border {
     border-radius: 10px;
+    padding: 20px;
     background-color: white;
-    height: 305px;
+  }
+
+  .nb-config {
+    padding: 0 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    ::v-deep .el-divider--horizontal {
+      margin: 0;
+    }
+
+    ::v-deep .el-divider--vertical {
+      margin: 0 50px;
+      height: 73px;
+    }
+
+    .nb-config-box {
+      display: flex;
+
+      .nb-config-box-item {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        width: 150px;
+
+        .config-info-item-text {
+          font-size: 22px;
+          margin-bottom: 10px;
+          margin-top: 10px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
   }
   .base-chart {
     width: 100%;
-    height: 298px;
+    height: 293px;
   }
 
   .active-group {

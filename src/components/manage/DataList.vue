@@ -300,7 +300,9 @@ export default {
 
   .data-list-border {
     margin-top: 80px;
-    height: 100%;
+    height: calc(100% - 30px);
+    border-radius: 10px;
+    padding: 10px 0;
     // border: #4d7cfe solid 1px;
     // border-radius: 5px;
 
@@ -334,7 +336,7 @@ export default {
         float: right;
         cursor: pointer;
         position: absolute;
-        right: 1px;
+        right: 10px;
         top: 3px;
       }
 

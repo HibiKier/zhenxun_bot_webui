@@ -5,16 +5,16 @@
 </template>
 
 <script>
-import { getBaseUrlLocalStorage, setBase } from "@/utils/api";
+import { getBaseUrlLocalStorage, setBase } from "@/utils/api"
 export default {
   name: "App",
   created() {
     if (getBaseUrlLocalStorage()) {
-      setBase(getBaseUrlLocalStorage());
+      setBase(getBaseUrlLocalStorage())
     }
   },
   components: {},
-};
+}
 </script>
 
 <style>
