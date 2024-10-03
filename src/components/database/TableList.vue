@@ -133,16 +133,22 @@ export default {
 
 <style lang="scss" scoped>
 .table-list {
-  height: calc(100% - 150px);
+  height: calc(100% - 214px);
+  padding: 0 30px;
+
   .title {
     // color: #939395;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 23px;
     // border: 1px solid #d3d3d4;
     padding: 5px;
     border-radius: 10px;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background-color: white;
+    height: 35px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .name-color {
@@ -157,16 +163,19 @@ export default {
   .table-list-box {
     overflow: auto;
     height: 100%;
-    padding: 0 10px;
+    padding: 30px;
+    background-color: white;
+    border-radius: 10px;
 
     ::v-deep .el-collapse-item {
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       border-radius: 5px;
     }
 
     ::v-deep .el-collapse-item__header {
       font-size: 15px;
       font-weight: bold;
+      background-color: #f0f2f5;
       // border-radius: 10px;
     }
 

@@ -61,6 +61,7 @@
           :rows="20"
           type="textarea"
           resize="none"
+          style="height: 100%"
         ></el-input>
       </div>
       <div class="history">
@@ -204,7 +205,6 @@ export default {
             this.$message.warning(resp.warning)
           } else {
             this.$message.success(resp.info)
-            console.log("get_sql_log", resp)
             this.historyTotal = resp.data.total
             this.historyList = resp.data.data
           }
@@ -232,7 +232,7 @@ export default {
 .common-sql-item {
   border: 1px solid #d3d3d4;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   margin-top: 5px;
   cursor: pointer;
 }
@@ -262,12 +262,17 @@ export default {
     display: flex;
     .cmd {
       width: calc(100% - 460px);
+
+      /deep/ .el-textarea__inner {
+        height: 100% !important;
+        border-radius: 10px;
+      }
     }
     .history {
       width: 450px;
       margin-left: 10px;
       border: 1px solid #d3d3d4;
-      border-radius: 5px;
+      border-radius: 10px;
       padding: 20px;
       background-color: #fff;
 
@@ -298,6 +303,7 @@ export default {
     height: calc(100% - 520px);
     min-height: 460px;
     overflow: auto;
+    border-radius: 10px;
 
     .error-info {
       margin: 24px;

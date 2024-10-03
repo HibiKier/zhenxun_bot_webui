@@ -25,8 +25,8 @@ export default {
   display: flex;
   .left-table {
     width: 25%;
-    height: 100%;
-    background-color: #f4f5fa;
+    // height: 100%;
+    // background-color: #f4f5fa;
   }
 
   .right-main {

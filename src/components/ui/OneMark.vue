@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="one-mark">
     <p class="tip">
       <svg-icon icon-class="magic" style="height: 20px; width: 20px" />{{
         text
@@ -26,9 +26,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tip {
-  color: #acafb8;
-  font-size: 12px;
-  text-align: center;
+.one-mark {
+  .tip {
+    color: #acafb8;
+    font-size: 12px;
+    text-align: center;
+    padding: 10px;
+  }
+
+  /deep/ .el-divider--horizontal {
+    margin-top: 5px;
+  }
 }
 </style>

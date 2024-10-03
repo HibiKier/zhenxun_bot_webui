@@ -171,6 +171,13 @@ export default {
     float: left;
   }
 
+  /deep/ .el-textarea {
+    height: calc(100% - 50px);
+    .el-textarea__inner {
+      height: 100%;
+    }
+  }
+
   .btn-group {
     float: right;
   }

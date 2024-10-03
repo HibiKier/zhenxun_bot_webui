@@ -4,9 +4,11 @@ import Login from "@/views/Login"
 import Home from "@/views/Home"
 import MyApi from "@/views/MyApi"
 import PluginManage from "@/views/plugin/PluginManage"
+import StoreManage from "@/views/store/StoreManage"
 import MainCommand from "@/views/command/MainCommand"
 import FriendGroupManage from "@/views/manage/FriendGroupManage"
 import DatabaseManage from "@/views/database/DatabaseManage"
+import MainDashboard from "@/views/dashboard/MainDashboard"
 import SystemInfo from "@/views/system/SystemInfo"
 
 Vue.use(VueRouter)
@@ -26,10 +28,12 @@ const routes = [
     path: "/home",
     name: "Home",
     component: Home,
-    redirect: "/command",
+    redirect: "/dashboard",
     children: [
-      { path: "/command", name: "控制台", component: MainCommand },
+      { path: "/dashboard", name: "仪表盘", component: MainDashboard },
+      { path: "/command", name: "BOT控制台", component: MainCommand },
       { path: "/plugin", name: "插件列表", component: PluginManage },
+      { path: "/store", name: "插件商店", component: StoreManage },
       { path: "/manage", name: "好友/群组", component: FriendGroupManage },
       { path: "/database", name: "数据库管理", component: DatabaseManage },
       { path: "/system", name: "系统信息", component: SystemInfo },

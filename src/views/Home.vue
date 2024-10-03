@@ -5,6 +5,20 @@
         <img class="menu-pic" src="../assets/image/menu_pic.png" alt="菜单" />
         <div class="myscrollbar">
           <el-menu class="border-right-none" @select="handleSelect">
+            <el-menu-item index="dashboard">
+              <span :class="checkClass('dashboard')"></span>
+              <svg-icon
+                v-if="curSelectMenu == 'dashboard'"
+                icon-class="dashboard-select"
+                class="menu-icon-class"
+              />
+              <svg-icon v-else icon-class="dashboard" class="menu-icon-class" />
+              <span
+                slot="title"
+                :class="{ selectMenu: curSelectMenu == 'dashboard' }"
+                >仪表盘</span
+              >
+            </el-menu-item>
             <el-menu-item index="command">
               <span :class="checkClass('command')"></span>
               <svg-icon
@@ -16,7 +30,7 @@
               <span
                 slot="title"
                 :class="{ selectMenu: curSelectMenu == 'command' }"
-                >控制台</span
+                >真寻控制台</span
               >
             </el-menu-item>
             <el-menu-item index="plugin">
@@ -31,6 +45,20 @@
                 slot="title"
                 :class="{ selectMenu: curSelectMenu == 'plugin' }"
                 >插件列表</span
+              >
+            </el-menu-item>
+            <el-menu-item index="store">
+              <span :class="checkClass('store')"></span>
+              <svg-icon
+                v-if="curSelectMenu == 'store'"
+                icon-class="store-select"
+                class="menu-icon-class"
+              />
+              <svg-icon v-else icon-class="store" class="menu-icon-class" />
+              <span
+                slot="title"
+                :class="{ selectMenu: curSelectMenu == 'store' }"
+                >插件商店</span
               >
             </el-menu-item>
             <el-menu-item index="manage">
@@ -374,7 +402,7 @@ export default {
     z-index: 999999;
   }
   .show {
-    width: 8rem !important;
+    width: 14rem !important;
   }
   .cover {
     position: fixed;
@@ -456,7 +484,7 @@ export default {
     z-index: 999999;
   }
   .show {
-    width: 8rem !important;
+    width: 12rem !important;
   }
   .cover {
     position: fixed;

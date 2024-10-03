@@ -2,7 +2,7 @@
   <div class="main">
     <div class="mid-info">
       <div class="mid-box">
-        <one-mark text="这是一个标记的魔法" style="margin-top: 10px" />
+        <one-mark text="这是一个标记的魔法" />
         <div style="margin-left: 10px; margin-bottom: 20px">
           <span v-for="(path, i) in pathList" :key="i">
             <span class="path-item" @click="clickPath(i)">{{ path }}</span> /
@@ -646,19 +646,19 @@ export default {
 
 .main {
   height: 100%;
-  width: 100%;
+  width: calc(100% - 40px);
   display: flex;
+  padding: 0 20px;
 
   .mid-info {
     height: 100%;
-    width: 67%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 40%;
 
     .mid-box {
       height: 100%;
       width: 100%;
+      border-radius: 10px;
+      background-color: white;
       .path-item {
         color: #61c4fe;
         cursor: pointer;
@@ -671,19 +671,19 @@ export default {
         // align-items: center;
         .base-chart {
           width: 100%;
-          height: 1000px;
+          height: 677px;
         }
       }
     }
   }
   .main-tree {
-    height: calc(100% - 110px);
-    width: calc(30% - 60px);
+    height: 727px;
+    width: 60%;
     padding: 30px;
     // border: 1px solid #d3d3d4;
     border-radius: 10px;
-    margin-top: 20px;
     background-color: #fff;
+    margin-left: 30px;
 
     .btn-group {
       display: flex;
@@ -716,7 +716,7 @@ export default {
       padding-right: 8px;
     }
     .tree-class {
-      height: calc(100% - 125px);
+      height: calc(100% - 140px);
       overflow: auto;
       border-radius: 5px;
       // border: 1px solid #d3d3d4;

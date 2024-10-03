@@ -3,3 +3,9 @@
 .CodeMirror-hints {
   z-index: 100000 !important;
 }
+
+@font-face {
+  font-family: fzrzFont;
+  /* 导入的字体文件 */
+  src: url("../font/fzrzExtraBold.ttf");
+}
