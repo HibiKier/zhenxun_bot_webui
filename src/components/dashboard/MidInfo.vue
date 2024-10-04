@@ -197,6 +197,9 @@ export default {
           type: "value",
           name: "次数",
         },
+        tooltip: {
+          trigger: "axis",
+        },
         series: [
           {
             data: [],
@@ -280,6 +283,7 @@ export default {
             const chatOpt = JSON.parse(JSON.stringify(this.chartOpt))
             const callOpt = JSON.parse(JSON.stringify(this.chartOpt))
             chatOpt.xAxis.data = this.chatAndCallMonth.date
+            callOpt.xAxis.data = this.chatAndCallMonth.date
             chatOpt.title.text = "聊天记录"
             callOpt.title.text = "调用记录"
             chatOpt.series[0].data = this.chatAndCallMonth.chat
