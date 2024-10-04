@@ -246,13 +246,13 @@ export default {
           {
             name: "消息统计",
             type: "line",
-            stack: "Total",
+            // stack: "Total",
             data: [],
           },
           {
             name: "调用统计",
             type: "line",
-            stack: "Total",
+            // stack: "Total",
             data: [],
           },
         ],
@@ -314,8 +314,6 @@ export default {
           } else {
             this.$message.success(resp.info)
             this.chatAndCallMonth = resp.data
-            this.chatAndCallMonth.call[0] = 123
-            this.chatAndCallMonth.call[1] = 66
             const chartOpt = JSON.parse(JSON.stringify(this.chartOpt))
             chartOpt.xAxis.data = this.chatAndCallMonth.date
             chartOpt.series[0].data = this.chatAndCallMonth.chat
