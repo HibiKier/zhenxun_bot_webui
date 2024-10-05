@@ -17,7 +17,7 @@
             color="#4cbeff"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('num')"
+            :percentage="getPercentageChat('num')"
             :width="167"
             :height="167"
             :format="
@@ -34,7 +34,7 @@
             color="#5c87ff"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('day')"
+            :percentage="getPercentageChat('day')"
             :width="167"
             :height="167"
             :format="
@@ -51,7 +51,7 @@
             color="#af5eff"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('week')"
+            :percentage="getPercentageChat('week')"
             :width="167"
             :height="167"
             :format="
@@ -68,7 +68,7 @@
             color="#53ca74"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('month')"
+            :percentage="getPercentageChat('month')"
             :width="167"
             :height="167"
             :format="
@@ -85,7 +85,7 @@
             color="#f97d6e"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('year')"
+            :percentage="getPercentageChat('year')"
             :width="167"
             :height="167"
             :format="
@@ -110,7 +110,7 @@
             color="#4cbeff"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('num')"
+            :percentage="getPercentageCall('num')"
             :width="167"
             :height="167"
             :format="
@@ -127,7 +127,7 @@
             color="#5c87ff"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('day')"
+            :percentage="getPercentageCall('day')"
             :width="167"
             :height="167"
             :format="
@@ -144,7 +144,7 @@
             color="#af5eff"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('week')"
+            :percentage="getPercentageCall('week')"
             :width="167"
             :height="167"
             :format="
@@ -161,7 +161,7 @@
             color="#53ca74"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('month')"
+            :percentage="getPercentageCall('month')"
             :width="167"
             :height="167"
             :format="
@@ -178,7 +178,7 @@
             color="#f97d6e"
             type="circle"
             :stroke-width="10"
-            :percentage="getPercentage('year')"
+            :percentage="getPercentageCall('year')"
             :width="167"
             :height="167"
             :format="
@@ -297,7 +297,7 @@ export default {
     }
   },
   methods: {
-    getPercentage(type) {
+    getPercentageChat(type) {
       if (this.chCnt.num == 0) {
         return 0
       }
@@ -308,6 +308,18 @@ export default {
         return 100
       }
       return (this.chCnt[type] / this.chCnt.num) * 100
+    },
+    getPercentageCall(type) {
+      if (this.callCnt.num == 0) {
+        return 0
+      }
+      if (type == "num") {
+        return 100
+      }
+      if (this.callCnt[type] == this.callCnt.num) {
+        return 100
+      }
+      return (this.callCnt[type] / this.callCnt.num) * 100
     },
     formatProcess() {
       return this.chCnt.num
