@@ -1,7 +1,7 @@
 <template>
   <div class="right-info">
-    <div class="login-log">
-      <OneMark />
+    <div class="image-l">
+      <el-image :src="require('@/assets/image/zx_img.jpg')" fit="fill" />
     </div>
     <div class="base-border" style="margin-top: 18px">
       <div class="active-group">
@@ -95,11 +95,8 @@
 </template>
 
 <script>
-import OneMark from "../ui/OneMark.vue"
-
 export default {
   name: "RightInfo",
-  components: { OneMark },
   data() {
     return {
       tableData: [
@@ -292,11 +289,13 @@ export default {
     margin-bottom: 30px;
   }
 
-  .login-log {
+  .image-l {
     padding: 30px;
     border-radius: 10px;
     background-color: white;
     height: 305px;
+    width: 421px;
+    border: 1px solid #e0e0e0;
   }
   .base-chart {
     width: 100%;

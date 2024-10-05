@@ -239,21 +239,31 @@ export default {
           boundaryGap: false,
           data: [],
         },
-        yAxis: {
-          type: "value",
-        },
+        yAxis: [
+          {
+            type: "value",
+            name: "消息统计",
+          },
+          {
+            type: "value",
+            name: "调用统计",
+            position: "right",
+          },
+        ],
         series: [
           {
             name: "消息统计",
             type: "line",
             // stack: "Total",
             data: [],
+            yAxisIndex: 0,
           },
           {
             name: "调用统计",
             type: "line",
             // stack: "Total",
             data: [],
+            yAxisIndex: 1,
           },
         ],
       },

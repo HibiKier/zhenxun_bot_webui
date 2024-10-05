@@ -8,7 +8,7 @@
             <el-image
               :src="bot.ava_url"
               class="ava-img main-ava"
-              style="width: 100px; height: 100px"
+              style="width: 100px; height: 90px"
             />
             <div class="item-info">
               <div class="info-name">
