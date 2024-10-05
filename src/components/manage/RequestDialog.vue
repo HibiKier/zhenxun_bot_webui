@@ -262,10 +262,9 @@ export default {
 
   .group-req {
     width: 49%;
-    padding: 10px;
+    padding: 20px;
     .group-req-list {
-      padding: 10px;
-      margin-left: 40px;
+      margin-top: 60px;
     }
   }
 

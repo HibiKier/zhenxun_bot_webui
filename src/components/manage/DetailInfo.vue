@@ -360,7 +360,7 @@ export default {
 
               this.tmpAllPluginList.forEach((e) => {
                 if (sbList.includes(e.module)) {
-                  e.plugin_name = e.plugin_name + "(SUPER_BLOCK)"
+                  e.plugin_name = e.plugin_name + "(超级用户禁用)"
                 }
               })
             }
