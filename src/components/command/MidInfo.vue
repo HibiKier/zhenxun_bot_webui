@@ -288,7 +288,6 @@ export default {
     this.chart = this.$echarts.init(this.$refs.chart)
   },
   beforeDestroy() {
-    this.destroyWebsocket()
     if (this.chatCntInterval) {
       clearInterval(this.chatCntInterval)
     }
