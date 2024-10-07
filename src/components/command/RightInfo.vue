@@ -118,7 +118,7 @@ export default {
           data: null,
           axisLabel: {
             interval: 0, //强制显示所有标签
-            // rotate: 15,
+            rotate: 10,
           },
         }, // X轴
         yAxis: { type: "value" }, // Y轴
