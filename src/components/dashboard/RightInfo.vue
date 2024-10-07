@@ -164,14 +164,21 @@ export default {
       hotPluginChart: null,
       groupCntInterval: null, //活跃数量定时器
       chartOpt: {
-        tooltip: {}, // 工具提示组件
+        tooltip: {
+          formatter: function (params) {
+            return params.value // 鼠标悬停时显示完整的标签内容
+          },
+        }, // 工具提示组件
         xAxis: {
           type: "category",
           name: "",
-          data: null,
+          data: [],
           axisLabel: {
             interval: 0, //强制显示所有标签
-            // rotate: 15,
+            rotate: 10,
+            formatter: function (value) {
+              return value.length > 8 ? value.slice(0, 8) + "..." : value
+            },
           },
         }, // X轴
         yAxis: { type: "value" }, // Y轴
@@ -200,7 +207,7 @@ export default {
               },
             },
             emphasis: { focus: "series" }, // 高亮效果
-            data: null, // 数据源
+            data: [], // 数据源
           },
         ],
       },
@@ -373,7 +380,7 @@ export default {
         width: 150px;
 
         .config-info-item-text {
-          font-size: 22px;
+          font-size: 25px;
           margin-bottom: 10px;
           margin-top: 10px;
           overflow: hidden;
