@@ -185,8 +185,10 @@ export default {
       if (!no_loading) {
         var loading = this.getLoading(".active-group")
       }
+
       this.getRequest(`${this.$root.prefix}/main/get_active_group`, {
-        date_type,
+        date_type: date_type,
+        bot_id: this.botInfo.self_id,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
@@ -231,7 +233,8 @@ export default {
     getHotPlugin(date_type) {
       const loading = this.getLoading(".hot-plugin")
       this.getRequest(`${this.$root.prefix}/main/get_hot_plugin`, {
-        date_type,
+        date_type: date_type,
+        bot_id: this.botInfo.self_id,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
