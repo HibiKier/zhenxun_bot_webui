@@ -213,15 +213,25 @@ export default {
                 }
               }
               if (this.$store.state.botInfo && !bot_id) {
+                console.log("1111111")
+
                 this.botInfo = this.$store.state.botInfo
+                console.log("00000", JSON.parse(JSON.stringify(this.botInfo)))
                 for (const bot of this.botList) {
                   bot.is_select = bot.self_id == this.botInfo.self_id
-                  this.botInfo = bot
-                  this.$store.commit("SET_BOT", bot)
+                  console.log("------", JSON.parse(JSON.stringify(bot)))
+                  if (bot.is_select) {
+                    console.log("set bot", bot)
+                    this.botInfo = bot
+                    this.$store.commit("SET_BOT", bot)
+                  }
                 }
               } else {
                 for (const bot of this.botList) {
                   if (bot.is_select) {
+                    console.log("22222")
+                    console.log("set bot", JSON.parse(JSON.stringify(bot)))
+
                     this.botInfo = bot
                     this.$store.commit("SET_BOT", bot)
                     break

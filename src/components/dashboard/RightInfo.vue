@@ -157,7 +157,7 @@ export default {
   data() {
     return {
       botInfo: null,
-      botConfig: {},
+      botConfig: { driver: "" },
       selectGroupType: "all",
       selectHotPluginType: "all",
       groupChart: null,
@@ -215,17 +215,11 @@ export default {
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
-    if (this.botInfo) {
-      this.botConfig = this.botInfo.config || {}
-      this.botConfig.nicknames = ""
-      if (this.botConfig.nickname) {
-        this.botConfig.nicknames = this.botConfig.nickname.join(",")
-      }
-    }
   },
   mounted() {
     this.groupChart = this.$echarts.init(this.$refs.groupChart)
     this.hotPluginChart = this.$echarts.init(this.$refs.hotPluginChart)
+    this.getNonebotConfig()
     this.getActiveGroupData()
     this.getHotPlugin()
     this.groupCntInterval = setInterval(() => {
@@ -238,6 +232,30 @@ export default {
     }
   },
   methods: {
+    getNonebotConfig() {
+      console.log("ttttttttt")
+
+      const loading = this.getLoading(".base-border")
+      this.getRequest(`${this.$root.prefix}/dashboard/get_nonebot_config`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.info)
+            } else {
+              this.$message.success(resp.info)
+              this.botConfig = resp.data
+              this.botConfig.nicknames = ""
+              if (this.botConfig.nickname) {
+                this.botConfig.nicknames = this.botConfig.nickname.join(",")
+              }
+            }
+          } else {
+            this.$message.error(resp.info)
+          }
+          loading.close()
+        }
+      )
+    },
     clickGroupType(type) {
       this.selectGroupType = type
       this.getActiveGroupData(type)
