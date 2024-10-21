@@ -1,6 +1,6 @@
 <template>
   <div class="left-info">
-    <div class="top-text">在线小真寻</div>
+    <div class="top-text">在线小真寻（{{ botList.length }}）</div>
     <div class="bot-list">
       <div v-for="bot in botList" :key="bot.id" class="bot-item">
         <div style="width: 100%">

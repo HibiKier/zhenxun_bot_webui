@@ -70,7 +70,7 @@
         <el-divider />
         <div class="base-info-box">
           <div class="base-info-box-item">
-            <p class="base-info-item-text">{{ 34 }}</p>
+            <p class="base-info-item-text">{{ botInfo.connect_count }}</p>
             <p class="base-small-title">累计登录</p>
           </div>
           <el-divider direction="vertical" />

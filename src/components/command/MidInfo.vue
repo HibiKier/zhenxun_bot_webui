@@ -355,7 +355,7 @@ export default {
           var loading = this.getLoading(".ch-count")
         }
 
-        this.getRequest(`${this.$root.prefix}/main/get_all_ch_count`, {
+        this.getRequest(`${this.$root.prefix}/main/get_all_chat_count`, {
           bot_id,
         }).then((resp) => {
           if (resp.suc) {

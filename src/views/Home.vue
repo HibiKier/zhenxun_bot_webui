@@ -216,6 +216,10 @@ export default {
                 this.botInfo = this.$store.state.botInfo
                 for (const bot of this.botList) {
                   bot.is_select = bot.self_id == this.botInfo.self_id
+                  if (bot.is_select) {
+                    this.botInfo = bot
+                    this.$store.commit("SET_BOT", bot)
+                  }
                 }
               } else {
                 for (const bot of this.botList) {
