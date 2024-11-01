@@ -31,7 +31,6 @@
             v-model="loginForm.username"
             placeholder="请输入用户名"
             class="input-border"
-            @keyup.enter="submitLogin"
           >
             <i slot="prefix"> <SvgIcon icon-class="account" class="icon" /></i>
           </el-input>
@@ -42,7 +41,6 @@
             v-model="loginForm.password"
             placeholder="请输入密码"
             class="input-border"
-            @keyup.enter="submitLogin"
           >
             <i slot="prefix"> <SvgIcon icon-class="password" class="icon" /></i>
           </el-input>
@@ -52,7 +50,6 @@
           <el-button
             type="primary"
             style="width: 50%; border-radius: 12px"
-            native-type="submit"
             @click="changeApi"
             plain
             >更换端口</el-button
