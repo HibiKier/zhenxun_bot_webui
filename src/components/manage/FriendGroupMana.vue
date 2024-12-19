@@ -1,18 +1,37 @@
 <template>
   <div class="main">
-    <div class="data-list">
-      <DataList @getDetail="getDetail" />
-    </div>
-    <div class="chat">
-      <ChatWindow ref="chatWindow" />
-    </div>
-    <div class="detail">
-      <DetailInfo ref="detailInfo" @startChat="startChat" />
-    </div>
+    <el-row>
+      <el-col :span="6">
+        <div class="data-list">
+          <DataList
+            @getDetail="getDetail"
+            :style="{ height: computedHeight + 'px' }"
+          />
+        </div>
+      </el-col>
+      <el-col :span="10">
+        <div class="chat">
+          <ChatWindow
+            ref="chatWindow"
+            :style="{ height: computedHeight + 'px' }"
+          />
+        </div>
+      </el-col>
+      <el-col :span="8">
+        <div class="detail">
+          <DetailInfo
+            ref="detailInfo"
+            @startChat="startChat"
+            :style="{ height: computedHeight + 'px' }"
+          />
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+import { getHeaderHeight } from "@/utils/utils"
 import ChatWindow from "./ChatWindow.vue"
 import DataList from "./DataList.vue"
 import DetailInfo from "./DetailInfo.vue"
@@ -24,10 +43,22 @@ export default {
     DetailInfo,
   },
   data() {
-    return {}
+    return {
+      windowHeight: window.innerHeight,
+    }
   },
-  mounted() {},
+  computed: {
+    computedHeight() {
+      return this.windowHeight - getHeaderHeight()
+    },
+  },
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+  },
   methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+    },
     startChat(data) {
       this.$refs["chatWindow"].startChat(data)
     },
@@ -39,6 +70,9 @@ export default {
       }
     },
   },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
@@ -46,9 +80,7 @@ export default {
 .main {
   width: 100%;
   height: 100%;
-  display: flex;
   .data-list {
-    width: 17%;
     height: 100%;
     background-color: #f4f5fa;
     overflow: auto;
@@ -56,12 +88,10 @@ export default {
 
   .chat {
     height: 100%;
-    width: 58%;
   }
 
   .detail {
     height: 100%;
-    width: 25%;
     overflow: auto;
   }
 }

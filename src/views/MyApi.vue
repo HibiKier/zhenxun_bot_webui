@@ -4,37 +4,21 @@
       <div class="bg-cover">
         <div class="api-box">
           <div class="api-title" :class="{ rightshow: rightshow }">
-            <span>端口</span>
+            <span>IP:PORT</span>
           </div>
-          <!-- <div class="api-input">
-            <input
-              v-model.trim="apiurl"
-              @focus="inpOnfocus"
-              @blur="inpOnBlur"
-              type="text"
-              placeholder="api地址 ip:port"
-              spellcheck="false"
-            />
-          </div> -->
           <div class="api-input">
             <input
               v-model.trim="port"
               @focus="inpOnfocus"
               @blur="inpOnBlur"
               type="text"
-              placeholder="端口"
+              placeholder="IP:PORT"
               spellcheck="false"
             />
           </div>
           <div class="tips">
             <p>注意事项：</p>
             <p>①开发环境中修改api地址一样生效，即覆盖代理服务器的转发</p>
-            <!-- <p>
-              ②如果生产环境部署的资源和真寻本体<ins><b>在</b></ins
-              >同一个机器上，则输入空。如果修改过真寻的默认端口，则输入<ins
-                ><b>“http://localhost:你的真寻端口”</b></ins
-              >
-            </p> -->
             <p>
               ②如果生产环境部署的资源和真寻本体<ins><b>不在</b></ins
               >同一个机器上，则输入你的服务器接口地址以及真寻的端口。最后记得修改防火墙设置哦
@@ -278,7 +262,7 @@ input::-webkit-input-placeholder {
 .tips {
   margin: 0 2rem;
   text-align: start;
-  font-size: 0.5rem;
+  font-size: 0.8rem;
 }
 .tips > p {
   padding-left: 0.8rem;

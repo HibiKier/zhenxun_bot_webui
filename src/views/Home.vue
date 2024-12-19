@@ -106,9 +106,11 @@
           </el-menu>
         </div>
       </el-aside>
-      <el-container class="layoutbox">
+      <el-container
+        class="layoutbox"
+        :style="{ height: computedHeight + 'px' }"
+      >
         <el-header class="homeHeader">
-          <!-- <div class="title">小真寻的小房间</div> -->
           <router-link class="to-myapi" :to="{ name: 'MyApi' }"
             >端口设置</router-link
           >
@@ -164,12 +166,27 @@ export default {
       botInfo: {},
       curSelectMenu: null,
       firstLoad: true,
+      windowHeight: window.innerHeight,
     }
+  },
+  computed: {
+    computedHeight() {
+      return this.windowHeight
+    },
   },
   created() {
     this.getBotInfo()
   },
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize)
+  },
   methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+    },
     checkClass(type) {
       return {
         "base-select-status": true,
@@ -256,9 +273,12 @@ export default {
 
 <style lang="scss" scoped>
 .my-main {
-  padding: 0px;
-  min-width: 2336px;
-  min-height: 1167px;
+  padding: 10px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: #f4f5fa;
+  // min-width: 2336px;
+  // min-height: 1167px;
 }
 .el-menu-item {
   span {
@@ -294,7 +314,7 @@ export default {
   position: relative;
   width: 100%;
   height: 0.2rem;
-  background: #fff;
+  background: #5a9cf8;
   /* box-shadow: 0 0.6rem 0 0 #fff,
               0 -0.6rem 0 0 #fff; */
 }
@@ -306,7 +326,7 @@ export default {
   top: -0.6rem;
   width: 100%;
   height: 0.2rem;
-  background: #fff;
+  background: #5a9cf8;
   transition: all 0.2s ease;
   transform-origin: center;
 }
@@ -368,13 +388,13 @@ export default {
   background-color: #f0f2f5;
 }
 .to-myapi {
-  width: 10rem;
+  width: 8rem;
   height: 30px;
   line-height: 30px;
   font-size: 1.2rem;
   color: #adaeb0;
   text-decoration: none;
-  border-radius: 100px;
+  border-radius: 10px;
   border: 5px solid #fff;
   text-align: center;
 }
@@ -422,7 +442,8 @@ export default {
   }
   .to-myapi {
     position: absolute;
-    right: 5rem;
+    right: 13rem;
+    top: 13px;
   }
 }
 

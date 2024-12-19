@@ -1,14 +1,22 @@
 <template>
   <div class="base">
-    <div class="base-info">
-      <LeftInfo />
-    </div>
-    <div class="main-info">
-      <MidInfo />
-    </div>
-    <div class="config-info">
-      <RightInfo />
-    </div>
+    <el-row :gutter="1">
+      <el-col :span="6">
+        <div class="base-info">
+          <LeftInfo :style="{ height: computedHeight + 'px' }" />
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="main-info">
+          <MidInfo :style="{ height: computedHeight + 'px' }" />
+        </div>
+      </el-col>
+      <el-col :span="6">
+        <div class="config-info">
+          <RightInfo :style="{ height: computedHeight + 'px' }" />
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -16,26 +24,39 @@
 import LeftInfo from "@/components/command/LeftInfo.vue"
 import MidInfo from "@/components/command/MidInfo.vue"
 import RightInfo from "@/components/command/RightInfo.vue"
+import { getHeaderHeight } from "@/utils/utils"
 export default {
   name: "MainCommand",
   data() {
     return {
       botInfo: {},
+      windowHeight: window.innerHeight,
     }
   },
   components: { LeftInfo, MidInfo, RightInfo },
-  created() {
-    this.botInfo = this.$store.state.botInfo || {}
+  computed: {
+    computedHeight() {
+      return this.windowHeight - getHeaderHeight()
+    },
   },
-  mounted() {},
-  methods: {},
+  created() {},
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+  },
+  methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+    },
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .base {
-  background-color: #ffffff;
-  display: flex;
+  background-color: #f4f5fa;
   height: 100%;
   width: 100%;
 }
@@ -43,28 +64,22 @@ export default {
 .base-info {
   background-color: #f4f5fa;
   height: 100%;
-  width: 17%;
   min-width: 367px;
 }
 
 .main-info {
   height: 100%;
-  width: 62%;
-  min-width: 1080px;
-  background-color: #f5f6f8;
+  background-color: #f4f5fa;
 }
 
 .test {
   ::v-deep .el-divider--vertical {
     height: 100%;
     margin-left: 40px;
-    height: c;
   }
 }
 
 .config-info {
-  // height: 100%;
-  min-width: 501px;
   background-color: #f4f5fa;
 }
 </style>

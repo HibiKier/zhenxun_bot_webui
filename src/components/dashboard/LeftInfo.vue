@@ -1,125 +1,142 @@
 <template>
   <div class="left-info">
-    <div class="top-text">在线小真寻（{{ botList.length }}）</div>
-    <div class="bot-list">
-      <div v-for="bot in botList" :key="bot.id" class="bot-item">
-        <div style="width: 100%">
-          <div class="item-ava">
-            <el-image
-              :src="bot.ava_url"
-              class="ava-img main-ava"
-              style="width: 100px; height: 90px"
-            />
-            <div class="item-info">
-              <div class="info-name">
-                <span
-                  class="line-line"
-                  style="background-color: #15bb00"
-                ></span>
-                <span class="bot-name">{{ bot.nickname }} </span>
-              </div>
-              <div class="info-id">
-                <span class="line-line" style="background-color: #5c87ff"></span
-                >{{ bot.self_id }}
-              </div>
-              <div class="info-gf">
-                <div style="display: flex; align-items: center">
-                  <span class="info-gf-title">好友:</span>
-                  <span style="margin-left: 5px; font-size: 20px">{{
-                    bot.friend_count
-                  }}</span>
+    <el-row>
+      <el-col :span="24">
+        <div class="top-text">在线小真寻（{{ botList.length }}）</div>
+        <div class="bot-list" :style="{ height: computedHeight + 'px' }">
+          <div v-for="bot in botList" :key="bot.id" class="bot-item">
+            <div style="width: 100%">
+              <div class="item-ava">
+                <el-image
+                  :src="bot.ava_url"
+                  class="ava-img main-ava"
+                  style="width: 100px; height: 90px"
+                />
+                <div class="item-info">
+                  <div class="info-name">
+                    <span
+                      class="line-line"
+                      style="background-color: #15bb00"
+                    ></span>
+                    <span class="bot-name">{{ bot.nickname }} </span>
+                  </div>
+                  <div class="info-id">
+                    <span
+                      class="line-line"
+                      style="background-color: #5c87ff"
+                    ></span
+                    >{{ bot.self_id }}
+                  </div>
+                  <div class="info-gf">
+                    <div style="display: flex; align-items: center">
+                      <span class="info-gf-title">好友:</span>
+                      <span style="margin-left: 5px; font-size: 20px">{{
+                        bot.friend_count
+                      }}</span>
+                    </div>
+                    <el-divider direction="vertical" />
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        margin-left: 5px;
+                      "
+                    >
+                      <span class="info-gf-title">群组:</span>
+                      <span style="margin-left: 5px; font-size: 20px">{{
+                        bot.group_count
+                      }}</span>
+                    </div>
+                  </div>
                 </div>
-                <el-divider direction="vertical" />
-                <div
-                  style="display: flex; align-items: center; margin-left: 5px"
+              </div>
+            </div>
+            <el-divider />
+            <div class="bot-detail-info">
+              <div style="display: flex">
+                <div class="message">
+                  <svg-icon icon-class="call" class="bottom-icon" /><span
+                    class="bottom-text"
+                    >今日调用:
+                    <p class="bottom-text-value">{{ bot.day_call }}</p></span
+                  >
+                </div>
+                <div class="message">
+                  <svg-icon icon-class="message" class="bottom-icon" /><span
+                    class="bottom-text"
+                    >今日消息:
+                    <p class="bottom-text-value">
+                      {{ bot.received_messages }}
+                    </p></span
+                  >
+                </div>
+              </div>
+              <div style="display: flex; margin-top: 10px">
+                <div class="message">
+                  <svg-icon icon-class="platform" class="bottom-icon" /><span
+                    class="bottom-text"
+                    >平台:
+                    <p class="bottom-text-value">{{ bot.platform }}</p></span
+                  >
+                </div>
+                <div class="message">
+                  <svg-icon icon-class="time" class="bottom-icon" /><span
+                    class="bottom-text"
+                    >连接时长:
+                    <p class="bottom-text-value">{{ bot.connectTime }}</p></span
+                  >
+                </div>
+              </div>
+              <div class="message" style="font-weight: 600; margin-top: 10px">
+                连接日期:
+                <p class="bottom-text-value">{{ bot.connect_date }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
+        <div class="connect-log" ref="connectLog">
+          <p class="base-title">连接日志</p>
+          <el-table
+            :data="tableData"
+            border
+            style="width: 100%; height: 233px"
+            :cell-style="{ 'text-align': 'center' }"
+            height="230"
+          >
+            <el-table-column prop="connect_time" label="日期">
+            </el-table-column>
+            <el-table-column prop="bot_id	" label="账号">
+              <template slot-scope="scope">
+                <span>{{ scope.row.bot_id }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="typeStr" label="类型">
+              <template slot-scope="scope">
+                <el-tag
+                  :type="scope.row.type == 1 ? 'primary' : 'danger'"
+                  disable-transitions
+                  >{{ scope.row.typeStr }}</el-tag
                 >
-                  <span class="info-gf-title">群组:</span>
-                  <span style="margin-left: 5px; font-size: 20px">{{
-                    bot.group_count
-                  }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <el-divider />
-        <div class="bot-detail-info">
-          <div style="display: flex">
-            <div class="message">
-              <svg-icon icon-class="call" class="bottom-icon" /><span
-                class="bottom-text"
-                >今日调用:
-                <p class="bottom-text-value">{{ bot.day_call }}</p></span
-              >
-            </div>
-            <div class="message">
-              <svg-icon icon-class="message" class="bottom-icon" /><span
-                class="bottom-text"
-                >今日消息:
-                <p class="bottom-text-value">
-                  {{ bot.received_messages }}
-                </p></span
-              >
-            </div>
-          </div>
-          <div style="display: flex; margin-top: 10px">
-            <div class="message">
-              <svg-icon icon-class="platform" class="bottom-icon" /><span
-                class="bottom-text"
-                >平台:
-                <p class="bottom-text-value">{{ bot.platform }}</p></span
-              >
-            </div>
-            <div class="message">
-              <svg-icon icon-class="time" class="bottom-icon" /><span
-                class="bottom-text"
-                >连接时长:
-                <p class="bottom-text-value">{{ bot.connectTime }}</p></span
-              >
-            </div>
-          </div>
-          <div class="message" style="font-weight: 600; margin-top: 10px">
-            连接日期:
-            <p class="bottom-text-value">{{ bot.connect_date }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="connect-log">
-      <p class="base-title">连接日志</p>
-      <el-table
-        :data="tableData"
-        border
-        style="width: 100%; height: 233px"
-        :cell-style="{ 'text-align': 'center' }"
-        height="230"
-      >
-        <el-table-column prop="connect_time" label="日期"> </el-table-column>
-        <el-table-column prop="bot_id	" label="账号">
-          <template slot-scope="scope">
-            <span>{{ scope.row.bot_id }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="typeStr" label="类型">
-          <template slot-scope="scope">
-            <el-tag
-              :type="scope.row.type == 1 ? 'primary' : 'danger'"
-              disable-transitions
-              >{{ scope.row.typeStr }}</el-tag
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="pagination">
+            <el-pagination
+              layout="prev, pager, next"
+              :total="historyTotal"
+              @current-change="getConnectLog"
+              :current-page.sync="historyIndex"
+              :pager-count="5"
             >
-          </template>
-        </el-table-column>
-      </el-table>
-      <div class="pagination" style="float: right">
-        <el-pagination
-          layout="prev, pager, next"
-          :total="historyTotal"
-          @current-change="getConnectLog"
-          :current-page.sync="historyIndex"
-        >
-        </el-pagination>
-      </div>
-    </div>
+            </el-pagination>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -136,13 +153,31 @@ export default {
       conTimes: [],
       historyIndex: 1,
       historyTotal: 0,
+      botListHeight: 0,
     }
   },
+  computed: {
+    computedHeight() {
+      if (!this.botListHeight) {
+        this.handleResize()
+      }
+
+      return this.botListHeight
+    },
+  },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     this.getBotList()
     this.getConnectLog()
+    this.handleResize()
   },
   methods: {
+    handleResize() {
+      this.$nextTick(() => {
+        this.botListHeight =
+          window.innerHeight - this.$refs.connectLog.offsetHeight - 170
+      })
+    },
     formateSeconds(endTime) {
       let secondTime = parseInt(endTime) //将传入的秒的值转化为Number
       let min = 0 // 初始化分
@@ -220,6 +255,7 @@ export default {
     },
   },
   beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize)
     if (this.conTimes) {
       for (let timer of this.conTimes) {
         clearInterval(timer)
@@ -264,7 +300,6 @@ export default {
 
   .bot-list {
     overflow: auto;
-    height: calc(70% - 82px);
   }
 
   .bot-item {
@@ -376,6 +411,12 @@ export default {
       color: #939395;
       margin-bottom: 30px;
     }
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

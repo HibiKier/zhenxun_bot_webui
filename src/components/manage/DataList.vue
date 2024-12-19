@@ -2,7 +2,14 @@
   <div class="fg-list">
     <div class="request">
       <el-badge :value="requestCount" class="item" v-if="requestCount > 0">
-        <el-button size="small" @click="openRequest">请求管理</el-button>
+        <MyButton
+          size="small"
+          @click="openRequest"
+          :height="31"
+          text="请求管理"
+          :fontSize="12"
+          style="z-index: -1111"
+        />
       </el-badge>
       <el-button v-else size="small" @click="openRequest">请求管理</el-button>
     </div>
@@ -59,9 +66,10 @@
 <script>
 import SvgIcon from "../SvgIcon/SvgIcon.vue"
 import RequestDialog from "./RequestDialog.vue"
+import MyButton from "../ui/MyButton.vue"
 export default {
   name: "DataList",
-  components: { SvgIcon, RequestDialog },
+  components: { SvgIcon, RequestDialog, MyButton },
   data() {
     return {
       dataList: [],
@@ -221,7 +229,6 @@ export default {
     getFriendList() {
       // 获取好友列表
       const loading = this.getLoading(".data-list-border")
-      // [ { user_id: "66600000", nickname: "babyQ", remark: "babyQ" }]
       this.getRequest(`${this.$root.prefix}/manage/get_friend_list`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
@@ -247,12 +254,9 @@ export default {
 
 <style lang="scss" scoped>
 .fg-list {
-  // display: flex;
   padding: 50px 30px 10px 30px;
-  // overflow: auto;
-  // width: 100%;
-  height: calc(100% - 130px);
   position: relative;
+  box-sizing: border-box;
 
   .request {
     position: absolute;
@@ -300,7 +304,6 @@ export default {
 
   .data-list-border {
     margin-top: 80px;
-    height: calc(100% - 30px);
     border-radius: 10px;
     padding: 10px 0;
     // border: #4d7cfe solid 1px;
@@ -309,7 +312,6 @@ export default {
     .data-item {
       padding: 10px;
       height: 63px;
-      width: 317px;
       position: relative;
       cursor: pointer;
 
@@ -362,6 +364,10 @@ export default {
         }
       }
     }
+  }
+
+  /deep/ .el-badge__content {
+    z-index: 11111;
   }
 }
 </style>

@@ -1,15 +1,25 @@
 <template>
-  <div class="chat-window">
+  <div class="chat-window" ref="chatWindow">
     <meta name="referrer" content="never" />
-    <div class="inner-chat-box" v-if="isStartChat">
-      <div class="top-box">
+    <div class="inner-chat-box" ref="innerChatBox" v-if="isStartChat">
+      <div class="top-box" ref="tabBox">
         <p class="title">{{ chatInfo.name }}</p>
         <div class="btn-group">
-          <my-button text="清空记录" @click="clearMessage" :width="110" />
+          <my-button
+            text="清空记录"
+            @click="clearMessage"
+            :height="35"
+            :fontSize="13"
+          />
         </div>
       </div>
       <el-divider />
-      <div class="chat-area" id="chat" :key="reloadKey">
+      <div
+        class="chat-area"
+        id="chat"
+        :key="reloadKey"
+        :style="{ height: chatHeight + 'px' }"
+      >
         <div
           v-for="(data, index) in $store.state.chatObj[chatId].msgList || []"
           :key="index"
@@ -35,7 +45,7 @@
         </div>
       </div>
       <el-divider />
-      <div class="input-area">
+      <div class="input-area" ref="inputArea">
         <el-input
           v-model="message"
           :rows="4"
@@ -44,9 +54,17 @@
         ></el-input>
         <div style="margin-top: 10px">
           <span style="float: right; display: flex">
-            <MyButton :width="80" text="清空" @click="message = ''" />
             <MyButton
-              :width="80"
+              :height="35"
+              :width="70"
+              text="清空"
+              @click="message = ''"
+              :fontSize="14"
+            />
+            <MyButton
+              :height="35"
+              :width="70"
+              :fontSize="14"
               text="发送"
               @click="sendMessage"
               style="margin-left: 10px"
@@ -69,7 +87,6 @@
 
 <script>
 import MyButton from "../ui/MyButton.vue"
-import { getPort } from "@/utils/api"
 
 export default {
   name: "ChatWindow",
@@ -84,18 +101,37 @@ export default {
       chatId: "default",
       reloadKey: 0,
       chatObj: { default: [] },
+      chatHeight: window.innerHeight,
     }
+  },
+  computed: {
+    computedHeight() {
+      return this.chatHeight
+    },
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
+    this.handleResize()
     this.$chatWebSocket.initWebSocket()
   },
   beforeDestroy() {
-    // this.$chatWebSocket.destroyWebsocket()
+    window.removeEventListener("resize", this.handleResize)
   },
   methods: {
+    handleResize() {
+      this.$nextTick(() => {
+        if (this.$refs.innerChatBox) {
+          this.chatHeight =
+            this.$refs.innerChatBox.offsetHeight -
+            this.$refs.tabBox.offsetHeight -
+            this.$refs.inputArea.offsetHeight -
+            100
+        }
+      })
+    },
     async sendMessage() {
       if (!this.message) {
         return
@@ -133,6 +169,7 @@ export default {
         var divElement = document.getElementById("chat")
         divElement.scrollTop = divElement.scrollHeight
       })
+      this.handleResize()
     },
     clearMessage() {
       this.$confirm("确认清空聊天记录?", "提示", {
@@ -151,8 +188,7 @@ export default {
 
 <style lang="scss" scoped>
 .chat-window {
-  height: calc(100% - 60px);
-  width: calc(100% - 40px);
+  box-sizing: border-box;
   background-color: #fff;
   padding: 30px 20px;
 

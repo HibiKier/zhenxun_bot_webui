@@ -10,7 +10,7 @@ import "./assets/icons/index"
 import "./assets/css/global.css"
 import { message } from "@/utils/message"
 import { loading } from "@/utils/loading"
-import chatWebSocket from "./utils/chat-websocket"
+import chatWebSocket from "./utils/websocket/chat-websocket"
 import { postRequest, putRequest, getRequest, deleteRequest } from "@/utils/api"
 
 Vue.use(ElementUI)

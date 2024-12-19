@@ -2,8 +2,8 @@
   <div
     :class="{ disabled: disabled }"
     :style="{
-      width: width + 'px',
-      height: height + 'px',
+      width: computedWidth,
+      height: computedHeight,
     }"
   >
     <span class="content">
@@ -24,13 +24,17 @@
             height: '100%',
             'background-color': backgroundColor,
             color: color,
+            fontSize: sizeMana.fontSize + 'px',
           }"
         >
           {{ text }}
           <span v-if="icon" style="margin-top: 5px">
             <svg-icon
               :icon-class="icon"
-              :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
+              :style="{
+                width: sizeMana.iconWidth + 'px',
+                height: sizeMana.iconHeight + 'px',
+              }"
             />
           </span>
         </button>
@@ -47,21 +51,26 @@
           height: '100%',
           'background-color': backgroundColor,
           color: color,
+          fontSize: sizeMana.fontSize + 'px',
         }"
       >
         <span v-if="icon" style="margin-top: 5px">
           <svg-icon
             :icon-class="icon"
-            :style="{ width: iconWidth + 'px', height: iconHeight + 'px' }"
+            :style="{
+              width: sizeMana.iconWidth + 'px',
+              height: sizeMana.iconHeight + 'px',
+            }"
           />
         </span>
-        <span style="margin-left: 5px">{{ text }}</span>
+        <span>{{ text }}</span>
       </button>
     </span>
   </div>
 </template>
 
 <script>
+import { getConvertSize, getFontSize } from "@/utils/utils"
 import SvgIcon from "../SvgIcon/SvgIcon.vue"
 export default {
   components: { SvgIcon },
@@ -75,21 +84,51 @@ export default {
     type: String,
     width: {
       type: Number,
-      default: 66,
+      default: 0,
     },
     height: {
       type: Number,
       default: 40,
     },
     disabled: { type: Boolean, default: false },
+    fontSize: { type: Number, default: 16 },
   },
   data() {
     return {
       color: "#606266",
       backgroundColor: null,
+      sizeMana: {
+        iconWidth: 0,
+        iconHeight: 0,
+        fontSize: 0,
+        width: 0,
+        height: 0,
+      },
     }
   },
+  computed: {
+    computedWidth() {
+      if (this.sizeMana.width == 0) {
+        return "100%"
+      }
+      return this.sizeMana.width + "px"
+    },
+    computedHeight() {
+      if (this.sizeMana.height == 0) {
+        return "100%"
+      }
+      return this.sizeMana.height + "px"
+    },
+  },
+  created() {
+    this.sizeMana.iconWidth = this.iconWidth
+    this.sizeMana.iconHeight = this.iconHeight
+    this.sizeMana.fontSize = this.fontSize
+    this.sizeMana.width = this.width
+    this.sizeMana.height = this.height
+  },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     if (this.type == "success") {
       this.color = "#ffffff"
       this.backgroundColor = "#67C23A"
@@ -103,6 +142,18 @@ export default {
       this.color = "#ffffff"
       this.backgroundColor = "#409EFF"
     }
+  },
+  methods: {
+    handleResize() {
+      this.sizeMana.height = getConvertSize(this.height, 1024)
+      this.sizeMana.width = getConvertSize(this.width, 1024)
+      this.sizeMana.fontSize = getFontSize(this.fontSize)
+      this.sizeMana.iconWidth = getConvertSize(this.iconWidth, 1024)
+      this.sizeMana.iconHeight = getConvertSize(this.iconHeight, 1024)
+    },
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
@@ -122,7 +173,6 @@ export default {
   font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica,
     Arial, sans-serif;
-  font-size: 1rem;
   height: 2.5em;
   justify-content: center;
   line-height: 1.5;

@@ -1,6 +1,6 @@
 <template>
-  <div class="cmd-main">
-    <div class="btn-group">
+  <div class="cmd-main" ref="cmdMain">
+    <div class="btn-group" ref="btnGroup">
       <my-button
         icon="play"
         class="btn"
@@ -46,49 +46,55 @@
           content="常用SQL"
         />
       </el-popover>
-
-      <!-- <my-button
-        icon="copy-black"
-        class="btn"
-        :width="40"
-        :height="32"
-      /> -->
     </div>
-    <div class="cmd-main-box">
-      <div class="cmd">
-        <el-input
-          v-model="sqlMessage"
-          :rows="20"
-          type="textarea"
-          resize="none"
-          style="height: 100%"
-        ></el-input>
-      </div>
-      <div class="history">
-        <p class="title">历史记录</p>
-        <div class="history-box">
-          <div
-            v-for="(n, index) in historyList"
-            :key="index"
-            class="history-item"
-            @click="copyHistory(n.sql)"
-          >
-            <p>{{ n.sql }}</p>
+    <div class="cmd-main-box" ref="cmdMainBox">
+      <el-row>
+        <el-col :span="12">
+          <div class="cmd">
+            <el-input
+              v-model="sqlMessage"
+              :rows="10"
+              type="textarea"
+              resize="none"
+              :style="{ height: sizeMana.inputHeight + 'px' }"
+            ></el-input>
           </div>
-        </div>
-        <div class="pagination">
-          <el-pagination
-            layout="prev, pager, next"
-            :total="historyTotal"
-            @current-change="getSqlLog"
-            :current-page.sync="historyIndex"
-          >
-          </el-pagination>
-        </div>
-      </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="history">
+            <p class="title">历史记录</p>
+            <div
+              class="history-box"
+              :style="{ height: sizeMana.topHeight + 'px' }"
+            >
+              <div
+                v-for="(n, index) in historyList"
+                :key="index"
+                class="history-item"
+                @click="copyHistory(n.sql)"
+              >
+                <p>{{ n.sql }}</p>
+              </div>
+            </div>
+            <div class="pagination">
+              <el-pagination
+                layout="prev, pager, next"
+                :total="historyTotal"
+                @current-change="getSqlLog"
+                :current-page.sync="historyIndex"
+              >
+              </el-pagination>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
     <el-divider></el-divider>
-    <div class="result-box" ref="resultBox">
+    <div
+      class="result-box"
+      ref="resultBox"
+      :style="{ height: sizeMana.resultHeight + 'px' }"
+    >
       <p v-if="info" class="error-info">
         {{ info }}
       </p>
@@ -129,14 +135,30 @@ export default {
       info: null,
       columns: [],
       commonSqlList: [],
+      sizeMana: {
+        topHeight: 90,
+        inputHeight: 90,
+        resultHeight: 90,
+      },
     }
   },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     this.getSqlLog()
     this.getCommonSql()
+    this.handleResize()
     this.tableHeight = this.$refs.resultBox.clientHeight
   },
   methods: {
+    handleResize() {
+      this.sizeMana.topHeight = this.$refs.cmdMainBox.offsetHeight - 132
+      this.sizeMana.inputHeight = this.$refs.cmdMainBox.offsetHeight
+      this.sizeMana.resultHeight =
+        this.$refs.cmdMain.offsetHeight -
+        this.$refs.btnGroup.offsetHeight -
+        this.$refs.cmdMainBox.offsetHeight -
+        80
+    },
     getCommonSql() {
       this.getRequest(`${this.$root.prefix}/database/get_common_sql`).then(
         (resp) => {
@@ -215,6 +237,9 @@ export default {
       })
     },
   },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
@@ -238,9 +263,8 @@ export default {
 }
 
 .cmd-main {
-  padding: 30px;
-  height: calc(100% - 60px);
-  width: calc(100% - 60px);
+  padding: 30px 30px 0 30px;
+  box-sizing: border-box;
 
   .btn-group {
     display: flex;
@@ -259,17 +283,19 @@ export default {
     margin: 10px;
   }
   .cmd-main-box {
-    display: flex;
+    height: 40%;
     .cmd {
-      width: calc(100% - 460px);
-
       /deep/ .el-textarea__inner {
-        height: 100% !important;
         border-radius: 10px;
       }
     }
+
+    /deep/ textarea {
+      height: 100%;
+    }
+
     .history {
-      width: 450px;
+      box-sizing: border-box;
       margin-left: 10px;
       border: 1px solid #d3d3d4;
       border-radius: 10px;
@@ -278,7 +304,7 @@ export default {
 
       .history-box {
         overflow: auto;
-        height: 315px;
+        height: 90px;
 
         .history-item {
           border: 1px solid #d3d3d4;
@@ -300,8 +326,6 @@ export default {
   .result-box {
     background-color: #fff;
     width: 100%;
-    height: calc(100% - 520px);
-    min-height: 460px;
     overflow: auto;
     border-radius: 10px;
 
@@ -315,6 +339,10 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    /deep/ .el-empty {
+      box-sizing: border-box;
     }
   }
 }

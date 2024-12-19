@@ -1,20 +1,48 @@
 <template>
   <div class="main">
-    <div class="left-table">
-      <table-list />
-    </div>
-    <div class="right-main">
-      <cmd-main />
-    </div>
+    <el-row>
+      <el-col :span="8">
+        <div class="left-table">
+          <table-list :style="{ height: computedHeight + 'px' }" />
+        </div>
+      </el-col>
+      <el-col :span="16">
+        <div class="right-main">
+          <cmd-main :style="{ height: computedHeight + 'px' }" />
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+import { getHeaderHeight } from "@/utils/utils"
 import CmdMain from "./CmdMain.vue"
 import TableList from "./TableList.vue"
 export default {
   components: { TableList, CmdMain },
   name: "DatabaseMana",
+  data() {
+    return {
+      windowHeight: window.innerHeight,
+    }
+  },
+  computed: {
+    computedHeight() {
+      return this.windowHeight - getHeaderHeight()
+    },
+  },
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+  },
+  methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+    },
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
@@ -22,15 +50,8 @@ export default {
 .main {
   width: 100%;
   height: 100%;
-  display: flex;
-  .left-table {
-    width: 25%;
-    // height: 100%;
-    // background-color: #f4f5fa;
-  }
 
   .right-main {
-    width: 74%;
     height: 100%;
   }
 }

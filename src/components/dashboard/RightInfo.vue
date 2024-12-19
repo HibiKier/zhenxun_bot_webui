@@ -1,150 +1,237 @@
 <template>
-  <div class="right-info">
-    <div class="base-border">
-      <p class="base-title">NoneBot配置</p>
-      <div class="nb-config">
-        <div class="nb-config-box">
-          <div class="nb-config-box-item">
-            <p class="config-info-item-text">{{ botConfig.host }}</p>
-            <p class="config-small-title">host</p>
-          </div>
-          <el-divider direction="vertical" />
-          <div class="nb-config-box-item">
-            <p class="config-info-item-text">{{ botConfig.port }}</p>
-            <p class="config-small-title">port</p>
-          </div>
-        </div>
+  <div class="right-info" ref="rightInfo">
+    <div class="base-border" ref="baseBorder">
+      <p
+        class="base-title"
+        :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+      >
+        NoneBot配置
+      </p>
+      <div
+        class="nb-config"
+        :style="{ fontSize: fontSizeMana.nbConfig + 'px' }"
+      >
+        <el-row style="width: 100%">
+          <el-col :span="12" style="border-right: solid 1px #dddfe5">
+            <div class="nb-config-box-item">
+              <p class="config-info-item-text">{{ botConfig.host }}</p>
+              <p
+                class="config-small-title"
+                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
+              >
+                host
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="nb-config-box-item">
+              <p class="config-info-item-text">{{ botConfig.port }}</p>
+              <p
+                class="config-small-title"
+                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
+              >
+                port
+              </p>
+            </div>
+          </el-col>
+        </el-row>
         <el-divider />
-        <div class="nb-config-box">
-          <div class="nb-config-box-item">
-            <el-tooltip
-              class="item"
-              effect="dark"
-              placement="top"
-              :content="botConfig.driver || ''"
-              :disabled="botConfig.driver.length < 5"
-            >
-              <p class="config-info-item-text">{{ botConfig.driver }}</p>
-            </el-tooltip>
-            <p class="config-small-title">driver</p>
-          </div>
-          <el-divider direction="vertical" />
-          <div class="nb-config-box-item">
-            <p class="config-info-item-text">{{ botConfig.log_level }}</p>
-            <p class="config-small-title">log_level</p>
-          </div>
-        </div>
+        <el-row style="width: 100%">
+          <el-col :span="12" style="border-right: solid 1px #dddfe5">
+            <div class="nb-config-box-item">
+              <el-tooltip
+                class="tooltip-item"
+                effect="dark"
+                placement="top"
+                :content="botConfig.driver || ''"
+                :disabled="botConfig.driver.length < 5"
+              >
+                <p class="config-info-item-text">{{ botConfig.driver }}</p>
+              </el-tooltip>
+              <p
+                class="config-small-title"
+                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
+              >
+                driver
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="nb-config-box-item">
+              <p class="config-info-item-text">{{ botConfig.log_level }}</p>
+              <p
+                class="config-small-title"
+                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
+              >
+                log_level
+              </p>
+            </div>
+          </el-col>
+        </el-row>
         <el-divider />
-        <div class="nb-config-box">
-          <div class="nb-config-box-item">
-            <p class="config-info-item-text">{{ botConfig.api_timeout }}</p>
-            <p class="config-small-title">api_timeout</p>
-          </div>
-          <el-divider direction="vertical" />
-          <div class="nb-config-box-item">
-            <p class="config-info-item-text">
-              {{ botConfig.session_expire_timeout }}
+        <el-row style="width: 100%">
+          <el-col :span="12" style="border-right: solid 1px #dddfe5">
+            <div class="nb-config-box-item">
+              <p class="config-info-item-text">{{ botConfig.api_timeout }}</p>
+              <p
+                class="config-small-title"
+                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
+              >
+                api_timeout
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="12">
+            <div class="nb-config-box-item">
+              <p class="config-info-item-text">
+                {{ botConfig.session_expire_timeout }}
+              </p>
+              <p
+                class="config-small-title"
+                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
+              >
+                session_expire_timeout
+              </p>
+            </div>
+          </el-col>
+        </el-row>
+        <el-divider />
+        <el-row style="width: 100%">
+          <el-col :span="24">
+            <div class="nb-config-box-item" style="width: 100%">
+              <p class="config-info-item-text">
+                {{ botConfig.nicknames }}
+              </p>
+              <p
+                class="config-small-title"
+                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
+              >
+                NICKNAME
+              </p>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
+    <div :style="{ height: computedChartBorderHeight + 'px' }">
+      <div
+        class="base-border"
+        :style="{
+          marginTop: '18px',
+          fontSize: fontSizeMana.chartTip + 'px',
+          height: chartDivHeight + 'px',
+        }"
+      >
+        <div class="active-group">
+          <div style="height: 40px">
+            <p class="base-title" style="margin-top: 10px; float: left">
+              活跃群聊
             </p>
-            <p class="config-small-title">session_expire_timeout</p>
+            <div class="btn-group">
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectGroupType == 'all' }"
+                @click="clickGroupType('all')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >ALL</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectGroupType == 'day' }"
+                @click="clickGroupType('day')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >DAY</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectGroupType == 'week' }"
+                @click="clickGroupType('week')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >WEEK</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectGroupType == 'month' }"
+                @click="clickGroupType('month')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >MONTH</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectGroupType == 'year' }"
+                @click="clickGroupType('year')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >YEAR</el-button
+              >
+            </div>
           </div>
-        </div>
-        <el-divider />
-        <div class="nb-config-box">
-          <div class="nb-config-box-item" style="width: 100%">
-            <p class="config-info-item-text" style="max-width: 390px">
-              {{ botConfig.nicknames }}
-            </p>
-            <p class="config-small-title">NICKNAME</p>
+          <div class="group-chart">
+            <div
+              ref="groupChart"
+              class="base-chart"
+              :style="{ height: computedChartHeight + 'px' }"
+            ></div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- <el-divider /> -->
-    <div class="base-border" style="margin-top: 18px">
-      <div class="active-group">
-        <div style="height: 40px">
-          <p class="base-title" style="margin-top: 10px; float: left">
-            活跃群聊
-          </p>
-          <div class="btn-group">
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectGroupType == 'all' }"
-              @click="clickGroupType('all')"
-              >ALL</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectGroupType == 'day' }"
-              @click="clickGroupType('day')"
-              >DAY</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectGroupType == 'week' }"
-              @click="clickGroupType('week')"
-              >WEEK</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectGroupType == 'month' }"
-              @click="clickGroupType('month')"
-              >MONTH</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectGroupType == 'year' }"
-              @click="clickGroupType('year')"
-              >YEAR</el-button
-            >
+      <div
+        class="base-border"
+        :style="{
+          marginTop: '18px',
+          fontSize: fontSizeMana.chartTip + 'px',
+          height: chartDivHeight + 'px',
+        }"
+      >
+        <div class="hot-plugin">
+          <div style="height: 40px">
+            <p class="base-title" style="margin-top: 10px; float: left">
+              热门插件
+            </p>
+            <div class="btn-group">
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectHotPluginType == 'all' }"
+                @click="clickHotPluginType('all')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >ALL</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectHotPluginType == 'day' }"
+                @click="clickHotPluginType('day')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >DAY</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectHotPluginType == 'week' }"
+                @click="clickHotPluginType('week')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >WEEK</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectHotPluginType == 'month' }"
+                @click="clickHotPluginType('month')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >MONTH</el-button
+              >
+              <el-button
+                type="text"
+                :class="{ 'select-query-type': selectHotPluginType == 'year' }"
+                @click="clickHotPluginType('year')"
+                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
+                >YEAR</el-button
+              >
+            </div>
           </div>
-        </div>
-        <div class="group-chart">
-          <div ref="groupChart" class="base-chart"></div>
-        </div>
-      </div>
-    </div>
-    <div class="base-border" style="margin-top: 18px">
-      <div class="hot-plugin">
-        <div style="height: 40px">
-          <p class="base-title" style="margin-top: 10px; float: left">
-            热门插件
-          </p>
-          <div class="btn-group">
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectHotPluginType == 'all' }"
-              @click="clickHotPluginType('all')"
-              >ALL</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectHotPluginType == 'day' }"
-              @click="clickHotPluginType('day')"
-              >DAY</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectHotPluginType == 'week' }"
-              @click="clickHotPluginType('week')"
-              >WEEK</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectHotPluginType == 'month' }"
-              @click="clickHotPluginType('month')"
-              >MONTH</el-button
-            >
-            <el-button
-              type="text"
-              :class="{ 'select-query-type': selectHotPluginType == 'year' }"
-              @click="clickHotPluginType('year')"
-              >YEAR</el-button
-            >
+          <div>
+            <div
+              ref="hotPluginChart"
+              class="base-chart"
+              :style="{ height: computedChartHeight + 'px' }"
+            ></div>
           </div>
-        </div>
-        <div>
-          <div ref="hotPluginChart" class="base-chart"></div>
         </div>
       </div>
     </div>
@@ -152,10 +239,20 @@
 </template>
 
 <script>
+import { getFontSize } from "@/utils/utils"
 export default {
   name: "RightInfo",
   data() {
     return {
+      fontSizeMana: {
+        nbConfig: 25,
+        nbConfigTip: 13,
+        titleText: 20,
+        chartTip: 15,
+      },
+      chartHeight: 0,
+      chartDivHeight: 0,
+      chartBorderHeight: 0,
       botInfo: null,
       botConfig: { driver: "" },
       selectGroupType: "all",
@@ -164,6 +261,12 @@ export default {
       hotPluginChart: null,
       groupCntInterval: null, //活跃数量定时器
       chartOpt: {
+        grid: {
+          top: "10%", // 控制数据表距离画布顶部的距离
+          bottom: "20%", // 控制数据表距离画布底部的距禿
+          left: "15%", // 控制数据表距离画布左侧的距离
+          right: "15%", // 控制数据表距离画布右侧的距离
+        },
         tooltip: {
           formatter: function (params) {
             return params.value // 鼠标悬停时显示完整的标签内容
@@ -213,10 +316,31 @@ export default {
       },
     }
   },
+  computed: {
+    computedChartHeight() {
+      if (!this.chartHeight) {
+        this.handleResize()
+      }
+      return this.chartHeight
+    },
+    computedChartDivHeight() {
+      if (!this.chartDivHeight) {
+        this.handleResize()
+      }
+      return this.chartDivHeight
+    },
+    computedChartBorderHeight() {
+      if (!this.chartBorderHeight) {
+        this.handleResize()
+      }
+      return this.chartBorderHeight
+    },
+  },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     this.groupChart = this.$echarts.init(this.$refs.groupChart)
     this.hotPluginChart = this.$echarts.init(this.$refs.hotPluginChart)
     this.getNonebotConfig()
@@ -225,16 +349,37 @@ export default {
     this.groupCntInterval = setInterval(() => {
       this.getActiveGroupData(this.selectGroupType, true)
     }, 25000)
+    this.handleResize()
   },
   destroyed() {
+    window.removeEventListener("resize", this.handleResize)
     if (this.groupCntInterval) {
       clearInterval(this.groupCntInterval)
     }
   },
   methods: {
+    handleResize() {
+      this.initFontSize()
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.chartBorderHeight =
+            this.$refs.rightInfo.offsetHeight -
+            this.$refs.baseBorder.offsetHeight -
+            18
+          this.chartDivHeight = (this.chartBorderHeight - 16) / 2
+          this.chartHeight = this.chartDivHeight - 82
+          this.groupChart.resize()
+          this.hotPluginChart.resize()
+        }, 500)
+      })
+    },
+    initFontSize() {
+      this.fontSizeMana.nbConfig = getFontSize(25)
+      this.fontSizeMana.nbConfigTip = getFontSize(13)
+      this.fontSizeMana.titleText = getFontSize(20)
+      this.fontSizeMana.chartTip = getFontSize(15)
+    },
     getNonebotConfig() {
-      console.log("ttttttttt")
-
       const loading = this.getLoading(".base-border")
       this.getRequest(`${this.$root.prefix}/dashboard/get_nonebot_config`).then(
         (resp) => {
@@ -347,6 +492,7 @@ export default {
 <style lang="scss" scoped>
 .right-info {
   padding: 0 10px;
+  height: 100%;
 
   ::v-deep .el-divider--horizontal {
     margin: 10px 0;
@@ -355,6 +501,7 @@ export default {
   .config-small-title {
     color: #afb2b9;
     font-size: 13px;
+    margin-bottom: 5px;
   }
 
   .btn-group {
@@ -370,14 +517,22 @@ export default {
     border-radius: 10px;
     padding: 20px;
     background-color: white;
+    box-sizing: border-box;
   }
 
   .nb-config {
-    padding: 0 50px;
+    padding: 0 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    /deep/ .el-col {
+      text-align: center;
+      white-space: nowrap; /* 防止文本换行 */
+      overflow: hidden; /* 隐藏超出部分的文本 */
+      text-overflow: ellipsis; /* 显示省略号 */
+    }
 
     ::v-deep .el-divider--horizontal {
       margin: 0;
@@ -388,28 +543,26 @@ export default {
       height: 73px;
     }
 
-    .nb-config-box {
-      display: flex;
+    .nb-config-box-item {
+      // .tooltip-item {
+      //   white-space: nowrap; /* 防止文本换行 */
+      //   overflow: hidden; /* 隐藏超出部分的文本 */
+      //   text-overflow: ellipsis; /* 显示省略号 */
+      // }
 
-      .nb-config-box-item {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        width: 150px;
-
-        .config-info-item-text {
-          font-size: 25px;
-          margin-bottom: 10px;
-          margin-top: 10px;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
+      .config-info-item-text {
+        margin-bottom: 10px;
+        margin-top: 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin-top: 10px;
+        margin-bottom: 5px;
       }
     }
   }
+
   .base-chart {
-    width: 100%;
     height: 293px;
   }
 

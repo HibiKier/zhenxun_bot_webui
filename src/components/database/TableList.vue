@@ -1,29 +1,8 @@
 <template>
-  <div class="table-list">
+  <div class="table-list" ref="tableList">
     <one-mark text="风灵月影的魔法" style="margin-top: 10px" />
-    <p class="title">数据表</p>
-    <div class="table-list-box">
-      <!-- <div v-for="(table, index) in tableList" :key="index" class="table-box">
-        <p class="table-name" @click="selectTable(table.name)">
-          {{ table.name }}
-        </p>
-        <p class="table-desc">{{ table.desc || "-" }}</p>
-        <div v-if="table.showColum" class="colum-list">
-          <el-table :data="tableColumn[table.name]" border>
-            <el-table-column label="名称" prop="column_name"></el-table-column>
-            <el-table-column label="类型" prop="data_type"></el-table-column>
-            <el-table-column
-              label="最大长度"
-              prop="max_length"
-            ></el-table-column>
-            <el-table-column
-              label="是否为空"
-              prop="is_nullable"
-            ></el-table-column>
-          </el-table>
-        </div>
-        <el-divider></el-divider>
-      </div> -->
+    <p class="title" ref="title">数据表</p>
+    <div class="table-list-box" :style="{ height: computedHeight + 'px' }">
       <el-collapse
         v-model="activeName"
         accordion
@@ -76,12 +55,26 @@ export default {
       tableList: [],
       tableColumn: {},
       reloadKey: 0,
+      tableHeight: 300,
     }
   },
+  computed: {
+    computedHeight() {
+      return this.tableHeight
+    },
+  },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     this.getTableList()
+    this.handleResize()
   },
   methods: {
+    handleResize() {
+      this.$nextTick(() => {
+        this.tableHeight =
+          this.$refs.tableList.offsetHeight - this.$refs.title.offsetHeight - 80
+      })
+    },
     async selectTable(tableName) {
       if (!Object.keys(this.tableColumn).includes(tableName)) {
         const resp = await this.getRequest(
@@ -128,6 +121,9 @@ export default {
       )
     },
   },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
@@ -166,6 +162,7 @@ export default {
     padding: 30px;
     background-color: white;
     border-radius: 10px;
+    box-sizing: border-box;
 
     ::v-deep .el-collapse-item {
       margin-bottom: 5px;

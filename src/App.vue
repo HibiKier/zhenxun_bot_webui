@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{ height: computedHeight + 'px' }">
     <router-view />
   </div>
 </template>
@@ -8,12 +8,33 @@
 import { getBaseUrlLocalStorage, setBase } from "@/utils/api"
 export default {
   name: "App",
+  data() {
+    return {
+      windowHeight: window.innerHeight,
+    }
+  },
+  computed: {
+    computedHeight() {
+      return this.windowHeight
+    },
+  },
   created() {
     if (getBaseUrlLocalStorage()) {
       setBase(getBaseUrlLocalStorage())
     }
   },
-  components: {},
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+  },
+  methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+    },
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
