@@ -115,7 +115,7 @@ export default {
   mounted() {
     window.addEventListener("resize", this.handleResize)
     this.handleResize()
-    this.$chatWebSocket.initWebSocket()
+    this.$store.dispatch("initChatSocket")
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)

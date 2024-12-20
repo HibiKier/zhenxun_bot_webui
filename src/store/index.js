@@ -3,6 +3,7 @@ import Vuex from "vuex"
 import createPersistedState from "vuex-persistedstate"
 import statusWebSocket from "@/utils/websocket/status-websocket"
 import logWebSocket from "@/utils/websocket/log-websocket"
+import chatWebSocket from "@/utils/websocket/chat-websocket"
 
 Vue.use(Vuex)
 
@@ -99,6 +100,9 @@ export default new Vuex.Store({
       logWebSocket.initWebSocket((event) => {
         callable(event.data)
       })
+    },
+    initChatSocket(context, callable) {
+      chatWebSocket.initWebSocket()
     },
   },
 })

@@ -395,7 +395,7 @@ export default {
     this.chatChart = this.$echarts.init(this.$refs.chatChart)
     this.callChart = this.$echarts.init(this.$refs.callChart)
     this.initFontSize()
-    this.$store.dispatch("initLogSocket", this.logCallable, this)
+    this.$store.dispatch("initLogSocket", this.logCallable)
   },
   beforeDestroy() {
     this.destroyWebsocket()
@@ -523,10 +523,8 @@ export default {
       let children = this.clgDiv.children
 
       if (children.length > 150) {
-        console.log("日志数量超过150，移除日志...")
         this.clgDiv.removeChild(children[0])
       }
-      console.log("this.clgDiv", this.clgDiv)
 
       this.$nextTick(() => {
         // 滚动条至底部
