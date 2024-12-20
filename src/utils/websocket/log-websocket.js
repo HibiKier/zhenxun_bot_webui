@@ -19,31 +19,31 @@ function stopHeartbeat() {
     clearInterval(heartbeatInterval) // 停止心跳检测定时器
   }
 }
-
 export default {
   ws: null,
   //初始化ws
   initWebSocket: function (onMessage) {
     if (!ws) {
-      console.log("STATUS_WS_URL WebSocket 正在连接...")
-
+      console.log("LOG_WS_URL WebSocket 正在连接...")
       const baseUrlSplit = getBaseUrl().split("//")
       const baseUrl = baseUrlSplit[1]
-      const STATUS_WS_URL = `ws://${baseUrl}/zhenxun/socket/system_status` // 状态ws
-      const websocket = new WebSocket(STATUS_WS_URL)
+      const LOG_WS_URL = `ws://${baseUrl}/zhenxun/socket/logs` // 日志ws
+      const websocket = new WebSocket(LOG_WS_URL)
       startHeartbeat()
       websocket.onopen = () => {
-        console.log("STATUS_WS_URL WebSocket 已连接...")
+        console.log("LOG_WS_URL WebSocket 已连接...")
       }
       websocket.onmessage = onMessage
       websocket.onclose = () => {
-        vue.$message.warning("STATUS_WS_URL WebSocket 已断开...")
+        vue.$message.warning("LOG_WS_URL WebSocket 已断开...")
         stopHeartbeat()
         setTimeout(() => {
           this.initWebSocket()
         }, 3000)
       }
       ws = websocket
+    } else {
+      ws.onmessage = onMessage
     }
   },
   //断开socked方法

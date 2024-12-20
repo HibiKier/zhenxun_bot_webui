@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { getPort } from "@/utils/api"
+import { mapGetters } from "vuex"
 export default {
   name: "SystemStatus",
   data() {
@@ -32,10 +32,7 @@ export default {
       memoryChart: null,
       diskChart: null,
       statusWs: null,
-      timeList: [],
-      cpuList: [],
-      memoryList: [],
-      diskList: [],
+      timer: null,
       cpuOpt: null,
       memoryOpt: null,
       diskOpt: null,
@@ -67,68 +64,44 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapGetters({
+      statusObj: "getWsStatusObj",
+    }),
+  },
   mounted() {
-    const host = location.host.split(":")[0] || ""
-    const port = getPort() || "8080"
-    this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
     this.cpuChart = this.$echarts.init(this.$refs.cpuChart)
     this.memoryChart = this.$echarts.init(this.$refs.memoryChart)
     this.diskChart = this.$echarts.init(this.$refs.diskChart)
-    this.initSystemStatusWebSocket()
     this.initSystemStatus()
     window.onresize = function () {
       this.cpuChart.resize()
       this.memoryChart.resize()
       this.diskChart.resize()
     }
+    this.timer = setInterval(() => {
+      this.initSystemStatus()
+    }, 1000)
   },
   methods: {
     initSystemStatus() {
       this.cpuOpt = JSON.parse(JSON.stringify(this.chartOpt))
-      // cpuOpt.xAxis.data = []
-      this.cpuOpt.series[0].data = this.cpuList
-      this.cpuOpt.xAxis.data = this.timeList
+      this.cpuOpt.series[0].data = this.statusObj.cpuList
+      this.cpuOpt.xAxis.data = this.statusObj.timeList
       this.memoryOpt = JSON.parse(JSON.stringify(this.chartOpt))
-      this.memoryOpt.series[0].data = this.memoryList
-      this.memoryOpt.xAxis.data = this.timeList
+      this.memoryOpt.series[0].data = this.statusObj.memoryList
+      this.memoryOpt.xAxis.data = this.statusObj.timeList
       this.diskOpt = JSON.parse(JSON.stringify(this.chartOpt))
-      this.diskOpt.series[0].data = this.diskList
-      this.diskOpt.xAxis.data = this.timeList
-      this.cpuChart.resize()
-      this.memoryChart.resize()
-      this.diskChart.resize()
-    },
-    initSystemStatusWebSocket() {
-      if (!this.statusWs) {
-        const loading = this.getLoading(".system-status")
-        this.statusWs = new WebSocket(this.STATUS_WS_URL + "?sleep=3")
-        this.statusWs.onopen = () => {
-          console.log("系统状态 WebSocket 已连接...")
-        }
-        this.statusWs.onmessage = this.statusWsOnmessage
-        this.statusWs.onclose = () => {
-          this.$message.warning("系统状态 WebSocket 已断开...")
-        }
-        loading.close()
-      }
-    },
-    statusWsOnmessage(event) {
-      const data = JSON.parse(event.data)
-      this.timeList.push(data.check_time.split("T")[1])
-      this.cpuList.push(data.cpu)
-      this.memoryList.push(data.memory)
-      this.diskList.push(data.disk)
-      if (this.timeList.length > 10) {
-        this.timeList.splice(0, 1)
-        this.cpuList.splice(0, 1)
-        this.memoryList.splice(0, 1)
-        this.diskList.splice(0, 1)
-      }
-
+      this.diskOpt.series[0].data = this.statusObj.diskList
+      this.diskOpt.xAxis.data = this.statusObj.timeList
       this.cpuChart.setOption(this.cpuOpt)
       this.memoryChart.setOption(this.memoryOpt)
       this.diskChart.setOption(this.diskOpt)
     },
+  },
+  beforeDestroy() {
+    // 在组件销毁前清除定时器
+    clearInterval(this.timer)
   },
 }
 </script>

@@ -284,7 +284,7 @@
         class="center-log"
         :style="{ height: computedCenterLogHeight + 'px' }"
       >
-        <el-scrollbar style="height: 100%" ref="scr">
+        <el-scrollbar style="height: 100%" ref="dashBoardScrollbar">
           <div id="clg"></div>
         </el-scrollbar>
       </div>
@@ -294,7 +294,7 @@
 
 <script>
 import { default as AnsiUp } from "ansi_up"
-import { getPort } from "@/utils/api"
+import { mapGetters } from "vuex"
 import { getHeaderHeight, getFontSize } from "@/utils/utils"
 export default {
   name: "MidInfo",
@@ -312,11 +312,6 @@ export default {
       windowHeight: window.innerHeight,
       botInfo: null,
       statusWs: null,
-      systemStatus: {
-        cpu: 0,
-        memory: 0,
-        disk: 0,
-      },
       chatAndCall: { chat_num: 0, chat_day: 0, call_num: 0, call_day: 0 },
       allChatAndCall: {
         chat_week: 0,
@@ -382,29 +377,17 @@ export default {
     computedHeight() {
       return this.windowHeight - getHeaderHeight()
     },
+    ...mapGetters({
+      systemStatus: "getWsStatusData",
+    }),
   },
   created() {
-    const host = location.host.split(":")[0] || ""
-    const port = getPort() || window.location.port
-
     this.botInfo = this.$store.state.botInfo || {}
-    this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
-    this.LOG_WS_URL = `ws://${host}:${port}/zhenxun/socket/logs` // 日志ws
-    console.log("this.STATUS_WS_URL", this.STATUS_WS_URL)
-    console.log("this.LOG_WS_URL", this.LOG_WS_URL)
-    window.onresize = function () {
-      if (this.chatChart) {
-        this.chatChart.resize()
-        this.callChart.resize()
-      }
-    }
   },
   mounted() {
     window.addEventListener("resize", this.handleResize)
     this.clgDiv = document.getElementById("clg")
     this.ansi_up = new AnsiUp()
-    this.initSystemStatusWebSocket()
-    this.initLogWebSocket()
     this.getChatAndCallCount()
     this.chatCntInterval = setInterval(() => {
       this.getChatAndCallCount(true)
@@ -412,6 +395,7 @@ export default {
     this.chatChart = this.$echarts.init(this.$refs.chatChart)
     this.callChart = this.$echarts.init(this.$refs.callChart)
     this.initFontSize()
+    this.$store.dispatch("initLogSocket", this.logCallable, this)
   },
   beforeDestroy() {
     this.destroyWebsocket()
@@ -526,66 +510,34 @@ export default {
         }
       })
     },
-    initLogWebSocket() {
-      if (!this.logWs) {
-        console.log("初始化日志WebSocket", this.LOG_WS_URL)
-
-        const loading = this.getLoading(".center-log")
-        this.logWs = new WebSocket(this.LOG_WS_URL)
-        this.logWs.onopen = () => {
-          console.log("Log WebSocket 已连接...")
-        }
-        this.logWs.onmessage = this.logWsOnmessage
-        this.logWs.onclose = () => {
-          this.$message.warning("Log WebSocket 已断开...")
-        }
-        loading.close()
-      }
+    statusWsOnmessage(event) {
+      this.systemStatus = JSON.parse(event.data)
     },
-    logWsOnmessage(event) {
-      let log = this.ansi_up.ansi_to_html(event.data)
+    logCallable(data) {
+      let log = this.ansi_up.ansi_to_html(data)
       log = log.replace("color:rgb(0,0,187)", "color:rgb(55,186,255)")
-
       let childDom = document.createElement("div")
       childDom.innerHTML = log
+
       this.clgDiv.appendChild(childDom)
       let children = this.clgDiv.children
 
       if (children.length > 150) {
-        console.log("日志数量超过100，移除日志...")
+        console.log("日志数量超过150，移除日志...")
         this.clgDiv.removeChild(children[0])
       }
+      console.log("this.clgDiv", this.clgDiv)
 
       this.$nextTick(() => {
         // 滚动条至底部
-        const div = this.$refs["scr"].$refs["wrap"]
-        div.scrollTop = div.scrollHeight
+        if (this.$refs["dashBoardScrollbar"]) {
+          const div = this.$refs["dashBoardScrollbar"].$refs["wrap"]
+          div.scrollTop = div.scrollHeight
+        }
       })
-    },
-    initSystemStatusWebSocket() {
-      if (!this.statusWs) {
-        console.log("初始化日志WebSocket", this.STATUS_WS_URL)
-        this.statusWs = new WebSocket(this.STATUS_WS_URL)
-        this.statusWs.onopen = () => {
-          console.log("系统状态 WebSocket 已连接...")
-        }
-        this.statusWs.onmessage = this.statusWsOnmessage
-        this.statusWs.onclose = () => {
-          this.$message.warning("系统状态 WebSocket 已断开...")
-        }
-      }
-    },
-    statusWsOnmessage(event) {
-      this.systemStatus = JSON.parse(event.data)
     },
     destroyWebsocket() {
       window.removeEventListener("resize", this.handleResize)
-      if (this.statusWs && this.statusWs.readyState === WebSocket.OPEN) {
-        this.statusWs.close()
-      }
-      if (this.logWs && this.logWs.readyState === WebSocket.OPEN) {
-        this.logWs.close()
-      }
     },
   },
 }

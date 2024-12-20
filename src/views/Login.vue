@@ -55,8 +55,8 @@
             native-type="submit"
             @click="changeApi"
             plain
-            >更换端口</el-button
-          >
+            >地址设置
+          </el-button>
           <el-button
             type="primary"
             style="width: 50%; border-radius: 12px"
@@ -77,9 +77,6 @@
         <el-button type="text">忘记密码</el-button>
       </div>
     </div>
-    <!-- <div class="bk-img-border">
-      <img class="bk-img" src="../assets/image/login_bk2.jpg" />
-    </div> -->
   </div>
 </template>
 

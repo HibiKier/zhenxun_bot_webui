@@ -76,8 +76,6 @@ export default {
       list: "输入类型错误",
     }
     var checkRule = (rule, value, callback) => {
-      console.log("value", value)
-
       if (!checkConfig(value, this.type, this.typeInner)) {
         return callback(new Error(type2str[this.type]))
       }

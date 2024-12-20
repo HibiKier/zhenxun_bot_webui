@@ -336,15 +336,6 @@ export default {
       this.initFontSize()
       this.$nextTick(() => {
         setTimeout(() => {
-          console.log(
-            "this.$refs.rightInfo.offsetHeight",
-            this.$refs.rightInfo.offsetHeight
-          )
-          console.log(
-            "this.$refs.baseInfo.offsetHeight",
-            this.$refs.baseInfo.offsetHeight
-          )
-
           this.chartBorderHeight =
             this.$refs.rightInfo.offsetHeight -
             this.$refs.baseInfo.offsetHeight -

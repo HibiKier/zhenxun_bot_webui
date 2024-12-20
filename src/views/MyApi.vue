@@ -8,12 +8,21 @@
           </div>
           <div class="api-input">
             <input
+              v-model.trim="apiurl"
+              @focus="inpOnfocus"
+              @blur="inpOnBlur"
+              type="text"
+              placeholder="IP"
+              spellcheck="false"
+            />
+            <input
               v-model.trim="port"
               @focus="inpOnfocus"
               @blur="inpOnBlur"
               type="text"
-              placeholder="IP:PORT"
+              placeholder="PORT"
               spellcheck="false"
+              style="width: 100px"
             />
           </div>
           <div class="tips">
@@ -37,7 +46,7 @@
 </template>
 
 <script>
-import { getBase, getPort, setPort } from "@/utils/api"
+import { getBaseApiUrl, setBaseApiUrl, getPort, setPort } from "@/utils/api"
 import { Rain } from "@/assets/js/rain"
 
 export default {
@@ -59,7 +68,7 @@ export default {
       port: getPort(),
       rainClass: null,
       rightshow: false,
-      apiurl: getBase(),
+      apiurl: getBaseApiUrl(),
       fromPageName: "",
       fromPagePath: "/",
     }
@@ -88,7 +97,7 @@ export default {
       this.$refs.myapi.appendChild(span)
       setTimeout(() => {
         span.remove()
-        // setBase(this.apiurl)
+        setBaseApiUrl(this.apiurl)
         setPort(this.port)
         this.$router.replace("/")
       }, 500)
@@ -183,6 +192,7 @@ input::-webkit-input-placeholder {
   margin: 0 2rem;
   width: 24rem;
   height: 2.5rem;
+  display: flex;
 }
 .api-input > input {
   padding: 0 1rem;

@@ -185,8 +185,6 @@ export default {
   },
   data() {
     var checkCostGold = (rule, value, callback) => {
-      console.log("value", value)
-
       if (!("1" + value)) {
         return callback(new Error("请输入花费金币"))
       }

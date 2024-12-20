@@ -434,8 +434,6 @@ export default {
       const width = this.$refs.countBorder.offsetWidth - 200
       this.progressWidth = width / 5
 
-      console.log("midInfo", this.$refs.midInfo.offsetHeight)
-
       this.chartBorderHeight =
         this.$refs.midInfo.offsetHeight -
         this.$refs.topBorder.offsetHeight -
@@ -446,8 +444,6 @@ export default {
         this.chartBorderHeight = 310
       }
       this.chartHeight = this.chartBorderHeight - 80
-
-      console.log("this.chartBorderHeight", this.chartBorderHeight)
 
       this.chart.resize()
     },

@@ -112,7 +112,7 @@
       >
         <el-header class="homeHeader">
           <router-link class="to-myapi" :to="{ name: 'MyApi' }"
-            >端口设置</router-link
+            >地址设置</router-link
           >
           <div class="menu-btn" @click="showMenu">
             <div class="btn-logo" :class="{ show: asideShow }"></div>
@@ -178,6 +178,7 @@ export default {
     this.getBotInfo()
   },
   mounted() {
+    this.$store.dispatch("initStatusSocket")
     window.addEventListener("resize", this.handleResize)
   },
   beforeDestroy() {

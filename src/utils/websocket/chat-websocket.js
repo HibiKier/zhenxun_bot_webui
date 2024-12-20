@@ -1,6 +1,6 @@
 // import router from "@/router/routers" //引入router, 作页面跳转
 // import store from "@/store" //引入store, 作聊天消息存储
-import { getPort } from "@/utils/api"
+import { getBaseUrl, getPort } from "@/utils/api"
 import vue from "@/main"
 
 async function getImageSize(imageUrl) {
@@ -38,7 +38,6 @@ function stopHeartbeat() {
 
 async function chatWebsocketOnmessage(event) {
   const data = JSON.parse(event.data)
-  console.log("收到消息：", data)
 
   for (let i = 0; i < data.message.length; i++) {
     const e = data.message[i]
@@ -122,39 +121,30 @@ export default {
   //初始化ws
   initWebSocket: function () {
     if (!ws) {
-      const host = location.host.split(":")[0] || ""
-      const port = getPort() || window.location.port
-      const CHAT_WS_URL = `ws://${host}:${port}/zhenxun/socket/chat` // 日志ws
+      const baseUrlSplit = getBaseUrl().split("//")
+      const baseUrl = baseUrlSplit[1]
+      const CHAT_WS_URL = `ws://${baseUrl}/zhenxun/socket/chat` // 日志ws
       const websocket = new WebSocket(CHAT_WS_URL)
       startHeartbeat()
       websocket.onopen = () => {
-        console.log("chat WebSocket 已连接...")
+        console.log("CHAT WebSocket 已连接...")
       }
       websocket.onmessage = chatWebsocketOnmessage
       websocket.onclose = () => {
-        vue.$message.warning("chat WebSocket 已断开...")
+        vue.$message.warning("CHAT WebSocket 已断开...")
         stopHeartbeat()
         setTimeout(() => {
           this.initWebSocket()
         }, 3000)
       }
-      // ws.onerror = function (err) {
-      //   console.log("Chat websocket 错误: " + err, ws.readyState)
-      //   stopHeartbeat()
-      //   if (ws.readyState != 0) {
-      //     setTimeout(() => {
-      //       this.initWebSocket()
-      //     }, 3000)
-      //   }
-      // }
       ws = websocket
     }
   },
   //断开socked方法
-  // closeWebSocket: function () {
-  //   console.log("关闭ws")
-  //   if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-  //     this.ws.close()
-  //   }
-  // },
+  closeWebSocket: function () {
+    console.log("关闭ws")
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.close()
+    }
+  },
 }

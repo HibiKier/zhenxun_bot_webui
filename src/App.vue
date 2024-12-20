@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { getBaseUrlLocalStorage, setBase } from "@/utils/api"
+import { getBaseUrlLocalStorage, setBaseApiUrl } from "@/utils/api"
 export default {
   name: "App",
   data() {
@@ -20,7 +20,7 @@ export default {
   },
   created() {
     if (getBaseUrlLocalStorage()) {
-      setBase(getBaseUrlLocalStorage())
+      setBaseApiUrl(getBaseUrlLocalStorage())
     }
   },
   mounted() {

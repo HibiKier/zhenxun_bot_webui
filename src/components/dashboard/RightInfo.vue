@@ -124,7 +124,11 @@
       >
         <div class="active-group">
           <div style="height: 40px">
-            <p class="base-title" style="margin-top: 10px; float: left">
+            <p
+              class="base-title"
+              style="margin-top: 10px; float: left"
+              :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+            >
               活跃群聊
             </p>
             <div class="btn-group">
@@ -184,7 +188,11 @@
       >
         <div class="hot-plugin">
           <div style="height: 40px">
-            <p class="base-title" style="margin-top: 10px; float: left">
+            <p
+              class="base-title"
+              style="margin-top: 10px; float: left"
+              :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+            >
               热门插件
             </p>
             <div class="btn-group">

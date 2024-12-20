@@ -2,7 +2,6 @@ const expInt = /^[0-9]+$/
 const expFloat = /^[0-9]+\.[0-9]+$/
 
 export const checkConfig = (value, type, typeInner) => {
-  console.log("checkConfig", value, type, typeInner)
   if (!value) {
     return true
   }
