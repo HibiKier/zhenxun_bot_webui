@@ -176,20 +176,22 @@ export default {
           url = "leave_group"
           data = { bot_id: this.botInfo.self_id, group_id: id }
         }
-        this.postRequest(`${this.$root.prefix}/${url}`, data).then((resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
+        this.postRequest(`${this.$root.prefix}/manage/${url}`, data).then(
+          (resp) => {
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning(resp.warning)
+              } else {
+                this.$message.success(resp.info)
+                setTimeout(() => {
+                  this.refresh()
+                }, 500)
+              }
             } else {
-              this.$message.success(resp.info)
-              setTimeout(() => {
-                this.refresh()
-              }, 500)
+              this.$message.error(resp.info)
             }
-          } else {
-            this.$message.error(resp.info)
           }
-        })
+        )
       })
     },
     getItemClass(n) {

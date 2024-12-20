@@ -22,20 +22,20 @@
             <el-row>
               <el-col :span="24">
                 <div
-                  class="account"
-                  :style="{ fontSize: sizeMana.accountText + 'px' }"
+                  class="nickname"
+                  :style="{ fontSize: sizeMana.nameText + 'px' }"
                 >
-                  {{ data.user_id || data.group_id }}
+                  {{ data.name }}
                 </div>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
                 <div
-                  class="nickname"
+                  class="account"
                   :style="{ fontSize: sizeMana.accountText + 'px' }"
                 >
-                  {{ data.name }}
+                  {{ data.user_id || data.group_id }}
                 </div>
               </el-col>
             </el-row>
@@ -317,6 +317,7 @@ export default {
         labelFontSize: 20,
         valueFontSize: 25,
         accountText: 20,
+        nameText: 20,
         avaSize: 100,
         selectWidth: 170,
       },
@@ -380,6 +381,7 @@ export default {
       this.sizeMana.labelFontSize = getFontSize(17)
       this.sizeMana.valueFontSize = getFontSize(25)
       this.sizeMana.accountText = getFontSize(20)
+      this.sizeMana.nameText = getFontSize(30)
       this.sizeMana.avaSize = getConvertSize(100, 1024)
       if (this.$refs.baseInfo) {
         this.sizeMana.selectWidth = this.$refs.baseInfo.offsetWidth - 160

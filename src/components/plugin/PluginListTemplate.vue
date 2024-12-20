@@ -11,7 +11,7 @@
             {{ data.plugin_name
             }}<span class="version-class">v{{ data.version }}</span>
           </p>
-          <p style="color: #b8bac0">
+          <p style="color: #b8bac0" class="author-border">
             {{ data.module
             }}<span class="author-class" v-if="data.author"
               >@{{ data.author }}</span
@@ -192,6 +192,13 @@ export default {
         font-weight: 400;
         margin-left: 17px;
         color: #939395;
+      }
+
+      .author-border {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 250px;
       }
 
       .author-class {

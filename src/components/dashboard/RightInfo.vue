@@ -384,7 +384,7 @@ export default {
     initFontSize() {
       this.fontSizeMana.nbConfig = getFontSize(25)
       this.fontSizeMana.nbConfigTip = getFontSize(13)
-      this.fontSizeMana.titleText = getFontSize(20)
+      this.fontSizeMana.titleText = getFontSize(17)
       this.fontSizeMana.chartTip = getFontSize(15)
     },
     getNonebotConfig() {
