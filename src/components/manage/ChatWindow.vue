@@ -191,6 +191,7 @@ export default {
   box-sizing: border-box;
   background-color: #fff;
   padding: 30px 20px;
+  border-radius: 10px;
 
   .inner-chat-box {
     height: 100%;
