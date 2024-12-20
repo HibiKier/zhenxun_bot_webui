@@ -75,7 +75,7 @@
           >
         </div>
       </div>
-      <div style="height: 200px"></div>
+      <div style="height: 30px"></div>
     </div>
   </div>
 </template>
@@ -208,7 +208,8 @@ export default {
   background-size: cover; /* 保持纵横比并填充整个容器 */
   background-position: right; /* 图片在容器中居中显示 */
   background-repeat: no-repeat; /* 不重复显示背景图片 */
-  display: flex;
+  padding: 50px 30px;
+  box-sizing: border-box;
 }
 .bk-img-border {
   height: 100%;
@@ -272,6 +273,7 @@ export default {
   align-content: center;
   flex-direction: column;
   border-right: 1px solid #f4c9e7;
+  border-radius: 20px;
 }
 
 /deep/ .el-form-item__label {
