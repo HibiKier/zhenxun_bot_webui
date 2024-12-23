@@ -5,102 +5,26 @@
         <img class="menu-pic" src="../assets/image/menu_pic.png" alt="菜单" />
         <div class="myscrollbar">
           <el-menu class="border-right-none" @select="handleSelect">
-            <el-menu-item index="dashboard">
-              <span :class="checkClass('dashboard')"></span>
+            <el-menu-item
+              v-for="menu in menus"
+              :key="menu.module"
+              :index="menu.router"
+            >
+              <span :class="checkClass(menu.module)"></span>
               <svg-icon
-                v-if="curSelectMenu == 'dashboard'"
-                icon-class="dashboard-select"
+                v-if="curSelectMenu == menu.module"
+                :icon-class="menu.icon + '-select'"
                 class="menu-icon-class"
               />
-              <svg-icon v-else icon-class="dashboard" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'dashboard' }"
-                >仪表盘</span
-              >
-            </el-menu-item>
-            <el-menu-item index="command">
-              <span :class="checkClass('command')"></span>
               <svg-icon
-                v-if="curSelectMenu == 'command'"
-                icon-class="command-select"
+                v-else
+                :icon-class="menu.icon"
                 class="menu-icon-class"
               />
-              <svg-icon v-else icon-class="command" class="menu-icon-class" />
               <span
                 slot="title"
-                :class="{ selectMenu: curSelectMenu == 'command' }"
-                >真寻控制台</span
-              >
-            </el-menu-item>
-            <el-menu-item index="plugin">
-              <span :class="checkClass('plugin')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'plugin'"
-                icon-class="plugin-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="plugin" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'plugin' }"
-                >插件列表</span
-              >
-            </el-menu-item>
-            <el-menu-item index="store">
-              <span :class="checkClass('store')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'store'"
-                icon-class="store-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="store" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'store' }"
-                >插件商店</span
-              >
-            </el-menu-item>
-            <el-menu-item index="manage">
-              <span :class="checkClass('manage')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'user'"
-                icon-class="user-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="user" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'group' }"
-                >好友/群组</span
-              >
-            </el-menu-item>
-            <el-menu-item index="database">
-              <span :class="checkClass('database')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'database'"
-                icon-class="database-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="database" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'database' }"
-                >数据库管理</span
-              >
-            </el-menu-item>
-            <el-menu-item index="system">
-              <span :class="checkClass('system')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'system'"
-                icon-class="system-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="system" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'system' }"
-                >系统信息</span
+                :class="{ selectMenu: curSelectMenu == menu.module }"
+                >{{ menu.name }}</span
               >
             </el-menu-item>
           </el-menu>
@@ -162,6 +86,7 @@ export default {
       asideShow: false,
       coverShow: false,
       rvKey: 0,
+      menus: [],
       botList: [],
       botInfo: {},
       curSelectMenu: null,
@@ -178,6 +103,7 @@ export default {
     this.getBotInfo()
   },
   mounted() {
+    this.getMenus()
     this.$store.dispatch("initStatusSocket")
     window.addEventListener("resize", this.handleResize)
   },
@@ -199,11 +125,43 @@ export default {
       this.asideShow = false
       this.coverShow = false
       this.curSelectMenu = index
-      this.$router.replace("/" + index)
+      if (index.charAt(0) !== "/") {
+        index = "/" + index
+      }
+      this.$router.replace(index)
     },
     showMenu() {
       this.asideShow = !this.asideShow
       this.coverShow = !this.coverShow
+    },
+    getMenus() {
+      this.getRequest(`${this.$root.prefix}/menu/get_menus`).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.menus = resp.data
+
+            if (this.$route.path == "/") {
+              for (const menu of this.menus) {
+                if (menu.default) {
+                  this.curSelectMenu = menu.module
+                  break
+                }
+              }
+            } else {
+              for (const menu of this.menus) {
+                if (menu.router == this.$route.path) {
+                  this.curSelectMenu = menu.module
+                }
+              }
+            }
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+      })
     },
     async getBotInfo(bot_id) {
       this.getRequest(`${this.$root.prefix}/main/get_base_info`, {
