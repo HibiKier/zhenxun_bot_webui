@@ -58,8 +58,13 @@
                 style="border-right: 1px solid #f5f6f8; line-height: 25px"
               >
                 <div class="fg-cnt-item">
-                  <p class="fg-cnt-text">
-                    <svg-icon icon-class="power-open" />
+                  <p class="fg-cnt-text" @click="handleBotStatus">
+                    <svg-icon
+                      style="cursor: pointer"
+                      :icon-class="
+                        botInfo.status ? 'power-open' : 'power-close'
+                      "
+                    />
                   </p>
                   <p
                     class="base-small-title"
@@ -90,65 +95,68 @@
         </el-col>
       </el-row>
     </div>
-    <!-- <div class="plugin-load-status">
-      <p class="left-title-text">插件加载状态</p>
-      <div class="process">
-        <span class="plugin-load-status-text">插件数量</span>
-        <div class="plugin-load-status-process">
-          <div class="base-process-box" style="background-color: #45a6f7"></div>
-        </div>
-      </div>
-      <div class="process" style="margin: 40px 0">
-        <span class="plugin-load-status-text">加载成功</span>
-        <div class="plugin-load-status-process">
-          <div
-            class="base-process-box"
-            :style="{ 'background-color': '#5c87ff', width: sucPluginPer }"
-          ></div>
-        </div>
-      </div>
-      <div class="process">
-        <span class="plugin-load-status-text">加载失败</span>
-        <div class="plugin-load-status-process">
-          <div
-            class="base-process-box"
-            :style="{ 'background-color': '#ab55ff', width: failPluginPer }"
-          ></div>
-        </div>
-      </div>
-    </div> -->
     <div class="base-info" :style="{ height: computedHeight + 'px' }">
-      <p class="left-title-text">Bot插件管理</p>
-      <!-- <div class="base-border">
-        <div class="base-info-box">
-          <div class="base-info-box-item">
-            <p class="base-info-item-text">{{ botInfo.connect_count }}</p>
-            <p class="base-small-title">累计登录</p>
-          </div>
-          <el-divider direction="vertical" />
-          <div class="base-info-box-item">
-            <p class="base-info-item-text">{{ botInfo.connectTime }}</p>
-            <p class="base-small-title">连接时长</p>
-          </div>
-        </div>
-        <el-divider />
-        <div class="base-info-box" style="margin-top: 18px">
-          <div class="base-info-box-item" style="width: 240px">
-            <p class="base-info-item-text" style="font-size: 22px">
-              {{ botInfo.connect_date }}
-            </p>
-            <p class="base-small-title">连接日期</p>
-          </div>
-        </div>
-      </div> -->
+      <p
+        class="left-title-text"
+        :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+      >
+        Bot插件管理
+      </p>
+      <div class="bot-manage">
+        <el-row>
+          <el-col :span="6">
+            <span>全局禁用被动</span>
+          </el-col>
+          <el-col :span="18">
+            <el-select
+              v-model="postData.blockTasks"
+              multiple
+              placeholder=""
+              style="width: 100%"
+            >
+              <el-option
+                v-for="v in botModuleData.blockTasks"
+                :label="v.name"
+                :value="v.module"
+                :key="v.module"
+              ></el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px">
+          <el-col :span="6">
+            <span>全局禁用插件</span>
+          </el-col>
+          <el-col :span="18">
+            <el-select
+              v-model="postData.blockPlugins"
+              placeholder=""
+              multiple
+              style="width: 100%"
+            >
+              <el-option
+                v-for="n in botModuleData.blockPlugins"
+                :label="n.name"
+                :value="n.module"
+                :key="n.module"
+              ></el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px">
+          <MyButton @click="clickBotManage" text="应用" />
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { getFontSize, getConvertSize } from "@/utils/utils"
+import MyButton from "../ui/MyButton.vue"
 export default {
   name: "LeftInfo",
+  components: { MyButton },
   data() {
     return {
       fontSizeMana: {
@@ -156,6 +164,15 @@ export default {
         accountText: 15,
         fgCntText: 25,
         fgCntTip: 13,
+        titleText: 17,
+      },
+      botModuleData: {
+        blockPlugins: [],
+        blockTasks: [],
+      },
+      postData: {
+        blockPlugins: [],
+        blockTasks: [],
       },
       botInfo: {},
       avaImageSize: 100,
@@ -173,6 +190,7 @@ export default {
   mounted() {
     window.addEventListener("resize", this.handleResize)
     this.handleResize()
+    this.getBotModuleData()
   },
   methods: {
     handleResize() {
@@ -190,6 +208,66 @@ export default {
       this.fontSizeMana.accountText = getFontSize(20)
       this.fontSizeMana.fgCntText = getFontSize(25)
       this.fontSizeMana.fgCntTip = getFontSize(16)
+      this.fontSizeMana.titleText = getFontSize(17)
+    },
+    handleBotStatus() {
+      var loading = this.getLoading(".left-info")
+      this.postRequest(`${this.$root.prefix}/main/change_bot_status`, {
+        bot_id: this.botInfo.self_id,
+        status: !this.botInfo.status,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.botInfo.status = !this.botInfo.status
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
+    },
+    getBotModuleData() {
+      var loading = this.getLoading(".left-info")
+      this.getRequest(`${this.$root.prefix}/main/get_bot_block_module`, {
+        bot_id: this.botInfo.self_id,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.botModuleData.blockPlugins = resp.data.all_plugins
+            this.botModuleData.blockTasks = resp.data.all_tasks
+            this.postData.blockPlugins = resp.data.block_plugins
+            this.postData.blockTasks = resp.data.block_tasks
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
+    },
+    clickBotManage() {
+      var loading = this.getLoading(".left-info")
+      this.postRequest(`${this.$root.prefix}/main/update_bot_manage`, {
+        bot_id: this.botInfo.self_id,
+        block_plugins: this.postData.blockPlugins,
+        block_tasks: this.postData.blockTasks,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
     },
   },
   destroyed() {
@@ -211,6 +289,7 @@ export default {
 .base-small-title {
   color: #afb2b9;
   font-size: 13px;
+  margin-top: 10px;
 }
 
 .left-info {
@@ -270,37 +349,18 @@ export default {
     padding: 30px;
     height: 370px;
 
-    .base-border {
+    .bot-manage {
+      color: #939395;
+    }
+
+    /deep/ .el-row {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
     }
 
     ::v-deep .el-divider--horizontal {
       margin: 0;
-    }
-
-    .base-info-box {
-      display: flex;
-
-      ::v-deep .el-divider--vertical {
-        margin: 0;
-        height: 73px;
-      }
-
-      .base-info-box-item {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        justify-content: center;
-        width: 150px;
-
-        .base-info-item-text {
-          font-size: 25px;
-          margin-bottom: 10px;
-        }
-      }
     }
   }
 }

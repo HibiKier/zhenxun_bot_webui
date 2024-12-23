@@ -232,7 +232,6 @@
                   <el-select
                     v-model="data.task_status"
                     :style="{ width: sizeMana.selectWidth + 'px' }"
-                    collapse-tags
                     multiple
                   >
                     <el-option

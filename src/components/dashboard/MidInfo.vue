@@ -405,8 +405,8 @@ export default {
   },
   methods: {
     initFontSize() {
-      this.fontSizeMana.headText = getFontSize(27)
-      this.fontSizeMana.statusText = getFontSize(35)
+      this.fontSizeMana.headText = getFontSize(25)
+      this.fontSizeMana.statusText = getFontSize(27)
       this.fontSizeMana.statusTip = getFontSize(20)
       this.fontSizeMana.titleText = getFontSize(17)
       this.fontSizeMana.titleTip = getFontSize(12)

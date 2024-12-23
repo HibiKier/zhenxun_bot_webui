@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     computedHeight() {
-      return this.windowHeight - getHeaderHeight()
+      return this.windowHeight - getHeaderHeight() - 5
     },
   },
   mounted() {

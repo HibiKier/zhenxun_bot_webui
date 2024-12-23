@@ -41,7 +41,7 @@
         </div>
         <el-divider />
         <div class="base-info-box" style="margin-top: 18px">
-          <div class="base-info-box-item" style="width: 240px">
+          <div class="base-info-box-item" style="width: 100%">
             <p
               class="base-info-item-text"
               :style="{ fontSize: fontSizeMana.botConfig + 'px' }"

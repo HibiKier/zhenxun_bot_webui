@@ -72,7 +72,7 @@ export default {
     handleResize() {
       this.$nextTick(() => {
         this.tableHeight =
-          this.$refs.tableList.offsetHeight - this.$refs.title.offsetHeight - 80
+          this.$refs.tableList.offsetHeight - this.$refs.title.offsetHeight - 90
       })
     },
     async selectTable(tableName) {
