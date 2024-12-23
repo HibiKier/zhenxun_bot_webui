@@ -382,10 +382,10 @@ export default {
       })
     },
     initFontSize() {
-      this.fontSizeMana.nbConfig = getFontSize(25)
-      this.fontSizeMana.nbConfigTip = getFontSize(13)
-      this.fontSizeMana.titleText = getFontSize(17)
-      this.fontSizeMana.chartTip = getFontSize(15)
+      this.fontSizeMana.nbConfig = getFontSize(20, 23)
+      this.fontSizeMana.nbConfigTip = getFontSize(13, 16)
+      this.fontSizeMana.titleText = getFontSize(15, 18)
+      this.fontSizeMana.chartTip = getFontSize(12, 15)
     },
     getNonebotConfig() {
       const loading = this.getLoading(".base-border")

@@ -439,9 +439,11 @@ export default {
         this.$refs.topBorder.offsetHeight -
         this.$refs.chCountBorder.offsetHeight -
         this.$refs.countBorder.offsetHeight -
-        30
-      if (this.chartBorderHeight < 310) {
-        this.chartBorderHeight = 310
+        100
+      console.log("this.chartBorderHeight", this.chartBorderHeight)
+
+      if (this.chartBorderHeight < 280) {
+        this.chartBorderHeight = 280
       }
       this.chartHeight = this.chartBorderHeight - 80
 
@@ -450,7 +452,7 @@ export default {
     initFontSize() {
       this.fontSizeMana.headText = getFontSize(27)
       this.fontSizeMana.headTip = getFontSize(12)
-      this.fontSizeMana.titleText = getFontSize(19)
+      this.fontSizeMana.titleText = getFontSize(16)
       this.fontSizeMana.titleTip = getFontSize(12)
       this.fontSizeMana.countText = getFontSize(18)
     },

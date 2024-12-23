@@ -102,7 +102,7 @@
       >
         Bot插件管理
       </p>
-      <div class="bot-manage">
+      <div class="bot-manage" :style="{ height: computedHeight - 90 + 'px' }">
         <el-row>
           <el-col :span="6">
             <span>全局禁用被动</span>
@@ -351,6 +351,8 @@ export default {
 
     .bot-manage {
       color: #939395;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     /deep/ .el-row {
