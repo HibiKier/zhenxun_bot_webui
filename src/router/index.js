@@ -54,8 +54,9 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = window.sessionStorage.getItem("isAuthenticated")
+  console.log("to", to.path)
 
-  if (to.path !== "/" && !isAuthenticated) {
+  if (!["/", "/myapi"].includes(to.path) && !isAuthenticated) {
     next("/") // 重定向到登录页面
   } else {
     next()
