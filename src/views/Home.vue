@@ -183,6 +183,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
+    window.sessionStorage.removeItem("isAuthenticated")
   },
   methods: {
     handleResize() {

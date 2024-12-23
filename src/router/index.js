@@ -39,11 +39,6 @@ const routes = [
       { path: "/system", name: "系统信息", component: SystemInfo },
     ],
   },
-  // {
-  //   path: '/home',
-  //   name: 'Home',
-  //   component: Home,
-  // }
 ]
 
 const router = new VueRouter({
@@ -55,6 +50,16 @@ const router = new VueRouter({
       return { x: 0, y: 0 }
     }
   },
+})
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = window.sessionStorage.getItem("isAuthenticated")
+
+  if (to.path !== "/" && !isAuthenticated) {
+    next("/") // 重定向到登录页面
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -147,6 +147,7 @@ export default {
               if (resp.warning) {
                 this.$message.warning(resp.warning)
               } else {
+                window.sessionStorage.setItem('isAuthenticated', true);
                 this.$message.success(resp.info)
                 const tokenStr =
                   resp.data.token_type + " " + resp.data.access_token
