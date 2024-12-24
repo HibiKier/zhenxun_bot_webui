@@ -12,7 +12,7 @@
             >
               <span :class="checkClass(menu.module)"></span>
               <svg-icon
-                v-if="curSelectMenu == menu.module"
+                v-if="curSelectMenu == menu.router"
                 :icon-class="menu.icon + '-select'"
                 class="menu-icon-class"
               />
@@ -23,7 +23,7 @@
               />
               <span
                 slot="title"
-                :class="{ selectMenu: curSelectMenu == menu.module }"
+                :class="{ selectMenu: curSelectMenu == menu.router }"
                 >{{ menu.name }}</span
               >
             </el-menu-item>
@@ -124,10 +124,10 @@ export default {
     handleSelect(index) {
       this.asideShow = false
       this.coverShow = false
-      this.curSelectMenu = index
       if (index.charAt(0) !== "/") {
         index = "/" + index
       }
+      this.curSelectMenu = index
       this.$router.replace(index)
     },
     showMenu() {
@@ -141,19 +141,19 @@ export default {
             this.$message.warning(resp.warning)
           } else {
             this.$message.success(resp.info)
-            this.menus = resp.data
-
+            this.menus = resp.data.menus
+            this.$store.commit("SET_BOT_TYPE", resp.data.bot_type)
             if (this.$route.path == "/") {
               for (const menu of this.menus) {
                 if (menu.default) {
-                  this.curSelectMenu = menu.module
+                  this.curSelectMenu = menu.router
                   break
                 }
               }
             } else {
               for (const menu of this.menus) {
                 if (menu.router == this.$route.path) {
-                  this.curSelectMenu = menu.module
+                  this.curSelectMenu = menu.router
                 }
               }
             }
@@ -218,10 +218,7 @@ export default {
               this.rvKey++
             }
           }
-          this.curSelectMenu = this.$route.path.substring(
-            1,
-            this.$route.path.length
-          )
+          this.curSelectMenu = this.$route.path
         } else {
           this.$message.error(resp.info)
         }

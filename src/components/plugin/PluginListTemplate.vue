@@ -8,8 +8,8 @@
       <div class="base-info">
         <div class="base-info-box">
           <p class="plugin-name-class">
-            {{ data.plugin_name
-            }}<span class="version-class">v{{ data.version }}</span>
+            {{ data.plugin_name }}
+            <span class="version-class">v{{ data.version }}</span>
           </p>
           <p style="color: #b8bac0" class="author-border">
             {{ data.module

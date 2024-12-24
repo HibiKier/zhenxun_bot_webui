@@ -10,6 +10,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   plugins: [createPersistedState()],
   state: {
+    botType: null,
     botInfo: null,
     chatObj: {}, // 聊天ws信息存储
     _chatId: null,
@@ -30,6 +31,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    SET_BOT_TYPE(state, botType) {
+      state.botType = botType
+    },
     SET_BOT(state, botInfo) {
       state.botInfo = botInfo
     },
