@@ -4,37 +4,30 @@
       <div class="bg-cover">
         <div class="api-box">
           <div class="api-title" :class="{ rightshow: rightshow }">
-            <span>端口</span>
+            <span>IP:PORT</span>
           </div>
-          <!-- <div class="api-input">
+          <div class="api-input">
             <input
               v-model.trim="apiurl"
               @focus="inpOnfocus"
               @blur="inpOnBlur"
               type="text"
-              placeholder="api地址 ip:port"
+              placeholder="IP"
               spellcheck="false"
             />
-          </div> -->
-          <div class="api-input">
             <input
               v-model.trim="port"
               @focus="inpOnfocus"
               @blur="inpOnBlur"
               type="text"
-              placeholder="端口"
+              placeholder="PORT"
               spellcheck="false"
+              style="width: 100px"
             />
           </div>
           <div class="tips">
             <p>注意事项：</p>
             <p>①开发环境中修改api地址一样生效，即覆盖代理服务器的转发</p>
-            <!-- <p>
-              ②如果生产环境部署的资源和真寻本体<ins><b>在</b></ins
-              >同一个机器上，则输入空。如果修改过真寻的默认端口，则输入<ins
-                ><b>“http://localhost:你的真寻端口”</b></ins
-              >
-            </p> -->
             <p>
               ②如果生产环境部署的资源和真寻本体<ins><b>不在</b></ins
               >同一个机器上，则输入你的服务器接口地址以及真寻的端口。最后记得修改防火墙设置哦
@@ -53,7 +46,7 @@
 </template>
 
 <script>
-import { getBase, getPort, setPort } from "@/utils/api"
+import { getBaseApiUrl, setBaseApiUrl, getPort, setPort } from "@/utils/api"
 import { Rain } from "@/assets/js/rain"
 
 export default {
@@ -75,7 +68,7 @@ export default {
       port: getPort(),
       rainClass: null,
       rightshow: false,
-      apiurl: getBase(),
+      apiurl: getBaseApiUrl(),
       fromPageName: "",
       fromPagePath: "/",
     }
@@ -104,7 +97,7 @@ export default {
       this.$refs.myapi.appendChild(span)
       setTimeout(() => {
         span.remove()
-        // setBase(this.apiurl)
+        setBaseApiUrl(this.apiurl)
         setPort(this.port)
         this.$router.replace("/")
       }, 500)
@@ -199,6 +192,7 @@ input::-webkit-input-placeholder {
   margin: 0 2rem;
   width: 24rem;
   height: 2.5rem;
+  display: flex;
 }
 .api-input > input {
   padding: 0 1rem;
@@ -278,7 +272,7 @@ input::-webkit-input-placeholder {
 .tips {
   margin: 0 2rem;
   text-align: start;
-  font-size: 0.5rem;
+  font-size: 0.8rem;
 }
 .tips > p {
   padding-left: 0.8rem;

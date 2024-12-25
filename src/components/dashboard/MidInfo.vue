@@ -1,125 +1,255 @@
 <template>
-  <div class="mid-info">
-    <div class="top-area-info">
+  <div class="mid-info" :style="{ height: computedHeight + 'px' }">
+    <div class="top-area-info" ref="topAreaInfo">
       <div class="head">
-        <p class="head-text">Hello 欢迎来到真寻的小房间！</p>
-        <p class="head-tip">这是一场传奇的冒险旅途...</p>
+        <p
+          class="head-text"
+          :style="{ fontSize: fontSizeMana.headText + 'px' }"
+        >
+          Hello 欢迎来到真寻的小房间！
+        </p>
+        <p class="head-tip" :style="{ fontSize: fontSizeMana.titleTip + 'px' }">
+          这是一场传奇的冒险旅途...
+        </p>
       </div>
       <div class="top-area-info">
         <div class="system-status">
-          <div class="system-status-border">
-            <div class="system-status-item">
-              <svg-icon icon-class="cpu" class="system-status-icon" />
-              <span class="system-status-tip">CPU</span>
-            </div>
-            <div class="system-status-text">
-              <p>{{ systemStatus.cpu }}%</p>
-            </div>
-          </div>
-          <div class="system-status-border">
-            <div class="system-status-item">
-              <svg-icon icon-class="memory" class="system-status-icon" />
-              <span class="system-status-tip">MEMORY</span>
-            </div>
-            <div class="system-status-text">
-              <p>{{ systemStatus.memory }}%</p>
-            </div>
-          </div>
-          <div class="system-status-border">
-            <div class="system-status-item">
-              <svg-icon icon-class="disk" class="system-status-icon" />
-              <span class="system-status-tip">DISK</span>
-            </div>
-            <div class="system-status-text">
-              <p>{{ systemStatus.disk }}%</p>
-            </div>
-          </div>
+          <el-row :gutter="20">
+            <el-col :span="8">
+              <div class="system-status-border">
+                <div class="system-status-item">
+                  <svg-icon icon-class="cpu" class="system-status-icon" />
+                  <span
+                    class="system-status-tip"
+                    :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                    >CPU</span
+                  >
+                </div>
+                <div
+                  class="system-status-text"
+                  :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                >
+                  <p>{{ systemStatus.cpu }}%</p>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="system-status-border">
+                <div class="system-status-item">
+                  <svg-icon icon-class="memory" class="system-status-icon" />
+                  <span
+                    class="system-status-tip"
+                    :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                    >MEMORY</span
+                  >
+                </div>
+                <div
+                  class="system-status-text"
+                  :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                >
+                  <p>{{ systemStatus.memory }}%</p>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="system-status-border">
+                <div class="system-status-item">
+                  <svg-icon icon-class="disk" class="system-status-icon" />
+                  <span
+                    class="system-status-tip"
+                    :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                    >DISK</span
+                  >
+                </div>
+                <div
+                  class="system-status-text"
+                  :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                >
+                  <p>{{ systemStatus.disk }}%</p>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
         </div>
         <div class="chat-count">
-          <div class="chat-count-border">
-            <div class="chat-count-item">
-              <span class="chat-count-status-tip">消息总数:</span>
-            </div>
-            <div class="chat-count-status-text">
-              <p>{{ chatAndCall.chat_num }}</p>
-            </div>
-          </div>
-          <div class="chat-count-border">
-            <div class="chat-count-item">
-              <span class="chat-count-status-tip">今日消息:</span>
-            </div>
-            <div class="chat-count-status-text">
-              <p>{{ chatAndCall.chat_day }}</p>
-            </div>
-          </div>
-          <div class="chat-count-border">
-            <div class="chat-count-item">
-              <span class="chat-count-status-tip">调用总数:</span>
-            </div>
-            <div class="chat-count-status-text">
-              <p>{{ chatAndCall.call_num }}</p>
-            </div>
-          </div>
-          <div class="chat-count-border">
-            <div class="chat-count-item">
-              <span class="chat-count-status-tip">今日调用:</span>
-            </div>
-            <div class="chat-count-status-text">
-              <p>{{ chatAndCall.call_day }}</p>
-            </div>
-          </div>
+          <el-row :gutter="20">
+            <el-col :span="6">
+              <div class="chat-count-border">
+                <div class="chat-count-item">
+                  <span
+                    class="chat-count-status-tip"
+                    :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                    >消息总数:</span
+                  >
+                </div>
+                <div
+                  class="chat-count-status-text"
+                  :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                >
+                  <p>{{ chatAndCall.chat_num }}</p>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="chat-count-border">
+                <div class="chat-count-item">
+                  <span
+                    class="chat-count-status-tip"
+                    :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                    >今日消息:</span
+                  >
+                </div>
+                <div
+                  class="chat-count-status-text"
+                  :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                >
+                  <p>{{ chatAndCall.chat_day }}</p>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="chat-count-border">
+                <div class="chat-count-item">
+                  <span
+                    class="chat-count-status-tip"
+                    :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                    >调用总数:</span
+                  >
+                </div>
+                <div
+                  class="chat-count-status-text"
+                  :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                >
+                  <p>{{ chatAndCall.call_num }}</p>
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="chat-count-border">
+                <div class="chat-count-item">
+                  <span
+                    class="chat-count-status-tip"
+                    :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                    >今日调用:</span
+                  >
+                </div>
+                <div
+                  class="chat-count-status-text"
+                  :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                >
+                  <p>{{ chatAndCall.call_day }}</p>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
         </div>
         <el-collapse @change="handleChange" style="border-top: none">
           <el-collapse-item title="查看更多...">
             <div class="detail-count">
-              <div class="chat-count-border">
-                <div class="chat-count-item">
-                  <span class="chat-count-status-tip">一周内消息:</span>
-                </div>
-                <div class="chat-count-status-text">
-                  <p>{{ allChatAndCall.chat_week }}</p>
-                </div>
-              </div>
-              <div class="chat-count-border">
-                <div class="chat-count-item">
-                  <span class="chat-count-status-tip">一月内消息:</span>
-                </div>
-                <div class="chat-count-status-text">
-                  <p>{{ allChatAndCall.chat_month }}</p>
-                </div>
-              </div>
-              <div class="chat-count-border">
-                <div class="chat-count-item">
-                  <span class="chat-count-status-tip">一年内消息:</span>
-                </div>
-                <div class="chat-count-status-text">
-                  <p>{{ allChatAndCall.chat_year }}</p>
-                </div>
-              </div>
-              <div class="chat-count-border">
-                <div class="chat-count-item">
-                  <span class="chat-count-status-tip">一周内调用:</span>
-                </div>
-                <div class="chat-count-status-text">
-                  <p>{{ allChatAndCall.call_week }}</p>
-                </div>
-              </div>
-              <div class="chat-count-border">
-                <div class="chat-count-item">
-                  <span class="chat-count-status-tip">一月内调用:</span>
-                </div>
-                <div class="chat-count-status-text">
-                  <p>{{ allChatAndCall.call_month }}</p>
-                </div>
-              </div>
-              <div class="chat-count-border">
-                <div class="chat-count-item">
-                  <span class="chat-count-status-tip">一年内调用:</span>
-                </div>
-                <div class="chat-count-status-text">
-                  <p>{{ allChatAndCall.call_year }}</p>
-                </div>
-              </div>
+              <el-row :gutter="10">
+                <el-col :span="4">
+                  <div class="chat-count-border">
+                    <div class="chat-count-item">
+                      <span
+                        class="chat-count-status-tip"
+                        :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                        >一周内消息:</span
+                      >
+                    </div>
+                    <div
+                      class="chat-count-status-text"
+                      :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                    >
+                      <p>{{ allChatAndCall.chat_week }}</p>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="chat-count-border">
+                    <div class="chat-count-item">
+                      <span
+                        class="chat-count-status-tip"
+                        :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                        >一月内消息:</span
+                      >
+                    </div>
+                    <div
+                      class="chat-count-status-text"
+                      :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                    >
+                      <p>{{ allChatAndCall.chat_month }}</p>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="chat-count-border">
+                    <div class="chat-count-item">
+                      <span
+                        class="chat-count-status-tip"
+                        :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                        >一年内消息:</span
+                      >
+                    </div>
+                    <div
+                      class="chat-count-status-text"
+                      :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                    >
+                      <p>{{ allChatAndCall.chat_year }}</p>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="chat-count-border">
+                    <div class="chat-count-item">
+                      <span
+                        class="chat-count-status-tip"
+                        :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                        >一周内调用:</span
+                      >
+                    </div>
+                    <div
+                      class="chat-count-status-text"
+                      :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                    >
+                      <p>{{ allChatAndCall.call_week }}</p>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="chat-count-border">
+                    <div class="chat-count-item">
+                      <span
+                        class="chat-count-status-tip"
+                        :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                        >一月内调用:</span
+                      >
+                    </div>
+                    <div
+                      class="chat-count-status-text"
+                      :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                    >
+                      <p>{{ allChatAndCall.call_month }}</p>
+                    </div>
+                  </div>
+                </el-col>
+                <el-col :span="4">
+                  <div class="chat-count-border">
+                    <div class="chat-count-item">
+                      <span
+                        class="chat-count-status-tip"
+                        :style="{ fontSize: fontSizeMana.statusTip + 'px' }"
+                        >一年内调用:</span
+                      >
+                    </div>
+                    <div
+                      class="chat-count-status-text"
+                      :style="{ fontSize: fontSizeMana.statusText + 'px' }"
+                    >
+                      <p>{{ allChatAndCall.call_year }}</p>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
             </div>
             <div class="chart">
               <div ref="chatChart" class="base-chart"></div>
@@ -133,13 +263,28 @@
         </el-collapse>
       </div>
     </div>
-    <div class="log-border">
-      <div class="title-box">
-        <p class="title-text">后台日志</p>
-        <span class="title-tip">虽然不知道为什么，但是视力+1</span>
+    <div
+      class="log-border"
+      :style="{ height: computedCenterLogBorderHeight + 'px' }"
+    >
+      <div class="title-box" ref="titleBox">
+        <p
+          class="title-text"
+          :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+        >
+          后台日志
+        </p>
+        <span
+          class="title-tip"
+          :style="{ fontSize: fontSizeMana.titleTip + 'px' }"
+          >虽然不知道为什么，但是视力+1</span
+        >
       </div>
-      <div class="center-log">
-        <el-scrollbar style="height: 100%" ref="scr">
+      <div
+        class="center-log"
+        :style="{ height: computedCenterLogHeight + 'px' }"
+      >
+        <el-scrollbar style="height: 100%" ref="dashBoardScrollbar">
           <div id="clg"></div>
         </el-scrollbar>
       </div>
@@ -149,18 +294,24 @@
 
 <script>
 import { default as AnsiUp } from "ansi_up"
-import { getPort } from "@/utils/api"
+import { mapGetters } from "vuex"
+import { getHeaderHeight, getFontSize } from "@/utils/utils"
 export default {
   name: "MidInfo",
   data() {
     return {
+      fontSizeMana: {
+        headText: 27,
+        statusText: 35,
+        statusTip: 20,
+        titleText: 17,
+        titleTip: 12,
+      },
+      centerLogHeight: 0,
+      centerLogBorderHeight: 0,
+      windowHeight: window.innerHeight,
       botInfo: null,
       statusWs: null,
-      systemStatus: {
-        cpu: 0,
-        memory: 0,
-        disk: 0,
-      },
       chatAndCall: { chat_num: 0, chat_day: 0, call_num: 0, call_day: 0 },
       allChatAndCall: {
         chat_week: 0,
@@ -210,33 +361,41 @@ export default {
       },
     }
   },
-  created() {
-    const host = location.host.split(":")[0] || ""
-    const port = getPort() || window.location.port
-
-    this.botInfo = this.$store.state.botInfo || {}
-    this.STATUS_WS_URL = `ws://${host}:${port}/zhenxun/socket/system_status` // 系统状态ws
-    this.LOG_WS_URL = `ws://${host}:${port}/zhenxun/socket/logs` // 日志ws
-    console.log("this.STATUS_WS_URL", this.STATUS_WS_URL)
-    console.log("this.LOG_WS_URL", this.LOG_WS_URL)
-    window.onresize = function () {
-      if (this.chatChart) {
-        this.chatChart.resize()
-        this.callChart.resize()
+  computed: {
+    computedCenterLogBorderHeight() {
+      if (!this.centerLogBorderHeight) {
+        this.handleResize()
       }
-    }
+      return this.centerLogBorderHeight
+    },
+    computedCenterLogHeight() {
+      if (!this.centerLogHeight) {
+        this.handleResize()
+      }
+      return this.centerLogHeight
+    },
+    computedHeight() {
+      return this.windowHeight - getHeaderHeight()
+    },
+    ...mapGetters({
+      systemStatus: "getWsStatusData",
+    }),
+  },
+  created() {
+    this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     this.clgDiv = document.getElementById("clg")
     this.ansi_up = new AnsiUp()
-    this.initSystemStatusWebSocket()
-    this.initLogWebSocket()
     this.getChatAndCallCount()
     this.chatCntInterval = setInterval(() => {
       this.getChatAndCallCount(true)
     }, 30000)
     this.chatChart = this.$echarts.init(this.$refs.chatChart)
     this.callChart = this.$echarts.init(this.$refs.callChart)
+    this.initFontSize()
+    this.$store.dispatch("initLogSocket", this.logCallable)
   },
   beforeDestroy() {
     this.destroyWebsocket()
@@ -245,6 +404,29 @@ export default {
     }
   },
   methods: {
+    initFontSize() {
+      this.fontSizeMana.headText = getFontSize(25)
+      this.fontSizeMana.statusText = getFontSize(27)
+      this.fontSizeMana.statusTip = getFontSize(20)
+      this.fontSizeMana.titleText = getFontSize(17)
+      this.fontSizeMana.titleTip = getFontSize(12)
+    },
+    handleResize() {
+      this.windowHeight = window.innerHeight
+      this.initFontSize()
+      this.$nextTick(() => {
+        this.centerLogBorderHeight =
+          window.innerHeight -
+          this.$refs.topAreaInfo.offsetHeight -
+          getHeaderHeight() -
+          20
+        this.centerLogHeight =
+          this.centerLogBorderHeight -
+          this.$refs.titleBox.offsetHeight -
+          getHeaderHeight() -
+          20
+      })
+    },
     handleChange(a) {
       if (a.length) {
         this.getMonthChatAndCallCount()
@@ -328,65 +510,32 @@ export default {
         }
       })
     },
-    initLogWebSocket() {
-      if (!this.logWs) {
-        console.log("初始化日志WebSocket", this.LOG_WS_URL)
-
-        const loading = this.getLoading(".center-log")
-        this.logWs = new WebSocket(this.LOG_WS_URL)
-        this.logWs.onopen = () => {
-          console.log("Log WebSocket 已连接...")
-        }
-        this.logWs.onmessage = this.logWsOnmessage
-        this.logWs.onclose = () => {
-          this.$message.warning("Log WebSocket 已断开...")
-        }
-        loading.close()
-      }
+    statusWsOnmessage(event) {
+      this.systemStatus = JSON.parse(event.data)
     },
-    logWsOnmessage(event) {
-      let log = this.ansi_up.ansi_to_html(event.data)
+    logCallable(data) {
+      let log = this.ansi_up.ansi_to_html(data)
       log = log.replace("color:rgb(0,0,187)", "color:rgb(55,186,255)")
-
       let childDom = document.createElement("div")
       childDom.innerHTML = log
+
       this.clgDiv.appendChild(childDom)
       let children = this.clgDiv.children
 
       if (children.length > 150) {
-        console.log("日志数量超过100，移除日志...")
         this.clgDiv.removeChild(children[0])
       }
 
       this.$nextTick(() => {
         // 滚动条至底部
-        const div = this.$refs["scr"].$refs["wrap"]
-        div.scrollTop = div.scrollHeight
+        if (this.$refs["dashBoardScrollbar"]) {
+          const div = this.$refs["dashBoardScrollbar"].$refs["wrap"]
+          div.scrollTop = div.scrollHeight
+        }
       })
     },
-    initSystemStatusWebSocket() {
-      if (!this.statusWs) {
-        console.log("初始化日志WebSocket", this.STATUS_WS_URL)
-        this.statusWs = new WebSocket(this.STATUS_WS_URL)
-        this.statusWs.onopen = () => {
-          console.log("系统状态 WebSocket 已连接...")
-        }
-        this.statusWs.onmessage = this.statusWsOnmessage
-        this.statusWs.onclose = () => {
-          this.$message.warning("系统状态 WebSocket 已断开...")
-        }
-      }
-    },
-    statusWsOnmessage(event) {
-      this.systemStatus = JSON.parse(event.data)
-    },
     destroyWebsocket() {
-      if (this.statusWs && this.statusWs.readyState === WebSocket.OPEN) {
-        this.statusWs.close()
-      }
-      if (this.logWs && this.logWs.readyState === WebSocket.OPEN) {
-        this.logWs.close()
-      }
+      window.removeEventListener("resize", this.handleResize)
     },
   },
 }
@@ -398,10 +547,13 @@ export default {
 }
 
 .mid-info {
+  border-radius: 10px;
+
   .top-area-info {
     background-color: white;
     border-radius: 10px;
     padding: 20px;
+    box-sizing: border-box;
   }
 
   .head {
@@ -439,17 +591,13 @@ export default {
   }
 
   .system-status {
-    display: flex;
     margin-top: 50px;
-    justify-content: space-between;
     background-color: white;
 
     .system-status-border {
       background-color: #f5f6f8;
-      height: 85px;
       padding: 15px;
       border-radius: 10px;
-      width: calc(32% - 20px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       .system-status-item {
@@ -480,15 +628,11 @@ export default {
 
   .chat-count {
     margin-top: 15px;
-    display: flex;
-    justify-content: space-between;
 
     .chat-count-border {
       background-color: #f5f6f8;
-      height: 85px;
       padding: 15px;
       border-radius: 10px;
-      width: calc(24% - 27px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       .chat-count-status-tip {
@@ -514,10 +658,8 @@ export default {
 
     .chat-count-border {
       background-color: #f5f6f8;
-      height: 85px;
       padding: 15px;
       border-radius: 10px;
-      width: calc(15% - 20px);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       .chat-count-status-tip {
@@ -542,7 +684,7 @@ export default {
     display: flex;
 
     .title-text {
-      font-size: 17px;
+      // font-size: 17px;
     }
     .title-tip {
       color: #acafb8;
@@ -557,10 +699,9 @@ export default {
     padding: 30px;
     margin-top: 20px;
     border-radius: 10px;
+    box-sizing: border-box;
 
     .center-log {
-      height: 560px;
-      width: 99%;
       background-color: #282c34;
       border-radius: 10px;
       padding: 10px;
@@ -587,6 +728,14 @@ export default {
     canvas {
       width: 100%;
     }
+  }
+
+  /deep/ .el-collapse {
+    border: none;
+  }
+
+  /deep/ .el-collapse-item__content {
+    margin-bottom: 0;
   }
 }
 </style>

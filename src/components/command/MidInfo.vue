@@ -1,209 +1,323 @@
 <template>
-  <div class="mid-info">
-    <div class="top-border">
+  <div class="mid-info" ref="midInfo">
+    <div class="top-border" ref="topBorder">
       <div class="head">
-        <p class="head-text">一位勇者的磨砺...</p>
-        <p class="head-tip">挥剑吧...</p>
+        <p
+          class="head-text"
+          :style="{ fontSize: fontSizeMana.headText + 'px' }"
+        >
+          一位勇者的磨砺...
+        </p>
+        <p class="head-tip" :style="{ fontSize: fontSizeMana.headTip + 'px' }">
+          挥剑吧，勇者...
+        </p>
       </div>
     </div>
-    <div class="ch-count-border">
+    <div class="ch-count-border" ref="chCountBorder">
       <div class="title-box">
-        <p class="title-text">消息接收</p>
-        <span class="title-tip">勇者结识伙伴，收到的问候，口才+1</span>
+        <p
+          class="title-text"
+          :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+        >
+          消息接收
+        </p>
+        <span
+          class="title-tip"
+          :style="{ fontSize: fontSizeMana.titleTip + 'px' }"
+          >勇者结识伙伴，收到的问候，口才+1</span
+        >
       </div>
       <div class="ch-count">
-        <div class="circle-box">
-          <el-progress
-            color="#4cbeff"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageChat('num')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(chCnt.num)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">总数</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#5c87ff"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageChat('day')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(chCnt.day)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一日内</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#af5eff"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageChat('week')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(chCnt.week)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一周内</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#53ca74"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageChat('month')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(chCnt.month)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一月内</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#f97d6e"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageChat('year')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(chCnt.year)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一年内</p>
-        </div>
+        <el-row :gutter="10" style="margin-left: -25px">
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#4cbeff"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageChat('num')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(chCnt.num)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                总数
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#5c87ff"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageChat('day')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(chCnt.day)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一日内
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#af5eff"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageChat('week')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(chCnt.week)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一周内
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#53ca74"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageChat('month')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(chCnt.month)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一月内
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="circle-box">
+              <el-progress
+                color="#f97d6e"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageChat('year')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(chCnt.year)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一年内
+              </p>
+            </div>
+          </el-col>
+        </el-row>
       </div>
     </div>
-    <div class="ch-count-border">
+    <div class="ch-count-border" ref="countBorder">
       <div class="title-box">
-        <p class="title-text">功能调用</p>
-        <span class="title-tip">勇者磨砺自身，辛勤的汗水，力量+1</span>
+        <p
+          class="title-text"
+          :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+        >
+          功能调用
+        </p>
+        <span
+          class="title-tip"
+          :style="{ fontSize: fontSizeMana.titleTip + 'px' }"
+          >勇者磨砺自身，辛勤的汗水，力量+1</span
+        >
       </div>
       <div class="ch-count">
-        <div class="circle-box">
-          <el-progress
-            color="#4cbeff"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageCall('num')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(callCnt.num)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">总数</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#5c87ff"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageCall('day')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(callCnt.day)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一日内</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#af5eff"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageCall('week')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(callCnt.week)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一周内</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#53ca74"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageCall('month')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(callCnt.month)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一月内</p>
-        </div>
-        <div class="circle-box">
-          <el-progress
-            color="#f97d6e"
-            type="circle"
-            :stroke-width="10"
-            :percentage="getPercentageCall('year')"
-            :width="167"
-            :height="167"
-            :format="
-              () => {
-                return String(callCnt.year)
-              }
-            "
-          >
-          </el-progress>
-          <p class="ch-count-text">一年内</p>
-        </div>
+        <el-row :gutter="10" style="margin-left: -25px">
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#4cbeff"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageCall('num')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(callCnt.num)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                总数
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#5c87ff"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageCall('day')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(callCnt.day)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一日内
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#af5eff"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageCall('week')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(callCnt.week)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一周内
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="5">
+            <div class="circle-box">
+              <el-progress
+                color="#53ca74"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageCall('month')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(callCnt.month)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一月内
+              </p>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="circle-box">
+              <el-progress
+                color="#f97d6e"
+                type="circle"
+                :stroke-width="10"
+                :percentage="getPercentageCall('year')"
+                :width="progressWidth"
+                :height="progressWidth"
+                :format="
+                  () => {
+                    return String(callCnt.year)
+                  }
+                "
+              >
+              </el-progress>
+              <p
+                class="ch-count-text"
+                :style="{ fontSize: fontSizeMana.countText + 'px' }"
+              >
+                一年内
+              </p>
+            </div>
+          </el-col>
+        </el-row>
       </div>
     </div>
-    <div class="chart-border">
-      <div ref="chart" class="chart"></div>
+    <div class="chart-border" :style="{ height: chartBorderHeight + 'px' }">
+      <div
+        ref="chart"
+        class="chart"
+        :style="{ height: computedChartHeight + 'px' }"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
 import { default as AnsiUp } from "ansi_up"
+import { getFontSize } from "@/utils/utils"
 export default {
   name: "MidInfo",
   data() {
     return {
+      fontSizeMana: {
+        headText: 27,
+        headTip: 12,
+        titleText: 17,
+        titleTip: 12,
+        countText: 18,
+      },
+      chartHeight: 308,
+      chartBorderHeight: 310,
+      progressWidth: 167,
       botInfo: null,
       chCnt: { num: 0, day: 0, week: 0, month: 0, year: 0 },
       callCnt: { num: 0, day: 0, week: 0, month: 0, year: 0 },
@@ -269,10 +383,25 @@ export default {
       },
     }
   },
+  computed: {
+    computedChartBorderHeight() {
+      if (!this.chartBorderHeight) {
+        this.handleResize()
+      }
+      return this.chartBorderHeight
+    },
+    computedChartHeight() {
+      if (!this.chartHeight) {
+        this.handleResize()
+      }
+      return this.chartHeight
+    },
+  },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     this.clgDiv = document.getElementById("clg")
     this.ansi_up = new AnsiUp()
     this.getChCount(this.botInfo.self_id)
@@ -286,6 +415,7 @@ export default {
       this.getCallCount(this.botInfo.self_id, true)
     }, 30000)
     this.chart = this.$echarts.init(this.$refs.chart)
+    this.handleResize()
   },
   beforeDestroy() {
     if (this.chatCntInterval) {
@@ -295,7 +425,37 @@ export default {
       clearInterval(this.callInterval)
     }
   },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
   methods: {
+    handleResize() {
+      this.initFontSize()
+      const width = this.$refs.countBorder.offsetWidth - 200
+      this.progressWidth = width / 5
+
+      this.chartBorderHeight =
+        this.$refs.midInfo.offsetHeight -
+        this.$refs.topBorder.offsetHeight -
+        this.$refs.chCountBorder.offsetHeight -
+        this.$refs.countBorder.offsetHeight -
+        100
+      console.log("this.chartBorderHeight", this.chartBorderHeight)
+
+      if (this.chartBorderHeight < 280) {
+        this.chartBorderHeight = 280
+      }
+      this.chartHeight = this.chartBorderHeight - 80
+
+      this.chart.resize()
+    },
+    initFontSize() {
+      this.fontSizeMana.headText = getFontSize(27)
+      this.fontSizeMana.headTip = getFontSize(12)
+      this.fontSizeMana.titleText = getFontSize(16)
+      this.fontSizeMana.titleTip = getFontSize(12)
+      this.fontSizeMana.countText = getFontSize(18)
+    },
     getPercentageChat(type) {
       if (this.chCnt.num == 0) {
         return 0
@@ -422,6 +582,8 @@ export default {
 }
 
 .mid-info {
+  overflow-y: auto;
+
   .head {
     .head-text {
       font-size: 27px;
@@ -439,23 +601,21 @@ export default {
     background-color: white;
     padding: 10px 30px;
     border-radius: 10px;
+    box-sizing: border-box;
   }
   .ch-count-border {
     border-radius: 10px;
     background-color: white;
     padding: 30px;
     margin-top: 20px;
+    overflow: auto;
+    box-sizing: border-box;
   }
-  .ch-count {
-    display: flex;
-    justify-content: center;
-    align-items: center;
 
+  .ch-count {
     .circle-box {
       position: relative;
       text-align: center;
-      width: 167px;
-      margin-right: 50px;
     }
 
     .ch-count-text {
@@ -488,9 +648,10 @@ export default {
   .chart-border {
     border-radius: 10px;
     background-color: white;
-    padding: 30px;
+    padding: 30px 30px 0 30px;
     margin-top: 20px;
     height: 308px;
+    box-sizing: border-box;
   }
   .chart {
     height: 308px;

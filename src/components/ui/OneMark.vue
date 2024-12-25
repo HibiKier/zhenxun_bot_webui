@@ -1,15 +1,21 @@
 <template>
   <div class="one-mark">
-    <p class="tip">
-      <svg-icon icon-class="magic" style="height: 20px; width: 20px" />{{
-        text
-      }}
+    <p class="tip" :style="{ fontSize: fontSize + 'px' }">
+      <svg-icon
+        icon-class="magic"
+        :style="{
+          height: height + 'px',
+          width: width + 'px',
+        }"
+      />{{ text }}
     </p>
     <el-divider v-if="showDivider" />
   </div>
 </template>
 
 <script>
+import { getFontSize, getConvertSize } from "@/utils/utils"
+
 export default {
   name: "OneMark",
   props: {
@@ -22,6 +28,28 @@ export default {
       default: true,
     },
   },
+  data() {
+    return {
+      height: 20,
+      width: 20,
+      fontSize: 11,
+    }
+  },
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+    this.handleResize()
+  },
+
+  methods: {
+    handleResize() {
+      this.height = getConvertSize(20, 1024)
+      this.width = getConvertSize(20, 1024)
+      this.fontSize = getFontSize(14)
+    },
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
@@ -29,13 +57,17 @@ export default {
 .one-mark {
   .tip {
     color: #acafb8;
-    font-size: 12px;
     text-align: center;
     padding: 10px;
+    box-sizing: border-box;
   }
 
   /deep/ .el-divider--horizontal {
     margin-top: 5px;
+  }
+
+  /deep/ .el-dialog__header {
+    padding: 0;
   }
 }
 </style>

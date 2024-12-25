@@ -8,153 +8,277 @@
       ></el-empty>
     </div>
     <template v-else>
-      <div class="ava-info">
-        <el-avatar :src="data.ava_url" class="u-ava"></el-avatar>
-        <p class="nickname">{{ data.name }}</p>
-      </div>
-      <div class="base-info">
+      <el-row>
+        <el-col :span="24">
+          <div class="ava-info">
+            <el-avatar
+              :src="data.ava_url"
+              class="u-ava"
+              :style="{
+                height: sizeMana.avaSize + 'px',
+                width: sizeMana.avaSize + 'px',
+              }"
+            ></el-avatar>
+            <el-row>
+              <el-col :span="24">
+                <div
+                  class="nickname"
+                  :style="{ fontSize: sizeMana.nameText + 'px' }"
+                >
+                  {{ data.name }}
+                </div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <div
+                  class="account"
+                  :style="{ fontSize: sizeMana.accountText + 'px' }"
+                >
+                  {{ data.user_id || data.group_id }}
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+        </el-col>
+      </el-row>
+      <div class="base-info" ref="baseInfo">
         <template v-if="detailType == 'private'">
-          <div style="display: flex">
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">账号</div>
-              <el-divider direction="vertical" />
-              <div class="value">{{ data.user_id }}</div>
-            </div>
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">封禁状态</div>
-              <el-divider direction="vertical" />
-              <div class="value">
-                <MySwitch v-model="data.is_ban" :disabled="true" />
+          <el-row>
+            <el-col :span="24">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                >
+                  封禁状态
+                </div>
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  <MySwitch v-model="data.is_ban" :disabled="true" />
+                </div>
               </div>
-            </div>
-          </div>
-          <el-divider />
-          <div class="base-info-item">
-            <div class="label">名称</div>
-            <el-divider direction="vertical" />
-            <div class="value">{{ data.nickname }}</div>
-          </div>
-          <el-divider />
-          <div style="display: flex">
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">聊天记录</div>
-              <el-divider direction="vertical" />
-              <div class="value">{{ data.chat_count }}</div>
-            </div>
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">调用次数</div>
-              <el-divider direction="vertical" />
-              <div class="value">{{ data.call_count }}</div>
-            </div>
-          </div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                >
+                  聊天记录
+                </div>
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  {{ data.chat_count }}
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                >
+                  调用次数
+                </div>
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  {{ data.call_count }}
+                </div>
+              </div>
+            </el-col>
+          </el-row>
         </template>
         <template v-else>
-          <div style="display: flex">
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">群号</div>
-              <el-divider direction="vertical" />
-              <div class="value" style="margin-left: 5px">
-                {{ data.group_id }}
-              </div>
-            </div>
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">状态</div>
-              <el-divider direction="vertical" />
-              <div class="value">
-                <MySwitch v-model="data.status" />
-              </div>
-            </div>
-          </div>
-          <el-divider />
-          <div style="display: flex">
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">当前人数</div>
-              <el-divider direction="vertical" />
-              <div class="value">{{ data.member_count }}</div>
-            </div>
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">最大人数</div>
-              <el-divider direction="vertical" />
-              <div class="value">{{ data.max_member_count }}</div>
-            </div>
-          </div>
-          <el-divider />
-          <div style="display: flex">
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">聊天记录</div>
-              <el-divider direction="vertical" />
-              <div class="value">{{ data.chat_count }}</div>
-            </div>
-            <div class="base-info-item" style="width: 49%">
-              <div class="label">调用次数</div>
-              <el-divider direction="vertical" />
-              <div class="value">{{ data.call_count }}</div>
-            </div>
-          </div>
-          <el-divider />
-          <div style="display: flex">
-            <div class="base-info-item" style="width: 31%">
-              <div class="label">群权限</div>
-              <el-divider direction="vertical" class="a-divider" />
-              <div class="value" style="margin-left: 5px">
-                <el-select
-                  v-model="data.level"
-                  placeholder=""
-                  style="width: 62px"
+          <el-row>
+            <el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
                 >
-                  <el-option :label="-1" :value="-1"></el-option>
-                  <el-option
-                    v-for="n in 10"
-                    :label="n"
-                    :value="n"
-                    :key="n"
-                  ></el-option>
-                </el-select>
-              </div>
-            </div>
-            <div class="base-info-item" style="width: 58%">
-              <div class="label">被动状态</div>
-              <el-divider direction="vertical" class="a-divider" />
-              <div class="value" style="margin-left: 5px">
-                <el-select
-                  v-model="data.task_status"
-                  style="width: 170px"
-                  collapse-tags
-                  multiple
+                  状态
+                </div>
+                <el-divider direction="vertical" />
+                <div class="value">
+                  <MySwitch v-model="data.status" />
+                </div>
+              </div> </el-col
+            ><el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
                 >
-                  <el-option
-                    v-for="n in data.task"
-                    :label="n.zh_name"
-                    :value="n.name"
-                    :key="n.name"
+                  群权限
+                </div>
+                <el-divider direction="vertical" class="a-divider" />
+                <div
+                  class="value"
+                  style="margin-left: 5px"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  <el-select
+                    v-model="data.level"
+                    placeholder=""
+                    style="width: 62px"
                   >
-                  </el-option>
-                </el-select>
+                    <el-option :label="-1" :value="-1"></el-option>
+                    <el-option
+                      v-for="n in 10"
+                      :label="n"
+                      :value="n"
+                      :key="n"
+                    ></el-option>
+                  </el-select>
+                </div>
               </div>
-            </div>
-          </div>
-          <el-divider />
-          <div style="display: flex">
-            <div class="base-info-item" style="width: 100%">
-              <div class="label">禁用插件</div>
-              <el-divider direction="vertical" class="a-divider" />
-              <div class="value">
-                <el-select
-                  v-model="data.plugin_status"
-                  style="width: 320px"
-                  multiple
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
                 >
-                  <el-option
-                    v-for="n in tmpAllPluginList"
-                    :label="n.plugin_name"
-                    :value="n.module"
-                    :key="n.module"
-                  >
-                  </el-option>
-                </el-select>
+                  当前人数
+                </div>
+                <el-divider direction="vertical" />
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  {{ data.member_count }}
+                </div>
               </div>
-            </div>
-          </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                >
+                  最大人数
+                </div>
+                <el-divider direction="vertical" />
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  {{ data.max_member_count }}
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                >
+                  聊天记录
+                </div>
+                <el-divider direction="vertical" />
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  {{ data.chat_count }}
+                </div>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                >
+                  调用次数
+                </div>
+                <el-divider direction="vertical" />
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  {{ data.call_count }}
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row v-if="this.$store.state.botType == 'zhenxun'">
+            <el-col :span="24">
+              <div class="base-info-item">
+                <div
+                  class="label"
+                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                >
+                  被动状态
+                </div>
+                <el-divider direction="vertical" class="a-divider" />
+                <div
+                  class="value"
+                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                >
+                  <el-select
+                    v-model="data.task_status"
+                    :style="{ width: sizeMana.selectWidth + 'px' }"
+                    multiple
+                  >
+                    <el-option
+                      v-for="n in data.task"
+                      :label="n.zh_name"
+                      :value="n.name"
+                      :key="n.name"
+                    >
+                    </el-option>
+                  </el-select>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <div style="display: flex">
+                <div class="base-info-item" style="width: 100%">
+                  <div
+                    class="label"
+                    :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+                  >
+                    禁用插件
+                  </div>
+                  <el-divider direction="vertical" class="a-divider" />
+                  <div
+                    class="value"
+                    :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
+                  >
+                    <el-select
+                      v-model="data.plugin_status"
+                      multiple
+                      :style="{ width: sizeMana.selectWidth + 'px' }"
+                    >
+                      <el-option
+                        v-for="n in tmpAllPluginList"
+                        :label="n.plugin_name"
+                        :value="n.module"
+                        :key="n.module"
+                      >
+                      </el-option>
+                    </el-select>
+                  </div>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
           <div>
             <MyButton
               text="应用"
@@ -179,6 +303,7 @@
 </template>
 
 <script>
+import { getConvertSize, getFontSize } from "@/utils/utils"
 import MyButton from "../ui/MyButton.vue"
 import MySwitch from "../ui/MySwitch.vue"
 import OneMark from "../ui/OneMark.vue"
@@ -187,6 +312,14 @@ export default {
   name: "DetailInfo",
   data() {
     return {
+      sizeMana: {
+        labelFontSize: 20,
+        valueFontSize: 25,
+        accountText: 20,
+        nameText: 20,
+        avaSize: 100,
+        selectWidth: 170,
+      },
       data: {},
       botId: null,
       detailType: null,
@@ -238,7 +371,21 @@ export default {
   created() {
     this.botId = this.$store.state.botInfo.self_id
   },
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+    this.handleResize()
+  },
   methods: {
+    handleResize() {
+      this.sizeMana.labelFontSize = getFontSize(17)
+      this.sizeMana.valueFontSize = getFontSize(25)
+      this.sizeMana.accountText = getFontSize(20)
+      this.sizeMana.nameText = getFontSize(30)
+      this.sizeMana.avaSize = getConvertSize(100, 1024)
+      if (this.$refs.baseInfo) {
+        this.sizeMana.selectWidth = this.$refs.baseInfo.offsetWidth - 160
+      }
+    },
     getAllPluginList() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
         plugin_type: ["NORMAL", "ADMIN"],
@@ -314,6 +461,7 @@ export default {
               tmpOpt.series[0].data = likePlugin
               this.likePluginChart.setOption(tmpOpt)
               this.$emit("startChat", this.data)
+              this.handleResize()
             })
           }
         } else {
@@ -385,6 +533,7 @@ export default {
               tmpOpt.series[0].data = likePlugin
               this.likePluginChart.setOption(tmpOpt)
               this.$emit("startChat", this.data)
+              this.handleResize()
             })
           }
         } else {
@@ -394,15 +543,17 @@ export default {
       })
     },
   },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .detail-info {
-  height: calc(100% - 100px);
-  width: calc(100% - 80px);
   background-color: #f4f5fa;
-  padding: 50px 40px;
+  padding: 40px 20px;
+  box-sizing: border-box;
 
   .empty {
     width: 100%;
@@ -420,17 +571,18 @@ export default {
     .u-ava {
       height: 100px;
       width: 100px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
     .nickname {
       font-size: 30px;
       font-weight: 500;
-      margin-top: 10px;
+      margin-top: 20px;
     }
   }
 
   .base-info {
-    margin-top: 55px;
+    margin-top: 15px;
     .base-info-item {
       display: flex;
       margin-left: 30px;
@@ -454,13 +606,25 @@ export default {
 
       .value {
         font-size: 25px;
-        margin-left: 30px;
+        margin-left: 10px;
       }
     }
   }
   .base-chart {
     width: 100%;
     height: 360px;
+  }
+
+  .account {
+    color: #ffffff;
+    background-color: #5c87ff;
+    padding: 6px;
+    margin-top: 13px;
+    border-radius: 5px;
+  }
+
+  /deep/ .el-col {
+    margin-top: 10px;
   }
 }
 

@@ -52,8 +52,8 @@
             style="width: 50%; border-radius: 12px"
             @click="changeApi"
             plain
-            >更换端口</el-button
-          >
+            >地址设置
+          </el-button>
           <el-button
             type="primary"
             style="width: 50%; border-radius: 12px"
@@ -63,20 +63,17 @@
           >
         </div>
       </el-form>
-      <div
-        class="forget-pwd-left"
-        v-if="forgetPwd"
-        @mouseenter="forgetPwd = false"
-      >
-        <el-button type="text">忘记密码</el-button>
+      <div class="forget-pwd">
+        <div @mouseenter="forgetPwd = !forgetPwd">
+          <el-button
+            type="text"
+            :style="{ float: forgetPwd ? 'left' : 'right' }"
+            >忘记密码</el-button
+          >
+        </div>
       </div>
-      <div class="forget-pwd-right" v-else @mouseenter="forgetPwd = true">
-        <el-button type="text">忘记密码</el-button>
-      </div>
+      <div style="height: 30px"></div>
     </div>
-    <!-- <div class="bk-img-border">
-      <img class="bk-img" src="../assets/image/login_bk2.jpg" />
-    </div> -->
   </div>
 </template>
 
@@ -147,6 +144,7 @@ export default {
               if (resp.warning) {
                 this.$message.warning(resp.warning)
               } else {
+                window.sessionStorage.setItem('isAuthenticated', true);
                 this.$message.success(resp.info)
                 const tokenStr =
                   resp.data.token_type + " " + resp.data.access_token
@@ -200,17 +198,16 @@ export default {
 .input-border {
   height: 46px;
 }
+
 .border {
-  background: url("../assets/image/login_bk4.png");
+  background: url("../assets/image/login_bk_left_3.png");
   width: 100%;
   height: 100vh;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  display: flex;
-  /* 水平垂直居中 */
-  justify-content: center;
-  align-items: center;
+  background-size: cover; /* 保持纵横比并填充整个容器 */
+  background-position: right; /* 图片在容器中居中显示 */
+  background-repeat: no-repeat; /* 不重复显示背景图片 */
+  padding: 50px 30px;
+  box-sizing: border-box;
 }
 .bk-img-border {
   height: 100%;
@@ -265,76 +262,23 @@ export default {
 .left-form {
   background-color: rgba(255, 255, 255, 0.6);
   height: 100%;
-  width: 500px;
+  width: 600px;
   padding: 50px;
-  flex-direction: column;
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+  display: flex;
   justify-content: center;
-  height: 36%;
-  min-height: 490px;
+  align-content: center;
+  flex-direction: column;
+  border-right: 1px solid #f4c9e7;
   border-radius: 20px;
-  backdrop-filter: blur(5px);
 }
 
 /deep/ .el-form-item__label {
   font-weight: bold;
 }
 
-/* .homeHeader {
-  background-color: #409eff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0px 15px;
-  box-sizing: border-box;
-} */
-/* .loginContainer {
-  position: relative;
-  top: calc(50% - 200px);
-  border-radius: 15px;
-  background-clip: padding-box;
-  margin: 0 auto;
-  width: 350px;
-  padding: 15px 35px 15px 35px;
-  background: #fff;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 0 25px #caca6c;
-} */
-/* .loginTitle {
-  margin: 10px auto 40px auto;
-  text-align: center;
+/deep/ .el-input__inner {
+  background-color: #fffcc8;
 }
-
-.loginRemember {
-  text-align: left;
-  margin: 0px 0px 15px 0px;
-} */
-
-/* .el-form-item__content {
-  display: flex;
-  align-items: center;
-}
-.to-myapi {
-  width: 10rem;
-  height: 30px;
-  line-height: 30px;
-  font-size: 1.2rem;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 100px;
-  border: 5px solid #fff;
-}
-@media screen and (max-width: 600px) {
-  .title {
-    font-size: 1.6rem !important;
-  }
-  .loginContainer {
-    width: calc(100vw - 10rem);
-    top: calc(30%);
-  }
-  .to-myapi {
-    width: 8rem !important;
-    font-size: 1rem !important;
-    border: 3px solid #fff !important;
-  }
-} */
 </style>

@@ -288,8 +288,6 @@ export default {
   },
   methods: {
     editCode(data, onlyRead) {
-      console.log("data", data)
-
       this.codeFullPath = data.full_path
       this.codeFileName = data.name
       if (!data.is_image) {
@@ -564,7 +562,6 @@ export default {
                 return { value: e.size.toFixed(2), ...e }
               })
               this.resourcesChart.setOption(tmpOpt)
-              // console.log("ddd", resp.data)
               this.resourcesChart.on("click", this.showFolderSize)
             }
           }

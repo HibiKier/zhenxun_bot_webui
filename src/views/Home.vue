@@ -5,112 +5,38 @@
         <img class="menu-pic" src="../assets/image/menu_pic.png" alt="菜单" />
         <div class="myscrollbar">
           <el-menu class="border-right-none" @select="handleSelect">
-            <el-menu-item index="dashboard">
-              <span :class="checkClass('dashboard')"></span>
+            <el-menu-item
+              v-for="menu in menus"
+              :key="menu.module"
+              :index="menu.router"
+            >
+              <span :class="checkClass(menu.module)"></span>
               <svg-icon
-                v-if="curSelectMenu == 'dashboard'"
-                icon-class="dashboard-select"
+                v-if="curSelectMenu == menu.router"
+                :icon-class="menu.icon + '-select'"
                 class="menu-icon-class"
               />
-              <svg-icon v-else icon-class="dashboard" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'dashboard' }"
-                >仪表盘</span
-              >
-            </el-menu-item>
-            <el-menu-item index="command">
-              <span :class="checkClass('command')"></span>
               <svg-icon
-                v-if="curSelectMenu == 'command'"
-                icon-class="command-select"
+                v-else
+                :icon-class="menu.icon"
                 class="menu-icon-class"
               />
-              <svg-icon v-else icon-class="command" class="menu-icon-class" />
               <span
                 slot="title"
-                :class="{ selectMenu: curSelectMenu == 'command' }"
-                >真寻控制台</span
-              >
-            </el-menu-item>
-            <el-menu-item index="plugin">
-              <span :class="checkClass('plugin')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'plugin'"
-                icon-class="plugin-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="plugin" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'plugin' }"
-                >插件列表</span
-              >
-            </el-menu-item>
-            <el-menu-item index="store">
-              <span :class="checkClass('store')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'store'"
-                icon-class="store-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="store" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'store' }"
-                >插件商店</span
-              >
-            </el-menu-item>
-            <el-menu-item index="manage">
-              <span :class="checkClass('manage')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'user'"
-                icon-class="user-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="user" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'group' }"
-                >好友/群组</span
-              >
-            </el-menu-item>
-            <el-menu-item index="database">
-              <span :class="checkClass('database')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'database'"
-                icon-class="database-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="database" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'database' }"
-                >数据库管理</span
-              >
-            </el-menu-item>
-            <el-menu-item index="system">
-              <span :class="checkClass('system')"></span>
-              <svg-icon
-                v-if="curSelectMenu == 'system'"
-                icon-class="system-select"
-                class="menu-icon-class"
-              />
-              <svg-icon v-else icon-class="system" class="menu-icon-class" />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == 'system' }"
-                >系统信息</span
+                :class="{ selectMenu: curSelectMenu == menu.router }"
+                >{{ menu.name }}</span
               >
             </el-menu-item>
           </el-menu>
         </div>
       </el-aside>
-      <el-container class="layoutbox">
+      <el-container
+        class="layoutbox"
+        :style="{ height: computedHeight + 'px' }"
+      >
         <el-header class="homeHeader">
-          <!-- <div class="title">小真寻的小房间</div> -->
           <router-link class="to-myapi" :to="{ name: 'MyApi' }"
-            >端口设置</router-link
+            >地址设置</router-link
           >
           <div class="menu-btn" @click="showMenu">
             <div class="btn-logo" :class="{ show: asideShow }"></div>
@@ -160,16 +86,35 @@ export default {
       asideShow: false,
       coverShow: false,
       rvKey: 0,
+      menus: [],
       botList: [],
       botInfo: {},
       curSelectMenu: null,
       firstLoad: true,
+      windowHeight: window.innerHeight,
     }
+  },
+  computed: {
+    computedHeight() {
+      return this.windowHeight
+    },
   },
   created() {
     this.getBotInfo()
   },
+  mounted() {
+    this.getMenus()
+    this.$store.dispatch("initStatusSocket")
+    window.addEventListener("resize", this.handleResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize)
+    window.sessionStorage.removeItem("isAuthenticated")
+  },
   methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+    },
     checkClass(type) {
       return {
         "base-select-status": true,
@@ -179,12 +124,44 @@ export default {
     handleSelect(index) {
       this.asideShow = false
       this.coverShow = false
+      if (index.charAt(0) !== "/") {
+        index = "/" + index
+      }
       this.curSelectMenu = index
-      this.$router.replace("/" + index)
+      this.$router.replace(index)
     },
     showMenu() {
       this.asideShow = !this.asideShow
       this.coverShow = !this.coverShow
+    },
+    getMenus() {
+      this.getRequest(`${this.$root.prefix}/menu/get_menus`).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.menus = resp.data.menus
+            this.$store.commit("SET_BOT_TYPE", resp.data.bot_type)
+            if (this.$route.path == "/") {
+              for (const menu of this.menus) {
+                if (menu.default) {
+                  this.curSelectMenu = menu.router
+                  break
+                }
+              }
+            } else {
+              for (const menu of this.menus) {
+                if (menu.router == this.$route.path) {
+                  this.curSelectMenu = menu.router
+                }
+              }
+            }
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+      })
     },
     async getBotInfo(bot_id) {
       this.getRequest(`${this.$root.prefix}/main/get_base_info`, {
@@ -241,10 +218,7 @@ export default {
               this.rvKey++
             }
           }
-          this.curSelectMenu = this.$route.path.substring(
-            1,
-            this.$route.path.length
-          )
+          this.curSelectMenu = this.$route.path
         } else {
           this.$message.error(resp.info)
         }
@@ -256,9 +230,12 @@ export default {
 
 <style lang="scss" scoped>
 .my-main {
-  padding: 0px;
-  min-width: 2336px;
-  min-height: 1167px;
+  padding: 10px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: #f4f5fa;
+  // min-width: 2336px;
+  // min-height: 1167px;
 }
 .el-menu-item {
   span {
@@ -294,7 +271,7 @@ export default {
   position: relative;
   width: 100%;
   height: 0.2rem;
-  background: #fff;
+  background: #5a9cf8;
   /* box-shadow: 0 0.6rem 0 0 #fff,
               0 -0.6rem 0 0 #fff; */
 }
@@ -306,7 +283,7 @@ export default {
   top: -0.6rem;
   width: 100%;
   height: 0.2rem;
-  background: #fff;
+  background: #5a9cf8;
   transition: all 0.2s ease;
   transform-origin: center;
 }
@@ -368,13 +345,13 @@ export default {
   background-color: #f0f2f5;
 }
 .to-myapi {
-  width: 10rem;
+  width: 8rem;
   height: 30px;
   line-height: 30px;
   font-size: 1.2rem;
   color: #adaeb0;
   text-decoration: none;
-  border-radius: 100px;
+  border-radius: 10px;
   border: 5px solid #fff;
   text-align: center;
 }
@@ -422,7 +399,8 @@ export default {
   }
   .to-myapi {
     position: absolute;
-    right: 5rem;
+    right: 13rem;
+    top: 13px;
   }
 }
 

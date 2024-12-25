@@ -1,97 +1,183 @@
 <template>
-  <el-dialog class="dialog-class" width="500" :visible="true" @close="close">
+  <el-dialog class="dialog-class" :visible="true" @close="close">
     <OneMark text="是来自何处的羁绊呢" />
     <div class="request-main">
-      <div class="friend-req">
-        <div style="float: left; width: 100%">
-          <p class="base-title">好友请求</p>
-          <MyButton
-            text="清空"
-            @click="clear_request('FRIEND')"
-            icon="clear2"
-            :width="90"
-            :height="34"
-            style="float: right"
-          />
-        </div>
-        <div class="friend-req-list">
-          <div v-for="data in dataObj.friend" :key="data.flag" class="req-item">
-            <div class="ava-box">
-              <el-avatar :src="data.ava_url" class="list-ava"></el-avatar>
-            </div>
-            <div class="u-info">
-              <p class="u-name">{{ data.remark || data.nickname }}</p>
-              <p class="uid">{{ data.id }}</p>
-            </div>
-            <div class="c-btn">
-              <MyButton text="同意" @click="approve(data)" />
+      <el-row style="height: 100%">
+        <el-col :span="12" style="height: 100%">
+          <div class="friend-req">
+            <div>
+              <p
+                class="base-title"
+                :style="{ fontSize: sizeMana.titleText + 'px' }"
+              >
+                好友请求
+              </p>
               <MyButton
-                text="拒绝"
-                type="error"
-                @click="refuse(data)"
-                style="margin-left: 10px"
-              />
-              <MyButton
-                text="删除"
-                type="warn"
-                @click="deleteReq(data)"
-                style="margin-left: 10px"
+                text="清空"
+                @click="clear_request('FRIEND')"
+                icon="clear2"
+                :width="90"
+                :height="34"
+                style="float: right"
               />
             </div>
-          </div>
-        </div>
-      </div>
-      <el-divider direction="vertical" />
-      <div class="group-req">
-        <div style="float: left; width: 100%">
-          <p class="base-title">群组请求</p>
-          <MyButton
-            text="清空"
-            @click="clear_request('GROUP')"
-            icon="clear2"
-            :width="90"
-            :height="34"
-            style="float: right"
-          />
-        </div>
-        <div class="group-req-list">
-          <div class="friend-req-list">
-            <div
-              v-for="data in dataObj.group"
-              :key="data.flag"
-              class="req-item"
-            >
-              <div class="ava-box">
-                <el-avatar :src="data.ava_url" class="list-ava"></el-avatar>
-              </div>
-              <div class="u-info">
-                <p class="u-name">{{ data.remark || data.nickname }}</p>
-                <p class="uid">{{ data.id }}</p>
-              </div>
-              <div class="c-btn">
-                <MyButton text="同意" @click="approve(data)" />
-                <MyButton
-                  text="拒绝"
-                  @click="refuse(data)"
-                  type="error"
-                  style="margin-left: 10px"
-                />
-                <MyButton
-                  text="删除"
-                  @click="deleteReq(data)"
-                  type="warn"
-                  style="margin-left: 10px"
-                />
+            <div class="friend-req-list">
+              <div
+                v-for="data in dataObj.friend"
+                :key="data.flag"
+                class="req-item"
+              >
+                <div class="req-item-item">
+                  <div class="ava-box">
+                    <el-avatar
+                      :src="data.ava_url"
+                      class="list-ava"
+                      :style="{
+                        height: sizeMana.imageSize + 'px',
+                        width: sizeMana.imageSize + 'px',
+                      }"
+                    ></el-avatar>
+                  </div>
+                  <div class="u-info">
+                    <p
+                      class="u-name"
+                      :style="{ fontSize: sizeMana.nameText + 'px' }"
+                    >
+                      {{ data.remark || data.nickname }}
+                    </p>
+                    <p
+                      class="uid"
+                      :style="{ fontSize: sizeMana.tipText + 'px' }"
+                    >
+                      {{ data.id }}
+                    </p>
+                  </div>
+                </div>
+                <div class="c-btn">
+                  <el-row :gutter="20">
+                    <el-col :span="8">
+                      <MyButton
+                        text="同意"
+                        @click="approve(data)"
+                        :width="66"
+                        :height="35"
+                      />
+                    </el-col>
+                    <el-col :span="8">
+                      <MyButton
+                        text="拒绝"
+                        @click="refuse(data)"
+                        type="error"
+                        :width="66"
+                        :height="35"
+                      />
+                    </el-col>
+                    <el-col :span="8">
+                      <MyButton
+                        text="删除"
+                        @click="deleteReq(data)"
+                        type="warn"
+                        :width="66"
+                        :height="35"
+                      />
+                    </el-col>
+                  </el-row>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="group-req">
+            <div style="float: left; width: 100%">
+              <p
+                class="base-title"
+                :style="{ fontSize: sizeMana.titleText + 'px' }"
+              >
+                群组请求
+              </p>
+              <MyButton
+                text="清空"
+                @click="clear_request('GROUP')"
+                icon="clear2"
+                :width="90"
+                :height="34"
+                style="float: right"
+              />
+            </div>
+            <div class="group-req-list">
+              <div
+                v-for="data in dataObj.group"
+                :key="data.flag"
+                class="req-item"
+              >
+                <div class="req-item-item">
+                  <div class="ava-box">
+                    <el-avatar
+                      :src="data.ava_url"
+                      class="list-ava"
+                      :style="{
+                        height: sizeMana.imageSize + 'px',
+                        width: sizeMana.imageSize + 'px',
+                      }"
+                    ></el-avatar>
+                  </div>
+                  <div class="u-info">
+                    <p
+                      class="u-name"
+                      :style="{ fontSize: sizeMana.nameText + 'px' }"
+                    >
+                      {{ data.remark || data.nickname }}
+                    </p>
+                    <p
+                      class="uid"
+                      :style="{ fontSize: sizeMana.tipText + 'px' }"
+                    >
+                      {{ data.id }}
+                    </p>
+                  </div>
+                </div>
+                <div class="c-btn">
+                  <el-row :gutter="20">
+                    <el-col :span="8">
+                      <MyButton
+                        text="同意"
+                        @click="approve(data)"
+                        :width="66"
+                        :height="35"
+                      />
+                    </el-col>
+                    <el-col :span="8">
+                      <MyButton
+                        text="拒绝"
+                        @click="refuse(data)"
+                        type="error"
+                        :width="66"
+                        :height="35"
+                      />
+                    </el-col>
+                    <el-col :span="8">
+                      <MyButton
+                        text="删除"
+                        @click="deleteReq(data)"
+                        type="warn"
+                        :width="66"
+                        :height="35"
+                      />
+                    </el-col>
+                  </el-row>
+                </div>
+              </div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
   </el-dialog>
 </template>
 
 <script>
+import { getConvertSize, getFontSize } from "@/utils/utils"
 import OneMark from "@/components/ui/OneMark"
 import MyButton from "../ui/MyButton.vue"
 export default {
@@ -102,16 +188,33 @@ export default {
   },
   data() {
     return {
+      sizeMana: {
+        titleText: 18,
+        nameText: 20,
+        tipText: 13,
+        imageSize: 40,
+      },
       dataObj: {
-        friendList: [],
-        groupList: [],
+        friend: [],
+        group: [],
       },
     }
   },
   mounted() {
     this.getReqList()
+    window.addEventListener("resize", this.handleResize)
+    this.handleResize()
   },
   methods: {
+    handleResize() {
+      this.initFontSize()
+    },
+    initFontSize() {
+      this.sizeMana.titleText = getFontSize(18)
+      this.sizeMana.nameText = getFontSize(25)
+      this.sizeMana.tipText = getFontSize(15)
+      this.sizeMana.imageSize = getConvertSize(40, 1024)
+    },
     clear_request(request_type) {
       this.$confirm("确认清空所有请求?", "提示", {
         confirmButtonText: "确认",
@@ -215,6 +318,9 @@ export default {
       this.$emit("close")
     },
   },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 
@@ -225,8 +331,9 @@ export default {
   }
   .c-btn {
     display: flex;
-    position: absolute;
-    right: 0;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
   }
 
   .base-title {
@@ -239,7 +346,6 @@ export default {
   }
 
   .request-main {
-    display: flex;
     height: 500px;
     overflow: auto;
   }
@@ -251,17 +357,17 @@ export default {
   }
 
   .friend-req {
-    width: 50%;
-    padding: 10px;
+    padding: 20px;
+    border-right: 1px solid #dddfe5;
+    box-sizing: border-box;
+    height: 100%;
 
     .friend-req-list {
-      padding: 10px;
-      margin-left: 40px;
+      margin-top: 60px;
     }
   }
 
   .group-req {
-    width: 49%;
     padding: 20px;
     .group-req-list {
       margin-top: 60px;
@@ -269,9 +375,16 @@ export default {
   }
 
   .req-item {
-    display: flex;
     margin-top: 10px;
     position: relative;
+    border: 1px solid #dddfe5;
+    padding: 10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+
+    .req-item-item {
+      display: flex;
+    }
 
     .u-info {
       display: flex;
@@ -286,6 +399,11 @@ export default {
         color: #9f9f9f;
       }
     }
+  }
+
+  /deep/ .el-dialog__header {
+    padding: 12px 20px 10px;
+    box-sizing: border-box;
   }
 }
 </style>

@@ -58,38 +58,43 @@ axios.interceptors.response.use(
   }
 )
 
-let base = ""
+let baseApiUrl = "http://localhost"
+
+export const getBaseUrl = () => {
+  return getBaseApiUrl() + ":" + getPort()
+}
 
 export const setPort = (port) => {
   localStorage.setItem("port", port)
 }
 
 export const getPort = () => {
-  return localStorage.getItem("port")
+  return localStorage.getItem("port") || "8080"
 }
 
-export const setBase = (url) => {
+export const setBaseApiUrl = (url) => {
   if (url[url.length - 1] == "/" || url[url.length - 1] == "\\") {
     url = url.slice(0, -1)
   }
   if (url != "") {
-    base = url
-    setBaseUrlLocalStorage(base)
+    baseApiUrl = url
+    setBaseUrlLocalStorage(baseApiUrl)
   } else {
-    base = "http://localhost:8080"
-    setBaseUrlLocalStorage(base)
+    baseApiUrl = "http://localhost"
+    setBaseUrlLocalStorage(baseApiUrl)
+    setPort("8080")
   }
 }
 
-export const getBase = () => {
-  return base
+export const getBaseApiUrl = () => {
+  return baseApiUrl
 }
 
 //传送json格式的post请求
 export const postRequest = (url, params) => {
   return axios({
     method: "post",
-    url: `${base}${url}`,
+    url: `${getBaseUrl()}${url}`,
     data: params,
   })
 }
@@ -97,7 +102,7 @@ export const postRequest = (url, params) => {
 export const putRequest = (url, params) => {
   return axios({
     method: "put",
-    url: `${base}${url}`,
+    url: `${getBaseUrl()}${url}`,
     data: params,
   })
 }
@@ -120,7 +125,7 @@ export const getRequest = (url, params) => {
   }
   return axios({
     method: "get",
-    url: `${base}${url}`,
+    url: `${getBaseUrl()}${url}`,
     data: params,
   })
 }
@@ -128,7 +133,7 @@ export const getRequest = (url, params) => {
 export const deleteRequest = (url, params) => {
   return axios({
     method: "delete",
-    url: `${base}${url}`,
+    url: `${getBaseUrl()}${url}`,
     data: params,
   })
 }

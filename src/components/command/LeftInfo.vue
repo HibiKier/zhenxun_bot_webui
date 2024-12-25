@@ -1,160 +1,277 @@
 <template>
-  <div class="left-info">
-    <div class="ava-info">
-      <el-image
-        :src="botInfo.ava_url"
-        class="ava-img main-ava"
-        style="width: 100px; height: 100px"
-      />
-      <p class="nickname">{{ botInfo.nickname }}</p>
-      <div class="account">{{ botInfo.self_id }}</div>
-      <div class="fg-cnt">
-        <div class="fg-cnt-item">
-          <p class="fg-cnt-text">{{ botInfo.friend_count }}</p>
-          <p class="base-small-title">好友数量</p>
-        </div>
-        <div class="line"></div>
-        <div class="fg-cnt-item">
-          <p class="fg-cnt-text"><svg-icon icon-class="power-open" /></p>
-          <p class="base-small-title">全局开关</p>
-        </div>
-        <div class="line"></div>
-        <div class="fg-cnt-item">
-          <p class="fg-cnt-text">{{ botInfo.group_count }}</p>
-          <p class="base-small-title">群组数量</p>
-        </div>
-      </div>
-      <div class="u-test"></div>
-    </div>
-    <div class="plugin-load-status">
-      <p class="left-title-text">插件加载状态</p>
-      <div class="process">
-        <span class="plugin-load-status-text">插件数量</span>
-        <div class="plugin-load-status-process">
-          <div class="base-process-box" style="background-color: #45a6f7"></div>
-        </div>
-      </div>
-      <div class="process" style="margin: 40px 0">
-        <span class="plugin-load-status-text">加载成功</span>
-        <div class="plugin-load-status-process">
+  <div class="left-info" ref="leftInfo">
+    <div class="ava-info" ref="avaInfo">
+      <el-row>
+        <el-col :span="24">
+          <el-image
+            :src="botInfo.ava_url"
+            class="ava-img main-ava"
+            :style="{ width: avaImageSize + 'px', height: avaImageSize + 'px' }"
+          />
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <p
+            class="nickname"
+            :style="{ fontSize: fontSizeMana.nameText + 'px' }"
+          >
+            {{ botInfo.nickname }}
+          </p>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
           <div
-            class="base-process-box"
-            :style="{ 'background-color': '#5c87ff', width: sucPluginPer }"
-          ></div>
-        </div>
-      </div>
-      <div class="process">
-        <span class="plugin-load-status-text">加载失败</span>
-        <div class="plugin-load-status-process">
-          <div
-            class="base-process-box"
-            :style="{ 'background-color': '#ab55ff', width: failPluginPer }"
-          ></div>
-        </div>
-      </div>
+            class="account"
+            :style="{ fontSize: fontSizeMana.accountText + 'px' }"
+          >
+            {{ botInfo.self_id }}
+          </div>
+        </el-col>
+      </el-row>
+      <el-row style="width: 100%">
+        <el-col :span="24">
+          <div class="fg-cnt">
+            <el-row :gutter="20">
+              <el-col
+                :span="8"
+                style="border-right: 1px solid #f5f6f8; line-height: 25px"
+              >
+                <div class="fg-cnt-item">
+                  <p
+                    class="fg-cnt-text"
+                    :style="{ fontSize: fontSizeMana.fgCntText + 'px' }"
+                  >
+                    {{ botInfo.friend_count }}
+                  </p>
+                  <p
+                    class="base-small-title"
+                    :style="{ fontSize: fontSizeMana.fgCntTip + 'px' }"
+                  >
+                    好友数量
+                  </p>
+                </div>
+              </el-col>
+              <el-col
+                :span="8"
+                style="border-right: 1px solid #f5f6f8; line-height: 25px"
+              >
+                <div class="fg-cnt-item">
+                  <p class="fg-cnt-text" @click="handleBotStatus">
+                    <svg-icon
+                      style="cursor: pointer"
+                      :icon-class="
+                        botInfo.status ? 'power-open' : 'power-close'
+                      "
+                    />
+                  </p>
+                  <p
+                    class="base-small-title"
+                    :style="{ fontSize: fontSizeMana.fgCntTip + 'px' }"
+                  >
+                    全局开关
+                  </p>
+                </div>
+              </el-col>
+              <el-col :span="8" style="line-height: 25px">
+                <div class="fg-cnt-item">
+                  <p
+                    class="fg-cnt-text"
+                    :style="{ fontSize: fontSizeMana.fgCntText + 'px' }"
+                  >
+                    {{ botInfo.group_count }}
+                  </p>
+                  <p
+                    class="base-small-title"
+                    :style="{ fontSize: fontSizeMana.fgCntTip + 'px' }"
+                  >
+                    群组数量
+                  </p>
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+        </el-col>
+      </el-row>
     </div>
-    <div class="base-info">
-      <p class="left-title-text">基础信息</p>
-      <div class="base-border">
-        <div class="base-info-box">
-          <div class="base-info-box-item">
-            <p class="base-info-item-text">{{ botInfo.received_messages }}</p>
-            <p class="base-small-title">今日消息</p>
-          </div>
-          <el-divider direction="vertical" />
-          <div class="base-info-box-item">
-            <p class="base-info-item-text">{{ botInfo.day_call }}</p>
-            <p class="base-small-title">今日调用</p>
-          </div>
-        </div>
-        <el-divider />
-        <div class="base-info-box">
-          <div class="base-info-box-item">
-            <p class="base-info-item-text">{{ botInfo.connect_count }}</p>
-            <p class="base-small-title">累计登录</p>
-          </div>
-          <el-divider direction="vertical" />
-          <div class="base-info-box-item">
-            <p class="base-info-item-text">{{ botInfo.connectTime }}</p>
-            <p class="base-small-title">连接时长</p>
-          </div>
-        </div>
-        <el-divider />
-        <div class="base-info-box" style="margin-top: 18px">
-          <div class="base-info-box-item" style="width: 240px">
-            <p class="base-info-item-text" style="font-size: 22px">
-              {{ botInfo.connect_date }}
-            </p>
-            <p class="base-small-title">连接日期</p>
-          </div>
-        </div>
+    <div class="base-info" :style="{ height: computedHeight + 'px' }">
+      <p
+        class="left-title-text"
+        :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+      >
+        Bot插件管理
+      </p>
+      <div class="bot-manage" :style="{ height: computedHeight - 90 + 'px' }">
+        <el-row v-if="this.$store.state.botType == 'zhenxun'">
+          <el-col :span="6">
+            <span>全局禁用被动</span>
+          </el-col>
+          <el-col :span="18">
+            <el-select
+              v-model="postData.blockTasks"
+              multiple
+              placeholder=""
+              style="width: 100%"
+            >
+              <el-option
+                v-for="v in botModuleData.blockTasks"
+                :label="v.name"
+                :value="v.module"
+                :key="v.module"
+              ></el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px">
+          <el-col :span="6">
+            <span>全局禁用插件</span>
+          </el-col>
+          <el-col :span="18">
+            <el-select
+              v-model="postData.blockPlugins"
+              placeholder=""
+              multiple
+              style="width: 100%"
+            >
+              <el-option
+                v-for="n in botModuleData.blockPlugins"
+                :label="n.name"
+                :value="n.module"
+                :key="n.module"
+              ></el-option>
+            </el-select>
+          </el-col>
+        </el-row>
+        <el-row style="margin-top: 30px">
+          <MyButton @click="clickBotManage" text="应用" />
+        </el-row>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getFontSize, getConvertSize } from "@/utils/utils"
+import MyButton from "../ui/MyButton.vue"
 export default {
   name: "LeftInfo",
+  components: { MyButton },
   data() {
     return {
+      fontSizeMana: {
+        nameText: 30,
+        accountText: 15,
+        fgCntText: 25,
+        fgCntTip: 13,
+        titleText: 17,
+      },
+      botModuleData: {
+        blockPlugins: [],
+        blockTasks: [],
+      },
+      postData: {
+        blockPlugins: [],
+        blockTasks: [],
+      },
       botInfo: {},
-      sucPluginPer: "100%",
-      failPluginPer: "100%",
-      timer: null,
+      avaImageSize: 100,
+      baseHeight: 0,
     }
+  },
+  computed: {
+    computedHeight() {
+      return this.baseHeight
+    },
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    if (this.botInfo) {
-      if (this.botInfo.plugin_count) {
-        this.sucPluginPer =
-          (this.botInfo.success_plugin_count / this.botInfo.plugin_count) *
-            100 +
-          "%"
-        this.failPluginPer =
-          (this.botInfo.fail_plugin_count / this.botInfo.plugin_count) * 100 +
-          "%"
-      }
-      if (this.botInfo.connect_time) {
-        this.botInfo.connectTime = "00:00"
-        this.conTime = new Date().getTime() / 1000
-        if (!this.timer) {
-          clearTimeout(this.timer)
-        }
-        this.timer = setInterval(() => {
-          const time = Math.floor(new Date().getTime() / 1000)
-          this.botInfo.connectTime = this.formateSeconds(
-            time - this.botInfo.connect_time
-          )
-          this.$forceUpdate()
-        }, 1000)
-      }
-    }
+    window.addEventListener("resize", this.handleResize)
+    this.handleResize()
+    this.getBotModuleData()
   },
   methods: {
-    formateSeconds(endTime) {
-      let secondTime = parseInt(endTime) //将传入的秒的值转化为Number
-      let min = 0 // 初始化分
-      let h = 0 // 初始化小时
-      let result = ""
-      if (secondTime > 60) {
-        //如果秒数大于60，将秒数转换成整数
-        min = parseInt(secondTime / 60) //获取分钟，除以60取整数，得到整数分钟
-        secondTime = parseInt(secondTime % 60) //获取秒数，秒数取佘，得到整数秒数
-        if (min > 60) {
-          //如果分钟大于60，将分钟转换成小时
-          h = parseInt(min / 60) //获取小时，获取分钟除以60，得到整数小时
-          min = parseInt(min % 60) //获取小时后取佘的分，获取分钟除以60取佘的分
-        }
-      }
-      result = `${h.toString().padStart(2, "0")}:${min
-        .toString()
-        .padStart(2, "0")}:${secondTime.toString().padStart(2, "0")}`
-      return result
+    handleResize() {
+      this.initFontSize()
+      this.avaImageSize = getConvertSize(100)
+      this.$nextTick(() => {
+        this.baseHeight =
+          this.$refs.leftInfo.offsetHeight -
+          this.$refs.avaInfo.offsetHeight -
+          20
+      })
     },
+    initFontSize() {
+      this.fontSizeMana.nameText = getFontSize(30)
+      this.fontSizeMana.accountText = getFontSize(20)
+      this.fontSizeMana.fgCntText = getFontSize(25)
+      this.fontSizeMana.fgCntTip = getFontSize(16)
+      this.fontSizeMana.titleText = getFontSize(17)
+    },
+    handleBotStatus() {
+      var loading = this.getLoading(".left-info")
+      this.postRequest(`${this.$root.prefix}/main/change_bot_status`, {
+        bot_id: this.botInfo.self_id,
+        status: !this.botInfo.status,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.botInfo.status = !this.botInfo.status
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
+    },
+    getBotModuleData() {
+      var loading = this.getLoading(".left-info")
+      this.getRequest(`${this.$root.prefix}/main/get_bot_block_module`, {
+        bot_id: this.botInfo.self_id,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.botModuleData.blockPlugins = resp.data.all_plugins
+            this.botModuleData.blockTasks = resp.data.all_tasks
+            this.postData.blockPlugins = resp.data.block_plugins
+            this.postData.blockTasks = resp.data.block_tasks
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
+    },
+    clickBotManage() {
+      var loading = this.getLoading(".left-info")
+      this.postRequest(`${this.$root.prefix}/main/update_bot_manage`, {
+        bot_id: this.botInfo.self_id,
+        block_plugins: this.postData.blockPlugins,
+        block_tasks: this.postData.blockTasks,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+      })
+    },
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
@@ -172,18 +289,16 @@ export default {
 .base-small-title {
   color: #afb2b9;
   font-size: 13px;
+  margin-top: 10px;
 }
 
 .left-info {
-  // background-color: #f4f5fa;
-  // height: 100%;
-  // width: 17%;
-  // min-height: 1080px;
   padding: 0 20px;
+  height: 100%;
+  box-sizing: border-box;
 
   .ava-info {
     align-items: center;
-    height: 30%;
     padding: auto;
     display: flex;
     flex-direction: column;
@@ -191,17 +306,12 @@ export default {
     border-radius: 10px;
     padding: 30px;
 
-    .u-test {
-      height: 36px;
-    }
-
     .ava-img {
       width: 46px;
       height: 46px;
       border-radius: 50%;
       margin-top: 30px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-      // margin-bottom: 30px;
     }
 
     .nickname {
@@ -218,18 +328,8 @@ export default {
     }
 
     .fg-cnt {
-      display: flex;
       margin-top: 45px;
-      height: 70px;
-      justify-content: center;
-      align-items: center;
-
-      .line {
-        height: 100%;
-        border-left: 1px solid #e9eaee;
-        margin-left: 30px;
-        margin-right: 30px;
-      }
+      width: 100%;
 
       .fg-cnt-item {
         text-align: center;
@@ -240,77 +340,29 @@ export default {
     }
   }
 
-  .plugin-load-status {
-    margin-top: 20px;
-    padding: 0 50px;
-    height: 15%;
-    background-color: white;
-    border-radius: 10px;
-    padding: 30px;
-
-    .process {
-      display: flex;
-      height: 23px;
-
-      .plugin-load-status-text {
-        font-size: 15px;
-      }
-      .plugin-load-status-process {
-        overflow: hidden;
-        height: 100%;
-        width: 50%;
-        margin-left: 50px;
-        background-color: #e1e5eb;
-        height: 3px;
-        margin-top: 10px;
-
-        .base-process-box {
-          height: 3px;
-        }
-      }
-    }
-  }
-
   .base-info {
     padding: 0 50px;
-
+    box-sizing: border-box;
     border-radius: 10px;
     background-color: white;
     margin-top: 20px;
     padding: 30px;
     height: 370px;
 
-    .base-border {
+    .bot-manage {
+      color: #939395;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    /deep/ .el-row {
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
     }
 
     ::v-deep .el-divider--horizontal {
       margin: 0;
-    }
-
-    .base-info-box {
-      display: flex;
-
-      ::v-deep .el-divider--vertical {
-        margin: 0;
-        height: 73px;
-      }
-
-      .base-info-box-item {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        justify-content: center;
-        width: 150px;
-
-        .base-info-item-text {
-          font-size: 25px;
-          margin-bottom: 10px;
-        }
-      }
     }
   }
 }

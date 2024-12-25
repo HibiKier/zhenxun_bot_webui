@@ -1,19 +1,40 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{ height: computedHeight + 'px' }">
     <router-view />
   </div>
 </template>
 
 <script>
-import { getBaseUrlLocalStorage, setBase } from "@/utils/api"
+import { getBaseUrlLocalStorage, setBaseApiUrl } from "@/utils/api"
 export default {
   name: "App",
-  created() {
-    if (getBaseUrlLocalStorage()) {
-      setBase(getBaseUrlLocalStorage())
+  data() {
+    return {
+      windowHeight: window.innerHeight,
     }
   },
-  components: {},
+  computed: {
+    computedHeight() {
+      return this.windowHeight
+    },
+  },
+  created() {
+    if (getBaseUrlLocalStorage()) {
+      setBaseApiUrl(getBaseUrlLocalStorage())
+    }
+  },
+  mounted() {
+    window.addEventListener("resize", this.handleResize)
+  },
+  methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+    },
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize)
+  },
 }
 </script>
 

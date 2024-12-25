@@ -41,39 +41,41 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <template v-if="this.$store.state.botType == 'zhenxun'">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item prop="cost_gold">
+                    <div>
+                      <span slot="label">花费金币</span>
+                      <el-input
+                        v-model="updateData.cost_gold"
+                        placeholder="花费金币"
+                      ></el-input>
+                    </div>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item prop="menu_type">
+                    <div>
+                      <span slot="label">菜单类型</span>
+                      <el-select
+                        v-model="updateData.menu_type"
+                        placeholder="菜单类型"
+                      >
+                        <el-option
+                          v-for="data in menuTypeList"
+                          :label="data"
+                          :value="data"
+                          :key="data"
+                        ></el-option>
+                      </el-select>
+                    </div>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </template>
             <el-row>
-              <el-col :span="12">
-                <el-form-item prop="cost_gold">
-                  <div>
-                    <span slot="label">花费金币</span>
-                    <el-input
-                      v-model="updateData.cost_gold"
-                      placeholder="花费金币"
-                    ></el-input>
-                  </div>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item prop="menu_type">
-                  <div>
-                    <span slot="label">菜单类型</span>
-                    <el-select
-                      v-model="updateData.menu_type"
-                      placeholder="菜单类型"
-                    >
-                      <el-option
-                        v-for="data in menuTypeList"
-                        :label="data"
-                        :value="data"
-                        :key="data"
-                      ></el-option>
-                    </el-select>
-                  </div>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
+              <el-col :span="12" v-if="this.$store.state.botType == 'zhenxun'">
                 <el-form-item prop="level">
                   <div>
                     <span slot="label">群权限</span>
@@ -185,8 +187,6 @@ export default {
   },
   data() {
     var checkCostGold = (rule, value, callback) => {
-      console.log("value", value)
-
       if (!("1" + value)) {
         return callback(new Error("请输入花费金币"))
       }
@@ -365,6 +365,7 @@ export default {
       width: 100%;
 
       .base-setting {
+        width: 100%;
         span {
           color: #758ea1;
           font-size: 14px;

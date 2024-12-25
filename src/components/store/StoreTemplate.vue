@@ -43,7 +43,7 @@
         style="width: 100%"
       >
         <el-table-column prop="id" label="ID" width="50"> </el-table-column>
-        <el-table-column prop="name" label="名称" width="300">
+        <el-table-column prop="name" label="名称" width="200px">
           <template slot-scope="scope">
             <div class="name-border">
               <span style="margin-left: 10px">{{ scope.row.name }}</span>
@@ -62,14 +62,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="author" label="作者" width="200">
+        <el-table-column prop="author" label="作者" width="200px">
         </el-table-column>
-        <el-table-column prop="version" label="版本" width="140">
+        <el-table-column prop="version" label="版本" width="120px">
         </el-table-column>
-        <el-table-column prop="plugin_type" label="插件类型" width="140">
+        <el-table-column prop="plugin_type" label="插件类型" width="120px">
         </el-table-column>
         <el-table-column prop="description" label="简介"> </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" min-width="140px">
           <template slot-scope="scope">
             <div style="display: flex">
               <my-button

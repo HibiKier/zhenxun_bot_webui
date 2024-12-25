@@ -1,6 +1,11 @@
 <template>
   <div class="list-box">
-    <div v-for="data in dataList" :key="data.module" class="plugin-card">
+    <div
+      v-for="data in dataList"
+      :key="data.module"
+      class="plugin-card"
+      :style="{ height: cardHeight + 'px' }"
+    >
       <div
         class="plugin-status"
         :style="{ 'background-color': data.status ? '#3cc07d' : '#757175' }"
@@ -8,10 +13,10 @@
       <div class="base-info">
         <div class="base-info-box">
           <p class="plugin-name-class">
-            {{ data.plugin_name
-            }}<span class="version-class">v{{ data.version }}</span>
+            {{ data.plugin_name }}
+            <span class="version-class">v{{ data.version }}</span>
           </p>
-          <p style="color: #b8bac0">
+          <p style="color: #b8bac0" class="author-border">
             {{ data.module
             }}<span class="author-class" v-if="data.author"
               >@{{ data.author }}</span
@@ -33,7 +38,7 @@
         </div>
       </div>
       <el-divider />
-      <div class="plugin-info">
+      <div class="plugin-info" v-if="$store.state.botType == 'zhenxun'">
         <div class="plugin-box">
           <div class="plugin-info-box-item">
             <p class="plugin-info-item-text">
@@ -77,6 +82,27 @@
           </div>
         </div>
       </div>
+      <div class="plugin-info" v-else>
+        <div class="plugin-box">
+          <div class="plugin-info-box-item" style="width: 145px">
+            <p class="plugin-info-item-text">
+              <svg-icon
+                :icon-class="data.default_status ? 'yes-green' : 'no-red'"
+              />
+            </p>
+            <p class="base-small-title">默认开关</p>
+          </div>
+          <el-divider direction="vertical" />
+          <div class="plugin-info-box-item">
+            <p class="plugin-info-item-text">
+              <svg-icon
+                :icon-class="data.limit_superuser ? 'yes-green' : 'no-red'"
+              />
+            </p>
+            <p class="base-small-title">限制超级用户</p>
+          </div>
+        </div>
+      </div>
     </div>
     <UpdateDialog
       v-if="dialogVisible"
@@ -98,6 +124,12 @@ export default {
       dataList: [],
       pluginModule: null,
       dialogVisible: false,
+      cardHeight: 240,
+    }
+  },
+  created() {
+    if (this.$store.state.botType == "nonebot") {
+      this.cardHeight = 165
     }
   },
   mounted() {
@@ -192,6 +224,13 @@ export default {
         font-weight: 400;
         margin-left: 17px;
         color: #939395;
+      }
+
+      .author-border {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 250px;
       }
 
       .author-class {
