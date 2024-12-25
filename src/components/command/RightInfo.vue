@@ -348,7 +348,7 @@ export default {
       })
     },
     initFontSize() {
-      this.fontSizeMana.botConfig = getFontSize(23, 26)
+      this.fontSizeMana.botConfig = getFontSize(26, 29)
       this.fontSizeMana.botConfigTip = getFontSize(13, 16)
       this.fontSizeMana.titleText = getFontSize(15, 18)
       this.fontSizeMana.chartTip = getFontSize(12, 15)

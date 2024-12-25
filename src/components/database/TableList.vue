@@ -19,7 +19,7 @@
             <p class="table-name">{{ table.name }}：</p>
             <p class="table-desc">{{ table.desc || "-" }}</p>
           </template>
-          <div v-if="table.showColum" class="colum-list">
+          <div v-if="table.showColum" class="column-list">
             <el-table :data="tableColumn[table.name]" border>
               <el-table-column
                 label="名称"
@@ -76,7 +76,11 @@ export default {
       })
     },
     async selectTable(tableName) {
-      if (!Object.keys(this.tableColumn).includes(tableName)) {
+      if (
+        tableName &&
+        !this.tableColumn[tableName] &&
+        !Object.keys(this.tableColumn).includes(tableName)
+      ) {
         const resp = await this.getRequest(
           `${this.$root.prefix}/database/get_table_column`,
           {
@@ -96,11 +100,12 @@ export default {
         }
       }
       this.tableList.forEach((e) => {
-        if (e.name == tableName) {
+        if (!tableName) {
+          e.showColum = false
+        } else if (e.name == tableName) {
           e.showColum = !e.showColum
         }
       })
-      this.$forceUpdate()
     },
     getTableList() {
       const loading = this.getLoading(".table-list-box")
@@ -197,7 +202,7 @@ export default {
         margin-top: 5px;
       }
 
-      .colum-list {
+      .column-list {
         // height: 100px;
       }
     }

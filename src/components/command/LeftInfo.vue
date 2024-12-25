@@ -103,7 +103,7 @@
         Bot插件管理
       </p>
       <div class="bot-manage" :style="{ height: computedHeight - 90 + 'px' }">
-        <el-row>
+        <el-row v-if="this.$store.state.botType == 'zhenxun'">
           <el-col :span="6">
             <span>全局禁用被动</span>
           </el-col>

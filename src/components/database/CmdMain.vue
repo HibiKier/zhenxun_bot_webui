@@ -145,9 +145,11 @@ export default {
   mounted() {
     window.addEventListener("resize", this.handleResize)
     this.getSqlLog()
-    this.getCommonSql()
     this.handleResize()
     this.tableHeight = this.$refs.resultBox.clientHeight
+    if (this.$store.state.botType == "zhenxun") {
+      this.getCommonSql()
+    }
   },
   methods: {
     handleResize() {

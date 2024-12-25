@@ -215,7 +215,7 @@
               </div>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row v-if="this.$store.state.botType == 'zhenxun'">
             <el-col :span="24">
               <div class="base-info-item">
                 <div
