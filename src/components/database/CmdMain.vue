@@ -106,7 +106,7 @@
         ></el-empty>
       </div>
       <template v-else>
-        <el-table :data="resultData" border :height="tableHeight">
+        <el-table :data="resultData" border :height="sizeMana.resultHeight">
           <el-table-column
             v-for="c in columns"
             :label="c"
@@ -146,7 +146,6 @@ export default {
     window.addEventListener("resize", this.handleResize)
     this.getSqlLog()
     this.handleResize()
-    this.tableHeight = this.$refs.resultBox.clientHeight
     if (this.$store.state.botType == "zhenxun") {
       this.getCommonSql()
     }
