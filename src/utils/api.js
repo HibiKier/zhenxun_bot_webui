@@ -35,6 +35,10 @@ axios.interceptors.response.use(
     return success.data
   },
   (error) => {
+    if (!error) {
+      Message.error({ message: "网络连接好像不通畅哦..." })
+      return
+    }
     const { status, data } = error.response
     if (status == 504 || status == 404) {
       Message.error({ message: "服务器被吃了┭┮﹏┭┮" })
