@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" :style="{ height: computedMainHeight + 'px' }">
     <div class="mid-info">
       <div class="mid-box">
         <one-mark text="这是一个标记的魔法" />
@@ -9,7 +9,11 @@
           </span>
         </div>
         <div class="chart-box">
-          <div ref="resourcesChart" class="base-chart"></div>
+          <div
+            ref="resourcesChart"
+            class="base-chart"
+            :style="{ height: computedChartHeight + 'px' }"
+          ></div>
         </div>
       </div>
     </div>
@@ -229,6 +233,10 @@ export default {
   name: "DirTree",
   data() {
     return {
+      windowHeight: window.innerHeight,
+      chartHeight: 0,
+      mainHeight: 0,
+      mainTreeHeight: 0,
       codeFullPath: "",
       codeFileName: "",
       onlyRead: false,
@@ -280,13 +288,46 @@ export default {
       },
     }
   },
+  computed: {
+    computedMainHeight() {
+      if (!this.mainHeight) {
+        this.handleResize()
+      }
+      return this.mainHeight
+    },
+    computedChartHeight() {
+      if (!this.chartHeight) {
+        this.handleResize()
+      }
+      return this.chartHeight
+    },
+    computedMainTreeHeight() {
+      if (!this.mainTreeHeight) {
+        this.handleResize()
+      }
+      return this.mainTreeHeight
+    },
+  },
   mounted() {
+    window.addEventListener("resize", this.handleResize)
     this.resourcesChart = this.$echarts.init(this.$refs.resourcesChart)
     // this.getDir()
     this.loadIcons()
     this.getResourcesSize()
   },
   methods: {
+    handleResize() {
+      this.windowHeight = window.innerHeight
+      const statusBorderHeight = this.windowHeight / 3.5
+      this.mainHeight = this.windowHeight - statusBorderHeight - 130
+      this.mainTreeHeight = this.mainHeight
+      this.chartHeight = this.mainHeight - 150
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.resourcesChart.resize()
+        }, 100)
+      })
+    },
     editCode(data, onlyRead) {
       this.codeFullPath = data.full_path
       this.codeFileName = data.name
@@ -674,7 +715,6 @@ export default {
     }
   }
   .main-tree {
-    height: 727px;
     width: 60%;
     padding: 30px;
     // border: 1px solid #d3d3d4;

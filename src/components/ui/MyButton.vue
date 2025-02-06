@@ -91,7 +91,7 @@ export default {
       default: 40,
     },
     disabled: { type: Boolean, default: false },
-    fontSize: { type: Number, default: 16 },
+    fontSize: { type: Number, default: 14 },
   },
   data() {
     return {

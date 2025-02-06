@@ -96,7 +96,7 @@ export default {
   },
   computed: {
     computedHeight() {
-      return this.windowHeight
+      return this.windowHeight - 1
     },
   },
   created() {
