@@ -308,6 +308,9 @@ export default {
     margin-top: 80px;
     border-radius: 10px;
     padding: 10px 0;
+    overflow: auto;
+    box-sizing: border-box;
+    height: calc(100% - 60px);
     // border: #4d7cfe solid 1px;
     // border-radius: 5px;
 
@@ -359,6 +362,11 @@ export default {
         .u-name {
           font-size: 20px;
           font-weight: bold;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .uid {
           color: #9f9f9f;

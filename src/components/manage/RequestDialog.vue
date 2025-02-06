@@ -87,7 +87,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="12" style="height: 100%">
           <div class="group-req">
             <div style="float: left; width: 100%">
               <p
@@ -346,8 +346,7 @@ export default {
   }
 
   .request-main {
-    height: 500px;
-    overflow: auto;
+    height: 470px;
   }
 
   ::v-deep .el-divider--vertical {
@@ -358,19 +357,43 @@ export default {
 
   .friend-req {
     padding: 20px;
-    border-right: 1px solid #dddfe5;
     box-sizing: border-box;
     height: 100%;
 
     .friend-req-list {
       margin-top: 60px;
+      overflow: auto;
+      height: calc(100% - 45px);
+      padding: 0 10px;
+      border-radius: 10px;
+      border-top: 1px solid #dddfe5;
+      border-bottom: 1px solid #dddfe5;
+      padding-bottom: 10px;
+      box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.1);
     }
+  }
+
+  .mid-line {
+    height: 100%;
+    width: 1px;
+    background-color: #939395;
   }
 
   .group-req {
     padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+
     .group-req-list {
       margin-top: 60px;
+      overflow: auto;
+      height: calc(100% - 45px);
+      padding: 0 10px;
+      border-radius: 10px;
+      border-top: 1px solid #dddfe5;
+      border-bottom: 1px solid #dddfe5;
+      padding-bottom: 10px;
+      box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.1);
     }
   }
 
