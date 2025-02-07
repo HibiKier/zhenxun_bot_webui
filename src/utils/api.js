@@ -35,8 +35,10 @@ axios.interceptors.response.use(
     return success.data
   },
   (error) => {
-    if (!error) {
-      Message.error({ message: "网络连接好像不通畅哦..." })
+    if (error.request) {
+      Message.error({
+        message: "网络连接好像不通畅哦，请检查服务器与地址设置...",
+      })
       return
     }
     const { status, data } = error.response
