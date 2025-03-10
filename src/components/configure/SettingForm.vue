@@ -57,8 +57,12 @@
           type="primary"
           @click="submitForm('ruleForm')"
           class="submit-btn"
+          style="margin-left: 20px"
           >提交</el-button
         >
+        <el-button type="primary" class="submit-btn" @click="changeApi"
+          >地址设置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -178,6 +182,9 @@ export default {
         }
       })
     },
+    changeApi() {
+      this.$router.replace("/myapi")
+    },
   },
 }
 </script>
@@ -215,6 +222,11 @@ export default {
     background-color: #f589b9;
     border: #f589b9 1px solid;
     float: right;
+    color: #fff;
+  }
+
+  .submit-btn:hover {
+    background-color: #eb83b1;
   }
 }
 </style>
