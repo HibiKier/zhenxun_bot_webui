@@ -166,6 +166,7 @@ export default {
                 this.$message.warning(resp.warning)
               } else {
                 this.$message.success(resp.info)
+                this.$router.replace("/")
               }
             } else {
               this.$message.error(resp.info)
