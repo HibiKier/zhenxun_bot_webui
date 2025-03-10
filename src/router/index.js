@@ -10,6 +10,7 @@ import FriendGroupManage from "@/views/manage/FriendGroupManage"
 import DatabaseManage from "@/views/database/DatabaseManage"
 import MainDashboard from "@/views/dashboard/MainDashboard"
 import SystemInfo from "@/views/system/SystemInfo"
+import Configure from "@/views/configure/Configure"
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes = [
     path: "/myapi",
     name: "MyApi",
     component: MyApi,
+  },
+  {
+    path: "/configure",
+    name: "Configure",
+    component: Configure,
   },
   {
     path: "/home",
@@ -54,9 +60,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const isAuthenticated = window.sessionStorage.getItem("isAuthenticated")
-  console.log("to", to.path)
 
-  if (!["/", "/myapi"].includes(to.path) && !isAuthenticated) {
+  if (!["/", "/myapi", "/configure"].includes(to.path) && !isAuthenticated) {
     next("/") // 重定向到登录页面
   } else {
     next()

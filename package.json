@@ -16,6 +16,7 @@
     "default-passive-events": "^2.0.0",
     "echarts": "^5.3.2",
     "element-ui": "^2.15.6",
+    "gsap": "^3.12.7",
     "jshint": "^2.13.6",
     "jsonlint": "^1.6.3",
     "node-sass": "^9.0.0",
