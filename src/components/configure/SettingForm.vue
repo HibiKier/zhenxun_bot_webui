@@ -18,6 +18,8 @@
         <InteractiveInput
           v-model="setting.db_url"
           placeholder="数据库地址"
+          :suffixIcon="suffixIcon"
+          :key="db_key"
         ></InteractiveInput>
       </el-form-item>
       <el-form-item label="登录用户名" prop="username">
@@ -26,7 +28,7 @@
           placeholder="前端登录用户名"
         ></InteractiveInput>
       </el-form-item>
-      <el-form-item label="登录密码" prop="password">
+      <el-form-item label="用户名密码" prop="password">
         <InteractiveInput
           v-model="setting.password"
           placeholder="前端登录密码"
@@ -55,7 +57,7 @@
           type="primary"
           @click="submitForm('ruleForm')"
           class="submit-btn"
-          >🚀 提交 🚀</el-button
+          >提交</el-button
         >
       </el-form-item>
     </el-form>
@@ -96,6 +98,29 @@ export default {
         callback(new Error("端口不合法"))
       }
     }
+    var checkDb = (rule, value, callback) => {
+      if (!value) {
+        this.suffixIcon = ""
+        return callback(new Error("数据库地址不能为空"))
+      }
+      if (value.startsWith("sqlite:")) {
+        callback()
+      } else {
+        this.getRequest(`${this.$root.prefix}/configure/test_db`, {
+          db_url: value,
+        }).then((resp) => {
+          if (resp.suc) {
+            callback()
+            this.suffixIcon = "yes-green"
+            this.db_key++
+          } else {
+            this.suffixIcon = "no-red"
+            callback(new Error(resp.info))
+            this.db_key++
+          }
+        })
+      }
+    }
     return {
       setting: {
         superusers: "",
@@ -105,14 +130,14 @@ export default {
         host: "127.0.0.1",
         port: 8080,
       },
+      suffixIcon: "yes-green",
+      db_key: 0,
       windowHeight: window.innerHeight,
       rules: {
         superusers: [
           { required: true, message: "请输入超级用户ID", trigger: "blur" },
         ],
-        db_url: [
-          { required: true, message: "请输入数据库链接地址", trigger: "blur" },
-        ],
+        db_url: [{ required: true, validator: checkDb, trigger: "blur" }],
         username: [
           { required: true, message: "请输入前端登录用户名", trigger: "blur" },
         ],
@@ -172,7 +197,8 @@ export default {
     font-family: "fzrzFont";
     font-size: 50px;
     margin-bottom: 40px;
-    color: #d4687d;
+    color: #ffadd2;
+    margin-left: 50px;
   }
 
   .form-content {
@@ -180,14 +206,14 @@ export default {
   }
 
   /deep/ .el-form-item__label {
-    // color: #d47e8f;
     font-weight: bolder;
   }
 
   .submit-btn {
-    width: 100%;
+    width: 150px;
     background-color: #f589b9;
     border: #f589b9 1px solid;
+    float: right;
   }
 }
 </style>

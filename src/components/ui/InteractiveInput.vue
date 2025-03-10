@@ -13,7 +13,11 @@
         @focus="handleFocus"
         @blur="handleBlur"
         @input="input"
-      />
+      >
+        <i slot="suffix" class="el-input-icon" v-if="suffixIcon">
+          <svg-icon :icon-class="suffixIcon" class="input-icon" />
+        </i>
+      </el-input>
       <div class="holographic-overlay"></div>
       <div class="glowing-border">
         <div class="light-bar"></div>
@@ -27,11 +31,13 @@
 
 <script>
 import { TweenMax } from "gsap"
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
 
 export default {
   props: {
     value: [String, Number],
     placeholder: String,
+    suffixIcon: String,
   },
   data() {
     return {
@@ -43,6 +49,8 @@ export default {
     }
   },
   mounted() {
+    console.log("suffixIcon", this.suffixIcon)
+
     this.initParticleCanvas()
     window.addEventListener("resize", this.resetCanvas)
   },
@@ -52,7 +60,7 @@ export default {
   methods: {
     input(value) {
       this.innerValue = value
-      this.$emit("input", this.innerValue)
+      this.$emit("input", value)
     },
 
     initParticleCanvas() {
@@ -139,7 +147,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .neon-input-container {
   position: relative;
   perspective: 1000px;
@@ -170,10 +178,10 @@ export default {
   padding: 20px 30px;
   font-size: 15px;
   letter-spacing: 1px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(255, 255, 255, 0.7);
   border: 2px solid transparent;
   border-radius: 5px;
-  color: #fff;
+  color: #000;
   /* text-shadow: 0 0 8px rgba(251, 228, 228, 0.5); */
   transition: all 0.4s ease;
 }
@@ -218,7 +226,7 @@ export default {
   color: #6ee6ff;
   font-size: 24px;
   opacity: 0;
-  filter: drop-shadow(0 0 8px rgba(110, 230, 255, 0.5));
+  filter: drop-shadow(0 0 8px rgba(255, 173, 210, 0.5));
 }
 
 /* 图标入场动画 */
@@ -232,13 +240,22 @@ export default {
 
 /* 输入框激活状态 */
 .neon-input.activated ::v-deep .el-input__inner {
-  background: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 0 30px rgba(110, 230, 255, 0.2),
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 30px rgba(255, 173, 210, 0.2),
     inset 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 /* 悬浮微交互 */
 .neon-input ::v-deep .el-input__inner:hover {
   transform: translateY(-2px);
+}
+
+.neon-input ::v-deep .el-input__inner:hover + .el-input__suffix {
+  transform: translateY(-2px);
+}
+
+::v-deep .el-input__suffix {
+  right: 10px;
+  top: 3px;
 }
 </style>
