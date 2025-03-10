@@ -1,5 +1,3 @@
-
-
 .CodeMirror-hints {
   z-index: 100000 !important;
 }
@@ -8,4 +6,10 @@
   font-family: fzrzFont;
   /* 导入的字体文件 */
   src: url("../font/fzrzExtraBold.ttf");
+}
+
+@font-face {
+  font-family: hywFont;
+  /* 导入的字体文件 */
+  src: url("../font/msyh.ttf");
 }

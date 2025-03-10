@@ -65,14 +65,22 @@
         </el-button>
       </el-form-item>
     </el-form>
+    <CuteDialog
+      :visible.sync="isComplete"
+      title="温馨提示"
+      :message="completeText"
+      :onConfirm="handleConfirm"
+      :onCancel="handleCancel"
+    />
   </div>
 </template>
 
 <script>
+import CuteDialog from "../ui/CuteDialog.vue"
 import InteractiveInput from "../ui/InteractiveInput.vue"
 export default {
   name: "SettingForm",
-  components: { InteractiveInput },
+  components: { InteractiveInput, CuteDialog },
   data() {
     var checkHost = (rule, value, callback) => {
       if (!value) {
@@ -117,6 +125,7 @@ export default {
             callback()
             this.suffixIcon = "yes-green"
             this.db_key++
+            this.isComplete = true
           } else {
             this.suffixIcon = "no-red"
             callback(new Error(resp.info))
@@ -126,6 +135,7 @@ export default {
       }
     }
     return {
+      completeText: "恭喜配置完成，请重启真寻！",
       setting: {
         superusers: "",
         db_url: "sqlite:data/db/zhenxun.db",
@@ -134,6 +144,7 @@ export default {
         host: "127.0.0.1",
         port: 8080,
       },
+      isComplete: false,
       suffixIcon: "yes-green",
       db_key: 0,
       windowHeight: window.innerHeight,
@@ -170,7 +181,6 @@ export default {
                 this.$message.warning(resp.warning)
               } else {
                 this.$message.success(resp.info)
-                this.$router.replace("/")
               }
             } else {
               this.$message.error(resp.info)
