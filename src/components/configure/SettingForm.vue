@@ -71,6 +71,7 @@
       :message="completeText"
       :onConfirm="handleConfirm"
       :onCancel="handleCancel"
+      class="dialog"
     />
   </div>
 </template>
@@ -135,7 +136,8 @@ export default {
       }
     }
     return {
-      completeText: "恭喜配置完成，请重启真寻！",
+      completeText:
+        "恭喜配置完成！\n如果希望立即重启，请选择确定。\n如果希望手动重启，请选择取消。",
       setting: {
         superusers: "",
         db_url: "sqlite:data/db/zhenxun.db",
@@ -165,6 +167,37 @@ export default {
     }
   },
   methods: {
+    handleCancel() {
+      this.$router.replace({
+        name: "Login", // 路由名称
+        params: {
+          firstSetting: true, // 传递的参数
+        },
+      })
+    },
+    handleConfirm() {
+      var loading = this.getLoading(".dialog")
+      this.postRequest(`${this.$root.prefix}/configure/restart`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              this.$router.replace({
+                name: "Login", // 路由名称
+                params: {
+                  firstSetting: true, // 传递的参数
+                },
+              })
+            }
+          } else {
+            this.$message.error(resp.info)
+          }
+          loading.close()
+        }
+      )
+    },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -180,8 +213,8 @@ export default {
               if (resp.warning) {
                 this.$message.warning(resp.warning)
               } else {
-                this.isComplete = true
                 this.$message.success(resp.info)
+                this.isComplete = true
               }
             } else {
               this.$message.error(resp.info)
@@ -194,7 +227,7 @@ export default {
       })
     },
     changeApi() {
-      this.$router.replace("/myapi")
+      this.$router.replace("/myaPpi")
     },
   },
 }

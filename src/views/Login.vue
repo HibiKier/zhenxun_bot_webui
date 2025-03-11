@@ -74,21 +74,25 @@
       </div>
       <div style="height: 30px"></div>
     </div>
+    <CuteDialog
+      :visible.sync="dialogVisible"
+      title="温馨提示"
+      :message="dialogMessage"
+      class="dialog"
+    />
   </div>
 </template>
 
 <script>
 import qs from "qs"
 // 导入cookie的获取和设置方法
-import { setCookie, clearCookie, getCookie, verifyIdentity } from "@/utils/api"
+import { setCookie, clearCookie, getCookie } from "@/utils/api"
+import CuteDialog from "@/components/ui/CuteDialog"
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
-  created() {
-    //进入登录页面先验证是否已经登录
-    verifyIdentity()
-  },
+  components: { CuteDialog },
   data() {
     const validateName = (rules, value, callback) => {
       if (!value) {
@@ -115,9 +119,15 @@ export default {
         password: [{ validator: validatePwd }],
       },
       loading: false,
+      dialogVisible: false,
+      dialogMessage: "请等待小真寻重启成功后登录！",
     }
   },
   mounted() {
+    const firstSetting = this.$route.params.firstSetting
+    if (firstSetting) {
+      this.dialogVisible = true
+    }
     this.$nextTick(() => {
       document.addEventListener("keydown", (event) => {
         if (event.code === "Enter") {
@@ -144,7 +154,7 @@ export default {
               if (resp.warning) {
                 this.$message.warning(resp.warning)
               } else {
-                window.sessionStorage.setItem('isAuthenticated', true);
+                window.sessionStorage.setItem("isAuthenticated", true)
                 this.$message.success(resp.info)
                 const tokenStr =
                   resp.data.token_type + " " + resp.data.access_token
