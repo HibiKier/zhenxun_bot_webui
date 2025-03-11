@@ -146,7 +146,7 @@ export default {
         host: "127.0.0.1",
         port: 8080,
       },
-      isComplete: true,
+      isComplete: false,
       suffixIcon: "yes-green",
       db_key: 0,
       windowHeight: window.innerHeight,
