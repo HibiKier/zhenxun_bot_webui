@@ -180,6 +180,7 @@ export default {
               if (resp.warning) {
                 this.$message.warning(resp.warning)
               } else {
+                this.isComplete = true
                 this.$message.success(resp.info)
               }
             } else {
