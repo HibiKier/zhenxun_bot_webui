@@ -180,8 +180,8 @@ export default {
               if (resp.warning) {
                 this.$message.warning(resp.warning)
               } else {
-                this.isComplete = true
                 this.$message.success(resp.info)
+                this.isComplete = true
               }
             } else {
               this.$message.error(resp.info)
@@ -194,7 +194,7 @@ export default {
       })
     },
     changeApi() {
-      this.$router.replace("/myapi")
+      this.$router.replace("/myaPpi")
     },
   },
 }
