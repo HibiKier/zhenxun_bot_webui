@@ -5,7 +5,7 @@
         <span class="cute-dialog-title">{{ title }}</span>
       </div>
       <div class="cute-dialog-body">
-        <p class="cute-dialog-message">{{ message }}</p>
+        <pre class="cute-dialog-message">{{ message }}</pre>
       </div>
       <div class="cute-dialog-footer">
         <button
