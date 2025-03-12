@@ -66,10 +66,18 @@
       </el-form-item>
     </el-form>
     <CuteDialog
-      :visible.sync="isComplete"
+      :visible.sync="isCompleteWindows"
       title="温馨提示"
-      :message="completeText"
+      :message="completeTextWindows"
       :onConfirm="handleConfirm"
+      :onCancel="handleCancel"
+      class="dialog"
+    />
+    <CuteDialog
+      :visible.sync="isCompleteLinux"
+      title="温馨提示"
+      :message="completeTextLinux"
+      :onConfirm="handleCancel"
       :onCancel="handleCancel"
       class="dialog"
     />
@@ -136,8 +144,9 @@ export default {
       }
     }
     return {
-      completeText:
+      completeTextWindows:
         "恭喜配置完成！\n如果希望立即重启，请选择确定。\n如果希望手动重启，请选择取消。",
+      completeTextLinux: "恭喜配置完成！\n请手动重启程序。",
       setting: {
         superusers: "",
         db_url: "sqlite:data/db/zhenxun.db",
@@ -146,7 +155,8 @@ export default {
         host: "127.0.0.1",
         port: 8080,
       },
-      isComplete: false,
+      isCompleteWindows: false,
+      isCompleteLinux: false,
       suffixIcon: "yes-green",
       db_key: 0,
       windowHeight: window.innerHeight,
@@ -214,7 +224,11 @@ export default {
                 this.$message.warning(resp.warning)
               } else {
                 this.$message.success(resp.info)
-                this.isComplete = true
+                if (resp.data) {
+                  this.isCompleteWindows = true
+                } else {
+                  this.isCompleteLinux = true
+                }
               }
             } else {
               this.$message.error(resp.info)
