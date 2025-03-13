@@ -99,7 +99,11 @@ export default {
         span.remove()
         setBaseApiUrl(this.apiurl)
         setPort(this.port)
-        this.$router.replace("/")
+        if (this.fromPageName == "Configure") {
+          this.goBack()
+        } else {
+          this.$router.replace("/")
+        }
       }, 500)
     },
     inpOnfocus() {
