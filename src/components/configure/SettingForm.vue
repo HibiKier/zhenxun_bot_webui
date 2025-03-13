@@ -241,7 +241,7 @@ export default {
       })
     },
     changeApi() {
-      this.$router.replace("/myaPpi")
+      this.$router.push("/myapi")
     },
   },
 }
