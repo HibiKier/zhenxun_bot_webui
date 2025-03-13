@@ -35,31 +35,35 @@ axios.interceptors.response.use(
     return success.data
   },
   (error) => {
-    if (error.request) {
-      Message.error({
-        message: "网络连接好像不通畅哦，请检查服务器与地址设置...",
-      })
-      return
-    }
-    const { status, data } = error.response
-    if (status == 504 || status == 404) {
-      Message.error({ message: "服务器被吃了┭┮﹏┭┮" })
-    } else if (status == 405) {
-      Message.error({ message: "真寻的api地址不正确捏" })
-    } else if (status == 400) {
-      Message.error(data.detail)
-      let path = router.currentRoute.path
-      if (path != "/") {
-        //如果当前页面不是登陆页面
-        router.replace("/")
-      }
-    } else {
-      if (data && data.detail && data.detail.length) {
-        Message.error({ message: data.detail[0].msg })
+    try {
+      const { status, data } = error.response
+      if (status == 504 || status == 404) {
+        Message.error({ message: "服务器被吃了┭┮﹏┭┮" })
+      } else if (status == 405) {
+        Message.error({ message: "真寻的api地址不正确捏" })
+      } else if (status == 400) {
+        Message.error(data.detail)
+        let path = router.currentRoute.path
+        if (path != "/") {
+          //如果当前页面不是登陆页面
+          router.replace("/")
+        }
       } else {
-        Message.error({ message: "发生错误啦!" })
+        if (data && data.detail && data.detail.length) {
+          Message.error({ message: data.detail[0].msg })
+        } else {
+          Message.error({ message: "发生错误啦!" })
+        }
+      }
+    } catch (e) {
+      if (error.request) {
+        Message.error({
+          message: "网络连接好像不通畅哦，请检查服务器与地址设置...",
+        })
+        return
       }
     }
+
     return
   }
 )
