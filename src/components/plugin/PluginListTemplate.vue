@@ -6,7 +6,6 @@
       class="plugin-card"
       :class="{ 'is-selected': isSelected(data.module) }"
       @click="toggleSelection(data.module)"
-      :style="{ height: cardHeight }"
     >
       <div class="selection-indicator" v-if="isSelected(data.module)">
         <i class="el-icon-check"></i>

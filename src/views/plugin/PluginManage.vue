@@ -33,18 +33,30 @@
         </div>
       </div>
     </div>
-    <div class="filter-tags">
-      <span :class="getTagClass(null)" @click="selectMenuType(null)">
-        全部
-      </span>
-      <span
-        v-for="tag in menuTypeList"
-        :key="tag"
-        :class="getTagClass(tag)"
-        @click="selectMenuType(tag)"
-      >
-        {{ tag }}
-      </span>
+    <div class="filter-tags-container">
+      <div class="filter-tags">
+        <span
+          :class="getTagClass(null)"
+          @click="selectMenuType(null)"
+        >
+          全部
+        </span>
+        <span
+          v-for="tag in sortedMenuTypeList"
+          :key="tag"
+          :class="getTagClass(tag)"
+          @click="selectMenuType(tag)"
+        >
+          {{ tag }}
+        </span>
+      </div>
+      <el-button 
+        icon="el-icon-plus" 
+        size="mini" 
+        title="新增菜单类型"
+        @click="addNewMenuType"
+        class="add-type-button"
+      >新增类型</el-button>
     </div>
 
     <div class="bulk-action-bar" v-if="selectedPluginModules.length > 0">
@@ -76,7 +88,7 @@
         clearable
       >
         <el-option
-          v-for="item in menuTypeList"
+          v-for="item in sortedMenuTypeList"
           :key="item"
           :label="item"
           :value="item"
@@ -131,6 +143,15 @@ export default {
     this.getPluginCount();
     this.getPluginMenuType();
   },
+  computed: {
+    sortedMenuTypeList() {
+      return [...this.menuTypeList].sort((a, b) => {
+          const strA = String(a || '');
+          const strB = String(b || '');
+          return strA.localeCompare(strB);
+      });
+    }
+  },
   methods: {
     getTopItemClass(pluginType) {
       return {
@@ -181,9 +202,7 @@ export default {
             if (resp.warning) {
               this.$message.warning(resp.warning);
             } else {
-              this.menuTypeList = Array.isArray(resp.data)
-                ? resp.data.sort()
-                : [];
+              this.menuTypeList = (Array.isArray(resp.data) ? resp.data : []).filter(Boolean);
             }
           } else {
             this.$message.error(resp.info || "获取菜单类型失败");
@@ -314,6 +333,30 @@ export default {
           this.$message.error("请求失败: " + error);
         });
     },
+
+    addNewMenuType() {
+      this.$prompt('请输入新的菜单类型名称：', '新增菜单类型', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /\S+/,
+        inputErrorMessage: '菜单类型名称不能为空'
+      }).then(({ value }) => {
+        const newType = value.trim();
+        if (!newType) {
+            this.$message.warning('菜单类型名称不能为空');
+            return;
+        }
+        const exists = this.menuTypeList.some(type => type.toLowerCase() === newType.toLowerCase());
+        if (exists) {
+          this.$message.warning(`菜单类型 "${newType}" 已存在`);
+        } else {
+          this.menuTypeList.push(newType);
+          this.$message.success(`菜单类型 "${newType}" 已添加，您可以现在将其应用到插件`);
+        }
+      }).catch(() => {
+        this.$message.info('已取消新增');
+      });
+    },
   },
 };
 </script>
@@ -369,40 +412,52 @@ export default {
     }
   }
 
-  .filter-tags {
+  .filter-tags-container {
+    display: flex;
+    align-items: center; 
+    gap: 10px; 
     margin-top: 20px;
     margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    flex-grow: 1;
+  }
 
-    .filter-tag-item {
-      padding: 5px 15px;
-      border: 1px solid #e0e0e0;
-      border-radius: 15px;
-      cursor: pointer;
-      font-size: 13px;
-      color: #606266;
-      background-color: #ffffff;
-      transition: all 0.3s;
+  .filter-tag-item {
+    padding: 5px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #606266;
+    background-color: #ffffff;
+    transition: all 0.3s;
 
-      &:hover {
-        border-color: #c0c4cc;
-        color: #409eff;
-      }
+    &:hover {
+      border-color: #c0c4cc;
+      color: #409eff;
     }
+  }
 
-    .active-tag {
-      background-color: #4d7cfe;
+  .active-tag {
+    background-color: #4d7cfe;
+    color: #ffffff;
+    border-color: #4d7cfe;
+
+    &:hover {
+      background-color: #6b8efc;
+      border-color: #6b8efc;
       color: #ffffff;
-      border-color: #4d7cfe;
-
-      &:hover {
-        background-color: #6b8efc;
-        border-color: #6b8efc;
-        color: #ffffff;
-      }
     }
+  }
+
+  .add-type-button {
+    margin-left: 5px;
   }
 
   .bulk-action-bar {
