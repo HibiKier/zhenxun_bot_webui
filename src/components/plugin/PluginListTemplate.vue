@@ -9,7 +9,7 @@
       :style="{ height: cardHeight }"
     >
       <div class="selection-indicator" v-if="isSelected(data.module)">
-         <i class="el-icon-check"></i>
+        <i class="el-icon-check"></i>
       </div>
       <div class="base-info">
         <div class="base-info-box">
@@ -19,11 +19,13 @@
           </p>
           <p class="author-border">
             {{ data.module }}
-            <span class="author-class" v-if="data.author">@{{ data.author }}</span>
+            <span class="author-class" v-if="data.author"
+              >@{{ data.author }}</span
+            >
           </p>
         </div>
         <div class="menu-type-container" v-if="data.menu_type">
-           <span class="menu-type-display">{{ data.menu_type }}</span>
+          <span class="menu-type-display">{{ data.menu_type }}</span>
         </div>
 
         <div class="setting">
@@ -49,8 +51,8 @@
 </template>
 
 <script>
-import SvgIcon from "../SvgIcon/SvgIcon.vue"
-import UpdateDialog from "./UpdateDialog"
+import SvgIcon from "../SvgIcon/SvgIcon.vue";
+import UpdateDialog from "./UpdateDialog";
 export default {
   name: "PluginListTemplate",
   props: { pluginType: String, menuType: String },
@@ -60,47 +62,48 @@ export default {
       dataList: [],
       pluginModule: null,
       dialogVisible: false,
-      cardHeight: 'auto',
       selectedPlugins: [],
-    }
+    };
   },
-  created() {
-    // Remove or adjust botType specific height changes if not needed
-    // if (this.$store.state.botType == "nonebot") {
-    //   this.cardHeight = 80 // Example fixed height for nonebot
-    // }
-  },
+  created() {},
   mounted() {
-    this.getPluginList()
+    this.getPluginList();
   },
   methods: {
     getPluginList() {
       this.clearSelection();
-      const loading = this.getLoading(".list-box")
+      const loading = this.getLoading(".list-box");
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
         plugin_type: [this.pluginType],
         menu_type: this.menuType,
-      }).then((resp) => {
-        if (resp && resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
+      })
+        .then((resp) => {
+          if (resp && resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning);
+            } else {
+              this.dataList = Array.isArray(resp.data) ? resp.data : [];
+              console.log("[Plugin List Data]:", this.dataList);
+            }
           } else {
-            this.dataList = Array.isArray(resp.data) ? resp.data : [];
-            console.log("[Plugin List Data]:", this.dataList);
+            const errorInfo = resp
+              ? resp.info
+              : "获取插件列表失败：无效的响应或操作失败";
+            this.$message.error(errorInfo || "获取插件列表失败");
+            this.dataList = [];
+            console.error(
+              "[Plugin List Error]: Invalid response or failed request",
+              resp
+            );
           }
-        } else {
-          const errorInfo = resp ? resp.info : '获取插件列表失败：无效的响应或操作失败';
-          this.$message.error(errorInfo || '获取插件列表失败');
+          loading.close();
+        })
+        .catch((error) => {
+          loading.close();
+          this.$message.error("请求插件列表失败: " + error);
           this.dataList = [];
-          console.error("[Plugin List Error]: Invalid response or failed request", resp);
-        }
-        loading.close()
-      }).catch(error => {
-        loading.close();
-        this.$message.error("请求插件列表失败: " + error);
-        this.dataList = [];
-        console.error("[Plugin List Exception]:", error);
-      });
+          console.error("[Plugin List Exception]:", error);
+        });
     },
     changeSwitch(data) {
       this.postRequest(`${this.$root.prefix}/plugin/change_switch`, {
@@ -109,25 +112,25 @@ export default {
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
-            this.$message.warning(resp.warning)
+            this.$message.warning(resp.warning);
           } else {
-            this.$message.success(resp.info)
-            this.getPluginList()
+            this.$message.success(resp.info);
+            this.getPluginList();
           }
         } else {
-          this.$message.error(resp.info)
+          this.$message.error(resp.info);
         }
-      })
+      });
     },
     openSetting(data) {
-      this.pluginModule = data.module
-      this.dialogVisible = true
+      this.pluginModule = data.module;
+      this.dialogVisible = true;
     },
     closeSetting(isRefresh) {
-      this.pluginModule = null
-      this.dialogVisible = false
+      this.pluginModule = null;
+      this.dialogVisible = false;
       if (isRefresh) {
-        this.getPluginList()
+        this.getPluginList();
       }
     },
     isSelected(module) {
@@ -140,16 +143,16 @@ export default {
       } else {
         this.selectedPlugins.push(module);
       }
-      this.$emit('update:selection', [...this.selectedPlugins]);
+      this.$emit("update:selection", [...this.selectedPlugins]);
     },
     clearSelection() {
-       if (this.selectedPlugins.length > 0) {
-         this.selectedPlugins = [];
-         this.$emit('update:selection', []);
-       }
+      if (this.selectedPlugins.length > 0) {
+        this.selectedPlugins = [];
+        this.$emit("update:selection", []);
+      }
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -160,13 +163,13 @@ export default {
   flex-wrap: wrap;
   gap: 20px;
   padding: 10px;
+  align-content: flex-start;
 }
 
 .plugin-card {
-  width: calc(33.333% - 18px);
+  flex: 1 1 calc(25% - 20px); /* Adjust the percentage for column count */
   max-width: 380px;
-  height: auto;
-  min-height: 85px;
+  height: 110px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
@@ -179,7 +182,7 @@ export default {
   position: relative;
 
   &.is-selected {
-    border-color: #409EFF;
+    border-color: #409eff;
     box-shadow: 0 5px 15px rgba(64, 158, 255, 0.2);
   }
 
@@ -187,7 +190,7 @@ export default {
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: #409EFF;
+    background-color: #409eff;
     color: white;
     width: 20px;
     height: 20px;
@@ -273,21 +276,21 @@ export default {
         transition: color 0.3s ease;
 
         &:hover {
-           color: #4d7cfe;
+          color: #4d7cfe;
         }
       }
-       .power-icon[icon-class*="power-open"] {
-         color: #67c23a;
-          &:hover {
-           color: #85d860;
-         }
-       }
-        .power-icon[icon-class*="power-close"] {
-         color: #f56c6c;
-         &:hover {
-           color: #f78989;
-         }
-       }
+      .power-icon[icon-class*="power-open"] {
+        color: #67c23a;
+        &:hover {
+          color: #85d860;
+        }
+      }
+      .power-icon[icon-class*="power-close"] {
+        color: #f56c6c;
+        &:hover {
+          color: #f78989;
+        }
+      }
     }
   }
 }

@@ -34,10 +34,7 @@
       </div>
     </div>
     <div class="filter-tags">
-      <span
-        :class="getTagClass(null)"
-        @click="selectMenuType(null)"
-      >
+      <span :class="getTagClass(null)" @click="selectMenuType(null)">
         全部
       </span>
       <span
@@ -50,34 +47,51 @@
       </span>
     </div>
 
-    <!-- New Bulk Action Bar -->
     <div class="bulk-action-bar" v-if="selectedPluginModules.length > 0">
-       <span class="selection-count">已选择 {{ selectedPluginModules.length }} 项</span>
-       <el-button icon="el-icon-turn-off" size="mini" type="success" @click="bulkToggleSwitch(true)">启用</el-button>
-       <el-button icon="el-icon-open" size="mini" type="warning" @click="bulkToggleSwitch(false)">禁用</el-button>
+      <span class="selection-count"
+        >已选择 {{ selectedPluginModules.length }} 项</span
+      >
+      <el-button
+        icon="el-icon-turn-off"
+        size="mini"
+        type="success"
+        @click="bulkToggleSwitch(true)"
+        >启用</el-button
+      >
+      <el-button
+        icon="el-icon-open"
+        size="mini"
+        type="warning"
+        @click="bulkToggleSwitch(false)"
+        >禁用</el-button
+      >
 
-       <el-divider direction="vertical"></el-divider>
+      <el-divider direction="vertical"></el-divider>
 
-       <el-select
-         v-model="targetMenuTypeBulk"
-         placeholder="选择新菜单类型"
-         size="mini"
-         style="width: 180px; margin: 0 5px;"
-         clearable
-       >
-         <el-option
-           v-for="item in menuTypeList"
-           :key="item"
-           :label="item"
-           :value="item"
-         >
-         </el-option>
-       </el-select>
-       <el-button size="mini" type="primary" @click="bulkUpdateMenuType">应用类型</el-button>
+      <el-select
+        v-model="targetMenuTypeBulk"
+        placeholder="选择新菜单类型"
+        size="mini"
+        style="width: 180px; margin: 0 5px"
+        clearable
+      >
+        <el-option
+          v-for="item in menuTypeList"
+          :key="item"
+          :label="item"
+          :value="item"
+        >
+        </el-option>
+      </el-select>
+      <el-button size="mini" type="primary" @click="bulkUpdateMenuType"
+        >应用类型</el-button
+      >
 
-       <el-divider direction="vertical"></el-divider>
+      <el-divider direction="vertical"></el-divider>
 
-       <el-button icon="el-icon-close" size="mini" @click="cancelSelection">取消选择</el-button>
+      <el-button icon="el-icon-close" size="mini" @click="cancelSelection"
+        >取消选择</el-button
+      >
     </div>
 
     <el-divider />
@@ -87,15 +101,14 @@
         :pluginType="activeBtn"
         :menuType="searchMenuType"
         :key="pltKey"
-        @update:selection="handleSelectionUpdate" 
+        @update:selection="handleSelectionUpdate"
       />
     </div>
-
   </div>
 </template>
 
 <script>
-import PluginListTemplate from "@/components/plugin/PluginListTemplate.vue"
+import PluginListTemplate from "@/components/plugin/PluginListTemplate.vue";
 
 export default {
   name: "PluginList",
@@ -107,81 +120,83 @@ export default {
       pltKey: 0,
       menuTypeList: [],
       searchMenuType: null,
-      selectedPluginModules: [],  
-      targetMenuTypeBulk: null,   
-    }
+      selectedPluginModules: [],
+      targetMenuTypeBulk: null,
+    };
   },
   components: {
     PluginListTemplate,
   },
   mounted() {
-    this.getPluginCount()
-    this.getPluginMenuType()
+    this.getPluginCount();
+    this.getPluginMenuType();
   },
   methods: {
     getTopItemClass(pluginType) {
       return {
         "top-select-btn-item": true,
         "top-btn-item-select": this.activeBtn == pluginType,
-      }
+      };
     },
     getTagClass(tag) {
       return {
-        'filter-tag-item': true,
-        'active-tag': this.searchMenuType === tag,
-      }
+        "filter-tag-item": true,
+        "active-tag": this.searchMenuType === tag,
+      };
     },
     clickPluginType(pluginType) {
-      this.activeBtn = pluginType
-      this.searchMenuType = null
-      this.pltKey++
+      this.activeBtn = pluginType;
+      this.searchMenuType = null;
+      this.pltKey++;
     },
     getPluginCount() {
-      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_count`).then(
-        (resp) => {
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_count`)
+        .then((resp) => {
           if (!resp) {
-             this.$message.error("获取插件数量失败：无效的响应");
-             return;
+            this.$message.error("获取插件数量失败：无效的响应");
+            return;
           }
           if (resp.suc) {
             if (resp.warning) {
-              this.$message.warning(resp.warning)
+              this.$message.warning(resp.warning);
             } else {
-              this.pluginCount = resp.data
+              this.pluginCount = resp.data;
             }
           } else {
             this.$message.error(resp.info || "获取插件数量失败");
           }
-        }
-      ).catch(error => {
-         this.$message.error("请求插件数量失败: " + error);
-      });
+        })
+        .catch((error) => {
+          this.$message.error("请求插件数量失败: " + error);
+        });
     },
     getPluginMenuType() {
-      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_menu_type`).then(
-        (resp) => {
+      this.getRequest(`${this.$root.prefix}/plugin/get_plugin_menu_type`)
+        .then((resp) => {
           if (!resp) {
-             this.$message.error("获取菜单类型失败：无效的响应");
-             return;
+            this.$message.error("获取菜单类型失败：无效的响应");
+            return;
           }
           if (resp.suc) {
             if (resp.warning) {
-              this.$message.warning(resp.warning)
+              this.$message.warning(resp.warning);
             } else {
-              this.menuTypeList = Array.isArray(resp.data) ? resp.data.sort() : []; 
+              this.menuTypeList = Array.isArray(resp.data)
+                ? resp.data.sort()
+                : [];
             }
           } else {
             this.$message.error(resp.info || "获取菜单类型失败");
           }
-        }
-      ).catch(error => {
-         this.$message.error("请求菜单类型失败: " + error);
-      });
+        })
+        .catch((error) => {
+          this.$message.error("请求菜单类型失败: " + error);
+        });
     },
     selectMenuType(menuType) {
       if (this.searchMenuType !== menuType) {
-        this.searchMenuType = menuType
-        this.pltKey++
+        this.searchMenuType = menuType;
+        this.pltKey++;
       }
     },
     handleSelectionUpdate(selectedModules) {
@@ -189,45 +204,58 @@ export default {
     },
 
     cancelSelection() {
-       this.selectedPluginModules = [];
-       this.$refs.pluginListRef?.clearSelection();
+      this.selectedPluginModules = [];
+      this.$refs.pluginListRef?.clearSelection();
     },
 
     bulkToggleSwitch(enable) {
-        if (this.selectedPluginModules.length === 0) return;
-        const actionText = enable ? '启用' : '禁用';
-        const loading = this.$loading({ lock: true, text: `正在批量${actionText}...`, spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
+      if (this.selectedPluginModules.length === 0) return;
+      const actionText = enable ? "启用" : "禁用";
+      const loading = this.$loading({
+        lock: true,
+        text: `正在批量${actionText}...`,
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
 
-        const updates = this.selectedPluginModules.map(module => ({
-            module: module,
-            block_type: enable ? null : 'ALL', 
-        }));
+      const updates = this.selectedPluginModules.map((module) => ({
+        module: module,
+        block_type: enable ? null : "ALL",
+      }));
 
-        this.putRequest(`${this.$root.prefix}/plugin/plugins/batch_update`, {
-            updates: updates,
-        }).then((resp) => {
-            loading.close();
-            if (!resp) {
-                this.$message.error(`批量${actionText}失败：无效的响应`);
-                return;
+      this.putRequest(`${this.$root.prefix}/plugin/plugins/batch_update`, {
+        updates: updates,
+      })
+        .then((resp) => {
+          loading.close();
+          if (!resp) {
+            this.$message.error(`批量${actionText}失败：无效的响应`);
+            return;
+          }
+          if (resp.success) {
+            this.$message.success(
+              `成功${actionText} ${resp.updated_count} 个插件！`
+            );
+            if (resp.errors && resp.errors.length > 0) {
+              resp.errors.forEach((err) =>
+                this.$message.warning(`插件 ${err.module}: ${err.error}`)
+              );
             }
-            if (resp.success) {
-                this.$message.success(`成功${actionText} ${resp.updated_count} 个插件！`);
-                if (resp.errors && resp.errors.length > 0) {
-                    resp.errors.forEach(err => this.$message.warning(`插件 ${err.module}: ${err.error}`));
-                }
-                this.cancelSelection(); 
-                this.pltKey++; 
-            } else {
-                let errorMsg = `批量${actionText}失败`;
-                if (resp.errors && resp.errors.length > 0) {
-                    errorMsg += ": " + resp.errors.map(e => `${e.module}(${e.error})`).join(', ');
-                }
-                this.$message.error(errorMsg);
+            this.cancelSelection();
+            this.pltKey++;
+          } else {
+            let errorMsg = `批量${actionText}失败`;
+            if (resp.errors && resp.errors.length > 0) {
+              errorMsg +=
+                ": " +
+                resp.errors.map((e) => `${e.module}(${e.error})`).join(", ");
             }
-        }).catch(error => {
-            loading.close();
-            this.$message.error(`请求失败: ${error}`);
+            this.$message.error(errorMsg);
+          }
+        })
+        .catch((error) => {
+          loading.close();
+          this.$message.error(`请求失败: ${error}`);
         });
     },
 
@@ -238,44 +266,56 @@ export default {
       }
       if (this.selectedPluginModules.length === 0) return;
 
-      const loading = this.$loading({ lock: true, text: '正在批量修改菜单类型...', spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
+      const loading = this.$loading({
+        lock: true,
+        text: "正在批量修改菜单类型...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
 
-      const updates = this.selectedPluginModules.map(module => ({
-          module: module,
-          menu_type: this.targetMenuTypeBulk,
+      const updates = this.selectedPluginModules.map((module) => ({
+        module: module,
+        menu_type: this.targetMenuTypeBulk,
       }));
 
       this.putRequest(`${this.$root.prefix}/plugin/plugins/batch_update`, {
         updates: updates,
-      }).then((resp) => {
-        loading.close();
-        if (!resp) {
+      })
+        .then((resp) => {
+          loading.close();
+          if (!resp) {
             this.$message.error("批量修改菜单类型失败：无效的响应");
             return;
-        }
-        if (resp.success) {
-          this.$message.success(`成功更新 ${resp.updated_count} 个插件的菜单类型！`);
-          if (resp.errors && resp.errors.length > 0) {
-              resp.errors.forEach(err => this.$message.warning(`插件 ${err.module}: ${err.error}`));
           }
-          this.targetMenuTypeBulk = null; 
-          this.cancelSelection(); 
-          this.pltKey++; 
-        } else {
+          if (resp.success) {
+            this.$message.success(
+              `成功更新 ${resp.updated_count} 个插件的菜单类型！`
+            );
+            if (resp.errors && resp.errors.length > 0) {
+              resp.errors.forEach((err) =>
+                this.$message.warning(`插件 ${err.module}: ${err.error}`)
+              );
+            }
+            this.targetMenuTypeBulk = null;
+            this.cancelSelection();
+            this.pltKey++;
+          } else {
             let errorMsg = "批量修改菜单类型失败";
             if (resp.errors && resp.errors.length > 0) {
-                errorMsg += ": " + resp.errors.map(e => `${e.module}(${e.error})`).join(', ');
+              errorMsg +=
+                ": " +
+                resp.errors.map((e) => `${e.module}(${e.error})`).join(", ");
             }
             this.$message.error(errorMsg);
-        }
-      }).catch(error => {
-        loading.close();
-        this.$message.error("请求失败: " + error);
-      });
+          }
+        })
+        .catch((error) => {
+          loading.close();
+          this.$message.error("请求失败: " + error);
+        });
     },
-
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -299,7 +339,7 @@ export default {
       height: 40px;
       border-radius: 5px;
       color: #758ea1;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
       ::v-deep .el-divider--vertical {
         height: 20px;
@@ -358,24 +398,24 @@ export default {
       border-color: #4d7cfe;
 
       &:hover {
-         background-color: #6b8efc;
-         border-color: #6b8efc;
-         color: #ffffff;
+        background-color: #6b8efc;
+        border-color: #6b8efc;
+        color: #ffffff;
       }
     }
   }
 
   .bulk-action-bar {
-    background-color: #f0f9ff; 
+    background-color: #f0f9ff;
     border: 1px solid #b3d8ff;
     border-radius: 6px;
     padding: 8px 15px;
-    margin-top: 15px; 
-    margin-bottom: 10px; 
+    margin-top: 15px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
-    gap: 10px; 
-    flex-wrap: wrap; 
+    gap: 10px;
+    flex-wrap: wrap;
 
     .selection-count {
       font-size: 13px;
@@ -385,18 +425,18 @@ export default {
     }
 
     .el-divider--vertical {
-       height: 20px; 
-       background-color: #dcdfe6;
+      height: 20px;
+      background-color: #dcdfe6;
     }
   }
 
   ::v-deep .el-divider--horizontal {
-     margin: 20px 0; 
+    margin: 20px 0;
   }
 
   .plugin-list {
     width: 100%;
-    height: calc(100% - 160px); 
+    height: calc(100% - 160px);
     overflow: auto;
   }
 }
