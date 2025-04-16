@@ -77,6 +77,7 @@
                 <el-dropdown-item command="light"> <i class="el-icon-sunny" style="margin-right: 5px;"></i>亮色模式 </el-dropdown-item>
                 <el-dropdown-item command="dark"> <i class="el-icon-moon" style="margin-right: 5px;"></i>暗黑模式 </el-dropdown-item>
                 <el-dropdown-item command="pink"> <i class="el-icon-present" style="margin-right: 5px;"></i>少女粉 </el-dropdown-item>
+                <el-dropdown-item command="one-dark"> <i class="el-icon-monitor" style="margin-right: 5px;"></i>One Dark </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
 

@@ -174,3 +174,62 @@
   --el-box-shadow-light: 0 2px 12px 0 rgba(109, 75, 108, 0.1);
   --el-box-shadow-lighter: 0 2px 6px 0 rgba(109, 75, 108, 0.05);
 }
+
+[data-theme="one-dark"] {
+  --bg-color: #282c34;
+  --bg-color-secondary: #21252b;
+  --bg-color-hover: #2c313a;
+  --text-color: #abb2bf;
+  --text-color-secondary: #8b929e;
+  --text-color-placeholder: #5c6370;
+  --border-color: #3b4048;
+  --border-color-light: #343941;
+  --primary-color: #61afef;
+  --primary-color-light: #82c0ff;
+  --success-color: #98c379;
+  --warning-color: #e5c07b;
+  --danger-color: #e06c75;
+  --info-color: #5c6370;
+
+  --scrollbar-thumb-color: #4f5663;
+  --scrollbar-thumb-hover-color: #5a6270;
+
+  --el-color-primary: var(--primary-color);
+  --el-color-primary-light-3: #7abfff;
+  --el-color-primary-light-5: #97d0ff;
+  --el-color-primary-light-7: #b3e0ff;
+  --el-color-primary-light-8: #cce8ff;
+  --el-color-primary-light-9: #e6f3ff;
+  --el-color-success: var(--success-color);
+  --el-color-warning: var(--warning-color);
+  --el-color-danger: var(--danger-color);
+  --el-color-info: var(--info-color);
+
+  --el-bg-color: var(--bg-color-secondary);
+  --el-bg-color-page: var(--bg-color);
+  --el-bg-color-overlay: rgba(33, 37, 43, 0.85);
+
+  --el-text-color-primary: var(--text-color);
+  --el-text-color-regular: var(--text-color-secondary);
+  --el-text-color-secondary: #5c6370;
+  --el-text-color-placeholder: var(--text-color-placeholder);
+  --el-text-color-disabled: #4a505a;
+
+  --el-border-color: var(--border-color);
+  --el-border-color-light: var(--border-color-light);
+  --el-border-color-lighter: #2a2e35;
+  --el-border-color-extra-light: #24282f;
+  --el-border-color-dark: #4f5663;
+  --el-border-color-darker: #5a6270;
+
+  --el-fill-color: #3a3f4a;
+  --el-fill-color-light: #31363f;
+  --el-fill-color-lighter: #2c313a;
+  --el-fill-color-extra-light: #282c34;
+  --el-fill-color-dark: #24282f;
+  --el-fill-color-darker: #1e2227;
+  --el-fill-color-blank: var(--bg-color-secondary);
+
+  --el-box-shadow-light: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+  --el-box-shadow-lighter: 0 2px 6px 0 rgba(0, 0, 0, 0.15);
+}

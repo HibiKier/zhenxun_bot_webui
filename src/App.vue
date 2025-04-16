@@ -34,7 +34,7 @@ export default {
       this.windowHeight = window.innerHeight
     },
     setTheme(themeName) {
-      if (['light', 'dark', 'pink'].includes(themeName)) {
+      if (['light', 'dark', 'pink', 'one-dark'].includes(themeName)) {
         this.theme = themeName;
         localStorage.setItem('app-theme', themeName);
         document.documentElement.setAttribute('data-theme', themeName);
