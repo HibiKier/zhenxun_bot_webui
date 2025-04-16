@@ -212,6 +212,18 @@ export default {
     height: calc(100% - 50px);
     .el-textarea__inner {
       height: 100%;
+      background-color: var(--el-fill-color) !important;
+      color: var(--el-text-color-primary) !important;
+      border-color: var(--el-border-color) !important;
+      border-radius: 4px;
+      box-shadow: none !important;
+      &:focus {
+        border-color: var(--el-color-primary) !important;
+        box-shadow: 0 0 0 1px var(--el-color-primary) inset !important;
+      }
+      &::placeholder {
+         color: var(--el-text-color-placeholder) !important;
+      }
     }
   }
 
@@ -236,13 +248,14 @@ export default {
         float: right;
       }
       .user-name {
-        color: var(--el-text-color-secondary);
+        color: var(--el-text-color-regular);
         font-size: 15px;
       }
       .msg-text {
         margin-top: 5px;
         font-size: 20px;
         background-color: var(--el-fill-color-light);
+        color: var(--el-text-color-primary);
         padding: 10px;
         border-radius: 10px;
         word-wrap: break-word;
@@ -269,6 +282,16 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &.dark {
+    :deep(.el-textarea__inner) {
+      background-color: var(--el-fill-color-lighter) !important;
+      color: var(--el-text-color-primary);
+    }
+    :deep(.el-button) {
+      background-color: var(--el-bg-color-page);
+    }
   }
 }
 </style>

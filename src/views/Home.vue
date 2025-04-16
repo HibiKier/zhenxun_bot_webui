@@ -404,12 +404,23 @@ export default {
   width: 8rem;
   height: 30px;
   line-height: 30px;
-  font-size: 1.2rem;
-  color: #adaeb0;
+  font-size: 1rem;
   text-decoration: none;
-  border-radius: 10px;
-  border: 5px solid #fff;
+  border-radius: 5px;
   text-align: center;
+  display: inline-block;
+  padding: 0 15px;
+  box-sizing: border-box;
+  color: var(--el-text-color-regular);
+  background-color: var(--el-fill-color-blank);
+  border: 1px solid var(--el-border-color);
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
+    border-color: var(--el-color-primary-light-7);
+  }
 }
 .border-right-none {
   border-right: none !important;

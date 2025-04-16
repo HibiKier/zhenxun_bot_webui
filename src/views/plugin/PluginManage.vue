@@ -574,13 +574,13 @@ export default {
       background-color: var(--bg-color-secondary);
       height: 40px;
       border-radius: 5px;
-      color: var(--text-color-secondary);
+      color: var(--text-color-regular);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
       ::v-deep .el-divider--vertical {
         height: 20px;
-        margin: 0;
-        margin-top: 10px;
+        margin: 10px 0;
+        background-color: var(--el-border-color);
       }
 
       .top-select-btn-item {
@@ -595,12 +595,14 @@ export default {
       }
 
       .top-btn-item-select {
-        color: #ffffff;
+        color: var(--el-color-white);
         background-color: var(--primary-color);
+        font-weight: 500;
       }
 
       .top-select-btn-item:not(.top-btn-item-select):hover {
         background-color: var(--bg-color-hover);
+        color: var(--el-text-color-primary);
       }
     }
   }
