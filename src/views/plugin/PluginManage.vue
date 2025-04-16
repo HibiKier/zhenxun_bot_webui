@@ -107,8 +107,8 @@ export default {
       pltKey: 0,
       menuTypeList: [],
       searchMenuType: null,
-      selectedPluginModules: [],  // Stores modules selected in the child component
-      targetMenuTypeBulk: null,   // Stores the menu type selected in the bulk action bar
+      selectedPluginModules: [],  
+      targetMenuTypeBulk: null,   
     }
   },
   components: {
@@ -168,7 +168,7 @@ export default {
             if (resp.warning) {
               this.$message.warning(resp.warning)
             } else {
-              this.menuTypeList = Array.isArray(resp.data) ? resp.data.sort() : []; // Ensure data is array
+              this.menuTypeList = Array.isArray(resp.data) ? resp.data.sort() : []; 
             }
           } else {
             this.$message.error(resp.info || "获取菜单类型失败");
@@ -184,39 +184,46 @@ export default {
         this.pltKey++
       }
     },
-    // Handles the selection update event from PluginListTemplate
     handleSelectionUpdate(selectedModules) {
       this.selectedPluginModules = selectedModules || [];
     },
 
-    // Clears selection in both parent and child
     cancelSelection() {
        this.selectedPluginModules = [];
-       // Call clearSelection method on the child component via ref
        this.$refs.pluginListRef?.clearSelection();
     },
 
-    // Bulk toggle switch status
-    bulkToggleSwitch(targetStatus) {
+    bulkToggleSwitch(enable) {
         if (this.selectedPluginModules.length === 0) return;
-        const actionText = targetStatus ? '启用' : '禁用';
+        const actionText = enable ? '启用' : '禁用';
         const loading = this.$loading({ lock: true, text: `正在批量${actionText}...`, spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
 
-        this.postRequest(`${this.$root.prefix}/plugin/batch_toggle_switch`, {
-            modules: this.selectedPluginModules,
-            status: targetStatus,
+        const updates = this.selectedPluginModules.map(module => ({
+            module: module,
+            block_type: enable ? null : 'ALL', 
+        }));
+
+        this.putRequest(`${this.$root.prefix}/plugin/plugins/batch_update`, {
+            updates: updates,
         }).then((resp) => {
             loading.close();
             if (!resp) {
                 this.$message.error(`批量${actionText}失败：无效的响应`);
                 return;
             }
-            if (resp.suc) {
-            this.$message.success(resp.info || `批量${actionText}成功！`);
-            this.cancelSelection(); // Clear selection after success
-            this.pltKey++; // Refresh list
+            if (resp.success) {
+                this.$message.success(`成功${actionText} ${resp.updated_count} 个插件！`);
+                if (resp.errors && resp.errors.length > 0) {
+                    resp.errors.forEach(err => this.$message.warning(`插件 ${err.module}: ${err.error}`));
+                }
+                this.cancelSelection(); 
+                this.pltKey++; 
             } else {
-            this.$message.error(resp.info || `批量${actionText}失败`);
+                let errorMsg = `批量${actionText}失败`;
+                if (resp.errors && resp.errors.length > 0) {
+                    errorMsg += ": " + resp.errors.map(e => `${e.module}(${e.error})`).join(', ');
+                }
+                this.$message.error(errorMsg);
             }
         }).catch(error => {
             loading.close();
@@ -224,7 +231,6 @@ export default {
         });
     },
 
-    // Bulk update menu type
     bulkUpdateMenuType() {
       if (!this.targetMenuTypeBulk) {
         this.$message.warning("请先在上方选择目标菜单类型");
@@ -234,26 +240,37 @@ export default {
 
       const loading = this.$loading({ lock: true, text: '正在批量修改菜单类型...', spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
 
-      this.postRequest(`${this.$root.prefix}/plugin/batch_update_menu_type`, {
-        modules: this.selectedPluginModules,
-        menu_type: this.targetMenuTypeBulk,
+      const updates = this.selectedPluginModules.map(module => ({
+          module: module,
+          menu_type: this.targetMenuTypeBulk,
+      }));
+
+      this.putRequest(`${this.$root.prefix}/plugin/plugins/batch_update`, {
+        updates: updates,
       }).then((resp) => {
         loading.close();
         if (!resp) {
             this.$message.error("批量修改菜单类型失败：无效的响应");
             return;
         }
-        if (resp.suc) {
-          this.$message.success(resp.info || "批量修改菜单类型成功！");
-          this.targetMenuTypeBulk = null; // Reset select
-          this.cancelSelection(); // Clear selection
-          this.pltKey++; // Refresh list
+        if (resp.success) {
+          this.$message.success(`成功更新 ${resp.updated_count} 个插件的菜单类型！`);
+          if (resp.errors && resp.errors.length > 0) {
+              resp.errors.forEach(err => this.$message.warning(`插件 ${err.module}: ${err.error}`));
+          }
+          this.targetMenuTypeBulk = null; 
+          this.cancelSelection(); 
+          this.pltKey++; 
         } else {
-          this.$message.error(resp.info || "批量修改菜单类型失败");
+            let errorMsg = "批量修改菜单类型失败";
+            if (resp.errors && resp.errors.length > 0) {
+                errorMsg += ": " + resp.errors.map(e => `${e.module}(${e.error})`).join(', ');
+            }
+            this.$message.error(errorMsg);
         }
       }).catch(error => {
-         loading.close();
-         this.$message.error("请求失败: " + error);
+        loading.close();
+        this.$message.error("请求失败: " + error);
       });
     },
 
@@ -348,18 +365,17 @@ export default {
     }
   }
 
-  // New Bulk Action Bar Styles
   .bulk-action-bar {
-    background-color: #f0f9ff; // Light blue background
+    background-color: #f0f9ff; 
     border: 1px solid #b3d8ff;
     border-radius: 6px;
     padding: 8px 15px;
-    margin-top: 15px; // Space from filters
-    margin-bottom: 10px; // Space before divider
+    margin-top: 15px; 
+    margin-bottom: 10px; 
     display: flex;
     align-items: center;
-    gap: 10px; // Space between elements
-    flex-wrap: wrap; // Allow wrapping on smaller screens
+    gap: 10px; 
+    flex-wrap: wrap; 
 
     .selection-count {
       font-size: 13px;
@@ -369,19 +385,18 @@ export default {
     }
 
     .el-divider--vertical {
-       height: 20px; // Adjust divider height
+       height: 20px; 
        background-color: #dcdfe6;
     }
   }
 
   ::v-deep .el-divider--horizontal {
-     margin: 20px 0; // Ensure divider margin is consistent
+     margin: 20px 0; 
   }
 
   .plugin-list {
     width: 100%;
-    // Calculate height considering potential bulk action bar height
-    height: calc(100% - 160px); // Adjust this value based on actual height of elements above
+    height: calc(100% - 160px); 
     overflow: auto;
   }
 }
