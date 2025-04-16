@@ -241,12 +241,14 @@ export default {
               this.$message.warning(resp.warning)
             } else {
               this.$message.success(resp.info)
-              this.tableData = resp.data.plugin_list
-              this.installModule = resp.data.install_module
+              this.tableData = Array.isArray(resp.data.plugin_list) ? resp.data.plugin_list : []
+              this.installModule = resp.data.install_module || []
               this.authorList = []
-              for (let v of resp.data) {
-                if (!this.authorList.includes(v.author)) {
-                  this.authorList.push(v.author)
+              if (Array.isArray(resp.data.plugin_list)) {
+                for (let v of resp.data.plugin_list) {
+                  if (v && v.author && !this.authorList.includes(v.author)) {
+                    this.authorList.push(v.author)
+                  }
                 }
               }
             }
