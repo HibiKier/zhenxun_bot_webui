@@ -32,22 +32,22 @@
           其他插件({{ pluginCount.other }})
         </div>
       </div>
-      <div class="search-select">
-        <el-select
-          v-model="searchMenuType"
-          placeholder="菜单类型"
-          style="width: 270px"
-          @change="selectMenuType"
-          clearable
-        >
-          <el-option
-            v-for="data in menuTypeList"
-            :label="data"
-            :value="data"
-            :key="data"
-          ></el-option>
-        </el-select>
-      </div>
+    </div>
+    <div class="filter-tags">
+      <span
+        :class="getTagClass(null)"
+        @click="selectMenuType(null)"
+      >
+        全部
+      </span>
+      <span
+        v-for="tag in menuTypeList"
+        :key="tag"
+        :class="getTagClass(tag)"
+        @click="selectMenuType(tag)"
+      >
+        {{ tag }}
+      </span>
     </div>
     <el-divider />
     <div class="plugin-list">
@@ -89,8 +89,15 @@ export default {
         "top-btn-item-select": this.activeBtn == pluginType,
       }
     },
+    getTagClass(tag) {
+      return {
+        'filter-tag-item': true,
+        'active-tag': this.searchMenuType === tag,
+      }
+    },
     clickPluginType(pluginType) {
       this.activeBtn = pluginType
+      this.searchMenuType = null
       this.pltKey++
     },
     getPluginCount() {
@@ -115,7 +122,7 @@ export default {
             if (resp.warning) {
               this.$message.warning(resp.warning)
             } else {
-              this.menuTypeList = resp.data
+              this.menuTypeList = resp.data.sort()
             }
           } else {
             this.$message.error(resp.info)
@@ -123,8 +130,11 @@ export default {
         }
       )
     },
-    selectMenuType() {
-      this.pltKey++
+    selectMenuType(menuType) {
+      if (this.searchMenuType !== menuType) {
+        this.searchMenuType = menuType
+        this.pltKey++
+      }
     },
   },
 }
@@ -136,62 +146,95 @@ export default {
 }
 
 .base-box {
-  padding: 50px;
+  padding: 20px 50px;
   width: calc(100% - 100px);
-  height: calc(100% - 210px);
+  height: calc(100% - 100px);
 
   .top-select {
     width: 100%;
-    height: 50px;
+    height: 40px;
 
     .top-select-btn-box {
       float: left;
       display: flex;
       background-color: #ffffff;
-      height: 50px;
-      width: 40%;
+      height: 40px;
       border-radius: 5px;
       color: #758ea1;
-      // align-items: center;
-      // text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 
       ::v-deep .el-divider--vertical {
-        height: 25px;
+        height: 20px;
         margin: 0;
-        margin-top: 13px;
+        margin-top: 10px;
       }
 
       .top-select-btn-item {
         display: flex;
-        width: 25%;
+        padding: 0 20px;
         cursor: pointer;
         height: 100%;
         align-items: center;
         justify-content: center;
+        font-size: 14px;
+        transition: background-color 0.3s, color 0.3s;
       }
 
       .top-btn-item-select {
         color: #ffffff;
         background-color: #4d7cfe;
       }
+
+      .top-select-btn-item:not(.top-btn-item-select):hover {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+
+  .filter-tags {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .filter-tag-item {
+      padding: 5px 15px;
+      border: 1px solid #e0e0e0;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #606266;
+      background-color: #ffffff;
+      transition: all 0.3s;
+
+      &:hover {
+        border-color: #c0c4cc;
+        color: #409eff;
+      }
     }
 
-    .search-select {
-      float: right;
-      margin-right: 50px;
-      margin-top: 5px;
+    .active-tag {
+      background-color: #4d7cfe;
+      color: #ffffff;
+      border-color: #4d7cfe;
+
+      &:hover {
+         background-color: #6b8efc;
+         border-color: #6b8efc;
+         color: #ffffff;
+      }
     }
   }
 
   ::v-deep .el-divider--horizontal {
-    margin: 50px 0;
+    margin: 20px 0;
   }
 
   .plugin-list {
     width: 100%;
-    height: 100%;
+    height: calc(100% - 110px);
     overflow: auto;
-    border-radius: 10px;
   }
 }
 </style>
