@@ -189,7 +189,7 @@ export default {
 <style lang="scss" scoped>
 .chat-window {
   box-sizing: border-box;
-  background-color: #fff;
+  background-color: var(--el-bg-color-secondary);
   padding: 30px 20px;
   border-radius: 10px;
 
@@ -202,7 +202,7 @@ export default {
   }
 
   .title {
-    color: #939395;
+    color: var(--el-text-color-secondary);
     font-size: 20px;
     margin-left: 30px;
     float: left;
@@ -236,14 +236,13 @@ export default {
         float: right;
       }
       .user-name {
-        color: #888a8e;
+        color: var(--el-text-color-secondary);
         font-size: 15px;
       }
       .msg-text {
         margin-top: 5px;
         font-size: 20px;
-        // border: #e5e5e4 solid 1px;
-        background-color: #e5e5e4;
+        background-color: var(--el-fill-color-light);
         padding: 10px;
         border-radius: 10px;
         word-wrap: break-word;

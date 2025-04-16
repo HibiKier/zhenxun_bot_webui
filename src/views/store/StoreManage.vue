@@ -20,12 +20,13 @@ export default {
 
 <style lang="scss" scoped>
 .el-main {
-  background-color: #f1f5f8;
+  background-color: var(--el-bg-color-page);
 }
 
 .base-box {
   padding: 20px;
   width: calc(100% - 40px);
   height: calc(100% - 80px);
+  background-color: var(--bg-color);
 }
 </style>

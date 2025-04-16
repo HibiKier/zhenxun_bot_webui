@@ -499,33 +499,51 @@ export default {
 
 <style lang="scss" scoped>
 .right-info {
-  padding: 0 10px;
+  padding: 0 20px 20px 20px;
   height: 100%;
+  background-color: var(--bg-color);
+  box-sizing: border-box;
 
   ::v-deep .el-divider--horizontal {
     margin: 10px 0;
   }
 
   .config-small-title {
-    color: #afb2b9;
+    color: var(--text-color-secondary);
     font-size: 13px;
     margin-bottom: 5px;
   }
 
   .btn-group {
     float: right;
+
+    .el-button--text {
+      color: var(--text-color-secondary);
+      padding: 0 8px;
+      &:hover,
+      &:focus {
+        color: var(--primary-color);
+      }
+    }
+
+    .select-query-type {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
   }
 
   .base-title {
-    color: #939395;
-    margin-bottom: 30px;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    display: block;
   }
 
   .base-border {
-    border-radius: 10px;
-    padding: 20px;
-    background-color: white;
-    box-sizing: border-box;
+    background-color: var(--bg-color-secondary);
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: var(--el-box-shadow-lighter);
+    overflow: hidden;
   }
 
   .nb-config {
@@ -537,9 +555,9 @@ export default {
 
     /deep/ .el-col {
       text-align: center;
-      white-space: nowrap; /* 防止文本换行 */
-      overflow: hidden; /* 隐藏超出部分的文本 */
-      text-overflow: ellipsis; /* 显示省略号 */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     ::v-deep .el-divider--horizontal {
@@ -552,12 +570,6 @@ export default {
     }
 
     .nb-config-box-item {
-      // .tooltip-item {
-      //   white-space: nowrap; /* 防止文本换行 */
-      //   overflow: hidden; /* 隐藏超出部分的文本 */
-      //   text-overflow: ellipsis; /* 显示省略号 */
-      // }
-
       .config-info-item-text {
         margin-bottom: 10px;
         margin-top: 10px;
@@ -575,20 +587,29 @@ export default {
   }
 
   .active-group {
-    // display: flex;
-
     .el-button {
-      color: #a3a6af;
+      color: var(--text-color-secondary);
     }
   }
-  .select-query-type {
-    font-weight: bold;
-    color: #262729;
-  }
+
   .hot-plugin {
     .el-button {
-      color: #a3a6af;
+      color: var(--text-color-secondary);
     }
   }
+}
+
+.group-chart, .plugin-chart {
+  // Contained within base-border now
+}
+
+.base-chart {
+  width: 100%;
+}
+
+::v-deep .el-tooltip__popper.is-dark {
+  background: var(--bg-color-secondary);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
 </style>

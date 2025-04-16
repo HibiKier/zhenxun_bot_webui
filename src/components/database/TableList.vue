@@ -138,24 +138,22 @@ export default {
   padding: 0 30px;
 
   .title {
-    // color: #939395;
     font-weight: bold;
     font-size: 23px;
-    // border: 1px solid #d3d3d4;
     padding: 5px;
     border-radius: 10px;
     text-align: center;
     margin-bottom: 10px;
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--bg-color-secondary);
     height: 35px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--el-box-shadow-light);
   }
 
   .name-color {
     width: 2px;
     height: 100%;
-    background-color: #2b80ed;
+    background-color: var(--primary-color);
     margin-right: 5px;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
@@ -165,7 +163,7 @@ export default {
     overflow: auto;
     height: 100%;
     padding: 30px;
-    background-color: white;
+    background-color: var(--bg-color-secondary);
     border-radius: 10px;
     box-sizing: border-box;
 
@@ -177,7 +175,7 @@ export default {
     ::v-deep .el-collapse-item__header {
       font-size: 15px;
       font-weight: bold;
-      background-color: #f0f2f5;
+      background-color: var(--bg-color-hover);
       // border-radius: 10px;
     }
 
@@ -198,7 +196,7 @@ export default {
 
       .table-desc {
         font-size: 14px;
-        color: #9f9f9f;
+        color: var(--text-color-secondary);
         margin-top: 5px;
       }
 
@@ -208,4 +206,52 @@ export default {
     }
   }
 }
+
+/* 添加 Element UI 表格主题化样式 */
+.table-list-box ::v-deep .el-table,
+.table-list-box ::v-deep .el-table__expanded-cell {
+  background-color: transparent; /* 使表格背景透明以继承父级背景 */
+}
+
+.table-list-box ::v-deep .el-table th,
+.table-list-box ::v-deep .el-table tr,
+.table-list-box ::v-deep .el-table td {
+  background-color: transparent !important; /* 强制单元格背景透明 */
+  color: var(--el-text-color-regular); /* 使用主题文本颜色 */
+  border-color: var(--el-border-color-light); /* 使用主题边框颜色 */
+}
+
+/* 覆盖表头背景和文字颜色 */
+.table-list-box ::v-deep .el-table th {
+  background-color: var(--el-fill-color-lighter) !important;
+  color: var(--el-text-color-primary);
+}
+
+
+/* 覆盖斑马纹背景色 */
+.table-list-box ::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: var(--el-fill-color-lighter) !important;
+}
+
+/* 覆盖鼠标悬停行的背景色 */
+.table-list-box ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
+  background-color: var(--el-table-row-hover-bg-color) !important;
+}
+
+/* 覆盖表格边框颜色 */
+.table-list-box ::v-deep .el-table--border::after,
+.table-list-box ::v-deep .el-table--group::after,
+.table-list-box ::v-deep .el-table::before {
+    background-color: var(--el-border-color-light);
+}
+.table-list-box ::v-deep .el-table--border th.is-leaf,
+.table-list-box ::v-deep .el-table--border td {
+    border-bottom: 1px solid var(--el-border-color-light);
+}
+.table-list-box ::v-deep .el-table--border th,
+.table-list-box ::v-deep .el-table--border td {
+    border-right: 1px solid var(--el-border-color-light);
+}
+/* --- */
+
 </style>

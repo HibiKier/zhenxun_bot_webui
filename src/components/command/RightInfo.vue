@@ -336,14 +336,20 @@ export default {
       this.initFontSize()
       this.$nextTick(() => {
         setTimeout(() => {
-          this.chartBorderHeight =
-            this.$refs.rightInfo.offsetHeight -
-            this.$refs.baseInfo.offsetHeight -
-            18
-          this.chartDivHeight = (this.chartBorderHeight - 16) / 2
-          this.chartHeight = this.chartDivHeight - 82
-          this.groupChart.resize()
-          this.hotPluginChart.resize()
+          if (this.$refs.rightInfo && this.$refs.baseInfo) {
+            this.chartBorderHeight =
+              this.$refs.rightInfo.offsetHeight -
+              this.$refs.baseInfo.offsetHeight -
+              18
+            this.chartDivHeight = (this.chartBorderHeight - 16) / 2
+            this.chartHeight = this.chartDivHeight - 82
+            if (this.groupChart) {
+              this.groupChart.resize()
+            }
+            if (this.hotPluginChart) {
+              this.hotPluginChart.resize()
+            }
+          }
         }, 500)
       })
     },
@@ -472,7 +478,7 @@ export default {
   .base-border {
     border-radius: 10px;
     padding: 20px;
-    background-color: white;
+    background-color: var(--bg-color-secondary);
     box-sizing: border-box;
   }
   ::v-deep .el-divider--horizontal {
@@ -516,7 +522,7 @@ export default {
   .base-info {
     box-sizing: border-box;
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--bg-color-secondary);
     padding: 20px;
 
     .base-border {

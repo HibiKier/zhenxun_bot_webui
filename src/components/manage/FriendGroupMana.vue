@@ -82,7 +82,7 @@ export default {
   height: 100%;
   .data-list {
     height: 100%;
-    background-color: #f4f5fa;
+    background-color: var(--el-bg-color-page);
   }
 
   .chat {

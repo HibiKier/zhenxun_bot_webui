@@ -277,6 +277,126 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.left-info {
+  height: 100%;
+  background-color: var(--bg-color);
+  overflow-x: hidden;
+  padding: 20px;
+  text-align: left;
+}
+
+.left-info::-webkit-scrollbar {
+  width: 5px;
+  height: 1px;
+}
+.left-info::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: var(--scrollbar-thumb-color);
+}
+.left-info::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: var(--scrollbar-track-color);
+}
+
+.top-text {
+  background-color: var(--bg-color-secondary);
+  border-radius: 8px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.top-text-left {
+  float: left;
+  width: 70%;
+}
+
+.top-text-right {
+  width: 30%;
+  float: right;
+  position: relative;
+  top: 10px;
+  margin-left: -20px;
+  img {
+    width: 100%;
+  }
+}
+
+.head-text {
+  color: var(--text-color);
+  font-weight: bold;
+  font-family: Microsoft YaHei;
+}
+
+.head-tip {
+  margin-top: 5px;
+  color: var(--text-color-secondary);
+}
+
+.bot-list {
+  margin-top: 20px;
+  background-color: var(--bg-color-secondary);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.bot-item {
+  margin-top: 15px;
+  position: relative;
+  height: 70px;
+  border-radius: 5px;
+  box-shadow: var(--el-box-shadow-lighter);
+  background-color: var(--bg-color-card);
+  overflow: hidden;
+}
+
+.bot-avatar {
+  position: relative;
+  height: 100%;
+  float: left;
+}
+
+.bot-avatar-pic {
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  position: relative;
+  top: 12px;
+  left: 15px;
+}
+
+.bot-name {
+  position: absolute;
+  left: 70px;
+  top: 13px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.bot-id {
+  position: absolute;
+  left: 70px;
+  top: 35px;
+  color: var(--text-color-secondary);
+}
+
+.bot-status {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #ccc;
+  position: absolute;
+  right: 20px;
+  top: 28px;
+}
+
+.green {
+  background-color: #67c23a;
+}
+
+.red {
+  background-color: #f56c6c;
+}
+
 ::v-deep .el-divider--horizontal {
   margin: 50px 0;
 }
@@ -292,78 +412,110 @@ export default {
   margin-top: 10px;
 }
 
-.left-info {
-  padding: 0 20px;
-  height: 100%;
-  box-sizing: border-box;
+.ava-info {
+  align-items: center;
+  padding: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color-secondary);
+  border-radius: 10px;
+  padding: 30px;
 
-  .ava-info {
-    align-items: center;
-    padding: auto;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
-    border-radius: 10px;
-    padding: 30px;
+  .ava-img {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    margin-top: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
 
-    .ava-img {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      margin-top: 30px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
+  .nickname {
+    font-size: 30px;
+    font-weight: 500;
+    margin-top: 10px;
+  }
+  .account {
+    color: #ffffff;
+    background-color: #5c87ff;
+    padding: 6px;
+    margin-top: 13px;
+    border-radius: 5px;
+  }
 
-    .nickname {
-      font-size: 30px;
-      font-weight: 500;
-      margin-top: 10px;
-    }
-    .account {
-      color: #ffffff;
-      background-color: #5c87ff;
-      padding: 6px;
-      margin-top: 13px;
-      border-radius: 5px;
-    }
+  .fg-cnt {
+    margin-top: 45px;
+    width: 100%;
 
-    .fg-cnt {
-      margin-top: 45px;
-      width: 100%;
-
-      .fg-cnt-item {
-        text-align: center;
-        .fg-cnt-text {
-          font-size: 25px;
-        }
+    .fg-cnt-item {
+      text-align: center;
+      .fg-cnt-text {
+        font-size: 25px;
       }
     }
   }
+}
 
-  .base-info {
-    padding: 0 50px;
-    box-sizing: border-box;
-    border-radius: 10px;
-    background-color: white;
-    margin-top: 20px;
-    padding: 30px;
-    height: 370px;
+.base-info {
+  padding: 0 50px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background-color: var(--bg-color-secondary);
+  margin-top: 20px;
+  padding: 30px;
+  height: 370px;
 
-    .bot-manage {
-      color: #939395;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
+  .bot-manage {
+    color: #939395;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
-    /deep/ .el-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  ::v-deep .el-input__inner {
+      background-color: var(--el-fill-color-blank);
+      color: var(--el-text-color-primary);
+      &:focus {
+        border-color: var(--primary-color);
+      }
+  }
 
-    ::v-deep .el-divider--horizontal {
-      margin: 0;
-    }
+  ::v-deep .el-select-dropdown {
+      background-color: var(--bg-color-overlay);
+      border: 1px solid var(--border-color-light);
+  }
+  ::v-deep .el-select-dropdown__item {
+      color: var(--text-color-regular);
+  }
+  ::v-deep .el-select-dropdown__item.hover,
+  ::v-deep .el-select-dropdown__item:hover {
+      background-color: var(--bg-color-secondary);
+      color: var(--primary-color);
+  }
+  ::v-deep .el-select-dropdown__item.selected {
+      background-color: var(--bg-color-secondary);
+      color: var(--primary-color);
+      font-weight: bold;
+  }
+  ::v-deep .el-tag {
+      background-color: var(--bg-color);
+      color: var(--text-color-regular);
+      border-color: var(--border-color-light);
+  }
+  ::v-deep .el-tag .el-tag__close {
+      color: var(--text-color-secondary);
+      &:hover {
+         background-color: var(--primary-color);
+         color: white;
+      }
+  }
+
+  /deep/ .el-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  ::v-deep .el-divider--horizontal {
+    margin: 0;
   }
 }
 </style>

@@ -551,9 +551,11 @@ export default {
 
 <style lang="scss" scoped>
 .detail-info {
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
   padding: 40px 20px;
   box-sizing: border-box;
+  height: 100%;
+  overflow-y: auto;
 
   .empty {
     width: 100%;
@@ -578,6 +580,7 @@ export default {
       font-size: 30px;
       font-weight: 500;
       margin-top: 20px;
+      color: var(--el-text-color-primary);
     }
   }
 
@@ -597,7 +600,7 @@ export default {
       }
 
       .label {
-        color: #939395;
+        color: var(--el-text-color-secondary);
         font-size: 20px;
         display: flex;
         justify-content: center;
@@ -607,17 +610,22 @@ export default {
       .value {
         font-size: 25px;
         margin-left: 10px;
+        color: var(--el-text-color-primary);
       }
     }
   }
   .base-chart {
     width: 100%;
     height: 360px;
+    background-color: var(--bg-color-secondary);
+    border-radius: 8px;
+    padding: 10px;
+    box-sizing: border-box;
   }
 
   .account {
-    color: #ffffff;
-    background-color: #5c87ff;
+    color: var(--el-color-white);
+    background-color: var(--el-color-primary);
     padding: 6px;
     margin-top: 13px;
     border-radius: 5px;

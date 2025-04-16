@@ -398,7 +398,7 @@ export default {
 }
 .layoutbox {
   height: calc(100vh - 60px);
-  background-color: #f0f2f5;
+  background-color: var(--bg-color);
 }
 .to-myapi {
   width: 8rem;

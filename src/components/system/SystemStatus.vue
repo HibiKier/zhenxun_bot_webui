@@ -59,7 +59,7 @@ export default {
       memoryOpt: null,
       diskOpt: null,
       chartOpt: {
-        backgroundColor: "#fff",
+        backgroundColor: "var(--bg-color-secondary)",
         grid: {
           top: "20%", // 控制数据表距离画布顶部的距离
           bottom: "18%", // 控制数据表距离画布底部的距禿
@@ -169,7 +169,7 @@ export default {
   justify-content: space-between;
 
   .chart-item {
-    background-color: #fff;
+    background-color: var(--bg-color-secondary);
     border-radius: 10px;
     // padding: 20px;
     box-sizing: border-box;
@@ -178,7 +178,7 @@ export default {
   }
 
   .title {
-    color: #939395;
+    color: var(--text-color-secondary);
     margin-left: 30px;
     margin-top: 30px;
     font-size: 20px;
