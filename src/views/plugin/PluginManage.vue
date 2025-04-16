@@ -38,6 +38,7 @@
         <span
           :class="getTagClass(null)"
           @click="selectMenuType(null)"
+          class="filter-tag-item"
         >
           全部
         </span>
@@ -45,18 +46,28 @@
           v-for="tag in sortedMenuTypeList"
           :key="tag"
           :class="getTagClass(tag)"
+          class="filter-tag-item"
           @click="selectMenuType(tag)"
         >
           {{ tag }}
         </span>
       </div>
-      <el-button 
-        icon="el-icon-plus" 
-        size="mini" 
+      <el-button
+        icon="el-icon-plus"
+        size="mini"
         title="新增菜单类型"
         @click="addNewMenuType"
         class="add-type-button"
-      >新增类型</el-button>
+        >新增类型</el-button
+      >
+      <el-button
+        icon="el-icon-setting"
+        size="mini"
+        title="管理菜单类型"
+        @click="openManageTypesDialog"
+        class="manage-type-button"
+        >管理类型</el-button
+      >
     </div>
 
     <div class="bulk-action-bar" v-if="selectedPluginModules.length > 0">
@@ -116,6 +127,33 @@
         @update:selection="handleSelectionUpdate"
       />
     </div>
+
+    <el-dialog
+      title="管理菜单类型"
+      :visible.sync="manageTypesDialogVisible"
+      width="500px"
+      :close-on-click-modal="false"
+    >
+      <div class="manage-types-list">
+        <p v-if="sortedMenuTypeList.length === 0">暂无自定义菜单类型。</p>
+        <ul>
+          <li v-for="type in sortedMenuTypeList" :key="type">
+            <span>{{ type }}</span>
+            <div class="actions">
+              <el-button
+                type="text"
+                size="mini"
+                @click="triggerRenameType(type)"
+                >重命名</el-button
+              >
+            </div>
+          </li>
+        </ul>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="manageTypesDialogVisible = false">关 闭</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -134,6 +172,7 @@ export default {
       searchMenuType: null,
       selectedPluginModules: [],
       targetMenuTypeBulk: null,
+      manageTypesDialogVisible: false,
     };
   },
   components: {
@@ -146,11 +185,11 @@ export default {
   computed: {
     sortedMenuTypeList() {
       return [...this.menuTypeList].sort((a, b) => {
-          const strA = String(a || '');
-          const strB = String(b || '');
-          return strA.localeCompare(strB);
+        const strA = String(a || "");
+        const strB = String(b || "");
+        return strA.localeCompare(strB);
       });
-    }
+    },
   },
   methods: {
     getTopItemClass(pluginType) {
@@ -202,7 +241,9 @@ export default {
             if (resp.warning) {
               this.$message.warning(resp.warning);
             } else {
-              this.menuTypeList = (Array.isArray(resp.data) ? resp.data : []).filter(Boolean);
+              this.menuTypeList = (
+                Array.isArray(resp.data) ? resp.data : []
+              ).filter(Boolean);
             }
           } else {
             this.$message.error(resp.info || "获取菜单类型失败");
@@ -335,27 +376,179 @@ export default {
     },
 
     addNewMenuType() {
-      this.$prompt('请输入新的菜单类型名称：', '新增菜单类型', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      this.$prompt("请输入新的菜单类型名称：", "新增菜单类型", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
         inputPattern: /\S+/,
-        inputErrorMessage: '菜单类型名称不能为空'
-      }).then(({ value }) => {
-        const newType = value.trim();
-        if (!newType) {
-            this.$message.warning('菜单类型名称不能为空');
+        inputErrorMessage: "菜单类型名称不能为空",
+      })
+        .then(({ value }) => {
+          const newType = value.trim();
+          if (!newType) {
+            this.$message.warning("菜单类型名称不能为空");
             return;
-        }
-        const exists = this.menuTypeList.some(type => type.toLowerCase() === newType.toLowerCase());
-        if (exists) {
-          this.$message.warning(`菜单类型 "${newType}" 已存在`);
-        } else {
-          this.menuTypeList.push(newType);
-          this.$message.success(`菜单类型 "${newType}" 已添加，您可以现在将其应用到插件`);
-        }
-      }).catch(() => {
-        this.$message.info('已取消新增');
-      });
+          }
+          const exists = this.menuTypeList.some(
+            (type) => type.toLowerCase() === newType.toLowerCase()
+          );
+          if (exists) {
+            this.$message.warning(`菜单类型 "${newType}" 已存在`);
+          } else {
+            this.menuTypeList.push(newType);
+            this.$message.success(
+              `菜单类型 "${newType}" 已添加，您可以现在将其应用到插件`
+            );
+          }
+        })
+        .catch(() => {
+          this.$message.info("已取消新增");
+        });
+    },
+
+    editMenuType(oldName) {
+      if (!oldName) return;
+
+      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, "重命名菜单类型", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputValue: oldName,
+        inputPattern: /\S+/,
+        inputErrorMessage: "菜单类型名称不能为空",
+      })
+        .then(({ value }) => {
+          const newName = value.trim();
+          if (!newName) {
+            this.$message.warning("菜单类型名称不能为空");
+            return;
+          }
+          if (newName === oldName) {
+            this.$message.info("名称未改变");
+            return;
+          }
+
+          const exists = this.menuTypeList.some(
+            (type) =>
+              type.toLowerCase() === newName.toLowerCase() &&
+              type.toLowerCase() !== oldName.toLowerCase()
+          );
+          if (exists) {
+            this.$message.warning(`菜单类型名称 "${newName}" 已存在`);
+            return;
+          }
+
+          const loading = this.$loading({
+            lock: true,
+            text: "正在重命名...",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+          });
+          this.putRequest(`${this.$root.prefix}/plugin/menu_type/rename`, {
+            old_name: oldName,
+            new_name: newName,
+          })
+            .then((resp) => {
+              loading.close();
+              if (!resp) {
+                this.$message.error("重命名失败：无效的响应");
+                return;
+              }
+              if (resp.suc) {
+                this.$message.success(resp.info || "重命名成功！");
+                const index = this.menuTypeList.findIndex(
+                  (type) => type === oldName
+                );
+                if (index !== -1) {
+                  this.$set(this.menuTypeList, index, newName);
+                }
+                if (this.searchMenuType === oldName) {
+                  this.searchMenuType = newName;
+                }
+              } else {
+                this.$message.error(resp.info || "重命名失败");
+              }
+            })
+            .catch((error) => {
+              loading.close();
+              this.$message.error(`请求失败: ${error}`);
+            });
+        })
+        .catch(() => {
+          this.$message.info("已取消重命名");
+        });
+    },
+
+    openManageTypesDialog() {
+      this.manageTypesDialogVisible = true;
+    },
+
+    triggerRenameType(oldName) {
+      if (!oldName) return;
+
+      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, "重命名菜单类型", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputValue: oldName,
+        inputPattern: /\S+/,
+        inputErrorMessage: "菜单类型名称不能为空",
+      })
+        .then(({ value }) => {
+          const newName = value.trim();
+          if (!newName) {
+            this.$message.warning("菜单类型名称不能为空");
+            return;
+          }
+          if (newName === oldName) {
+            this.$message.info("名称未改变");
+            return;
+          }
+
+          const exists = this.menuTypeList.some(
+            (type) =>
+              type.toLowerCase() === newName.toLowerCase() &&
+              type.toLowerCase() !== oldName.toLowerCase()
+          );
+          if (exists) {
+            this.$message.warning(`菜单类型名称 "${newName}" 已存在`);
+            return;
+          }
+
+          const loading = this.$loading({
+            lock: true,
+            text: "正在重命名...",
+            spinner: "el-icon-loading",
+            background: "rgba(0, 0, 0, 0.7)",
+          });
+          this.putRequest(`${this.$root.prefix}/plugin/menu_type/rename`, {
+            old_name: oldName,
+            new_name: newName,
+          })
+            .then((resp) => {
+              loading.close();
+              if (!resp) {
+                this.$message.error("重命名失败：无效的响应");
+                return;
+              }
+              if (resp.suc) {
+                this.$message.success(resp.info || "重命名成功！");
+                const index = this.menuTypeList.findIndex(
+                  (type) => type === oldName
+                );
+                if (index !== -1) {
+                  this.menuTypeList.splice(index, 1, newName);
+                }
+                this.manageTypesDialogVisible = false;
+              } else {
+                this.$message.error(resp.info || "重命名失败");
+              }
+            })
+            .catch((error) => {
+              loading.close();
+              this.$message.error(`请求失败: ${error}`);
+            });
+        })
+        .catch(() => {
+          this.$message.info("已取消重命名");
+        });
     },
   },
 };
@@ -414,8 +607,8 @@ export default {
 
   .filter-tags-container {
     display: flex;
-    align-items: center; 
-    gap: 10px; 
+    align-items: center;
+    gap: 10px;
     margin-top: 20px;
     margin-bottom: 10px;
     flex-wrap: wrap;
@@ -442,21 +635,25 @@ export default {
       border-color: #c0c4cc;
       color: #409eff;
     }
-  }
 
-  .active-tag {
-    background-color: #4d7cfe;
-    color: #ffffff;
-    border-color: #4d7cfe;
-
-    &:hover {
-      background-color: #6b8efc;
-      border-color: #6b8efc;
+    &.active-tag {
+      background-color: #4d7cfe;
       color: #ffffff;
+      border-color: #4d7cfe;
+
+      &:hover {
+        background-color: #6b8efc;
+        border-color: #6b8efc;
+        color: #ffffff;
+      }
     }
   }
 
   .add-type-button {
+    margin-left: 5px;
+  }
+
+  .manage-type-button {
     margin-left: 5px;
   }
 
@@ -493,6 +690,35 @@ export default {
     width: 100%;
     height: calc(100% - 160px);
     overflow: auto;
+  }
+}
+
+.manage-types-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #ebeef5;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .actions {
+      margin-left: 10px;
+      flex-shrink: 0;
+    }
   }
 }
 </style>
