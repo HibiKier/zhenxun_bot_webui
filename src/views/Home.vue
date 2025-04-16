@@ -82,7 +82,14 @@
 
             <!-- User Info Dropdown -->
             <el-dropdown @command="handleCommand">
-              <!-- ... existing user dropdown content ... -->
+              <!-- Restore the trigger element for user dropdown -->
+              <span class="el-dropdown-link" style="cursor: pointer; display: flex; align-items: center;">
+                {{ botInfo.nickname || '用户' }} <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+                 <!-- Add other user actions if needed -->
+              </el-dropdown-menu>
             </el-dropdown>
           </div>
         </el-header>
