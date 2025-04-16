@@ -49,14 +49,48 @@
         {{ tag }}
       </span>
     </div>
+
+    <!-- New Bulk Action Bar -->
+    <div class="bulk-action-bar" v-if="selectedPluginModules.length > 0">
+       <span class="selection-count">已选择 {{ selectedPluginModules.length }} 项</span>
+       <el-button icon="el-icon-turn-off" size="mini" type="success" @click="bulkToggleSwitch(true)">启用</el-button>
+       <el-button icon="el-icon-open" size="mini" type="warning" @click="bulkToggleSwitch(false)">禁用</el-button>
+
+       <el-divider direction="vertical"></el-divider>
+
+       <el-select
+         v-model="targetMenuTypeBulk"
+         placeholder="选择新菜单类型"
+         size="mini"
+         style="width: 180px; margin: 0 5px;"
+         clearable
+       >
+         <el-option
+           v-for="item in menuTypeList"
+           :key="item"
+           :label="item"
+           :value="item"
+         >
+         </el-option>
+       </el-select>
+       <el-button size="mini" type="primary" @click="bulkUpdateMenuType">应用类型</el-button>
+
+       <el-divider direction="vertical"></el-divider>
+
+       <el-button icon="el-icon-close" size="mini" @click="cancelSelection">取消选择</el-button>
+    </div>
+
     <el-divider />
     <div class="plugin-list">
       <PluginListTemplate
+        ref="pluginListRef"
         :pluginType="activeBtn"
         :menuType="searchMenuType"
         :key="pltKey"
+        @update:selection="handleSelectionUpdate" 
       />
     </div>
+
   </div>
 </template>
 
@@ -73,6 +107,8 @@ export default {
       pltKey: 0,
       menuTypeList: [],
       searchMenuType: null,
+      selectedPluginModules: [],  // Stores modules selected in the child component
+      targetMenuTypeBulk: null,   // Stores the menu type selected in the bulk action bar
     }
   },
   components: {
@@ -103,6 +139,10 @@ export default {
     getPluginCount() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_count`).then(
         (resp) => {
+          if (!resp) {
+             this.$message.error("获取插件数量失败：无效的响应");
+             return;
+          }
           if (resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)
@@ -110,25 +150,33 @@ export default {
               this.pluginCount = resp.data
             }
           } else {
-            this.$message.error(resp.info)
+            this.$message.error(resp.info || "获取插件数量失败");
           }
         }
-      )
+      ).catch(error => {
+         this.$message.error("请求插件数量失败: " + error);
+      });
     },
     getPluginMenuType() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_menu_type`).then(
         (resp) => {
+          if (!resp) {
+             this.$message.error("获取菜单类型失败：无效的响应");
+             return;
+          }
           if (resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)
             } else {
-              this.menuTypeList = resp.data.sort()
+              this.menuTypeList = Array.isArray(resp.data) ? resp.data.sort() : []; // Ensure data is array
             }
           } else {
-            this.$message.error(resp.info)
+            this.$message.error(resp.info || "获取菜单类型失败");
           }
         }
-      )
+      ).catch(error => {
+         this.$message.error("请求菜单类型失败: " + error);
+      });
     },
     selectMenuType(menuType) {
       if (this.searchMenuType !== menuType) {
@@ -136,6 +184,79 @@ export default {
         this.pltKey++
       }
     },
+    // Handles the selection update event from PluginListTemplate
+    handleSelectionUpdate(selectedModules) {
+      this.selectedPluginModules = selectedModules || [];
+    },
+
+    // Clears selection in both parent and child
+    cancelSelection() {
+       this.selectedPluginModules = [];
+       // Call clearSelection method on the child component via ref
+       this.$refs.pluginListRef?.clearSelection();
+    },
+
+    // Bulk toggle switch status
+    bulkToggleSwitch(targetStatus) {
+        if (this.selectedPluginModules.length === 0) return;
+        const actionText = targetStatus ? '启用' : '禁用';
+        const loading = this.$loading({ lock: true, text: `正在批量${actionText}...`, spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
+
+        this.postRequest(`${this.$root.prefix}/plugin/batch_toggle_switch`, {
+            modules: this.selectedPluginModules,
+            status: targetStatus,
+        }).then((resp) => {
+            loading.close();
+            if (!resp) {
+                this.$message.error(`批量${actionText}失败：无效的响应`);
+                return;
+            }
+            if (resp.suc) {
+            this.$message.success(resp.info || `批量${actionText}成功！`);
+            this.cancelSelection(); // Clear selection after success
+            this.pltKey++; // Refresh list
+            } else {
+            this.$message.error(resp.info || `批量${actionText}失败`);
+            }
+        }).catch(error => {
+            loading.close();
+            this.$message.error(`请求失败: ${error}`);
+        });
+    },
+
+    // Bulk update menu type
+    bulkUpdateMenuType() {
+      if (!this.targetMenuTypeBulk) {
+        this.$message.warning("请先在上方选择目标菜单类型");
+        return;
+      }
+      if (this.selectedPluginModules.length === 0) return;
+
+      const loading = this.$loading({ lock: true, text: '正在批量修改菜单类型...', spinner: 'el-icon-loading', background: 'rgba(0, 0, 0, 0.7)' });
+
+      this.postRequest(`${this.$root.prefix}/plugin/batch_update_menu_type`, {
+        modules: this.selectedPluginModules,
+        menu_type: this.targetMenuTypeBulk,
+      }).then((resp) => {
+        loading.close();
+        if (!resp) {
+            this.$message.error("批量修改菜单类型失败：无效的响应");
+            return;
+        }
+        if (resp.suc) {
+          this.$message.success(resp.info || "批量修改菜单类型成功！");
+          this.targetMenuTypeBulk = null; // Reset select
+          this.cancelSelection(); // Clear selection
+          this.pltKey++; // Refresh list
+        } else {
+          this.$message.error(resp.info || "批量修改菜单类型失败");
+        }
+      }).catch(error => {
+         loading.close();
+         this.$message.error("请求失败: " + error);
+      });
+    },
+
   },
 }
 </script>
@@ -227,13 +348,40 @@ export default {
     }
   }
 
+  // New Bulk Action Bar Styles
+  .bulk-action-bar {
+    background-color: #f0f9ff; // Light blue background
+    border: 1px solid #b3d8ff;
+    border-radius: 6px;
+    padding: 8px 15px;
+    margin-top: 15px; // Space from filters
+    margin-bottom: 10px; // Space before divider
+    display: flex;
+    align-items: center;
+    gap: 10px; // Space between elements
+    flex-wrap: wrap; // Allow wrapping on smaller screens
+
+    .selection-count {
+      font-size: 13px;
+      color: #409eff;
+      margin-right: 15px;
+      font-weight: 500;
+    }
+
+    .el-divider--vertical {
+       height: 20px; // Adjust divider height
+       background-color: #dcdfe6;
+    }
+  }
+
   ::v-deep .el-divider--horizontal {
-    margin: 20px 0;
+     margin: 20px 0; // Ensure divider margin is consistent
   }
 
   .plugin-list {
     width: 100%;
-    height: calc(100% - 110px);
+    // Calculate height considering potential bulk action bar height
+    height: calc(100% - 160px); // Adjust this value based on actual height of elements above
     overflow: auto;
   }
 }
