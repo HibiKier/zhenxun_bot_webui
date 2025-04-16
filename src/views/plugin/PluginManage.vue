@@ -560,7 +560,7 @@ export default {
 }
 
 .base-box {
-  padding: 20px 50px;
+  padding: 20px;
   width: calc(100% - 100px);
   height: calc(100% - 100px);
 
@@ -737,5 +737,72 @@ export default {
 }
 ::v-deep .el-dialog__body {
   color: var(--text-color-secondary);
+}
+
+// Theme specific overrides
+[data-theme="dark"] {
+  .top-select-btn-box {
+    background-color: var(--el-fill-color);
+  }
+  .top-select-btn-item {
+     color: var(--el-text-color-regular); // Use regular text color for dark theme non-selected
+    &:hover {
+        background-color: var(--el-color-primary-light-9);
+        color: var(--el-color-primary); // Use primary color on hover
+    }
+  }
+  .top-btn-item-select {
+    background-color: var(--el-color-primary);
+    color: var(--el-color-white); // Use white text for selected item in dark theme
+  }
+  .filter-tag-item {
+     background-color: var(--el-fill-color-dark);
+     color: var(--el-text-color-secondary);
+     border: 1px solid var(--el-border-color-lighter);
+     &:hover {
+         background-color: var(--el-fill-color);
+     }
+  }
+  .active-tag {
+      background-color: var(--el-color-primary);
+      color: var(--el-color-white);
+      border-color: var(--el-color-primary);
+       &:hover {
+        background-color: var(--el-color-primary-light-3); // Slightly lighter blue on hover for active tag
+      }
+  }
+}
+
+[data-theme="one-dark"] {
+  .top-select-btn-box {
+    background-color: var(--el-fill-color); // Use a suitable fill color for the container
+  }
+  .top-select-btn-item {
+     color: var(--text-color); // <<<<< Use lighter text color for one-dark non-selected
+    &:hover {
+        background-color: var(--bg-color-hover); // Use hover background color
+        color: var(--primary-color); // Use primary color on hover
+    }
+  }
+  .top-btn-item-select {
+    background-color: var(--primary-color);
+    color: #FFFFFF !important; // <<<<< Force white text with !important
+  }
+  .filter-tag-item {
+     background-color: var(--el-fill-color-darker); // Use darker fill for tags
+     color: var(--text-color-secondary);
+     border: 1px solid var(--border-color);
+     &:hover {
+         background-color: var(--el-fill-color-dark);
+     }
+  }
+  .active-tag {
+      background-color: var(--primary-color);
+      color: #FFFFFF; // <<<<< Force white text for active tag
+      border-color: var(--primary-color);
+       &:hover {
+         background-color: var(--primary-color-light); // Lighter blue on hover
+      }
+  }
 }
 </style>
