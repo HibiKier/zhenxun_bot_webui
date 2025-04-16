@@ -169,7 +169,7 @@ export default {
   flex: 1 1 calc(25% - 20px); /* Adjust the percentage for column count */
   max-width: 380px;
   height: 110px;
-  background-color: #ffffff;
+  background-color: var(--bg-color-secondary);
   border-radius: 8px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   padding: 12px 20px;
@@ -181,16 +181,16 @@ export default {
   position: relative;
 
   &.is-selected {
-    border-color: #409eff;
-    box-shadow: 0 5px 15px rgba(64, 158, 255, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(var(--primary-color-rgb, 77, 124, 254), 0.2);
   }
 
   .selection-indicator {
     position: absolute;
     top: 5px;
     right: 5px;
-    background-color: #409eff;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--bg-color-secondary);
     width: 20px;
     height: 20px;
     border-radius: 50%;
@@ -220,17 +220,18 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: var(--text-color);
       }
 
       .version-class {
         font-size: 11px;
         font-weight: 400;
         margin-left: 6px;
-        color: #909399;
+        color: var(--text-color-secondary);
       }
 
       .author-border {
-        color: #b0b3b8;
+        color: var(--text-color-secondary);
         font-size: 12px;
         white-space: nowrap;
         overflow: hidden;
@@ -250,8 +251,8 @@ export default {
 
     .menu-type-display {
       font-size: 12px;
-      color: #8a8d93;
-      background-color: #f4f4f5;
+      color: var(--text-color-secondary);
+      background-color: var(--bg-color-hover);
       padding: 2px 6px;
       border-radius: 4px;
       white-space: nowrap;
@@ -271,23 +272,23 @@ export default {
       .setting-icon {
         width: 20px;
         height: 20px;
-        color: #a8abb2;
+        color: var(--info-color);
         transition: color 0.3s ease;
 
         &:hover {
-          color: #4d7cfe;
+          color: var(--primary-color);
         }
       }
       .power-icon[icon-class*="power-open"] {
-        color: #67c23a;
+        color: var(--success-color);
         &:hover {
-          color: #85d860;
+          filter: brightness(1.1);
         }
       }
       .power-icon[icon-class*="power-close"] {
-        color: #f56c6c;
+        color: var(--danger-color);
         &:hover {
-          color: #f78989;
+          filter: brightness(1.1);
         }
       }
     }

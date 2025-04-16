@@ -11,6 +11,7 @@ export default {
   data() {
     return {
       windowHeight: window.innerHeight,
+      theme: 'light',
     }
   },
   computed: {
@@ -25,21 +26,41 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.handleResize)
+    const savedTheme = localStorage.getItem('app-theme') || 'light';
+    this.setTheme(savedTheme);
   },
   methods: {
     handleResize() {
       this.windowHeight = window.innerHeight
     },
+    setTheme(themeName) {
+      if (['light', 'dark', 'pink'].includes(themeName)) {
+        this.theme = themeName;
+        localStorage.setItem('app-theme', themeName);
+        document.documentElement.setAttribute('data-theme', themeName);
+      } else {
+        console.warn(`Invalid theme name: ${themeName}. Defaulting to light.`);
+        this.setTheme('light');
+      }
+    }
   },
-
+  watch: {
+    theme(newTheme) {
+      document.documentElement.setAttribute('data-theme', newTheme);
+    }
+  },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
   },
+  provide() {
+    return {
+      setAppTheme: this.setTheme
+    };
+  }
 }
 </script>
 
 <style>
-/* 清除浏览器默认样式 */
 :root {
   --primary-light: #8abdff;
   --primary: #2ebb96;
@@ -59,7 +80,6 @@ export default {
 * {
   margin: 0;
   padding: 0;
-  /* touch-action: none; */
 }
 body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -74,7 +94,6 @@ div:focus {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
   color: #2c3e50;
 }
 </style>

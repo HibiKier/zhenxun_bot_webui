@@ -236,11 +236,11 @@ export default {
       this.getRequest(`${this.$root.prefix}/store/get_plugin_store`).then(
         (resp) => {
           loading.close()
-          if (resp.suc) {
+          if (resp && resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)
             } else {
-              this.$message.success(resp.info)
+              this.$message.success(resp.info || "获取插件商店列表成功！")
               this.tableData = Array.isArray(resp.data.plugin_list) ? resp.data.plugin_list : []
               this.installModule = resp.data.install_module || []
               this.authorList = []
@@ -253,10 +253,21 @@ export default {
               }
             }
           } else {
-            this.$message.error(resp.info)
+            const errorMsg = resp ? resp.info : "无法获取插件商店列表，请检查网络连接或后端服务。";
+            this.$message.error(errorMsg || "获取插件商店列表失败");
+            this.tableData = [];
+            this.installModule = [];
+            this.authorList = [];
           }
         }
-      )
+      ).catch(error => {
+          loading.close();
+          this.$message.error(`获取插件商店列表时出错: ${error.message || error}`);
+          console.error("[StoreTemplate Error] getPluginList catch:", error);
+          this.tableData = [];
+          this.installModule = [];
+          this.authorList = [];
+      });
     },
     mouseover() {
       this.authorIcon = "author-white"

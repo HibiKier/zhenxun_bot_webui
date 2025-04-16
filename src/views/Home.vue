@@ -68,6 +68,23 @@
 
             <el-image :src="botInfo.ava_url" class="head-img" />
           </div>
+          <div class="right-content">
+            <el-dropdown @command="handleThemeChange" trigger="click" style="margin-right: 15px;">
+              <span class="el-dropdown-link theme-switcher" title="切换主题">
+                 <i class="el-icon-magic-stick"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="light"> <i class="el-icon-sunny" style="margin-right: 5px;"></i>亮色模式 </el-dropdown-item>
+                <el-dropdown-item command="dark"> <i class="el-icon-moon" style="margin-right: 5px;"></i>暗黑模式 </el-dropdown-item>
+                <el-dropdown-item command="pink"> <i class="el-icon-present" style="margin-right: 5px;"></i>少女粉 </el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+
+            <!-- User Info Dropdown -->
+            <el-dropdown @command="handleCommand">
+              <!-- ... existing user dropdown content ... -->
+            </el-dropdown>
+          </div>
         </el-header>
         <el-main class="my-main"
           ><router-view class="homeRouterView" :key="rvKey"
@@ -111,6 +128,7 @@ export default {
     window.removeEventListener("resize", this.handleResize)
     window.sessionStorage.removeItem("isAuthenticated")
   },
+  inject: ['setAppTheme'],
   methods: {
     handleResize() {
       this.windowHeight = window.innerHeight
@@ -177,7 +195,6 @@ export default {
               this.$store.state.botInfo = null
             } else {
               if (this.$store.state.botInfo) {
-                // 判断store中的bot是否存在botList中
                 let is_in = false
                 for (const bot of this.botList) {
                   if (bot.self_id == this.$store.state.botInfo.self_id) {
@@ -214,7 +231,6 @@ export default {
             if (this.$route.path == "/command" && this.firstLoad) {
               this.firstLoad = false
             } else {
-              // this.firstLoad = false
               this.rvKey++
             }
           }
@@ -223,6 +239,18 @@ export default {
           this.$message.error(resp.info)
         }
       })
+    },
+    handleThemeChange(command) {
+      if (typeof this.setAppTheme === 'function') {
+        this.setAppTheme(command);
+      } else {
+        console.error("setAppTheme function not provided/injected correctly.");
+      }
+    },
+    handleCommand(cmd) {
+      if (cmd == "logout") {
+        // ... logout logic ...
+      }
     },
   },
 }
@@ -233,11 +261,18 @@ export default {
   padding: 10px;
   overflow-x: hidden;
   box-sizing: border-box;
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
   // min-width: 2336px;
   // min-height: 1167px;
 }
 .el-menu-item {
+  color: var(--text-color-secondary);
+  &:hover {
+    background-color: var(--bg-color-hover);
+  }
+  &.is-active {
+    color: var(--primary-color);
+  }
   span {
     margin-left: 10px;
     font-size: larger;
@@ -248,15 +283,20 @@ export default {
 .homeHeader {
   position: relative;
   // background-color: #409eff;
-  background-color: #f5f6f8;
+  background-color: var(--bg-color-secondary);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0px 15px;
   box-sizing: border-box;
+  .right-content {
+    display: flex;
+    align-items: center;
+  }
 }
 .el-menu {
-  border-right: none;
+  border-right: none !important;
+  background-color: var(--bg-color-secondary);
 }
 .menu-btn {
   display: none;
@@ -305,9 +345,10 @@ export default {
 }
 
 .left-aside {
-  background-color: #ffffff;
+  background-color: var(--bg-color-secondary);
   width: 14rem !important;
   transition: all 0.2s ease;
+  border-right: 1px solid var(--border-color-light);
   // border-right: 1px solid #000000;
 }
 
@@ -317,7 +358,7 @@ export default {
   // text-align: center;
 
   .add-select-color {
-    background-color: #5a85ff;
+    background-color: var(--primary-color);
   }
 
   .svg-icon {
@@ -337,6 +378,14 @@ export default {
 
     span {
       font-weight: 400;
+    }
+    &.is-active span,
+    &.selectMenu span {
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+    &.is-active svg {
+        color: var(--primary-color);
     }
   }
 }
@@ -450,7 +499,7 @@ export default {
 
 .selectMenu {
   font-weight: bold !important;
-  color: #409eff;
+  color: var(--primary-color) !important;
 }
 
 @media screen and (max-width: 600px) {
@@ -494,5 +543,20 @@ export default {
     font-size: 1rem !important;
     border: 2px solid #fff !important;
   }
+}
+
+.theme-switcher {
+    cursor: pointer;
+    font-size: 20px; /* Adjust icon size */
+    color: var(--el-text-color-primary); /* Use variable for color */
+}
+
+/* Style for dropdown link when active/hover if needed */
+.el-dropdown-link {
+  cursor: pointer;
+  /* color: #409eff; */
+}
+.el-icon-arrow-down {
+  font-size: 12px;
 }
 </style>
