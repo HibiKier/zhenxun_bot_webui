@@ -317,6 +317,67 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// Use CSS variables for dialog elements
+::v-deep .el-dialog__header {
+  border-bottom: 1px solid var(--border-color-light);
+}
+
+::v-deep .el-dialog__title {
+  color: var(--text-color);
+}
+
+::v-deep .el-dialog__body {
+  color: var(--text-color-secondary);
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+// Style form items within the dialog
+.el-form-item {
+  margin-bottom: 18px;
+}
+
+::v-deep .el-form-item__label {
+  color: var(--text-color-secondary);
+}
+
+// Input, Select, Switch colors are mostly handled by Element UI variable overrides
+// But we can add specific overrides if needed
+
+.dialog-footer {
+  border-top: 1px solid var(--border-color-light);
+  padding-top: 15px;
+  text-align: right;
+}
+
+// Adjust button styles if necessary (Element UI vars should cover most)
+
+/* Specific styles for elements within the dialog if needed */
+.config-item {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px dashed var(--border-color-light);
+  
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .config-label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--text-color);
+  }
+
+  .config-help {
+    font-size: 12px;
+    color: var(--text-color-secondary);
+    margin-top: 5px;
+    line-height: 1.4;
+  }
+}
+
 .dialog-class {
   padding: 30px 50px;
 

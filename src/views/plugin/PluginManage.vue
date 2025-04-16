@@ -556,11 +556,11 @@ export default {
 
 <style lang="scss" scoped>
 .el-main {
-  background-color: #f1f5f8;
+  background-color: var(--bg-color);
 }
 
 .base-box {
-  padding: 20px 50px;
+  padding: 20px;
   width: calc(100% - 100px);
   height: calc(100% - 100px);
 
@@ -571,16 +571,16 @@ export default {
     .top-select-btn-box {
       float: left;
       display: flex;
-      background-color: #ffffff;
+      background-color: var(--bg-color-secondary);
       height: 40px;
       border-radius: 5px;
-      color: #758ea1;
+      color: var(--text-color-regular);
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
       ::v-deep .el-divider--vertical {
         height: 20px;
-        margin: 0;
-        margin-top: 10px;
+        margin: 10px 0;
+        background-color: var(--el-border-color);
       }
 
       .top-select-btn-item {
@@ -595,12 +595,14 @@ export default {
       }
 
       .top-btn-item-select {
-        color: #ffffff;
-        background-color: #4d7cfe;
+        color: var(--el-color-white);
+        background-color: var(--primary-color);
+        font-weight: 500;
       }
 
       .top-select-btn-item:not(.top-btn-item-select):hover {
-        background-color: #f8f9fa;
+        background-color: var(--bg-color-hover);
+        color: var(--el-text-color-primary);
       }
     }
   }
@@ -623,27 +625,27 @@ export default {
 
   .filter-tag-item {
     padding: 5px 15px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color);
     border-radius: 15px;
     cursor: pointer;
     font-size: 13px;
-    color: #606266;
-    background-color: #ffffff;
+    color: var(--text-color-secondary);
+    background-color: var(--bg-color-secondary);
     transition: all 0.3s;
 
     &:hover {
-      border-color: #c0c4cc;
-      color: #409eff;
+      border-color: var(--primary-color-light);
+      color: var(--primary-color);
     }
 
     &.active-tag {
-      background-color: #4d7cfe;
+      background-color: var(--primary-color);
       color: #ffffff;
-      border-color: #4d7cfe;
+      border-color: var(--primary-color);
 
       &:hover {
-        background-color: #6b8efc;
-        border-color: #6b8efc;
+        background-color: var(--primary-color-light);
+        border-color: var(--primary-color-light);
         color: #ffffff;
       }
     }
@@ -658,8 +660,8 @@ export default {
   }
 
   .bulk-action-bar {
-    background-color: #f0f9ff;
-    border: 1px solid #b3d8ff;
+    background-color: var(--el-color-primary-light-9);
+    border: 1px solid var(--el-color-primary-light-7);
     border-radius: 6px;
     padding: 8px 15px;
     margin-top: 15px;
@@ -671,19 +673,20 @@ export default {
 
     .selection-count {
       font-size: 13px;
-      color: #409eff;
+      color: var(--primary-color);
       margin-right: 15px;
       font-weight: 500;
     }
 
     .el-divider--vertical {
       height: 20px;
-      background-color: #dcdfe6;
+      background-color: var(--el-color-primary-light-5);
     }
   }
 
   ::v-deep .el-divider--horizontal {
     margin: 20px 0;
+    background-color: var(--border-color-light);
   }
 
   .plugin-list {
@@ -709,7 +712,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 8px 0;
-    border-bottom: 1px solid #ebeef5;
+    border-bottom: 1px solid var(--border-color-light);
 
     &:last-child {
       border-bottom: none;
@@ -719,6 +722,87 @@ export default {
       margin-left: 10px;
       flex-shrink: 0;
     }
+
+    span {
+      color: var(--text-color);
+    }
+  }
+}
+
+::v-deep .el-dialog {
+  background-color: var(--bg-color-secondary);
+}
+::v-deep .el-dialog__title {
+  color: var(--text-color);
+}
+::v-deep .el-dialog__body {
+  color: var(--text-color-secondary);
+}
+
+// Theme specific overrides
+[data-theme="dark"] {
+  .top-select-btn-box {
+    background-color: var(--el-fill-color);
+  }
+  .top-select-btn-item {
+     color: var(--el-text-color-regular); // Use regular text color for dark theme non-selected
+    &:hover {
+        background-color: var(--el-color-primary-light-9);
+        color: var(--el-color-primary); // Use primary color on hover
+    }
+  }
+  .top-btn-item-select {
+    background-color: var(--el-color-primary);
+    color: var(--el-color-white); // Use white text for selected item in dark theme
+  }
+  .filter-tag-item {
+     background-color: var(--el-fill-color-dark);
+     color: var(--el-text-color-secondary);
+     border: 1px solid var(--el-border-color-lighter);
+     &:hover {
+         background-color: var(--el-fill-color);
+     }
+  }
+  .active-tag {
+      background-color: var(--el-color-primary);
+      color: var(--el-color-white);
+      border-color: var(--el-color-primary);
+       &:hover {
+        background-color: var(--el-color-primary-light-3); // Slightly lighter blue on hover for active tag
+      }
+  }
+}
+
+[data-theme="one-dark"] {
+  .top-select-btn-box {
+    background-color: var(--el-fill-color); // Use a suitable fill color for the container
+  }
+  .top-select-btn-item {
+     color: var(--text-color); // <<<<< Use lighter text color for one-dark non-selected
+    &:hover {
+        background-color: var(--bg-color-hover); // Use hover background color
+        color: var(--primary-color); // Use primary color on hover
+    }
+  }
+  .top-btn-item-select {
+    background-color: var(--primary-color);
+    color: #FFFFFF !important; // <<<<< Force white text with !important
+  }
+  .filter-tag-item {
+     background-color: var(--el-fill-color-darker); // Use darker fill for tags
+     color: var(--text-color-secondary);
+     border: 1px solid var(--border-color);
+     &:hover {
+         background-color: var(--el-fill-color-dark);
+     }
+  }
+  .active-tag {
+      background-color: var(--primary-color);
+      color: #FFFFFF; // <<<<< Force white text for active tag
+      border-color: var(--primary-color);
+       &:hover {
+         background-color: var(--primary-color-light); // Lighter blue on hover
+      }
   }
 }
 </style>

@@ -441,7 +441,41 @@ export default {
                 value: e.chat_num,
               }
             })
-            tmpOpt.xAxis.name = "群聊"
+
+            // --- 主题化修改 Start ---
+            try {
+              const computedStyle = getComputedStyle(document.documentElement);
+              const textColor = computedStyle.getPropertyValue('--el-text-color-regular').trim() || '#c0c4cc';
+              const bgColorOverlay = computedStyle.getPropertyValue('--el-bg-color-overlay').trim() || '#303133';
+              const borderColorLight = computedStyle.getPropertyValue('--el-border-color-light').trim() || '#4C4D4F';
+
+              tmpOpt.backgroundColor = 'transparent'; // 设置背景透明
+              
+              // X 轴
+              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {};
+              tmpOpt.xAxis.axisLabel.color = textColor;
+              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {};
+              tmpOpt.xAxis.nameTextStyle.color = textColor;
+              // Y 轴
+              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {};
+              tmpOpt.yAxis.axisLabel.color = textColor;
+              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {};
+              tmpOpt.yAxis.nameTextStyle.color = textColor;
+              // 提示框
+              tmpOpt.tooltip = tmpOpt.tooltip || {};
+              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {};
+              tmpOpt.tooltip.textStyle.color = textColor;
+              tmpOpt.tooltip.backgroundColor = bgColorOverlay;
+              tmpOpt.tooltip.borderColor = borderColorLight;
+              // 系列标签
+              if(tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label){
+                  tmpOpt.series[0].label.color = textColor;
+              }
+            } catch (e) {
+              console.error("Failed to apply theme to group chart:", e);
+            }
+            // --- 主题化修改 End ---
+
             tmpOpt.xAxis.data = group_list
             tmpOpt.series[0].data = data
             this.groupChart.setOption(tmpOpt)
@@ -482,7 +516,41 @@ export default {
                 value: e.count,
               }
             })
-            tmpOpt.xAxis.name = "插件"
+
+            // --- 主题化修改 Start ---
+            try {
+              const computedStyle = getComputedStyle(document.documentElement);
+              const textColor = computedStyle.getPropertyValue('--el-text-color-regular').trim() || '#c0c4cc';
+              const bgColorOverlay = computedStyle.getPropertyValue('--el-bg-color-overlay').trim() || '#303133';
+              const borderColorLight = computedStyle.getPropertyValue('--el-border-color-light').trim() || '#4C4D4F';
+              
+              tmpOpt.backgroundColor = 'transparent'; // 设置背景透明
+
+              // X 轴
+              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {};
+              tmpOpt.xAxis.axisLabel.color = textColor;
+              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {};
+              tmpOpt.xAxis.nameTextStyle.color = textColor;
+              // Y 轴
+              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {};
+              tmpOpt.yAxis.axisLabel.color = textColor;
+              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {};
+              tmpOpt.yAxis.nameTextStyle.color = textColor;
+              // 提示框
+              tmpOpt.tooltip = tmpOpt.tooltip || {};
+              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {};
+              tmpOpt.tooltip.textStyle.color = textColor;
+              tmpOpt.tooltip.backgroundColor = bgColorOverlay;
+              tmpOpt.tooltip.borderColor = borderColorLight;
+              // 系列标签
+              if(tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label){
+                  tmpOpt.series[0].label.color = textColor;
+              }
+            } catch (e) {
+              console.error("Failed to apply theme to plugin chart:", e);
+            }
+             // --- 主题化修改 End ---
+
             tmpOpt.xAxis.data = hotPluginList
             tmpOpt.series[0].data = data
             this.hotPluginChart.setOption(tmpOpt)
@@ -499,33 +567,51 @@ export default {
 
 <style lang="scss" scoped>
 .right-info {
-  padding: 0 10px;
+  padding: 0 20px 20px 20px;
   height: 100%;
+  background-color: var(--bg-color);
+  box-sizing: border-box;
 
   ::v-deep .el-divider--horizontal {
     margin: 10px 0;
   }
 
   .config-small-title {
-    color: #afb2b9;
+    color: var(--text-color-secondary);
     font-size: 13px;
     margin-bottom: 5px;
   }
 
   .btn-group {
     float: right;
+
+    .el-button--text {
+      color: var(--text-color-secondary);
+      padding: 0 8px;
+      &:hover,
+      &:focus {
+        color: var(--primary-color);
+      }
+    }
+
+    .select-query-type {
+      color: var(--primary-color);
+      font-weight: 500;
+    }
   }
 
   .base-title {
-    color: #939395;
-    margin-bottom: 30px;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    display: block;
   }
 
   .base-border {
-    border-radius: 10px;
-    padding: 20px;
-    background-color: white;
-    box-sizing: border-box;
+    background-color: var(--bg-color-secondary);
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: var(--el-box-shadow-lighter);
+    overflow: hidden;
   }
 
   .nb-config {
@@ -537,9 +623,9 @@ export default {
 
     /deep/ .el-col {
       text-align: center;
-      white-space: nowrap; /* 防止文本换行 */
-      overflow: hidden; /* 隐藏超出部分的文本 */
-      text-overflow: ellipsis; /* 显示省略号 */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     ::v-deep .el-divider--horizontal {
@@ -552,12 +638,6 @@ export default {
     }
 
     .nb-config-box-item {
-      // .tooltip-item {
-      //   white-space: nowrap; /* 防止文本换行 */
-      //   overflow: hidden; /* 隐藏超出部分的文本 */
-      //   text-overflow: ellipsis; /* 显示省略号 */
-      // }
-
       .config-info-item-text {
         margin-bottom: 10px;
         margin-top: 10px;
@@ -575,20 +655,29 @@ export default {
   }
 
   .active-group {
-    // display: flex;
-
     .el-button {
-      color: #a3a6af;
+      color: var(--text-color-secondary);
     }
   }
-  .select-query-type {
-    font-weight: bold;
-    color: #262729;
-  }
+
   .hot-plugin {
     .el-button {
-      color: #a3a6af;
+      color: var(--text-color-secondary);
     }
   }
+}
+
+.group-chart, .plugin-chart {
+  // Contained within base-border now
+}
+
+.base-chart {
+  width: 100%;
+}
+
+::v-deep .el-tooltip__popper.is-dark {
+  background: var(--bg-color-secondary);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
 </style>
