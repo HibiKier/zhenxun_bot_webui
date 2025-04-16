@@ -642,7 +642,7 @@ export default {
 }
 
 .base-title {
-  color: #939395;
+  color: var(--el-text-color-primary);
   font-size: 20px;
   margin-bottom: 20px;
   margin-top: 50px;

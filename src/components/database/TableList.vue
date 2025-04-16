@@ -176,12 +176,24 @@ export default {
       font-size: 15px;
       font-weight: bold;
       background-color: var(--bg-color-hover);
-      // border-radius: 10px;
+      color: var(--el-text-color-primary);
+      border-bottom: 1px solid var(--el-border-color-light);
+    }
+
+    ::v-deep .el-collapse-item__wrap {
+      background-color: var(--bg-color-secondary);
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+
+    ::v-deep .el-collapse-item__content {
+      padding-bottom: 15px;
+      padding-left: 15px;
+      padding-right: 15px;
+      color: var(--el-text-color-primary);
     }
 
     .table-box {
-      // width: 100%;
-      // height: 50px;
       padding: 10px 20px;
 
       ::v-deep .el-divider--horizontal {
@@ -192,11 +204,12 @@ export default {
         font-weight: bold !important;
         font-size: 20px !important;
         cursor: pointer;
+        color: var(--el-text-color-primary);
       }
 
       .table-desc {
         font-size: 14px;
-        color: var(--text-color-secondary);
+        color: var(--el-text-color-regular);
         margin-top: 5px;
       }
 
@@ -218,7 +231,7 @@ export default {
 .table-list-box ::v-deep .el-table td {
   background-color: transparent !important; /* 强制单元格背景透明 */
   color: var(--el-text-color-regular); /* 使用主题文本颜色 */
-  border-color: var(--el-border-color-light); /* 使用主题边框颜色 */
+  border-color: var(--el-border-color-light) !important; /* 使用主题边框颜色，添加 important */
 }
 
 /* 覆盖表头背景和文字颜色 */
@@ -242,15 +255,15 @@ export default {
 .table-list-box ::v-deep .el-table--border::after,
 .table-list-box ::v-deep .el-table--group::after,
 .table-list-box ::v-deep .el-table::before {
-    background-color: var(--el-border-color-light);
+    background-color: var(--el-border-color-light) !important; /* 添加 important */
 }
 .table-list-box ::v-deep .el-table--border th.is-leaf,
 .table-list-box ::v-deep .el-table--border td {
-    border-bottom: 1px solid var(--el-border-color-light);
+    border-bottom: 1px solid var(--el-border-color-light) !important; /* 添加 important */
 }
 .table-list-box ::v-deep .el-table--border th,
 .table-list-box ::v-deep .el-table--border td {
-    border-right: 1px solid var(--el-border-color-light);
+    border-right: 1px solid var(--el-border-color-light) !important; /* 添加 important */
 }
 /* --- */
 

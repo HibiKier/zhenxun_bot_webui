@@ -441,7 +441,41 @@ export default {
                 value: e.chat_num,
               }
             })
-            tmpOpt.xAxis.name = "群聊"
+
+            // --- 主题化修改 Start ---
+            try {
+              const computedStyle = getComputedStyle(document.documentElement);
+              const textColor = computedStyle.getPropertyValue('--el-text-color-regular').trim() || '#c0c4cc';
+              const bgColorOverlay = computedStyle.getPropertyValue('--el-bg-color-overlay').trim() || '#303133';
+              const borderColorLight = computedStyle.getPropertyValue('--el-border-color-light').trim() || '#4C4D4F';
+
+              tmpOpt.backgroundColor = 'transparent'; // 设置背景透明
+              
+              // X 轴
+              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {};
+              tmpOpt.xAxis.axisLabel.color = textColor;
+              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {};
+              tmpOpt.xAxis.nameTextStyle.color = textColor;
+              // Y 轴
+              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {};
+              tmpOpt.yAxis.axisLabel.color = textColor;
+              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {};
+              tmpOpt.yAxis.nameTextStyle.color = textColor;
+              // 提示框
+              tmpOpt.tooltip = tmpOpt.tooltip || {};
+              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {};
+              tmpOpt.tooltip.textStyle.color = textColor;
+              tmpOpt.tooltip.backgroundColor = bgColorOverlay;
+              tmpOpt.tooltip.borderColor = borderColorLight;
+              // 系列标签
+              if(tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label){
+                  tmpOpt.series[0].label.color = textColor;
+              }
+            } catch (e) {
+              console.error("Failed to apply theme to group chart:", e);
+            }
+            // --- 主题化修改 End ---
+
             tmpOpt.xAxis.data = group_list
             tmpOpt.series[0].data = data
             this.groupChart.setOption(tmpOpt)
@@ -482,7 +516,41 @@ export default {
                 value: e.count,
               }
             })
-            tmpOpt.xAxis.name = "插件"
+
+            // --- 主题化修改 Start ---
+            try {
+              const computedStyle = getComputedStyle(document.documentElement);
+              const textColor = computedStyle.getPropertyValue('--el-text-color-regular').trim() || '#c0c4cc';
+              const bgColorOverlay = computedStyle.getPropertyValue('--el-bg-color-overlay').trim() || '#303133';
+              const borderColorLight = computedStyle.getPropertyValue('--el-border-color-light').trim() || '#4C4D4F';
+              
+              tmpOpt.backgroundColor = 'transparent'; // 设置背景透明
+
+              // X 轴
+              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {};
+              tmpOpt.xAxis.axisLabel.color = textColor;
+              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {};
+              tmpOpt.xAxis.nameTextStyle.color = textColor;
+              // Y 轴
+              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {};
+              tmpOpt.yAxis.axisLabel.color = textColor;
+              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {};
+              tmpOpt.yAxis.nameTextStyle.color = textColor;
+              // 提示框
+              tmpOpt.tooltip = tmpOpt.tooltip || {};
+              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {};
+              tmpOpt.tooltip.textStyle.color = textColor;
+              tmpOpt.tooltip.backgroundColor = bgColorOverlay;
+              tmpOpt.tooltip.borderColor = borderColorLight;
+              // 系列标签
+              if(tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label){
+                  tmpOpt.series[0].label.color = textColor;
+              }
+            } catch (e) {
+              console.error("Failed to apply theme to plugin chart:", e);
+            }
+             // --- 主题化修改 End ---
+
             tmpOpt.xAxis.data = hotPluginList
             tmpOpt.series[0].data = data
             this.hotPluginChart.setOption(tmpOpt)

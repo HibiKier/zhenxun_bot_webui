@@ -144,7 +144,7 @@
           </el-col>
         </el-row>
         <el-row style="margin-top: 30px">
-          <MyButton @click="clickBotManage" text="应用" />
+          <MyButton @click="clickBotManage" text="应用" class="apply-button" />
         </el-row>
       </div>
     </div>
@@ -517,5 +517,22 @@ export default {
   ::v-deep .el-divider--horizontal {
     margin: 0;
   }
+}
+
+.apply-button ::v-deep button {
+  background-color: var(--el-color-primary) !important;
+  border-color: var(--el-color-primary) !important;
+  color: #FFFFFF !important;
+}
+.apply-button ::v-deep button span {
+    color: #FFFFFF !important;
+}
+.apply-button ::v-deep button:hover {
+  background-color: var(--el-color-primary-light-3) !important;
+  border-color: var(--el-color-primary-light-3) !important;
+}
+.apply-button ::v-deep button:active {
+  background-color: var(--el-color-primary-dark-2) !important;
+  border-color: var(--el-color-primary-dark-2) !important;
 }
 </style>
