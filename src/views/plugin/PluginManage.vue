@@ -292,25 +292,34 @@ export default {
             this.$message.error(`批量${actionText}失败：无效的响应`);
             return;
           }
-          if (resp.success) {
-            this.$message.success(
-              `成功${actionText} ${resp.updated_count} 个插件！`
-            );
-            if (resp.errors && resp.errors.length > 0) {
-              resp.errors.forEach((err) =>
-                this.$message.warning(`插件 ${err.module}: ${err.error}`)
-              );
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning);
+            } else {
+              const result = resp.data;
+              if (result.success) {
+                this.$message.success(
+                  `成功${actionText} ${result.updated_count} 个插件！`
+                );
+                if (result.errors && result.errors.length > 0) {
+                  result.errors.forEach((err) =>
+                    this.$message.warning(`插件 ${err.module}: ${err.error}`)
+                  );
+                }
+                this.cancelSelection();
+                this.pltKey++;
+              } else {
+                let errorMsg = `批量${actionText}失败`;
+                if (result.errors && result.errors.length > 0) {
+                  errorMsg +=
+                    ": " +
+                    result.errors.map((e) => `${e.module}(${e.error})`).join(", ");
+                }
+                this.$message.error(errorMsg);
+              }
             }
-            this.cancelSelection();
-            this.pltKey++;
           } else {
-            let errorMsg = `批量${actionText}失败`;
-            if (resp.errors && resp.errors.length > 0) {
-              errorMsg +=
-                ": " +
-                resp.errors.map((e) => `${e.module}(${e.error})`).join(", ");
-            }
-            this.$message.error(errorMsg);
+            this.$message.error(resp.info || `批量${actionText}失败`);
           }
         })
         .catch((error) => {
@@ -347,26 +356,35 @@ export default {
             this.$message.error("批量修改菜单类型失败：无效的响应");
             return;
           }
-          if (resp.success) {
-            this.$message.success(
-              `成功更新 ${resp.updated_count} 个插件的菜单类型！`
-            );
-            if (resp.errors && resp.errors.length > 0) {
-              resp.errors.forEach((err) =>
-                this.$message.warning(`插件 ${err.module}: ${err.error}`)
-              );
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning);
+            } else {
+              const result = resp.data;
+              if (result.success) {
+                this.$message.success(
+                  `成功更新 ${result.updated_count} 个插件的菜单类型！`
+                );
+                if (result.errors && result.errors.length > 0) {
+                  result.errors.forEach((err) =>
+                    this.$message.warning(`插件 ${err.module}: ${err.error}`)
+                  );
+                }
+                this.targetMenuTypeBulk = null;
+                this.cancelSelection();
+                this.pltKey++;
+              } else {
+                let errorMsg = "批量修改菜单类型失败";
+                if (result.errors && result.errors.length > 0) {
+                  errorMsg +=
+                    ": " +
+                    result.errors.map((e) => `${e.module}(${e.error})`).join(", ");
+                }
+                this.$message.error(errorMsg);
+              }
             }
-            this.targetMenuTypeBulk = null;
-            this.cancelSelection();
-            this.pltKey++;
           } else {
-            let errorMsg = "批量修改菜单类型失败";
-            if (resp.errors && resp.errors.length > 0) {
-              errorMsg +=
-                ": " +
-                resp.errors.map((e) => `${e.module}(${e.error})`).join(", ");
-            }
-            this.$message.error(errorMsg);
+            this.$message.error(resp.info || "批量修改菜单类型失败");
           }
         })
         .catch((error) => {
