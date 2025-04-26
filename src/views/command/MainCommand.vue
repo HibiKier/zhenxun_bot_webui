@@ -56,20 +56,20 @@ export default {
 
 <style lang="scss" scoped>
 .base {
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
   height: 100%;
   width: 100%;
 }
 
 .base-info {
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
   height: 100%;
   min-width: 367px;
 }
 
 .main-info {
   height: 100%;
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
 }
 
 .test {
@@ -80,6 +80,6 @@ export default {
 }
 
 .config-info {
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
 }
 </style>

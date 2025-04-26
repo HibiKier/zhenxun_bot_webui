@@ -186,6 +186,57 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.loginContainer {
+  border-radius: 15px;
+  background-clip: padding-box;
+  margin: 10% auto;
+  width: 400px;
+  padding: 15px 35px 15px 35px;
+  background: var(--bg-color-secondary);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 25px var(--border-color);
+}
+.loginTitle {
+  margin: 0px auto 40px auto;
+  text-align: center;
+  color: var(--text-color);
+}
+.loginRemember {
+  text-align: left;
+  margin: 0px 0px 15px 0px;
+  color: var(--text-color-secondary);
+}
+
+.loginPage {
+  background-color: var(--bg-color);
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+::v-deep .el-input__inner {
+  background-color: var(--el-fill-color-blank);
+  color: var(--el-text-color-primary);
+  border: 1px solid var(--el-border-color);
+}
+::v-deep .el-input__inner:focus {
+   border-color: var(--el-color-primary);
+}
+
+.el-button--primary {
+  background-color: var(--el-color-primary);
+  border-color: var(--el-color-primary);
+  color: #ffffff;
+
+  &:hover, &:focus {
+    background-color: var(--primary-color-light); 
+    border-color: var(--primary-color-light);
+  }
+}
+
 .forget-pwd-right {
   float: right;
   margin-left: 10px;

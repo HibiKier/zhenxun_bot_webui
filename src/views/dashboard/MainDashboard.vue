@@ -53,11 +53,11 @@ export default {
 
 <style lang="scss" scoped>
 .base {
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
 }
 
 .base-info {
-  background-color: #f4f5fa;
+  background-color: var(--bg-color);
   height: 100%;
   min-width: 367px;
 }
@@ -65,7 +65,7 @@ export default {
 .main-info {
   height: 100%;
   // min-width: 1080px;
-  background-color: #f5f6f8;
+  background-color: var(--bg-color);
   overflow: auto;
   padding: 0 10px;
   box-sizing: border-box;
@@ -74,6 +74,6 @@ export default {
 .config-info {
   height: 100%;
   // min-width: 501px;
-  background-color: #f5f6f8;
+  background-color: var(--bg-color);
 }
 </style>

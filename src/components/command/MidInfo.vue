@@ -591,21 +591,21 @@ export default {
     }
 
     .head-tip {
-      color: #b8bac0;
+      color: var(--text-color-secondary);
       font-size: 12px;
       margin-top: 13px;
     }
   }
 
   .top-border {
-    background-color: white;
+    background-color: var(--bg-color-secondary);
     padding: 10px 30px;
     border-radius: 10px;
     box-sizing: border-box;
   }
   .ch-count-border {
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--bg-color-secondary);
     padding: 30px;
     margin-top: 20px;
     overflow: auto;
@@ -621,11 +621,13 @@ export default {
     .ch-count-text {
       font-size: 18px;
       margin-top: 10px;
+      color: var(--text-color);
     }
 
     ::v-deep .el-progress__text {
       font-size: 40px !important;
       font-weight: bold;
+      color: var(--text-color);
     }
   }
 
@@ -638,7 +640,7 @@ export default {
       font-size: 17px;
     }
     .title-tip {
-      color: #acafb8;
+      color: var(--text-color-secondary);
       font-size: 12px;
       margin-top: 6px;
       margin-left: 25px;
@@ -647,7 +649,7 @@ export default {
 
   .chart-border {
     border-radius: 10px;
-    background-color: white;
+    background-color: var(--bg-color-secondary);
     padding: 30px 30px 0 30px;
     margin-top: 20px;
     height: 308px;

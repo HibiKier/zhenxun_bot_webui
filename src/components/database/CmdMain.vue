@@ -247,20 +247,25 @@ export default {
 <style lang="scss" scoped>
 .small-title {
   font-size: 14px;
-  color: #939395;
+  color: var(--el-text-color-secondary);
   text-align: center;
-  border: 1px solid #d3d3d4;
+  border: 1px solid var(--el-border-color-light);
   padding: 5px;
   border-radius: 10px;
   margin: 5px;
 }
 
 .common-sql-item {
-  border: 1px solid #d3d3d4;
+  border: 1px solid var(--el-border-color-light);
   padding: 10px;
   border-radius: 10px;
   margin-top: 5px;
   cursor: pointer;
+  color: var(--el-text-color-regular);
+  background-color: var(--el-fill-color-blank);
+  &:hover {
+    background-color: var(--el-fill-color-lighter);
+  }
 }
 
 .cmd-main {
@@ -276,9 +281,9 @@ export default {
   }
   .title {
     font-size: 20px;
-    color: #939395;
+    color: var(--el-text-color-secondary);
     text-align: center;
-    border: 1px solid #d3d3d4;
+    border: 1px solid var(--el-border-color-light);
     padding: 5px;
     border-radius: 10px;
     margin: 10px;
@@ -288,6 +293,14 @@ export default {
     .cmd {
       /deep/ .el-textarea__inner {
         border-radius: 10px;
+        background-color: var(--el-textarea-bg-color);
+        color: var(--el-input-text-color, var(--el-text-color-regular));
+        border-color: var(--el-border-color);
+        box-shadow: none;
+        &:focus {
+          border-color: var(--el-color-primary);
+          box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+        }
       }
     }
 
@@ -298,21 +311,35 @@ export default {
     .history {
       box-sizing: border-box;
       margin-left: 10px;
-      border: 1px solid #d3d3d4;
+      border: 1px solid var(--el-border-color);
       border-radius: 10px;
-      padding: 20px;
-      background-color: #fff;
+      padding: 10px;
+      background-color: var(--el-bg-color-overlay);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      .title {
+        margin: 0 0 10px 0;
+      }
 
       .history-box {
         overflow: auto;
-        height: 90px;
+        flex-grow: 1;
+        margin-bottom: 10px;
 
         .history-item {
-          border: 1px solid #d3d3d4;
-          padding: 10px;
+          border: 1px solid var(--el-border-color-light);
+          padding: 8px 10px;
           border-radius: 5px;
           margin-top: 5px;
           cursor: pointer;
+          color: var(--el-text-color-regular);
+          background-color: var(--el-fill-color-blank);
+          transition: background-color 0.2s;
+          &:hover {
+            background-color: var(--el-fill-color-lighter);
+          }
         }
       }
 
@@ -325,13 +352,17 @@ export default {
   }
 
   .result-box {
-    background-color: #fff;
+    background-color: var(--el-bg-color);
     width: 100%;
     overflow: auto;
     border-radius: 10px;
+    border: 1px solid var(--el-border-color);
+    padding: 10px;
+    box-sizing: border-box;
 
     .error-info {
       margin: 24px;
+      color: var(--el-color-danger);
     }
 
     .empty {
@@ -346,5 +377,65 @@ export default {
       box-sizing: border-box;
     }
   }
+}
+
+.history ::v-deep .el-pagination button,
+.history ::v-deep .el-pager li {
+  background: var(--el-fill-color-blank);
+  color: var(--el-text-color-regular);
+  &:hover {
+    color: var(--el-color-primary);
+  }
+  &:disabled {
+    color: var(--el-text-color-disabled);
+  }
+}
+
+.history ::v-deep .el-pager li.active {
+  background: var(--el-color-primary);
+  color: var(--el-color-white);
+  &:hover {
+     color: var(--el-color-white);
+  }
+}
+
+.result-box ::v-deep .el-table,
+.result-box ::v-deep .el-table__expanded-cell {
+  background-color: transparent;
+}
+
+.result-box ::v-deep .el-table th,
+.result-box ::v-deep .el-table tr,
+.result-box ::v-deep .el-table td {
+  background-color: transparent !important;
+  color: var(--el-text-color-regular);
+  border-color: var(--el-border-color-light);
+}
+
+.result-box ::v-deep .el-table th {
+  background-color: var(--el-fill-color-lighter) !important;
+  color: var(--el-text-color-primary);
+}
+
+.result-box ::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: var(--el-fill-color-lighter) !important;
+}
+
+.result-box ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
+  background-color: var(--el-table-row-hover-bg-color) !important;
+}
+
+.result-box ::v-deep .el-table--border::after,
+.result-box ::v-deep .el-table--group::after,
+.result-box ::v-deep .el-table::before {
+    background-color: var(--el-border-color-light);
+}
+.result-box ::v-deep .el-table--border th.is-leaf,
+.result-box ::v-deep .el-table--border td {
+    border-bottom: 1px solid var(--el-border-color-light);
+}
+.result-box ::v-deep .el-table--border th,
+.result-box ::v-deep .el-table--border td {
+    border-right: 1px solid var(--el-border-color-light);
 }
 </style>

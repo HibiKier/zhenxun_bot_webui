@@ -18,7 +18,6 @@
                 icon="clear2"
                 :width="90"
                 :height="34"
-                style="float: right"
               />
             </div>
             <div class="friend-req-list">
@@ -54,34 +53,26 @@
                   </div>
                 </div>
                 <div class="c-btn">
-                  <el-row :gutter="20">
-                    <el-col :span="8">
-                      <MyButton
-                        text="同意"
-                        @click="approve(data)"
-                        :width="66"
-                        :height="35"
-                      />
-                    </el-col>
-                    <el-col :span="8">
-                      <MyButton
-                        text="拒绝"
-                        @click="refuse(data)"
-                        type="error"
-                        :width="66"
-                        :height="35"
-                      />
-                    </el-col>
-                    <el-col :span="8">
-                      <MyButton
-                        text="删除"
-                        @click="deleteReq(data)"
-                        type="warn"
-                        :width="66"
-                        :height="35"
-                      />
-                    </el-col>
-                  </el-row>
+                  <MyButton
+                    text="同意"
+                    @click="approve(data)"
+                    :width="66"
+                    :height="35"
+                  />
+                  <MyButton
+                    text="拒绝"
+                    @click="refuse(data)"
+                    type="error"
+                    :width="66"
+                    :height="35"
+                  />
+                  <MyButton
+                    text="删除"
+                    @click="deleteReq(data)"
+                    type="warn"
+                    :width="66"
+                    :height="35"
+                  />
                 </div>
               </div>
             </div>
@@ -102,7 +93,6 @@
                 icon="clear2"
                 :width="90"
                 :height="34"
-                style="float: right"
               />
             </div>
             <div class="group-req-list">
@@ -138,34 +128,26 @@
                   </div>
                 </div>
                 <div class="c-btn">
-                  <el-row :gutter="20">
-                    <el-col :span="8">
-                      <MyButton
-                        text="同意"
-                        @click="approve(data)"
-                        :width="66"
-                        :height="35"
-                      />
-                    </el-col>
-                    <el-col :span="8">
-                      <MyButton
-                        text="拒绝"
-                        @click="refuse(data)"
-                        type="error"
-                        :width="66"
-                        :height="35"
-                      />
-                    </el-col>
-                    <el-col :span="8">
-                      <MyButton
-                        text="删除"
-                        @click="deleteReq(data)"
-                        type="warn"
-                        :width="66"
-                        :height="35"
-                      />
-                    </el-col>
-                  </el-row>
+                  <MyButton
+                    text="同意"
+                    @click="approve(data)"
+                    :width="66"
+                    :height="35"
+                  />
+                  <MyButton
+                    text="拒绝"
+                    @click="refuse(data)"
+                    type="error"
+                    :width="66"
+                    :height="35"
+                  />
+                  <MyButton
+                    text="删除"
+                    @click="deleteReq(data)"
+                    type="warn"
+                    :width="66"
+                    :height="35"
+                  />
                 </div>
               </div>
             </div>
@@ -328,25 +310,34 @@ export default {
 .dialog-class {
   ::v-deep .el-dialog {
     border-radius: 10px;
+    background-color: var(--el-bg-color);
+  }
+  ::v-deep .el-dialog__header {
+    background-color: var(--el-bg-color);
+  }
+  ::v-deep .el-dialog__body {
+    background-color: var(--el-bg-color-page);
   }
   .c-btn {
     display: flex;
+    justify-content: flex-end;
     align-items: center;
-    justify-content: center;
-    margin-top: 10px;
+    margin-top: 15px;
+    gap: 10px;
   }
 
   .base-title {
-    color: #939395;
+    color: var(--el-text-color-secondary);
     margin-bottom: 5px;
     font-size: 18px;
-    margin-left: 25px;
-    margin-top: 5px;
-    float: left;
+    margin-left: 0;
+    margin-top: 0;
+    float: none;
+    line-height: 34px;
   }
 
   .request-main {
-    height: 470px;
+    height: 65vh;
   }
 
   ::v-deep .el-divider--vertical {
@@ -359,17 +350,45 @@ export default {
     padding: 20px;
     box-sizing: border-box;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > div:first-child {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 0 10px;
+    }
 
     .friend-req-list {
-      margin-top: 60px;
+      margin-top: 0;
       overflow: auto;
-      height: calc(100% - 45px);
-      padding: 0 10px;
-      border-radius: 10px;
-      border-top: 1px solid #dddfe5;
-      border-bottom: 1px solid #dddfe5;
-      padding-bottom: 10px;
-      box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.1);
+      flex-grow: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--el-border-color);
+      box-shadow: var(--el-box-shadow-light);
+      box-sizing: border-box;
+      background-color: transparent;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--el-fill-color-light);
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--el-color-info-light-3);
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: var(--el-color-info-light-5);
+      }
     }
   }
 
@@ -383,30 +402,69 @@ export default {
     padding: 20px;
     box-sizing: border-box;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+
+     > div:first-child {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 0 10px;
+    }
 
     .group-req-list {
-      margin-top: 60px;
+       margin-top: 0;
       overflow: auto;
-      height: calc(100% - 45px);
-      padding: 0 10px;
-      border-radius: 10px;
-      border-top: 1px solid #dddfe5;
-      border-bottom: 1px solid #dddfe5;
-      padding-bottom: 10px;
-      box-shadow: 10px 10px 15px rgba(0, 0, 0, 0.1);
+       flex-grow: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--el-border-color);
+      box-shadow: var(--el-box-shadow-light);
+      box-sizing: border-box;
+      background-color: transparent;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: var(--el-fill-color-light);
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: var(--el-color-info-light-3);
+        border-radius: 3px;
+      }
+
+      &::-webkit-scrollbar-thumb:hover {
+        background: var(--el-color-info-light-5);
+      }
     }
   }
 
   .req-item {
-    margin-top: 10px;
+    margin-top: 15px;
     position: relative;
-    border: 1px solid #dddfe5;
-    padding: 10px;
-    border-radius: 10px;
+    border: 1px solid var(--el-border-color-lighter);
+    padding: 15px;
+    border-radius: 8px;
     box-sizing: border-box;
+    background-color: var(--el-bg-color);
+    transition: box-shadow 0.2s ease-in-out;
+
+    &:hover {
+      box-shadow: var(--el-box-shadow);
+    }
+
+    &:first-child {
+        margin-top: 0;
+    }
 
     .req-item-item {
       display: flex;
+      align-items: center;
     }
 
     .u-info {
@@ -416,10 +474,12 @@ export default {
       margin-left: 10px;
       .u-name {
         font-size: 20px;
-        font-weight: bold;
+        font-weight: 600;
+        margin-bottom: 4px;
       }
       .uid {
-        color: #9f9f9f;
+        color: var(--el-text-color-secondary);
+        font-size: 14px;
       }
     }
   }

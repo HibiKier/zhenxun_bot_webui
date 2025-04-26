@@ -119,189 +119,51 @@ export default {
 }
 </script>
 
-<style scoped>
-* {
-  box-sizing: border-box;
-}
-input::-webkit-input-placeholder {
-  color: #3a3637c7;
-  user-select: none;
-}
-.bg-box {
-  height: 100vh;
-  width: 100%;
-  background: #04060a;
-}
-.bg-img {
-  width: 100%;
+<style lang="scss" scoped>
+.main {
   height: 100%;
-  background: url(../assets/image/bg.jfif) no-repeat;
-  background-size: 100% 100%;
+  background-color: var(--bg-color);
 }
-.bg-cover {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.title {
+  font-size: 40px;
+  font-family: "fzrzFont";
   width: 100%;
-  height: 100%;
-  backdrop-filter: blur(5px) saturate(150%);
+  text-align: center;
+  color: var(--text-color);
+  padding-top: 5%;
 }
-.api-box {
+.api-border {
+  background-color: var(--bg-color-secondary);
+  border-radius: 10px;
+  padding: 50px;
+  margin: 2% auto;
+  width: 40%;
+  min-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+
+  .des {
+    font-size: 14px;
+    color: var(--text-color-secondary);
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .label {
+    color: var(--text-color-secondary);
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: block;
+  }
+}
+
+.footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-direction: column;
-  width: 28rem;
-  height: 20rem;
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(4px);
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  overflow: hidden;
-}
-.api-title {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 5rem;
-  overflow: hidden;
-  backdrop-filter: blur(16px) saturate(180%);
-  background-color: rgba(255, 255, 255, 0.75);
-}
-
-.api-title::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  right: 3rem;
-  width: 4rem;
-  height: 4rem;
-  background: url(../assets/image/inp_p.png) no-repeat;
-  background-size: 100% 100%;
-}
-.rightshow.api-title::after {
-  top: 0.5rem;
-}
-.api-title > span {
-  color: #04060a;
-  font-size: 1.5rem;
-  font-family: Inter, sans-serif;
-  font-weight: 700;
-  user-select: none;
-}
-.api-input {
-  margin: 0 2rem;
-  width: 24rem;
-  height: 2.5rem;
-  display: flex;
-}
-.api-input > input {
-  padding: 0 1rem;
-  width: 100%;
-  height: 100%;
-  outline: none;
-  color: #333;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: inset 0px 0px 3px 0px rgb(31 38 135 / 37%);
-  backdrop-filter: blur(1px);
-  transition: all 0.2s ease;
-}
-.api-input > input:hover {
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0px 0px 3px 1px rgb(31 38 135 / 37%);
-}
-.api-input > input:focus {
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: inset 0px 0px 3px 1px rgb(31 38 135 / 37%);
-}
-
-.api-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 2rem 1rem 2rem;
-  width: 24rem;
-  height: 2rem;
-}
-.myapi,
-.goback {
-  position: relative;
-  flex: 1;
-  height: 2.5rem;
-  border: none;
-  outline: none;
-  color: white;
-  text-indent: 1rem;
-  font-size: 1.15rem;
-  letter-spacing: 1rem;
-  border-radius: 4px;
-  background-color: #2ea44f;
-  transition: all 0.1s ease-in-out;
-  user-select: none;
-  overflow: hidden;
-}
-.goback {
-  margin-right: 1rem;
-}
-.myapi::before,
-.goback::before {
-  content: "";
-  position: absolute;
-  top: 100%;
-  right: 1rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: url(../assets/image/inp_c.png) no-repeat;
-  background-size: 100% 100%;
-}
-.goback::before {
-  left: 1rem;
-  background: url(../assets/image/login.png) no-repeat;
-  background-size: 100% 100%;
-}
-.myapi:hover,
-.goback:hover {
-  background-color: #289045;
-}
-.myapi:hover.myapi::before,
-.goback:hover.goback::before {
-  top: 0;
-}
-.tips {
-  margin: 0 2rem;
-  text-align: start;
-  font-size: 0.8rem;
-}
-.tips > p {
-  padding-left: 0.8rem;
-  text-indent: -0.8rem;
-  margin-bottom: 0.4rem;
-}
-@media screen and (max-width: 600px) {
-  .api-box {
-    margin: 0 1rem;
-  }
-  .api-input,
-  .api-btn {
-    width: 90%;
-  }
-  .api-title::after {
-    right: 1rem;
-  }
-  .myapi::before {
-    right: 0.25rem;
-  }
-  .goback::before {
-    left: 0.25rem;
-  }
-  .api-box {
-    height: 22.5rem;
+  margin-top: 40px;
+  gap: 20px;
+  
+  .el-button {
+    width: 100%;
   }
 }
 </style>

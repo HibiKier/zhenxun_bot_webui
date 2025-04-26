@@ -60,70 +60,82 @@ export default {
 <style scoped>
 .about-page {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 20px;
   text-align: left;
+  color: var(--text-color);
 }
 
 .login-border {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 30px;
 }
 
 .logo-box {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  background-color: var(--bg-color-secondary);
   height: 145px;
   width: 145px;
   border-radius: 50%;
+  box-shadow: var(--el-box-shadow-lighter);
 }
 
 .logo {
   height: 130px;
   width: 130px;
   border-radius: 50%;
-  border: 2px solid #f4f5fa;
+  border: 2px solid var(--border-color-light);
 }
 
 .content-border {
   padding: 40px;
   box-sizing: border-box;
-  background-color: white;
+  background-color: var(--bg-color-secondary);
   margin-top: 30px;
   border-radius: 10px;
   position: relative;
+  border: 1px solid var(--border-color-light);
+  box-shadow: var(--el-box-shadow-light);
 }
 
 .cute {
   position: absolute;
-  height: 200px;
-  width: 200px;
-  right: 10px;
-  bottom: 10px;
+  height: 180px;
+  width: 180px;
+  right: 20px;
+  bottom: 20px;
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
 }
 
 h2 {
-  font-size: 1.8rem;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  font-size: 1.5rem;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  color: var(--text-color);
 }
 
 p {
-  font-size: 1.2rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.7;
   margin-bottom: 15px;
+  color: var(--text-color-secondary);
 }
 
 a {
-  color: #42b983;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
