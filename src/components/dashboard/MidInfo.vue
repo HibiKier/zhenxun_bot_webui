@@ -542,200 +542,116 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-divider--horizontal {
-  margin: 74px 0;
+.mid-info {
+  background-color: var(--bg-color);
+  padding: 15px;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
-.mid-info {
-  border-radius: 10px;
+.head {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: var(--bg-color-secondary);
+  border-radius: 8px;
+  box-shadow: var(--el-box-shadow-lighter);
 
-  .top-area-info {
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    box-sizing: border-box;
+  .head-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 5px;
   }
-
-  .head {
-    .head-text {
-      font-size: 27px;
-      font-weight: bold;
-    }
-
-    .head-tip {
-      color: #b8bac0;
-      font-size: 12px;
-      margin-top: 13px;
-    }
+  .head-tip {
+    font-size: 13px;
+    color: var(--text-color-secondary);
   }
+}
 
-  /deep/ .el-collapse-item__header {
-    font-size: 14px;
-    border-bottom: none;
-    float: right;
-    height: 30px;
-    margin-top: 8px;
-    color: #a4a6ab;
-  }
+.system-status, .chat-count, .detail-count {
+   background-color: var(--bg-color-secondary);
+   padding: 15px 20px;
+   border-radius: 8px;
+   margin-bottom: 15px;
+   box-shadow: var(--el-box-shadow-lighter);
+}
 
-  /deep/ .el-collapse-item__header .el-collapse-item__arrow {
-    display: none;
-  }
+.chat-count, .detail-count {
+    margin-top: -15px;
+}
 
-  /deep/ .el-collapse-item__content {
-    margin-top: 20px;
-  }
+.system-status-border, .chat-count-border {
+   text-align: center;
+   padding: 10px 0;
+}
 
-  /deep/ .el-collapse-item__wrap {
+.system-status-item, .chat-count-item {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin-bottom: 8px;
+}
+
+.system-status-icon {
+   width: 18px;
+   height: 18px;
+   margin-right: 8px;
+   color: var(--text-color-secondary);
+}
+
+.system-status-tip, .chat-count-status-tip {
+  color: var(--text-color-secondary);
+  font-size: 13px;
+}
+
+.system-status-text, .chat-count-status-text {
+   p {
+     font-size: 22px;
+     font-weight: 600;
+     color: var(--text-color);
+     margin: 0;
+   }
+}
+
+.chart-border {
+  background-color: var(--bg-color-secondary);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 15px;
+  box-shadow: var(--el-box-shadow-lighter);
+  height: 300px;
+}
+
+.base-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 15px;
+}
+
+.base-chart {
     width: 100%;
-  }
+    height: calc(100% - 40px);
+}
 
-  .system-status {
-    margin-top: 50px;
-    background-color: white;
-
-    .system-status-border {
-      background-color: #f5f6f8;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-      .system-status-item {
-        display: flex;
-        align-items: center;
-
-        .system-status-icon {
-          width: 30px;
-          height: 30px;
-          margin-right: 5px;
-        }
-
-        .system-status-tip {
-          font-size: 20px;
-          color: #a4a6ab;
-          margin-right: 15px;
-        }
-      }
-
-      .system-status-text {
-        font-size: 35px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
-  }
-
-  .chat-count {
-    margin-top: 15px;
-
-    .chat-count-border {
-      background-color: #f5f6f8;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-      .chat-count-status-tip {
-        color: #a4a6ab;
-        font-size: 20px;
-      }
-
-      .chat-count-status-text {
-        font-size: 35px;
-        // margin-left: 20px;
-        margin-top: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
-  }
-
-  .detail-count {
-    margin-top: 15px;
-    display: flex;
-    justify-content: space-between;
-
-    .chat-count-border {
-      background-color: #f5f6f8;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-      .chat-count-status-tip {
-        color: #a4a6ab;
-        font-size: 20px;
-      }
-
-      .chat-count-status-text {
-        font-size: 35px;
-        // margin-left: 20px;
-        // margin-top: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
-  }
-
-  .title-box {
-    margin-top: 5px;
-    margin-bottom: 30px;
-    display: flex;
-
-    .title-text {
-      // font-size: 17px;
-    }
-    .title-tip {
-      color: #acafb8;
-      font-size: 12px;
-      margin-top: 6px;
-      margin-left: 25px;
-    }
-  }
-
-  .log-border {
-    background-color: white;
-    padding: 30px;
-    margin-top: 20px;
-    border-radius: 10px;
-    box-sizing: border-box;
-
-    .center-log {
-      background-color: #282c34;
-      border-radius: 10px;
-      padding: 10px;
-      white-space: pre-wrap;
-      color: #ffffff;
-
-      /deep/ .el-scrollbar__wrap {
-        overflow-x: hidden;
-      }
-    }
-  }
-
-  .chart {
-    display: flex;
-    height: 500px;
-    padding: 30px;
-    justify-content: space-between;
-
-    .base-chart {
-      width: 100%;
-      height: 500px;
-    }
-
-    canvas {
-      width: 100%;
-    }
-  }
-
-  /deep/ .el-collapse {
-    border: none;
-  }
-
-  /deep/ .el-collapse-item__content {
-    margin-bottom: 0;
-  }
+::v-deep .el-collapse {
+    border-top: none;
+    border-bottom: 1px solid var(--border-color-light);
+}
+::v-deep .el-collapse-item__header {
+    background-color: var(--bg-color-secondary);
+    color: var(--text-color-secondary);
+    border-bottom: 1px solid var(--border-color-light);
+    font-size: 13px;
+    height: 40px;
+    line-height: 40px;
+}
+::v-deep .el-collapse-item__wrap {
+    background-color: var(--bg-color-secondary);
+    border-bottom: none;
+}
+::v-deep .el-collapse-item__content {
+    padding-bottom: 15px;
+    color: var(--text-color-secondary);
 }
 </style>

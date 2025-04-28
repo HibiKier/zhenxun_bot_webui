@@ -5,9 +5,10 @@ import store from "./store"
 import ElementUI from "element-ui"
 import "element-ui/lib/theme-chalk/index.css"
 import * as echarts from "echarts"
-import "default-passive-events" //处理ele-ui警告
+import "default-passive-events"
 import "./assets/icons/index"
 import "./assets/css/global.css"
+import "@/styles/theme.scss"
 import { message } from "@/utils/message"
 import { loading } from "@/utils/loading"
 import chatWebSocket from "./utils/websocket/chat-websocket"
@@ -23,7 +24,6 @@ import {
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
-// 插件形式使用请求
 Vue.prototype.postRequest = postRequest
 Vue.prototype.putRequest = putRequest
 Vue.prototype.getRequest = getRequest

@@ -82,16 +82,22 @@ export default {
   height: 100%;
   .data-list {
     height: 100%;
-    background-color: #f4f5fa;
+    background-color: var(--el-bg-color-secondary);
+    border-right: 1px solid var(--el-border-color);
+    box-sizing: border-box;
   }
 
   .chat {
     height: 100%;
+    background-color: var(--el-bg-color-secondary);
   }
 
   .detail {
     height: 100%;
     overflow: auto;
+    background-color: var(--el-bg-color-secondary);
+    border-left: 1px solid var(--el-border-color);
+    box-sizing: border-box;
   }
 }
 </style>

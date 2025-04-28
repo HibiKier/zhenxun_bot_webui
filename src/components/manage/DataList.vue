@@ -27,7 +27,7 @@
         v-for="data in dataList"
         :key="data.id"
         class="data-item"
-        :style="{ 'background-color': detailId == data.id ? '#EDEDED' : null }"
+        :class="{ 'item-selected': detailId == data.id }"
       >
         <div style="display: flex" @click="getDetail(data)">
           <div class="ava-box">
@@ -269,11 +269,11 @@ export default {
   .fg-select {
     float: left;
     display: flex;
-    background-color: #ffffff;
+    background-color: var(--bg-color-secondary);
     height: 50px;
     width: 100%;
     border-radius: 5px;
-    color: #758ea1;
+    color: var(--text-color-secondary);
 
     ::v-deep .el-divider--vertical {
       height: 70%;
@@ -297,10 +297,12 @@ export default {
       height: 100%;
       align-items: center;
       justify-content: center;
+      font-size: 18px;
+      color: var(--el-text-color-regular);
     }
     .btn-item-select {
-      color: #ffffff;
-      background-color: #4d7cfe;
+      color: var(--el-text-color-primary);
+      font-weight: bold;
     }
   }
 
@@ -328,10 +330,11 @@ export default {
         position: absolute;
         right: 7px;
         top: 50px;
-        border-radius: 100px;
-        // background-color: #cfcdcd;
-        background-color: #ff3b30;
-        color: #f8f7f8;
+        border-radius: 50%;
+        padding: 0px 6px;
+        margin-right: 10px;
+        background-color: var(--el-color-danger);
+        color: var(--bg-color-secondary);
         font-size: 14px;
         width: 23px;
         text-align: center;
@@ -360,7 +363,8 @@ export default {
         justify-content: center;
         margin-left: 10px;
         .u-name {
-          font-size: 20px;
+          font-size: 17px;
+          color: var(--el-text-color-primary);
           font-weight: bold;
           display: -webkit-box;
           -webkit-box-orient: vertical;
@@ -369,9 +373,27 @@ export default {
           text-overflow: ellipsis;
         }
         .uid {
-          color: #9f9f9f;
+          color: var(--el-text-color-secondary);
+          font-size: 14px;
           margin-top: 8px;
         }
+      }
+
+      &:hover,
+      &.item-selected {
+        background-color: var(--el-bg-color-hover);
+
+        .more-icon {
+          visibility: visible;
+        }
+      }
+
+      .more-icon {
+        width: 20px;
+        height: 20px;
+        visibility: hidden;
+        cursor: pointer;
+        color: var(--el-text-color-regular);
       }
     }
   }

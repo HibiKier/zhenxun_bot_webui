@@ -16,14 +16,14 @@
                   <div class="info-name">
                     <span
                       class="line-line"
-                      style="background-color: #15bb00"
+                      style="background-color: var(--success-color)"
                     ></span>
                     <span class="bot-name">{{ bot.nickname }} </span>
                   </div>
                   <div class="info-id">
                     <span
                       class="line-line"
-                      style="background-color: #5c87ff"
+                      style="background-color: var(--primary-color)"
                     ></span
                     >{{ bot.self_id }}
                   </div>
@@ -266,158 +266,219 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-divider--horizontal {
-  margin: 17px 0 0 0;
+.left-info {
+  padding: 0 20px;
+  height: 100%;
+  background-color: var(--bg-color);
 }
 
-.left-info {
-  // background-color: #f4f5fa;
-  height: 100%;
-  padding: 0 10px;
-  // min-height: 1080px;
+.top-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 10px 0;
+}
 
-  .top-text {
-    width: 100%;
-    background-color: white;
-    margin-bottom: 15px;
-    height: 50px;
+.bot-list {
+  overflow: auto;
+  background-color: var(--bg-color-secondary);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: var(--el-box-shadow-lighter);
+}
+
+.bot-item {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color-light);
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .item-ava {
     display: flex;
-    justify-content: center; /* 水平居中 */
     align-items: center;
-    font-size: 25px;
-    font-weight: 500;
-    font-family: "fzrzFont";
-    border-radius: 10px;
   }
 
-  .line-line {
-    width: 2px;
-    background-color: #15bb00;
-    margin-right: 10px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+  .ava-img {
+    border-radius: 8px;
+    margin-right: 15px;
+    flex-shrink: 0;
   }
 
-  .bot-list {
-    overflow: auto;
+  .item-info {
+    flex-grow: 1;
+    min-width: 0;
   }
 
-  .bot-item {
-    height: 310px;
-    background-color: white;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-    .item-ava {
-      display: flex;
+  .info-name {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    .line-line {
+      width: 3px;
+      height: 16px;
+      border-radius: 3px;
+      margin-right: 8px;
+      background-color: var(--success-color);
     }
-
-    .ava-img {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      margin-top: 20px;
-      margin-left: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    .bot-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+  }
 
-    .item-info {
-      margin-left: 20px;
-      margin-top: 21px;
-
-      .info-name {
-        font-size: 30px;
-        font-weight: 700;
-        display: flex;
-      }
-
-      .bot-name {
-        white-space: nowrap; /* 防止文字换行 */
-        overflow: hidden; /* 隐藏溢出的文字 */
-        text-overflow: ellipsis; /* 显示省略号 */
-        width: 200px; /* 设置宽度，超出部分会显示省略号 */
-      }
-
-      .info-id {
-        height: 20px;
-        display: flex;
-        margin-top: 10px;
-        font-size: 19px;
-        font-weight: 500;
-        color: #bfbac0;
-      }
-
-      .info-gf {
-        display: flex;
-        margin-top: 17px;
-        font-weight: 600;
-
-        ::v-deep .el-divider--vertical {
-          margin: 0, 10px;
-          height: 26px;
-        }
-
-        .info-gf-title {
-          color: #b8bac0;
-          font-size: 17px;
-        }
-
-        .info-gf-icon {
-          width: 30px;
-        }
-      }
+  .info-id {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-color-secondary);
+    margin-bottom: 8px;
+    .line-line {
+       width: 3px;
+       height: 12px;
+       border-radius: 3px;
+       margin-right: 8px;
+       background-color: var(--primary-color);
     }
+  }
 
-    .bot-detail-info {
-      padding: 20px;
+  .info-gf {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-color-secondary);
 
-      .bottom-icon {
-        width: 25px;
-        height: 25px;
+    .info-gf-title {
+        // Style as needed
+    }
+    
+    ::v-deep .el-divider--vertical {
+        background-color: var(--border-color);
+        height: 1.2em;
+    }
+    
+    span {
+       font-size: 16px !important;
+       color: var(--text-color);
+    }
+  }
+
+  .bot-detail-info {
+    margin-top: 10px;
+    .message {
+        flex: 1;
+        color: var(--text-color-secondary);
+        font-size: 13px;
+    }
+    .bottom-icon {
         margin-right: 5px;
-      }
-
-      .message {
-        display: flex;
-        align-items: center;
-        // background-color: #f4f5fa;
-        width: 100%;
-        height: 40px;
-        color: #b8bac0;
-        // box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.75);
-
-        .bottom-text {
-          font-size: 15px;
-          font-weight: 600;
-        }
-
-        .bottom-text-value {
-          color: #2c3e50;
-          margin-left: 10px;
-          font-size: 20px;
-        }
-      }
+        vertical-align: -2px;
+    }
+    .bottom-text-value {
+        display: inline-block;
+        margin-left: 5px;
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 14px;
     }
   }
+}
 
-  .connect-log {
-    height: 298px;
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    .base-title {
-      color: #939395;
-      margin-bottom: 30px;
-    }
+.connect-log {
+  margin-top: 20px;
+  background-color: var(--bg-color-secondary);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: var(--el-box-shadow-lighter);
+
+  .base-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 10px;
   }
 
   .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+      margin-top: 15px;
+      text-align: center;
+  }
+
+  ::v-deep .el-table,
+  ::v-deep .el-table__expanded-cell {
+    background-color: transparent; /* Use parent background */
+  }
+
+  ::v-deep .el-table th,
+  ::v-deep .el-table tr,
+  ::v-deep .el-table td {
+    background-color: transparent;
+    color: var(--text-color-regular);
+    border-color: var(--border-color-light);
+  }
+
+  ::v-deep .el-table--border::after,
+  ::v-deep .el-table--group::after,
+  ::v-deep .el-table::before {
+      background-color: var(--border-color-light);
+  }
+
+  ::v-deep .el-table th.is-leaf,
+  ::v-deep .el-table td {
+      border-bottom: 1px solid var(--border-color-light);
+  }
+
+  ::v-deep .el-table--border th,
+  ::v-deep .el-table--border td {
+      border-right: 1px solid var(--border-color-light);
+  }
+
+  ::v-deep .el-table thead {
+      color: var(--text-color-primary);
+  }
+
+  ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
+      background-color: var(--bg-color); /* Slightly darker background on hover */
+  }
+
+  ::v-deep .el-pagination {
+    color: var(--text-color-regular);
+  }
+
+  ::v-deep .el-pagination button,
+  ::v-deep .el-pager li {
+    background: var(--bg-color-secondary);
+    color: var(--text-color-regular);
+    &:hover {
+      color: var(--primary-color);
+    }
+    &:focus {
+      outline: none; /* Optional: remove focus outline if desired */
+    }
+  }
+
+  ::v-deep .el-pager li.active {
+    background: var(--primary-color);
+    color: white;
+    &:hover {
+       color: white;
+    }
+  }
+
+  ::v-deep .el-pagination button:disabled {
+     color: var(--text-color-placeholder);
+     background-color: var(--bg-color);
+     cursor: not-allowed;
+     &:hover {
+       color: var(--text-color-placeholder);
+     }
   }
 }
 </style>

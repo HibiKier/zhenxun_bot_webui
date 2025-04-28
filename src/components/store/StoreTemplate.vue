@@ -132,7 +132,7 @@ export default {
   data() {
     return {
       handleType: null,
-      authorIcon: "author-red",
+      authorIcon: "author-primary",
       authorList: [],
       tableData: [],
       search: "",
@@ -236,54 +236,81 @@ export default {
       this.getRequest(`${this.$root.prefix}/store/get_plugin_store`).then(
         (resp) => {
           loading.close()
-          if (resp.suc) {
+          if (resp && resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)
             } else {
-              this.$message.success(resp.info)
-              this.tableData = resp.data.plugin_list
-              this.installModule = resp.data.install_module
+              this.$message.success(resp.info || "获取插件商店列表成功！")
+              this.tableData = Array.isArray(resp.data.plugin_list) ? resp.data.plugin_list : []
+              this.installModule = resp.data.install_module || []
               this.authorList = []
-              for (let v of resp.data) {
-                if (!this.authorList.includes(v.author)) {
-                  this.authorList.push(v.author)
+              if (Array.isArray(resp.data.plugin_list)) {
+                for (let v of resp.data.plugin_list) {
+                  if (v && v.author && !this.authorList.includes(v.author)) {
+                    this.authorList.push(v.author)
+                  }
                 }
               }
             }
           } else {
-            this.$message.error(resp.info)
+            const errorMsg = resp ? resp.info : "无法获取插件商店列表，请检查网络连接或后端服务。";
+            this.$message.error(errorMsg || "获取插件商店列表失败");
+            this.tableData = [];
+            this.installModule = [];
+            this.authorList = [];
           }
         }
-      )
+      ).catch(error => {
+          loading.close();
+          this.$message.error(`获取插件商店列表时出错: ${error.message || error}`);
+          console.error("[StoreTemplate Error] getPluginList catch:", error);
+          this.tableData = [];
+          this.installModule = [];
+          this.authorList = [];
+      });
     },
     mouseover() {
       this.authorIcon = "author-white"
     },
     mouseout() {
-      this.authorIcon = "author-red"
+      this.authorIcon = "author-primary"
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+::v-deep .el-dropdown-menu__item:focus,
+::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
+  color: var(--el-color-primary);
+  background-color: var(--el-color-primary-light-9);
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+}
+
 .main {
   border-radius: 10px;
   height: 100%;
+  background-color: var(--bg-color);
 
   .title {
     font-size: 40px;
     font-family: "fzrzFont";
     width: 100%;
     text-align: center;
+    color: var(--el-text-color-primary);
   }
 
   .table-border {
-    background-color: white;
+    background-color: var(--el-bg-color-secondary);
     border-radius: 10px;
     padding: 20px;
     margin-top: 20px;
     height: calc(100% - 205px);
+    box-shadow: var(--el-box-shadow-light);
 
     .name-border {
       display: flex;
@@ -303,8 +330,8 @@ export default {
     }
 
     .is-install {
-      background-color: #3cc07d;
-      color: white;
+      background-color: var(--el-color-success);
+      color: var(--bg-color-secondary);
       padding: 2px 5px;
       border-radius: 5px;
       margin-left: 10px;
@@ -335,28 +362,28 @@ export default {
 
       .search-tag-item {
         border-radius: 10px;
-        background-color: white;
+        background-color: var(--el-bg-color-secondary);
         height: 30px;
         width: 70px;
         display: flex;
         justify-content: center;
         align-items: center;
         font-weight: 600;
-        border: 1px solid #ed6b6b;
-        color: #ed6b6b;
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
         cursor: pointer;
       }
 
       .search-tag-item:hover {
-        background-color: #ed6b6b;
+        background-color: var(--primary-color);
         /deep/ .el-dropdown {
-          color: white;
+          color: var(--bg-color-secondary);
         }
       }
 
       /deep/ .el-dropdown {
         font-size: 15px;
-        color: #ed6b6b;
+        color: var(--primary-color);
       }
     }
   }
@@ -364,4 +391,51 @@ export default {
 /deep/ .el-dropdown-menu__item {
   font-weight: 600;
 }
+
+/* 添加 Element UI 表格主题化样式 */
+.table-border ::v-deep .el-table,
+.table-border ::v-deep .el-table__expanded-cell {
+  background-color: transparent; /* 使表格背景透明以继承 .table-border 的背景 */
+}
+
+.table-border ::v-deep .el-table th,
+.table-border ::v-deep .el-table tr,
+.table-border ::v-deep .el-table td {
+  background-color: transparent !important; /* 强制单元格背景透明 */
+  color: var(--el-text-color-regular); /* 使用主题文本颜色 */
+  border-color: var(--el-border-color-light); /* 使用主题边框颜色 */
+}
+
+/* 覆盖表头背景和文字颜色 */
+.table-border ::v-deep .el-table th {
+  background-color: var(--el-fill-color-lighter) !important;
+  color: var(--el-text-color-primary);
+}
+
+
+/* 覆盖斑马纹背景色 */
+.table-border ::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td {
+  background-color: var(--el-fill-color-lighter) !important;
+}
+
+/* 覆盖鼠标悬停行的背景色 */
+.table-border ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
+  background-color: var(--el-table-row-hover-bg-color) !important;
+}
+
+/* 覆盖表格边框颜色 */
+.table-border ::v-deep .el-table--border::after,
+.table-border ::v-deep .el-table--group::after,
+.table-border ::v-deep .el-table::before {
+    background-color: var(--el-border-color-light);
+}
+.table-border ::v-deep .el-table--border th.is-leaf,
+.table-border ::v-deep .el-table--border td {
+    border-bottom: 1px solid var(--el-border-color-light);
+}
+.table-border ::v-deep .el-table--border th,
+.table-border ::v-deep .el-table--border td {
+    border-right: 1px solid var(--el-border-color-light);
+}
+/* --- */
 </style>

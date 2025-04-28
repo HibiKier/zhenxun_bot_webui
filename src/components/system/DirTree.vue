@@ -661,12 +661,12 @@ export default {
 }
 
 .pop-select:hover {
-  background-color: #f5f7fa;
+  background-color: var(--bg-color-hover);
 }
 
 .rename-input {
   display: flex;
-  border: 1px solid #dcdfe6;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
   height: 30px;
   margin-bottom: 10px;
@@ -696,9 +696,9 @@ export default {
       height: 100%;
       width: 100%;
       border-radius: 10px;
-      background-color: white;
+      background-color: var(--bg-color-secondary);
       .path-item {
-        color: #61c4fe;
+        color: var(--primary-color);
         cursor: pointer;
       }
       .chart-box {
@@ -719,13 +719,13 @@ export default {
     padding: 30px;
     // border: 1px solid #d3d3d4;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: var(--bg-color-secondary);
     margin-left: 30px;
 
     .btn-group {
       display: flex;
       margin-bottom: 5px;
-      border-bottom: 1px solid #dcdfe6;
+      border-bottom: 1px solid var(--border-color);
       border-radius: 5px;
       padding-bottom: 5px;
       .btn {
@@ -757,7 +757,7 @@ export default {
       overflow: auto;
       border-radius: 5px;
       // border: 1px solid #d3d3d4;
-      background-color: #fff;
+      background-color: var(--bg-color-secondary);
       font-size: 14px;
     }
 
