@@ -10,6 +10,7 @@
         @focus="handleFocus"
         @blur="handleBlur"
         @input="input"
+        :type="type"
       >
         <i slot="suffix" class="el-input-icon" v-if="suffixIcon">
           <svg-icon :icon-class="suffixIcon" class="input-icon" />
@@ -39,6 +40,10 @@ export default {
     placeholder: String,
     prefixIcon: String,
     suffixIcon: String,
+    type: {
+      type: String,
+      default: "text",
+    },
   },
   data() {
     return {
@@ -125,6 +130,7 @@ export default {
   color: #000;
   /* text-shadow: 0 0 8px rgba(251, 228, 228, 0.5); */
   transition: all 0.4s ease;
+  border: 1px solid #f9eaf3;
 }
 
 .glowing-border {
