@@ -22,6 +22,15 @@ module.exports = {
     port: 8081,
     proxy: proxyObj,
   },
+  css: {
+    loaderOptions: {
+      postcss: {
+        postcssOptions: {
+          plugins: [require("tailwindcss"), require("autoprefixer")],
+        },
+      },
+    },
+  },
   chainWebpack: (config) => {
     config.plugin("html").tap((args) => {
       args[0].title = "真寻酱的后台捏"

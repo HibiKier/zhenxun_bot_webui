@@ -1,8 +1,5 @@
 <template>
   <div class="neon-input-container">
-    <!-- 粒子动画层 -->
-    <div class="particle-canvas" ref="canvas"></div>
-
     <!-- 主输入框 -->
     <div class="input-wrapper" @mouseenter="playHoverAnim">
       <el-input
@@ -16,6 +13,9 @@
       >
         <i slot="suffix" class="el-input-icon" v-if="suffixIcon">
           <svg-icon :icon-class="suffixIcon" class="input-icon" />
+        </i>
+        <i slot="prefix" class="el-input-icon" v-if="prefixIcon">
+          <svg-icon :icon-class="prefixIcon" class="input-icon" />
         </i>
       </el-input>
       <div class="holographic-overlay"></div>
@@ -37,6 +37,7 @@ export default {
   props: {
     value: [String, Number],
     placeholder: String,
+    prefixIcon: String,
     suffixIcon: String,
   },
   data() {
@@ -48,75 +49,15 @@ export default {
       innerValue: this.value,
     }
   },
-  mounted() {
-    console.log("suffixIcon", this.suffixIcon)
-
-    this.initParticleCanvas()
-    window.addEventListener("resize", this.resetCanvas)
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.resetCanvas)
-  },
   methods: {
     input(value) {
       this.innerValue = value
       this.$emit("input", value)
     },
 
-    initParticleCanvas() {
-      this.canvas = this.$refs.canvas
-      this.ctx = this.canvas.getContext("2d")
-      this.resetCanvas()
-      this.animateParticles()
-    },
     resetCanvas() {
       this.canvas.width = this.$el.offsetWidth
       this.canvas.height = this.$el.offsetHeight
-    },
-    createParticle(x, y) {
-      return {
-        x,
-        y,
-        size: Math.random() * 2 + 1,
-        speedX: Math.random() * 2 - 1,
-        speedY: Math.random() * 2 - 1,
-        life: 1,
-      }
-    },
-    animateParticles() {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-
-      // 只在激活状态显示粒子
-      if (this.isFocused) {
-        // 添加新粒子
-        if (Math.random() < 0.3) {
-          this.particles.push(
-            this.createParticle(
-              Math.random() * this.canvas.width,
-              this.canvas.height
-            )
-          )
-        }
-
-        this.particles.forEach((p, index) => {
-          p.x += p.speedX
-          p.y += p.speedY
-          p.life -= 0.02
-
-          // 绘制粒子
-          this.ctx.beginPath()
-          this.ctx.fillStyle = `rgba(110, 230, 255, ${p.life})`
-          this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-          this.ctx.fill()
-
-          // 移除失效粒子
-          if (p.life < 0) {
-            this.particles.splice(index, 1)
-          }
-        })
-      }
-
-      requestAnimationFrame(this.animateParticles)
     },
     handleFocus(e) {
       this.isFocused = true
@@ -254,8 +195,24 @@ export default {
   transform: translateY(-2px);
 }
 
+.neon-input ::v-deep .el-input__inner:hover + .el-input__prefix {
+  transform: translateY(-2px);
+}
+
 ::v-deep .el-input__suffix {
   right: 10px;
   top: 3px;
+}
+
+/deep/ .el-input__prefix {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/deep/ .el-input__suffix {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

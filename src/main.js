@@ -9,6 +9,7 @@ import "default-passive-events"
 import "./assets/icons/index"
 import "./assets/css/global.css"
 import "@/styles/theme.scss"
+import "@/assets/tailwind.css" // 引入 Tailwind
 import { message } from "@/utils/message"
 import { loading } from "@/utils/loading"
 import chatWebSocket from "./utils/websocket/chat-websocket"

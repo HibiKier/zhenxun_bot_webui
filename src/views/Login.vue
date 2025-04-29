@@ -1,98 +1,145 @@
 <template>
-  <div class="border">
-    <div class="left-form">
-      <div class="head-border">
-        <img
-          class="head-pic"
-          src="../assets/image/head_pic.jpg"
-          alt="用户头像"
-        />
-      </div>
-      <div class="title-border">
-        <p class="title">
-          欢迎来到<span class="title-text">真寻的小房间</span>
-        </p>
-        <p class="title-des">真尋の小部屋へようこそ、お兄さん</p>
-      </div>
-      <el-form
-        @submit.native.prevent
-        v-loading="loading"
-        element-loading-text="正在登录..."
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgba(0, 0, 0, 0.8)"
-        :rules="rules"
-        ref="loginForm"
-        :model="loginForm"
-        class="loginContainer"
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 p-4 relative overflow-hidden"
+  >
+    <!-- 樱花动画背景元素 -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div
+        v-for="i in 15"
+        :key="i"
+        class="absolute sakura"
+        :style="{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          animationDelay: `${Math.random() * 5}s`,
+          animationDuration: `${10 + Math.random() * 20}s`,
+          transform: `scale(${0.5 + Math.random()})`,
+        }"
       >
-        <el-form-item prop="username" label="账号">
-          <el-input
-            type="text"
-            v-model="loginForm.username"
-            placeholder="请输入用户名"
-            class="input-border"
-          >
-            <i slot="prefix"> <SvgIcon icon-class="account" class="icon" /></i>
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="password" label="密码">
-          <el-input
-            type="password"
-            v-model="loginForm.password"
-            placeholder="请输入密码"
-            class="input-border"
-          >
-            <i slot="prefix"> <SvgIcon icon-class="password" class="icon" /></i>
-          </el-input>
-          <!-- 关闭输入密码在打开时默认获取焦点 -->
-        </el-form-item>
-        <div style="display: flex">
-          <el-button
-            type="primary"
-            style="width: 50%; border-radius: 12px"
-            @click="changeApi"
-            plain
-            >地址设置
-          </el-button>
-          <el-button
-            type="primary"
-            style="width: 50%; border-radius: 12px"
-            native-type="submit"
-            @click="submitLogin"
-            >登录</el-button
-          >
+        <svg viewBox="0 0 100 100" class="w-8 h-8 text-pink-300 opacity-70">
+          <path
+            fill="currentColor"
+            d="M50 0C40 20 20 30 0 50c20 20 40 30 50 50 10-20 30-30 50-50C70 30 60 20 50 0z"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- 主登录框 -->
+    <div
+      class="w-full max-w-md bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transition-all duration-300 transform hover:shadow-2xl"
+    >
+      <!-- 装饰性顶部渐变条 -->
+      <div
+        class="h-2 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400"
+      ></div>
+
+      <div class="p-8 sm:p-10">
+        <!-- Logo 头像 -->
+        <div class="flex justify-center mb-8">
+          <img
+            src="@/assets/image/logo.png"
+            alt="Logo"
+            class="w-100 h-50 object-contain transition-all duration-300 hover:scale-110 hover:rotate-6"
+          />
         </div>
-      </el-form>
-      <div class="forget-pwd">
-        <div @mouseenter="forgetPwd = !forgetPwd">
+
+        <!-- 表单部分 -->
+        <el-form
+          @submit.native.prevent
+          v-loading="loading"
+          element-loading-text="正在登录..."
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
+          :rules="rules"
+          ref="loginForm"
+          :model="loginForm"
+        >
+          <!-- 用户名输入 -->
+          <el-form-item prop="username" label="账号" class="mb-6">
+            <InteractiveInput
+              v-model="loginForm.username"
+              placeholder="请输入用户名"
+              prefixIcon="account"
+              class="w-full"
+            ></InteractiveInput>
+          </el-form-item>
+
+          <!-- 密码输入 -->
+          <el-form-item prop="password" label="密码" class="mb-8">
+            <InteractiveInput
+              v-model="loginForm.password"
+              placeholder="请输入密码"
+              prefixIcon="password"
+              type="password"
+              class="w-full"
+            ></InteractiveInput>
+          </el-form-item>
+
+          <!-- 按钮组 -->
+          <div class="flex justify-between space-x-4">
+            <el-button
+              type="default"
+              @click="changeApi"
+              plain
+              class="flex-1 border-purple-400 text-purple-600 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-500 transition-colors duration-300"
+            >
+              地址设置
+            </el-button>
+            <el-button
+              type="primary"
+              native-type="submit"
+              @click="submitLogin"
+              class="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 border-0 text-white hover:from-pink-600 hover:to-purple-600 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg"
+            >
+              登录
+            </el-button>
+          </div>
+        </el-form>
+
+        <!-- 忘记密码 -->
+        <div
+          id="forgetPwd"
+          class="mt-6 text-center relative"
+          style="height: 40px"
+          @mouseenter="startButtonDance"
+        >
           <el-button
             type="text"
-            :style="{ float: forgetPwd ? 'left' : 'right' }"
-            >忘记密码</el-button
+            class="absolute transition-all duration-500 ease-out"
+            :class="{ 'cursor-not-allowed': isButtonMoving }"
+            :style="buttonPosition"
+            @click="handleForgetPassword"
           >
+            忘记密码
+            <p>
+              <span v-if="showTaunt" class="ml-2 text-xs text-pink-400">{{
+                currentTaunt
+              }}</span>
+            </p>
+          </el-button>
         </div>
       </div>
-      <div style="height: 30px"></div>
     </div>
+
+    <!-- 对话框 -->
     <CuteDialog
       :visible.sync="dialogVisible"
       title="温馨提示"
       :message="dialogMessage"
-      class="dialog"
     />
   </div>
 </template>
 
 <script>
 import qs from "qs"
-// 导入cookie的获取和设置方法
 import { setCookie, clearCookie, getCookie } from "@/utils/api"
 import CuteDialog from "@/components/ui/CuteDialog"
+import InteractiveInput from "@/components/ui/InteractiveInput.vue"
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: "Login",
-  components: { CuteDialog },
+  name: "MainLogin",
+  components: { CuteDialog, InteractiveInput },
   data() {
     const validateName = (rules, value, callback) => {
       if (!value) {
@@ -121,21 +168,29 @@ export default {
       loading: false,
       dialogVisible: false,
       dialogMessage: "请等待小真寻重启成功后登录！",
+
+      // 忘记密码按钮相关状态
+      isButtonMoving: false,
+      showTaunt: false,
+      currentTaunt: "",
+      buttonPosition: {
+        left: "50%",
+        top: "0",
+        transform: "translateX(-50%)",
+      },
+      taunts: [
+        "哈哈，抓不到我吧！",
+        "别试了，你点不到的~",
+        "这么容易忘记密码？",
+        "管理员联系方式？想得美！",
+        "再试一次？再试也点不到！",
+        "你的鼠标速度太慢啦！",
+        "这就是你忘记密码的惩罚！",
+        "点不到点不到~",
+        "密码都记不住，还想点我？",
+        "放弃吧，你抓不到我的！",
+      ],
     }
-  },
-  mounted() {
-    const firstSetting = this.$route.params.firstSetting
-    if (firstSetting) {
-      this.dialogVisible = true
-    }
-    this.$nextTick(() => {
-      document.addEventListener("keydown", (event) => {
-        if (event.code === "Enter") {
-          event.preventDefault()
-          this.submitLogin()
-        }
-      })
-    })
   },
   methods: {
     submitLogin() {
@@ -162,7 +217,6 @@ export default {
                   clearCookie("tokenStr")
                 }
                 setCookie("tokenStr", tokenStr)
-                // // 页面跳转
                 let path = this.$route.query.redirect
                 this.$router.replace(
                   path == "/" || path == undefined ? "/home" : path
@@ -181,165 +235,117 @@ export default {
     changeApi() {
       this.$router.replace("/myapi")
     },
+
+    // 忘记密码按钮相关方法
+    startButtonDance() {
+      if (this.isButtonMoving) return
+
+      this.isButtonMoving = true
+      this.showTaunt = true
+      this.currentTaunt =
+        this.taunts[Math.floor(Math.random() * this.taunts.length)]
+
+      // 随机移动按钮
+      const danceInterval = setInterval(() => {
+        const container = document.querySelector("#forgetPwd")
+        if (!container) {
+          clearInterval(danceInterval)
+          return
+        }
+
+        const containerRect = container.getBoundingClientRect()
+
+        const maxLeft = containerRect.width - 100 // 减去按钮宽度
+        const maxTop = containerRect.height - 40 // 减去按钮高度
+
+        const newLeft = Math.random() * maxLeft
+        const newTop = Math.random() * maxTop
+
+        this.buttonPosition = {
+          left: `${newLeft}px`,
+          top: `${newTop}px`,
+          transform: "none",
+        }
+      }, 800)
+      var textReplaceInterval = null
+
+      // 60秒后停止移动
+      setTimeout(() => {
+        clearInterval(danceInterval)
+        this.isButtonMoving = false
+        this.buttonPosition = {
+          left: "50%",
+          top: "0",
+          transform: "translateX(-50%)",
+        }
+
+        // 60秒后隐藏嘲讽文字
+        setTimeout(() => {
+          this.showTaunt = false
+        }, 60000)
+      }, 60000)
+    },
+
+    handleForgetPassword() {
+      if (!this.isButtonMoving) {
+        this.$message.warning("忘记密码请查看配置文件！")
+      }
+    },
+  },
+  mounted() {
+    const firstSetting = this.$route.params.firstSetting
+    if (firstSetting) {
+      this.dialogVisible = true
+    }
+    this.$nextTick(() => {
+      document.addEventListener("keydown", (event) => {
+        if (event.code === "Enter") {
+          event.preventDefault()
+          this.submitLogin()
+        }
+      })
+    })
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.loginContainer {
-  border-radius: 15px;
-  background-clip: padding-box;
-  margin: 10% auto;
-  width: 400px;
-  padding: 15px 35px 15px 35px;
-  background: var(--bg-color-secondary);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 0 25px var(--border-color);
-}
-.loginTitle {
-  margin: 0px auto 40px auto;
-  text-align: center;
-  color: var(--text-color);
-}
-.loginRemember {
-  text-align: left;
-  margin: 0px 0px 15px 0px;
-  color: var(--text-color-secondary);
+<style>
+/* 樱花飘落动画 */
+.sakura {
+  position: absolute;
+  animation: sakura-fall linear infinite;
+  z-index: 0;
 }
 
-.loginPage {
-  background-color: var(--bg-color);
-  background-size: cover;
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-::v-deep .el-input__inner {
-  background-color: var(--el-fill-color-blank);
-  color: var(--el-text-color-primary);
-  border: 1px solid var(--el-border-color);
-}
-::v-deep .el-input__inner:focus {
-   border-color: var(--el-color-primary);
-}
-
-.el-button--primary {
-  background-color: var(--el-color-primary);
-  border-color: var(--el-color-primary);
-  color: #ffffff;
-
-  &:hover, &:focus {
-    background-color: var(--primary-color-light); 
-    border-color: var(--primary-color-light);
+@keyframes sakura-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
   }
 }
 
-.forget-pwd-right {
-  float: right;
-  margin-left: 10px;
-}
-.forget-pwd-left {
-  float: left;
-}
-.icon {
-  margin-left: 10px;
-  color: #aa9ea5;
-}
-.el-form {
-  width: 500px;
-}
-/deep/ .el-input--prefix .el-input__inner {
-  padding-left: 40px;
-  border: 1px solid #e9dfe5;
-  border-radius: 12px;
-}
-.input-border {
-  height: 46px;
+/* 覆盖 Element UI 样式 */
+.el-form-item__label {
+  @apply text-gray-600 font-medium;
 }
 
-.border {
-  background: url("../assets/image/login_bk_left_3.png");
-  width: 100%;
-  height: 100vh;
-  background-size: cover; /* 保持纵横比并填充整个容器 */
-  background-position: right; /* 图片在容器中居中显示 */
-  background-repeat: no-repeat; /* 不重复显示背景图片 */
-  padding: 50px 30px;
-  box-sizing: border-box;
-}
-.bk-img-border {
-  height: 100%;
-  width: 100%;
-  z-index: -1;
+.el-input__inner {
+  @apply border-gray-200 hover:border-purple-300 focus:border-purple-400 focus:ring-2 focus:ring-purple-100 rounded-lg transition-all duration-300;
 }
 
-.bk-img {
-  width: 100%;
-}
-.head-border {
-  width: 80px;
-  height: 80px;
-  border: #909090 1px solid;
-  background: #fff;
-  color: #333;
-  -moz-box-shadow: 2px 2px 10px #909090;
-  -webkit-box-shadow: 2px 2px 10px #909090;
-  box-shadow: 2px 2px 10px #909090;
-  border-radius: 50%;
-  text-align: center;
-  margin-bottom: 40px;
-}
-.head-pic {
-  border-radius: 50%;
-  background-color: #9facb7;
-  width: 70px;
-  height: 70px;
-  margin-top: 5px;
+.el-button--primary {
+  @apply shadow-md;
 }
 
-.title-border {
-  margin-bottom: 10px;
+.el-button--default {
+  @apply transition-all duration-300;
 }
 
-.title {
-  font-size: 23px;
-  color: black;
-}
-
-.title-text {
-  font-weight: bold;
-  margin-left: 10px;
-}
-
-.title-des {
-  color: #9facb7;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
-.left-form {
-  background-color: rgba(255, 255, 255, 0.6);
-  height: 100%;
-  width: 600px;
-  padding: 50px;
-  backdrop-filter: blur(10px);
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column;
-  border-right: 1px solid #f4c9e7;
-  border-radius: 20px;
-}
-
-/deep/ .el-form-item__label {
-  font-weight: bold;
-}
-
-/deep/ .el-input__inner {
-  background-color: #fffcc8;
+.el-loading-mask {
+  @apply bg-opacity-80;
 }
 </style>
