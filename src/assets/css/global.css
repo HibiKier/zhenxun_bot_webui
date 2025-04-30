@@ -13,3 +13,62 @@
   /* 导入的字体文件 */
   src: url("../font/msyh.ttf");
 }
+
+/* 可爱的滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 126, 185, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 126, 185, 0.8);
+}
+
+/* 卡片悬浮效果 */
+.el-card, .base-border {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(255, 126, 185, 0.2) !important;
+  }
+}
+
+/* 按钮样式 */
+.el-button {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* 输入框样式 */
+.el-input__inner {
+  transition: all 0.3s ease;
+  &:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 2px rgba(255, 126, 185, 0.2);
+  }
+}
+
+.chart-tooltip {
+  font-family: "Microsoft YaHei", sans-serif;
+}
+.tooltip-title {
+  color: #7e22ce;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.tooltip-value {
+  color: #ec4899;
+  font-size: 14px;
+}

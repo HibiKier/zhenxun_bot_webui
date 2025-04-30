@@ -210,7 +210,7 @@
 
             <!-- 用户下拉菜单 -->
             <el-dropdown
-              @command="handleCommand"
+              @command="dropdownClick"
               trigger="click"
               class="hover:bg-pink-100 rounded-full p-2 transition-all duration-300"
             >
@@ -245,7 +245,7 @@
           @click="handleMainClick"
         >
           <router-view
-            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-sm p-6 h-full"
+            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 h-full"
             :key="rvKey"
           />
         </main>
@@ -255,6 +255,7 @@
 </template>
 
 <script>
+import EventBus from "@/utils/event-bus"
 export default {
   name: "MainHome",
   data() {
@@ -297,6 +298,14 @@ export default {
       ],
     }
   },
+  watch: {
+    asideShow() {
+      EventBus.$emit("sidebar-aside", {
+        asideShow: this.asideShow,
+        timestamp: Date.now(),
+      })
+    },
+  },
   computed: {
     computedHeight() {
       return this.windowHeight - 1
@@ -313,15 +322,22 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
-    window.sessionStorage.removeItem("isAuthenticated")
+    // window.sessionStorage.removeItem("isAuthenticated")
   },
   inject: ["setAppTheme"],
   methods: {
+    dropdownClick(cmd) {
+      if (cmd == "logout") {
+        window.sessionStorage.removeItem("isAuthenticated") // 清除登录状态
+        this.$message.success("已退出登录！")
+        this.$router.push("/")
+      }
+    },
     getMenuWidth() {
       if (this.isCollapsed) {
         return this.isMobile ? "0rem" : "5.5rem"
       }
-      return "15.5rem"
+      return "13.5rem"
     },
     getTransform() {
       if (this.isMobile) {
@@ -334,7 +350,8 @@ export default {
       this.checkScreenSize()
     },
     checkScreenSize() {
-      this.isMobile = window.innerWidth < 768
+      this.isMobile = window.innerWidth <= 768
+      console.log("this.isMobile", this.isMobile)
 
       // 如果是移动设备或从桌面切换到移动设备
       if (this.isMobile) {
@@ -347,8 +364,6 @@ export default {
       }
     },
     handleMainClick() {
-      console.log("this.isCollapsed", this.isMobile, this.asideShow)
-
       if (this.isMobile) {
         // 如果是移动端且菜单显示，点击主内容应该关闭菜单
         if (this.asideShow) {
@@ -477,11 +492,6 @@ export default {
         this.setAppTheme(command)
       } else {
         console.error("setAppTheme function not provided/injected correctly.")
-      }
-    },
-    handleCommand(cmd) {
-      if (cmd == "logout") {
-        // ... logout logic ...
       }
     },
   },

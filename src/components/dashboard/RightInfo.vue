@@ -1,330 +1,301 @@
 <template>
-  <div class="right-info" ref="rightInfo">
-    <div class="base-border" ref="baseBorder">
+  <div class="right-info bg-pink-50 p-4 md:p-4 h-full" ref="rightInfo">
+    <!-- NoneBot配置卡片 - 更紧凑的版本 -->
+    <div
+      class="base-border bg-white rounded-lg p-4 shadow-sm mb-2 h-auto min-h-[120px]"
+      ref="baseBorder"
+    >
       <p
-        class="base-title"
-        :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+        class="base-title text-base font-bold mb-1 text-purple-600 flex items-center"
       >
-        NoneBot配置
+        <i class="fas fa-cog mr-1 text-xs"></i> NoneBot配置
       </p>
-      <div
-        class="nb-config"
-        :style="{ fontSize: fontSizeMana.nbConfig + 'px' }"
-      >
-        <el-row style="width: 100%">
-          <el-col :span="12" style="border-right: solid 1px #dddfe5">
-            <div class="nb-config-box-item">
-              <p class="config-info-item-text">{{ botConfig.host }}</p>
-              <p
-                class="config-small-title"
-                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
-              >
-                host
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="nb-config-box-item">
-              <p class="config-info-item-text">{{ botConfig.port }}</p>
-              <p
-                class="config-small-title"
-                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
-              >
-                port
-              </p>
-            </div>
-          </el-col>
-        </el-row>
-        <el-divider />
-        <el-row style="width: 100%">
-          <el-col :span="12" style="border-right: solid 1px #dddfe5">
-            <div class="nb-config-box-item">
-              <el-tooltip
-                class="tooltip-item"
-                effect="dark"
-                placement="top"
-                :content="botConfig.driver || ''"
-                :disabled="botConfig.driver.length < 5"
-              >
-                <p class="config-info-item-text">{{ botConfig.driver }}</p>
-              </el-tooltip>
-              <p
-                class="config-small-title"
-                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
-              >
-                driver
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="nb-config-box-item">
-              <p class="config-info-item-text">{{ botConfig.log_level }}</p>
-              <p
-                class="config-small-title"
-                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
-              >
-                log_level
-              </p>
-            </div>
-          </el-col>
-        </el-row>
-        <el-divider />
-        <el-row style="width: 100%">
-          <el-col :span="12" style="border-right: solid 1px #dddfe5">
-            <div class="nb-config-box-item">
-              <p class="config-info-item-text">{{ botConfig.api_timeout }}</p>
-              <p
-                class="config-small-title"
-                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
-              >
-                api_timeout
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="12">
-            <div class="nb-config-box-item">
-              <p class="config-info-item-text">
-                {{ botConfig.session_expire_timeout }}
-              </p>
-              <p
-                class="config-small-title"
-                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
-              >
-                session_expire_timeout
-              </p>
-            </div>
-          </el-col>
-        </el-row>
-        <el-divider />
-        <el-row style="width: 100%">
-          <el-col :span="24">
-            <div class="nb-config-box-item" style="width: 100%">
-              <p class="config-info-item-text">
-                {{ botConfig.nicknames }}
-              </p>
-              <p
-                class="config-small-title"
-                :style="{ fontSize: fontSizeMana.nbConfigTip + 'px' }"
-              >
-                NICKNAME
-              </p>
-            </div>
-          </el-col>
-        </el-row>
+      <div class="nb-config grid grid-cols-2 gap-1 px-0.5">
+        <div
+          v-for="(item, key) in configItems"
+          :key="key"
+          class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-sm p-1 border border-pink-100"
+        >
+          <el-tooltip
+            effect="light"
+            :content="String(item.value)"
+            placement="top"
+            popper-class="max-w-xs break-words"
+          >
+            <p
+              class="config-info-item-text text-xs font-mono truncate leading-tight cursor-default"
+            >
+              {{ item.value }}
+            </p>
+          </el-tooltip>
+          <p
+            class="config-small-title text-[9px] text-pink-500 font-bold uppercase tracking-tighter mt-0"
+          >
+            {{ item.label }}
+          </p>
+        </div>
       </div>
     </div>
-    <div :style="{ height: computedChartBorderHeight + 'px' }">
+
+    <!-- 图表区域 -->
+    <div class="space-y-4 min-h-[300px]">
+      <!-- 活跃群聊图表 -->
       <div
-        class="base-border"
-        :style="{
-          marginTop: '18px',
-          fontSize: fontSizeMana.chartTip + 'px',
-          height: chartDivHeight + 'px',
-        }"
+        class="base-border bg-white rounded-xl p-4 shadow-lg h-full min-h-[300px]"
+        :style="{ height: computedChartDivHeight + 'px' }"
       >
-        <div class="active-group">
-          <div style="height: 40px">
-            <p
-              class="base-title"
-              style="margin-top: 10px; float: left"
-              :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+        <div class="flex justify-between items-center mb-2">
+          <p
+            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
+          >
+            <i
+              class="fas fa-users mr-1 text-pink-500 animate-bounce text-sm"
+            ></i>
+            活跃群组
+          </p>
+          <div class="flex flex-wrap gap-1">
+            <button
+              v-for="type in timeTypes"
+              :key="'group' + type.value"
+              @click="clickGroupType(type.value)"
+              class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
+              :class="{
+                'bg-purple-500 text-white shadow-sm':
+                  selectGroupType === type.value,
+                'bg-pink-100 text-pink-600 hover:bg-pink-200':
+                  selectGroupType !== type.value,
+              }"
             >
-              活跃群聊
-            </p>
-            <div class="btn-group">
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'all' }"
-                @click="clickGroupType('all')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >ALL</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'day' }"
-                @click="clickGroupType('day')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >DAY</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'week' }"
-                @click="clickGroupType('week')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >WEEK</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'month' }"
-                @click="clickGroupType('month')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >MONTH</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'year' }"
-                @click="clickGroupType('year')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >YEAR</el-button
-              >
-            </div>
-          </div>
-          <div class="group-chart">
-            <div
-              ref="groupChart"
-              class="base-chart"
-              :style="{ height: computedChartHeight + 'px' }"
-            ></div>
+              {{ type.label }}
+            </button>
           </div>
         </div>
+        <div
+          ref="groupChart"
+          class="w-full"
+          :style="{ height: computedChartHeight + 'px' }"
+        ></div>
       </div>
+
+      <!-- 热门插件图表 -->
       <div
-        class="base-border"
-        :style="{
-          marginTop: '18px',
-          fontSize: fontSizeMana.chartTip + 'px',
-          height: chartDivHeight + 'px',
-        }"
+        class="base-border bg-white rounded-xl p-4 shadow-lg h-full min-h-[300px]"
+        :style="{ height: computedChartDivHeight + 'px' }"
       >
-        <div class="hot-plugin">
-          <div style="height: 40px">
-            <p
-              class="base-title"
-              style="margin-top: 10px; float: left"
-              :style="{ fontSize: fontSizeMana.titleText + 'px' }"
+        <div class="flex justify-between items-center mb-2">
+          <p
+            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
+          >
+            <i
+              class="fas fa-users mr-1 text-pink-500 animate-bounce text-sm"
+            ></i>
+            热门插件
+          </p>
+          <div class="flex flex-wrap gap-1">
+            <button
+              v-for="type in timeTypes"
+              :key="'plugin' + type.value"
+              @click="clickHotPluginType(type.value)"
+              class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
+              :class="{
+                'bg-purple-500 text-white shadow-sm':
+                  selectGroupType === type.value,
+                'bg-pink-100 text-pink-600 hover:bg-pink-200':
+                  selectGroupType !== type.value,
+              }"
             >
-              热门插件
-            </p>
-            <div class="btn-group">
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'all' }"
-                @click="clickHotPluginType('all')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >ALL</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'day' }"
-                @click="clickHotPluginType('day')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >DAY</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'week' }"
-                @click="clickHotPluginType('week')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >WEEK</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'month' }"
-                @click="clickHotPluginType('month')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >MONTH</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'year' }"
-                @click="clickHotPluginType('year')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >YEAR</el-button
-              >
-            </div>
-          </div>
-          <div>
-            <div
-              ref="hotPluginChart"
-              class="base-chart"
-              :style="{ height: computedChartHeight + 'px' }"
-            ></div>
+              {{ type.label }}
+            </button>
           </div>
         </div>
+        <div
+          ref="hotPluginChart"
+          class="w-full"
+          :style="{ height: computedChartHeight + 'px' }"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getFontSize } from "@/utils/utils"
+import EventBus from "@/utils/event-bus"
+import { debounce } from "lodash"
 export default {
   name: "RightInfo",
   data() {
     return {
-      fontSizeMana: {
-        nbConfig: 25,
-        nbConfigTip: 13,
-        titleText: 20,
-        chartTip: 15,
-      },
+      timeTypes: [
+        { label: "全部", value: "all" },
+        { label: "日", value: "day" },
+        { label: "周", value: "week" },
+        { label: "月", value: "month" },
+        { label: "年", value: "year" },
+      ],
       chartHeight: 0,
       chartDivHeight: 0,
       chartBorderHeight: 0,
       botInfo: null,
-      botConfig: { driver: "" },
+      botConfig: {
+        host: "127.0.0.1",
+        port: "8080",
+        driver: "~fastapi+~httpx+~websockets",
+        log_level: "INFO",
+        api_timeout: "30.0",
+        session_expire_timeout: "30",
+        nickname: [],
+      },
       selectGroupType: "all",
       selectHotPluginType: "all",
       groupChart: null,
       hotPluginChart: null,
-      groupCntInterval: null, //活跃数量定时器
+      groupCntInterval: null,
       chartOpt: {
         grid: {
-          top: "10%", // 控制数据表距离画布顶部的距离
-          bottom: "20%", // 控制数据表距离画布底部的距禿
-          left: "15%", // 控制数据表距离画布左侧的距离
-          right: "15%", // 控制数据表距离画布右侧的距离
+          top: "15%",
+          bottom: "30%",
+          left: "20%",
+          right: "10%",
         },
         tooltip: {
-          formatter: function (params) {
-            return params.value // 鼠标悬停时显示完整的标签内容
-          },
-        }, // 工具提示组件
+          trigger: "item",
+          formatter: (params) => `
+      <div class="chart-tooltip">
+        <div class="tooltip-title">${params.name}</div>
+        <div class="tooltip-value">${params.value}次</div>
+      </div>
+    `,
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderColor: "#ec4899",
+          borderWidth: 1,
+          padding: [8, 12],
+          extraCssText:
+            "box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15); border-radius: 8px;",
+        },
         xAxis: {
           type: "category",
-          name: "",
-          data: [],
-          axisLabel: {
-            interval: 0, //强制显示所有标签
-            rotate: 10,
-            formatter: function (value) {
-              return value.length > 8 ? value.slice(0, 8) + "..." : value
+          axisLine: {
+            lineStyle: {
+              color: "#d8b4fe",
+              width: 2,
             },
           },
-        }, // X轴
-        yAxis: { type: "value" }, // Y轴
+          axisTick: {
+            alignWithLabel: true,
+            lineStyle: {
+              color: "#f3e8ff",
+            },
+          },
+          axisLabel: {
+            interval: 0,
+            rotate: 30,
+            color: "#9333ea",
+            fontSize: 11,
+            fontFamily: "Microsoft YaHei, sans-serif",
+            formatter: (value) =>
+              value.length > 6 ? value.slice(0, 6) + "..." : value,
+          },
+          axisPointer: {
+            type: "shadow",
+            label: {
+              backgroundColor: "#a855f7",
+            },
+          },
+        },
+        yAxis: {
+          type: "value",
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#d8b4fe",
+              width: 2,
+            },
+          },
+          axisTick: {
+            lineStyle: {
+              color: "#f3e8ff",
+            },
+          },
+          axisLabel: {
+            color: "#9333ea",
+            fontSize: 11,
+            fontFamily: "Microsoft YaHei, sans-serif",
+          },
+          splitLine: {
+            lineStyle: {
+              color: "#fae8ff",
+              type: "dashed",
+            },
+          },
+        },
         series: [
           {
-            type: "bar", // 柱状图系列
-            barWidth: "40%", // 柱子宽度
-            label: { show: true }, // 标签展示
+            type: "bar",
+            barWidth: "65%",
+            barGap: "30%",
+            barCategoryGap: "40%",
+            label: {
+              show: true,
+              position: "top",
+              color: "#9333ea",
+              fontSize: 10,
+              fontFamily: "Microsoft YaHei, sans-serif",
+              formatter: (params) => (params.value > 0 ? params.value : ""),
+            },
             itemStyle: {
-              //通常情况下：
-              normal: {
-                //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
-                color: (params) => {
-                  var colorList = [
-                    "#855BD7",
-                    "#4B6FB8",
-                    "#0F6E43",
-                    "#B69C2B",
-                    "#2588BB",
-                    "#BB612D",
-                    "#1D9394",
-                    "#C24545",
-                  ]
-                  return colorList[params.dataIndex]
-                },
+              color: (params) => {
+                const colors = [
+                  "rgba(236, 72, 153, 0.8)",
+                  "rgba(168, 85, 247, 0.8)",
+                  "rgba(244, 114, 182, 0.8)",
+                  "rgba(249, 168, 212, 0.8)",
+                  "rgba(216, 180, 254, 0.8)",
+                ]
+                return colors[params.dataIndex % colors.length]
+              },
+              borderRadius: [6, 6, 0, 0],
+              shadowColor: "rgba(236, 72, 153, 0.3)",
+              shadowBlur: 8,
+              shadowOffsetY: 3,
+            },
+            emphasis: {
+              itemStyle: {
+                shadowColor: "rgba(236, 72, 153, 0.5)",
+                shadowBlur: 12,
+                shadowOffsetY: 6,
+              },
+              label: {
+                fontWeight: "bold",
+                color: "#7e22ce",
               },
             },
-            emphasis: { focus: "series" }, // 高亮效果
-            data: [], // 数据源
           },
         ],
+        // 添加动画效果
+        animationDuration: 1200,
+        animationEasing: "elasticOut",
+        animationDelay: (idx) => idx * 100,
       },
     }
   },
   computed: {
+    configItems() {
+      return [
+        { label: "Host", value: this.botConfig.host },
+        { label: "Port", value: this.botConfig.port },
+        { label: "Driver", value: this.botConfig.driver },
+        { label: "Log Level", value: this.botConfig.log_level },
+        { label: "API Timeout", value: this.botConfig.api_timeout },
+        {
+          label: "Session Timeout",
+          value: this.botConfig.session_expire_timeout,
+        },
+        {
+          label: "Nicknames",
+          value: this.botConfig.nickname?.join(", ") || "无",
+        },
+      ]
+    },
     computedChartHeight() {
       if (!this.chartHeight) {
         this.handleResize()
@@ -336,12 +307,6 @@ export default {
         this.handleResize()
       }
       return this.chartDivHeight
-    },
-    computedChartBorderHeight() {
-      if (!this.chartBorderHeight) {
-        this.handleResize()
-      }
-      return this.chartBorderHeight
     },
   },
   created() {
@@ -358,34 +323,36 @@ export default {
       this.getActiveGroupData(this.selectGroupType, true)
     }, 25000)
     this.handleResize()
+    EventBus.$on("sidebar-aside", debounce(this.handleResize, 200))
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResize)
+    EventBus.$off("sidebar-aside", this.handleResize)
     if (this.groupCntInterval) {
       clearInterval(this.groupCntInterval)
     }
   },
   methods: {
     handleResize() {
-      this.initFontSize()
       this.$nextTick(() => {
         setTimeout(() => {
-          this.chartBorderHeight =
-            this.$refs.rightInfo.offsetHeight -
-            this.$refs.baseBorder.offsetHeight -
-            18
-          this.chartDivHeight = (this.chartBorderHeight - 16) / 2
-          this.chartHeight = this.chartDivHeight - 82
-          this.groupChart.resize()
-          this.hotPluginChart.resize()
-        }, 500)
+          // 移动端适配
+          if (window.innerWidth < 768) {
+            this.chartHeight = window.innerHeight * 0.3
+            this.chartDivHeight = this.chartHeight + 80
+          } else {
+            if (this.$refs.rightInfo) {
+              const containerHeight = this.$refs.rightInfo.offsetHeight
+              this.chartDivHeight =
+                (containerHeight - this.$refs.baseBorder.offsetHeight - 54) / 2
+              this.chartHeight = this.chartDivHeight - 80
+            }
+          }
+
+          this.groupChart?.resize()
+          this.hotPluginChart?.resize()
+        }, 100)
       })
-    },
-    initFontSize() {
-      this.fontSizeMana.nbConfig = getFontSize(23, 26)
-      this.fontSizeMana.nbConfigTip = getFontSize(13, 16)
-      this.fontSizeMana.titleText = getFontSize(15, 18)
-      this.fontSizeMana.chartTip = getFontSize(12, 15)
     },
     getNonebotConfig() {
       const loading = this.getLoading(".base-border")
@@ -412,6 +379,15 @@ export default {
     clickGroupType(type) {
       this.selectGroupType = type
       this.getActiveGroupData(type)
+
+      // 添加点击动画效果
+      const buttons = document.querySelectorAll(".btn-group button")
+      buttons.forEach((btn) => {
+        if (btn.textContent.toLowerCase() === type) {
+          btn.classList.add("animate-pulse")
+          setTimeout(() => btn.classList.remove("animate-pulse"), 500)
+        }
+      })
     },
     getActiveGroupData(date_type, no_loading) {
       if (date_type == "all") {
@@ -444,35 +420,44 @@ export default {
 
             // --- 主题化修改 Start ---
             try {
-              const computedStyle = getComputedStyle(document.documentElement);
-              const textColor = computedStyle.getPropertyValue('--el-text-color-regular').trim() || '#c0c4cc';
-              const bgColorOverlay = computedStyle.getPropertyValue('--el-bg-color-overlay').trim() || '#303133';
-              const borderColorLight = computedStyle.getPropertyValue('--el-border-color-light').trim() || '#4C4D4F';
+              const computedStyle = getComputedStyle(document.documentElement)
+              const textColor =
+                computedStyle
+                  .getPropertyValue("--el-text-color-regular")
+                  .trim() || "#c0c4cc"
+              const bgColorOverlay =
+                computedStyle
+                  .getPropertyValue("--el-bg-color-overlay")
+                  .trim() || "#303133"
+              const borderColorLight =
+                computedStyle
+                  .getPropertyValue("--el-border-color-light")
+                  .trim() || "#4C4D4F"
 
-              tmpOpt.backgroundColor = 'transparent'; // 设置背景透明
-              
+              tmpOpt.backgroundColor = "transparent" // 设置背景透明
+
               // X 轴
-              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {};
-              tmpOpt.xAxis.axisLabel.color = textColor;
-              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {};
-              tmpOpt.xAxis.nameTextStyle.color = textColor;
+              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {}
+              tmpOpt.xAxis.axisLabel.color = textColor
+              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {}
+              tmpOpt.xAxis.nameTextStyle.color = textColor
               // Y 轴
-              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {};
-              tmpOpt.yAxis.axisLabel.color = textColor;
-              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {};
-              tmpOpt.yAxis.nameTextStyle.color = textColor;
+              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {}
+              tmpOpt.yAxis.axisLabel.color = textColor
+              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {}
+              tmpOpt.yAxis.nameTextStyle.color = textColor
               // 提示框
-              tmpOpt.tooltip = tmpOpt.tooltip || {};
-              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {};
-              tmpOpt.tooltip.textStyle.color = textColor;
-              tmpOpt.tooltip.backgroundColor = bgColorOverlay;
-              tmpOpt.tooltip.borderColor = borderColorLight;
+              tmpOpt.tooltip = tmpOpt.tooltip || {}
+              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {}
+              tmpOpt.tooltip.textStyle.color = textColor
+              tmpOpt.tooltip.backgroundColor = bgColorOverlay
+              tmpOpt.tooltip.borderColor = borderColorLight
               // 系列标签
-              if(tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label){
-                  tmpOpt.series[0].label.color = textColor;
+              if (tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label) {
+                tmpOpt.series[0].label.color = textColor
               }
             } catch (e) {
-              console.error("Failed to apply theme to group chart:", e);
+              console.error("Failed to apply theme to group chart:", e)
             }
             // --- 主题化修改 End ---
 
@@ -492,10 +477,16 @@ export default {
     },
     clickHotPluginType(type) {
       this.selectHotPluginType = type
-      if (type == "all") {
-        type = null
-      }
       this.getHotPlugin(type)
+
+      // 添加点击动画效果
+      const buttons = document.querySelectorAll(".hot-plugin .btn-group button")
+      buttons.forEach((btn) => {
+        if (btn.textContent.toLowerCase() === type) {
+          btn.classList.add("animate-pulse")
+          setTimeout(() => btn.classList.remove("animate-pulse"), 500)
+        }
+      })
     },
     getHotPlugin(date_type) {
       const loading = this.getLoading(".hot-plugin")
@@ -519,37 +510,46 @@ export default {
 
             // --- 主题化修改 Start ---
             try {
-              const computedStyle = getComputedStyle(document.documentElement);
-              const textColor = computedStyle.getPropertyValue('--el-text-color-regular').trim() || '#c0c4cc';
-              const bgColorOverlay = computedStyle.getPropertyValue('--el-bg-color-overlay').trim() || '#303133';
-              const borderColorLight = computedStyle.getPropertyValue('--el-border-color-light').trim() || '#4C4D4F';
-              
-              tmpOpt.backgroundColor = 'transparent'; // 设置背景透明
+              const computedStyle = getComputedStyle(document.documentElement)
+              const textColor =
+                computedStyle
+                  .getPropertyValue("--el-text-color-regular")
+                  .trim() || "#c0c4cc"
+              const bgColorOverlay =
+                computedStyle
+                  .getPropertyValue("--el-bg-color-overlay")
+                  .trim() || "#303133"
+              const borderColorLight =
+                computedStyle
+                  .getPropertyValue("--el-border-color-light")
+                  .trim() || "#4C4D4F"
+
+              tmpOpt.backgroundColor = "transparent" // 设置背景透明
 
               // X 轴
-              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {};
-              tmpOpt.xAxis.axisLabel.color = textColor;
-              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {};
-              tmpOpt.xAxis.nameTextStyle.color = textColor;
+              tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {}
+              tmpOpt.xAxis.axisLabel.color = textColor
+              tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {}
+              tmpOpt.xAxis.nameTextStyle.color = textColor
               // Y 轴
-              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {};
-              tmpOpt.yAxis.axisLabel.color = textColor;
-              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {};
-              tmpOpt.yAxis.nameTextStyle.color = textColor;
+              tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {}
+              tmpOpt.yAxis.axisLabel.color = textColor
+              tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {}
+              tmpOpt.yAxis.nameTextStyle.color = textColor
               // 提示框
-              tmpOpt.tooltip = tmpOpt.tooltip || {};
-              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {};
-              tmpOpt.tooltip.textStyle.color = textColor;
-              tmpOpt.tooltip.backgroundColor = bgColorOverlay;
-              tmpOpt.tooltip.borderColor = borderColorLight;
+              tmpOpt.tooltip = tmpOpt.tooltip || {}
+              tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {}
+              tmpOpt.tooltip.textStyle.color = textColor
+              tmpOpt.tooltip.backgroundColor = bgColorOverlay
+              tmpOpt.tooltip.borderColor = borderColorLight
               // 系列标签
-              if(tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label){
-                  tmpOpt.series[0].label.color = textColor;
+              if (tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label) {
+                tmpOpt.series[0].label.color = textColor
               }
             } catch (e) {
-              console.error("Failed to apply theme to plugin chart:", e);
+              console.error("Failed to apply theme to plugin chart:", e)
             }
-             // --- 主题化修改 End ---
+            // --- 主题化修改 End ---
 
             tmpOpt.xAxis.data = hotPluginList
             tmpOpt.series[0].data = data
@@ -565,119 +565,133 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+/* 基础样式 */
 .right-info {
-  padding: 0 20px 20px 20px;
-  height: 100%;
-  background-color: var(--bg-color);
-  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #d8b4fe #f5f3ff;
+}
 
-  ::v-deep .el-divider--horizontal {
-    margin: 10px 0;
-  }
+.right-info::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .config-small-title {
-    color: var(--text-color-secondary);
-    font-size: 13px;
-    margin-bottom: 5px;
-  }
+.right-info::-webkit-scrollbar-track {
+  background: #f5f3ff;
+  border-radius: 10px;
+}
 
-  .btn-group {
-    float: right;
+.right-info::-webkit-scrollbar-thumb {
+  background-color: #d8b4fe;
+  border-radius: 10px;
+}
 
-    .el-button--text {
-      color: var(--text-color-secondary);
-      padding: 0 8px;
-      &:hover,
-      &:focus {
-        color: var(--primary-color);
-      }
-    }
+/* 卡片悬停效果 */
+.base-border {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(216, 180, 254, 0.3);
+  overflow: hidden;
+}
 
-    .select-query-type {
-      color: var(--primary-color);
-      font-weight: 500;
-    }
-  }
+.base-border:hover {
+  box-shadow: 0 10px 15px -3px rgba(167, 139, 250, 0.2),
+    0 4px 6px -2px rgba(167, 139, 250, 0.1);
+}
 
-  .base-title {
-    color: var(--text-color);
-    margin-bottom: 15px;
-    display: block;
+.nb-config {
+  padding: 0;
+}
+
+.config-info-item-text {
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+/* 移动端更紧凑 */
+@media (max-width: 640px) {
+  .right-info {
+    padding: 0.5rem;
   }
 
   .base-border {
-    background-color: var(--bg-color-secondary);
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: var(--el-box-shadow-lighter);
-    overflow: hidden;
+    padding: 0.5rem;
+    min-height: 110px;
   }
 
   .nb-config {
-    padding: 0 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    /deep/ .el-col {
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    ::v-deep .el-divider--horizontal {
-      margin: 0;
-    }
-
-    ::v-deep .el-divider--vertical {
-      margin: 0 50px;
-      height: 73px;
-    }
-
-    .nb-config-box-item {
-      .config-info-item-text {
-        margin-bottom: 10px;
-        margin-top: 10px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        margin-top: 10px;
-        margin-bottom: 5px;
-      }
-    }
+    grid-template-columns: 1fr !important;
+    gap: 0.25rem;
   }
 
-  .base-chart {
-    height: 293px;
+  .config-info-item-text {
+    font-size: 11px;
   }
 
-  .active-group {
-    .el-button {
-      color: var(--text-color-secondary);
-    }
-  }
-
-  .hot-plugin {
-    .el-button {
-      color: var(--text-color-secondary);
-    }
+  .config-small-title {
+    font-size: 8px;
   }
 }
 
-.group-chart, .plugin-chart {
-  // Contained within base-border now
+/* 标题动画 */
+.base-title {
+  text-shadow: 1px 1px 2px rgba(216, 180, 254, 0.5);
 }
 
-.base-chart {
-  width: 100%;
+/* 确保小屏幕下也能显示完整 */
+@media (max-width: 640px) {
+  .base-border {
+    min-height: auto;
+  }
+
+  .right-info {
+    padding: 0.75rem;
+  }
 }
 
-::v-deep .el-tooltip__popper.is-dark {
-  background: var(--bg-color-secondary);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+/* 二次元风格装饰元素 */
+.base-border::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  z-index: -1;
+  background: linear-gradient(45deg, #f472b6, #a78bfa, #7dd3fc);
+  background-size: 300% 300%;
+  border-radius: 12px;
+  opacity: 0.1;
+  animation: gradientBG 8s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 工具提示样式 */
+::v-deep .el-tooltip__popper {
+  max-width: 80vw;
+  border: 1px solid #f472b6 !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  color: #6b46c1 !important;
+  font-size: 12px;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.2) !important;
+}
+
+::v-deep .el-tooltip__popper[x-placement^="top"] .popper__arrow {
+  border-top-color: #f472b6 !important;
+}
+
+::v-deep .el-tooltip__popper[x-placement^="bottom"] .popper__arrow {
+  border-bottom-color: #f472b6 !important;
 }
 </style>
