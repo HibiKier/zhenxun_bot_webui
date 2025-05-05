@@ -1,202 +1,256 @@
 <template>
-  <div class="main" :style="{ height: computedMainHeight + 'px' }">
-    <div class="mid-info">
-      <div class="mid-box">
-        <one-mark text="这是一个标记的魔法" />
-        <div style="margin-left: 10px; margin-bottom: 20px">
-          <span v-for="(path, i) in pathList" :key="i">
-            <span class="path-item" @click="clickPath(i)">{{ path }}</span> /
-          </span>
-        </div>
-        <div class="chart-box">
-          <div
-            ref="resourcesChart"
-            class="base-chart"
-            :style="{ height: computedChartHeight + 'px' }"
-          ></div>
-        </div>
-      </div>
-    </div>
-    <div class="main-tree">
-      <p class="tree-title">目录结构树</p>
-      <div class="btn-group">
-        <my-button
-          icon="add-file"
-          class="btn"
-          :width="40"
-          :height="32"
-          content="添加文件"
-          @click="clickRootAddFile"
-        />
-        <my-button
-          icon="add-folder"
-          content="添加文件夹"
-          class="btn"
-          :width="40"
-          :height="32"
-          @click="clickRootAddFolder"
-        />
-        <my-button
-          icon="refresh"
-          content="刷新"
-          class="btn"
-          :width="40"
-          :height="32"
-          @click="treeKey++"
-        />
-      </div>
-      <one-mark
-        :showDivider="false"
-        text="这是一个标记的魔法"
-        style="height: 42px"
-        v-if="!showAddFile && !showAddFolder"
-      />
-      <div class="rename-input" v-if="showAddFile">
-        <el-input v-model="addFileName" placeholder="请输入文件名称"></el-input
-        ><my-button
-          text="确定"
-          :height="30"
-          :width="50"
-          @click="addFile({ createName: addFileName })"
-        />
-        <my-button
-          text="取消"
-          :height="30"
-          :width="50"
-          @click="
-            showAddFile = false
-            addFileName = ''
-          "
-        />
-      </div>
-      <div class="rename-input" v-if="showAddFolder">
-        <el-input
-          v-model="addFileName"
-          placeholder="请输入文件夹名称"
-        ></el-input
-        ><my-button
-          text="确定"
-          :height="30"
-          :width="50"
-          @click="addFolder({ createFolderName: addFileName })"
-        />
-        <my-button
-          text="取消"
-          :height="30"
-          :width="50"
-          @click="
-            showAddFolder = false
-            addFileName = ''
-          "
-        />
-      </div>
-      <el-tree
-        ref="tree"
-        :data="treeData"
-        :props="props"
-        :load="loadNode"
-        lazy
-        class="tree-class"
-        :key="treeKey"
-        :default-expanded-keys="defaultExpandedKeys"
-        node-key="full_path"
-        @node-expand="nodeExpand"
-        @node-collapse="nodeCollapse"
-      >
-        <span class="custom-tree-node" slot-scope="{ node, data }">
-          <span
-            ><svg-icon
-              :iconClass="getIcon(data)"
-              path="vscode-icons"
-              style="margin-right: 5px"
-            />{{ node.label }}</span
-          >
-          <span>
-            <el-popover
-              placement="right"
-              width="100"
-              trigger="click"
-              :ref="`popover-${data.full_path}`"
-              @hide="hidePopover(data)"
-            >
-              <template v-if="data.is_file">
-                <p class="pop-select" @click="editCode(data, true)">查看</p>
-                <p
-                  class="pop-select"
-                  v-if="!data.is_image"
-                  @click="editCode(data, false)"
-                >
-                  编辑
-                </p>
-                <p class="pop-select" @click="showRename(data)">重命名</p>
-                <div class="rename-input" v-if="data.showRename">
-                  <el-input v-model="data.rename"></el-input
-                  ><my-button
-                    text="确定"
-                    :height="30"
-                    :width="50"
-                    @click="rename(data, 'file')"
-                  />
-                </div>
-                <p
-                  class="pop-select"
-                  style="margin-bottom: 0"
-                  @click="deleteFile(data)"
-                >
-                  删除
-                </p>
-              </template>
-              <template v-else>
-                <p class="pop-select" @click="showCreate(data)">新建文件</p>
-                <div class="rename-input" v-if="data.showCreate">
-                  <el-input v-model="data.createName"></el-input
-                  ><my-button
-                    text="确定"
-                    :height="30"
-                    :width="50"
-                    @click="addFile(data)"
-                  />
-                </div>
-                <p class="pop-select" @click="showCreateFolder(data)">
-                  新建文件夹
-                </p>
-                <div class="rename-input" v-if="data.showCreateFolder">
-                  <el-input v-model="data.createFolderName"></el-input
-                  ><my-button
-                    text="确定"
-                    :height="30"
-                    :width="50"
-                    @click="addFolder(data)"
-                  />
-                </div>
-                <p class="pop-select" @click="showRename(data)">重命名</p>
-                <div class="rename-input" v-if="data.showRename">
-                  <el-input v-model="data.rename"></el-input
-                  ><my-button
-                    text="确定"
-                    :height="30"
-                    :width="50"
-                    @click="rename(data, 'folder')"
-                  />
-                </div>
-                <p
-                  class="pop-select"
-                  style="margin-bottom: 0"
-                  @click="deleteFolder(data)"
-                >
-                  删除
-                </p>
-              </template>
-              <svg-icon
-                :iconClass="data.is_file ? 'file-settings' : 'folder-settings'"
-                @click.native.stop="clickPopover"
-                slot="reference"
-              />
-            </el-popover>
-          </span>
+  <div
+    ref="container"
+    class="dir-tree-container bg-gradient-to-br from-pink-50 to-purple-50 p-4 h-full overflow-y-auto cute-scrollbar"
+  >
+    <!-- 顶部面包屑导航 -->
+    <div
+      ref="breadcrumb"
+      class="breadcrumb bg-white rounded-xl p-3 mb-4 shadow-md flex items-center flex-wrap"
+    >
+      <span v-for="(path, i) in pathList" :key="i" class="flex items-center">
+        <span
+          class="path-item text-purple-600 hover:text-pink-500 cursor-pointer transition-colors"
+          @click="clickPath(i)"
+        >
+          {{ path }}
         </span>
-      </el-tree>
+        <span class="mx-2 text-gray-400" v-if="i < pathList.length - 1">/</span>
+      </span>
     </div>
+
+    <!-- 主要内容区 - 上下布局 -->
+    <div class="content-area flex flex-col lg:flex-row gap-4">
+      <!-- 资源图表区 -->
+      <div
+        ref="chartArea"
+        class="chart-area bg-white rounded-2xl p-4 shadow-md flex-1"
+        :style="{ height: chartAreaHeight + 'px' }"
+      >
+        <div
+          ref="resourcesChart"
+          class="w-full h-full"
+          :style="{ height: chartAreaHeight + 'px' }"
+        ></div>
+      </div>
+
+      <!-- 目录树区 -->
+      <div
+        ref="treeArea"
+        class="tree-area bg-white rounded-2xl p-4 shadow-md flex-1 lg:w-1/2"
+        :style="{ height: treeAreaHeight + 'px' }"
+      >
+        <!-- 标题和操作按钮 -->
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-bold text-purple-600 flex items-center">
+            <svg-icon icon-class="folder-tree" class="mr-2" />
+            目录结构树
+          </h3>
+          <div class="flex space-x-2">
+            <my-button
+              icon="add-file"
+              class="btn cute-btn"
+              :width="40"
+              :height="32"
+              content="添加文件"
+              @click="clickRootAddFile"
+            />
+            <my-button
+              icon="add-folder"
+              content="添加文件夹"
+              class="btn cute-btn"
+              :width="40"
+              :height="32"
+              @click="clickRootAddFolder"
+            />
+            <my-button
+              icon="refresh"
+              content="刷新"
+              class="btn cute-btn"
+              :width="40"
+              :height="32"
+              @click="treeKey++"
+            />
+          </div>
+        </div>
+
+        <!-- 添加文件/文件夹输入框 -->
+        <div class="mb-4 space-y-2">
+          <div class="flex items-center space-x-2" v-if="showAddFile">
+            <el-input
+              v-model="addFileName"
+              placeholder="请输入文件名称"
+              class="cute-input"
+            ></el-input>
+            <my-button
+              text="确定"
+              :height="30"
+              :width="50"
+              class="cute-btn"
+              @click="addFile({ createName: addFileName })"
+            />
+            <my-button
+              text="取消"
+              :height="30"
+              :width="50"
+              class="cute-btn-secondary"
+              @click="
+                showAddFile = false
+                addFileName = ''
+              "
+            />
+          </div>
+          <div class="flex items-center space-x-2" v-if="showAddFolder">
+            <el-input
+              v-model="addFileName"
+              placeholder="请输入文件夹名称"
+              class="cute-input"
+            ></el-input>
+            <my-button
+              text="确定"
+              :height="30"
+              :width="50"
+              class="cute-btn"
+              @click="addFolder({ createFolderName: addFileName })"
+            />
+            <my-button
+              text="取消"
+              :height="30"
+              :width="50"
+              class="cute-btn-secondary"
+              @click="
+                showAddFolder = false
+                addFileName = ''
+              "
+            />
+          </div>
+        </div>
+
+        <!-- 树形目录 -->
+        <el-tree
+          ref="tree"
+          :data="treeData"
+          :props="props"
+          :load="loadNode"
+          lazy
+          class="cute-tree"
+          :key="treeKey"
+          :default-expanded-keys="defaultExpandedKeys"
+          node-key="full_path"
+          @node-expand="nodeExpand"
+          @node-collapse="nodeCollapse"
+          :style="{ height: treeHeight + 'px' }"
+        >
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span class="flex items-center">
+              <svg-icon
+                :iconClass="getIcon(data)"
+                path="vscode-icons"
+                class="mr-2 text-lg"
+              />
+              <span class="truncate">{{ node.label }}</span>
+            </span>
+            <span>
+              <el-popover
+                placement="right"
+                width="120"
+                trigger="click"
+                :ref="`popover-${data.full_path}`"
+                popper-class="cute-popover"
+                @hide="hidePopover(data)"
+              >
+                <template v-if="data.is_file">
+                  <p class="pop-item" @click="editCode(data, true)">查看</p>
+                  <p
+                    class="pop-item"
+                    v-if="!data.is_image"
+                    @click="editCode(data, false)"
+                  >
+                    编辑
+                  </p>
+                  <p class="pop-item" @click="showRename(data)">重命名</p>
+                  <div class="rename-input" v-if="data.showRename">
+                    <el-input
+                      v-model="data.rename"
+                      class="cute-input"
+                    ></el-input>
+                    <my-button
+                      text="确定"
+                      :height="30"
+                      :width="50"
+                      class="cute-btn mt-2"
+                      @click="rename(data, 'file')"
+                    />
+                  </div>
+                  <p class="pop-item text-red-500" @click="deleteFile(data)">
+                    删除
+                  </p>
+                </template>
+                <template v-else>
+                  <p class="pop-item" @click="showCreate(data)">新建文件</p>
+                  <div class="rename-input" v-if="data.showCreate">
+                    <el-input
+                      v-model="data.createName"
+                      class="cute-input"
+                    ></el-input>
+                    <my-button
+                      text="确定"
+                      :height="30"
+                      :width="50"
+                      class="cute-btn mt-2"
+                      @click="addFile(data)"
+                    />
+                  </div>
+                  <p class="pop-item" @click="showCreateFolder(data)">
+                    新建文件夹
+                  </p>
+                  <div class="rename-input" v-if="data.showCreateFolder">
+                    <el-input
+                      v-model="data.createFolderName"
+                      class="cute-input"
+                    ></el-input>
+                    <my-button
+                      text="确定"
+                      :height="30"
+                      :width="50"
+                      class="cute-btn mt-2"
+                      @click="addFolder(data)"
+                    />
+                  </div>
+                  <p class="pop-item" @click="showRename(data)">重命名</p>
+                  <div class="rename-input" v-if="data.showRename">
+                    <el-input
+                      v-model="data.rename"
+                      class="cute-input"
+                    ></el-input>
+                    <my-button
+                      text="确定"
+                      :height="30"
+                      :width="50"
+                      class="cute-btn mt-2"
+                      @click="rename(data, 'folder')"
+                    />
+                  </div>
+                  <p class="pop-item text-red-500" @click="deleteFolder(data)">
+                    删除
+                  </p>
+                </template>
+                <svg-icon
+                  :iconClass="
+                    data.is_file ? 'file-settings' : 'folder-settings'
+                  "
+                  @click.native.stop="clickPopover"
+                  slot="reference"
+                  class="text-gray-500 hover:text-pink-500 cursor-pointer transition-colors"
+                />
+              </el-popover>
+            </span>
+          </span>
+        </el-tree>
+      </div>
+    </div>
+
+    <!-- 编辑器和图片查看器 -->
     <edit-file
       v-if="editVisible"
       @close="
@@ -224,15 +278,20 @@
 <script>
 import SvgIcon from "../SvgIcon/SvgIcon.vue"
 import MyButton from "../ui/MyButton.vue"
-// import { v4 } from "uuid"
-import OneMark from "../ui/OneMark.vue"
 import EditFile from "./EditFile.vue"
 import ImageView from "./ImageView.vue"
+
 export default {
-  components: { OneMark, SvgIcon, MyButton, EditFile, ImageView },
+  components: { SvgIcon, MyButton, EditFile, ImageView },
   name: "DirTree",
   data() {
     return {
+      // 原有数据属性
+      containerHeight: 0,
+      breadcrumbHeight: 0,
+      chartAreaHeight: 0,
+      treeAreaHeight: 0,
+      treeHeight: 0,
       windowHeight: window.innerHeight,
       chartHeight: 0,
       mainHeight: 0,
@@ -288,44 +347,41 @@ export default {
       },
     }
   },
-  computed: {
-    computedMainHeight() {
-      if (!this.mainHeight) {
-        this.handleResize()
-      }
-      return this.mainHeight
-    },
-    computedChartHeight() {
-      if (!this.chartHeight) {
-        this.handleResize()
-      }
-      return this.chartHeight
-    },
-    computedMainTreeHeight() {
-      if (!this.mainTreeHeight) {
-        this.handleResize()
-      }
-      return this.mainTreeHeight
-    },
-  },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
     this.resourcesChart = this.$echarts.init(this.$refs.resourcesChart)
     // this.getDir()
     this.loadIcons()
     this.getResourcesSize()
+    // 添加响应式处理
+    this.handleResize()
+    window.addEventListener("resize", this.handleResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize)
   },
   methods: {
     handleResize() {
-      this.windowHeight = window.innerHeight
-      const statusBorderHeight = this.windowHeight / 3.5
-      this.mainHeight = this.windowHeight - statusBorderHeight - 130
-      this.mainTreeHeight = this.mainHeight
-      this.chartHeight = this.mainHeight - 150
       this.$nextTick(() => {
-        setTimeout(() => {
+        // 获取容器和各个区域的实际高度
+        this.containerHeight = this.$refs.container?.clientHeight || 0
+        this.breadcrumbHeight = this.$refs.breadcrumb?.clientHeight || 0
+
+        // 计算剩余可用高度 (减去面包屑、内边距和间距)
+        const remainingHeight =
+          this.containerHeight - this.breadcrumbHeight - 32 // 32 = 16(padding) + 16(gap)
+
+        // 设置图表区域和树区域的高度
+        this.chartAreaHeight = remainingHeight - 20
+        this.treeAreaHeight = remainingHeight - 20
+
+        // 计算树形控件内部可用高度 (减去标题、按钮组和输入框区域)
+        const treeHeaderHeight = 120 // 估算标题和按钮区域高度
+        this.treeHeight = Math.max(300, this.treeAreaHeight - treeHeaderHeight)
+
+        // 重新调整图表大小
+        if (this.resourcesChart) {
           this.resourcesChart.resize()
-        }, 100)
+        }
       })
     },
     editCode(data, onlyRead) {
@@ -654,116 +710,187 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.pop-select {
+<style scoped>
+/* 二次元风格样式 */
+.dir-tree-container {
+  --cute-primary: #ec4899;
+  --cute-secondary: #a855f7;
+  --cute-bg: #fff1f8;
+}
+
+/* 面包屑导航 */
+.breadcrumb {
+  background: linear-gradient(145deg, #ffffff, #fdf4ff);
+  border: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+.path-item {
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.path-item:hover {
+  background-color: rgba(236, 72, 153, 0.1);
+}
+
+/* 卡片区域 */
+.chart-area,
+.tree-area {
+  border: 1px solid rgba(236, 72, 153, 0.15);
+  background: linear-gradient(145deg, #ffffff, #fdf4ff);
+  transition: all 0.3s ease;
+}
+
+.chart-area:hover,
+.tree-area:hover {
+  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.15);
+  transform: translateY(-2px);
+}
+
+/* 树形控件 */
+.cute-tree {
+  background: transparent;
+  overflow: auto;
+}
+
+.cute-tree :deep(.el-tree-node__content) {
+  height: 36px;
+  padding: 0 8px;
+  border-radius: 6px;
+  margin: 2px 0;
+  transition: all 0.2s;
+}
+
+.cute-tree :deep(.el-tree-node__content:hover) {
+  background-color: rgba(236, 72, 153, 0.1);
+}
+
+.cute-tree :deep(.el-tree-node:focus > .el-tree-node__content) {
+  background-color: rgba(236, 72, 153, 0.15);
+}
+
+/* 按钮样式 */
+.cute-btn {
+  background-color: var(--cute-primary);
+  color: white;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.cute-btn:hover {
+  background-color: #db2777;
+  transform: translateY(-1px);
+}
+
+.cute-btn-secondary {
+  background-color: white;
+  color: var(--cute-primary);
+  border: 1px solid var(--cute-primary);
+  border-radius: 8px;
+}
+
+.cute-btn-secondary:hover {
+  background-color: rgba(236, 72, 153, 0.1);
+}
+
+/* 输入框样式 */
+.cute-input :deep(.el-input__inner) {
+  border-radius: 8px;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+.cute-input :deep(.el-input__inner:focus) {
+  border-color: var(--cute-primary);
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+}
+
+/* 弹出菜单项 */
+.pop-item {
+  padding: 6px 10px;
+  border-radius: 4px;
   cursor: pointer;
-  padding: 6px;
+  transition: all 0.2s;
 }
 
-.pop-select:hover {
-  background-color: var(--bg-color-hover);
+.pop-item:hover {
+  background-color: rgba(236, 72, 153, 0.1);
+  color: var(--cute-primary);
 }
 
-.rename-input {
-  display: flex;
-  border: 1px solid var(--border-color);
-  border-radius: 5px;
-  height: 30px;
-  margin-bottom: 10px;
+/* 滚动条 */
+.cute-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
 
-  ::v-deep .button-class {
-    border-radius: 0;
-    font-size: 13px;
+.cute-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(236, 72, 153, 0.5);
+  border-radius: 4px;
+}
+
+.cute-scrollbar::-webkit-scrollbar-track {
+  background-color: rgba(236, 72, 153, 0.1);
+  border-radius: 4px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .dir-tree-container {
+    padding: 12px;
   }
 
-  ::v-deep .el-input__inner {
-    height: 30px;
-    border-radius: 0;
+  .content-area {
+    flex-direction: column;
+  }
+
+  .tree-area {
+    width: 100% !important;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn {
+    width: 100% !important;
+    margin-right: 0 !important;
   }
 }
 
-.main {
-  height: 100%;
-  width: calc(100% - 40px);
-  display: flex;
-  padding: 0 20px;
+.cute-btn {
+  background-color: var(--cute-primary);
+  color: white;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
 
-  .mid-info {
-    height: 100%;
-    width: 40%;
+.cute-btn:hover {
+  background-color: #db2777;
+  transform: translateY(-1px);
+}
 
-    .mid-box {
-      height: 100%;
-      width: 100%;
-      border-radius: 10px;
-      background-color: var(--bg-color-secondary);
-      .path-item {
-        color: var(--primary-color);
-        cursor: pointer;
-      }
-      .chart-box {
-        height: calc(100% - 120px);
-        width: 100%;
-        // display: flex;
-        // justify-content: center;
-        // align-items: center;
-        .base-chart {
-          width: 100%;
-          height: 677px;
-        }
-      }
-    }
-  }
-  .main-tree {
-    width: 60%;
-    padding: 30px;
-    // border: 1px solid #d3d3d4;
-    border-radius: 10px;
-    background-color: var(--bg-color-secondary);
-    margin-left: 30px;
+.cute-btn-secondary {
+  background-color: white;
+  color: var(--cute-primary);
+  border: 1px solid var(--cute-primary);
+  border-radius: 8px;
+}
 
-    .btn-group {
-      display: flex;
-      margin-bottom: 5px;
-      border-bottom: 1px solid var(--border-color);
-      border-radius: 5px;
-      padding-bottom: 5px;
-      .btn {
-        margin-right: 5px;
-      }
-    }
+.cute-btn-secondary:hover {
+  background-color: rgba(236, 72, 153, 0.1);
+}
+</style>
 
-    .tree-title {
-      // color: #939395;
-      font-weight: bold;
-      font-size: 18px;
-      // border: 1px solid #d3d3d4;
-      padding: 5px;
-      border-radius: 10px;
-      text-align: center;
-      margin-bottom: 30px;
-    }
+<style>
+/* 全局弹出框样式 */
+.cute-popover {
+  border: 1px solid rgba(236, 72, 153, 0.2) !important;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.1) !important;
+  border-radius: 10px !important;
+  background: linear-gradient(145deg, #ffffff, #fdf4ff) !important;
+}
 
-    .custom-tree-node {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 14px;
-      padding-right: 8px;
-    }
-    .tree-class {
-      height: calc(100% - 140px);
-      overflow: auto;
-      border-radius: 5px;
-      // border: 1px solid #d3d3d4;
-      background-color: var(--bg-color-secondary);
-      font-size: 14px;
-    }
-
-    ::v-deep .el-tree-node__expand-icon {
-      color: none;
-    }
-  }
+.cute-popover .popper__arrow::after {
+  border-bottom-color: #fdf4ff !important;
 }
 </style>

@@ -90,9 +90,10 @@
 
       <!-- 主内容区 -->
       <div
-        class="flex-1 flex flex-col min-h-screen transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        class="flex-1 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
         :style="{
           width: isCollapsed ? 'calc(100% - 5.5rem)' : 'calc(100% - 18.5rem)',
+          overflow: 'hidden',
         }"
       >
         <!-- 顶部导航 -->
@@ -241,7 +242,7 @@
 
         <!-- 主内容 - 添加平滑的边距过渡 -->
         <main
-          class="flex-1 p-0 bg-gradient-to-br from-pink-50 to-purple-50"
+          class="flex-1 h-full p-0 bg-gradient-to-br from-pink-50 to-purple-50"
           @click="handleMainClick"
         >
           <router-view

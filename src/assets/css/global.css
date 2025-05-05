@@ -8,6 +8,100 @@
   src: url("../font/fzrzExtraBold.ttf");
 }
 
+/* 全局消息样式 */
+.anime-message {
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  padding: 12px 20px !important;
+  font-size: 14px !important;
+  border-left: 4px solid !important;
+}
+
+.anime-message.el-message--success {
+  color: #10b981 !important;
+  border-left-color: #10b981 !important;
+}
+
+.anime-message.el-message--warning {
+  color: #f59e0b !important;
+  border-left-color: #f59e0b !important;
+}
+
+.anime-message.el-message--error {
+  color: #ef4444 !important;
+  border-left-color: #ef4444 !important;
+}
+
+/* 自定义Element UI组件样式 */
+.anime-textarea .el-textarea__inner {
+  border-radius: 12px !important;
+  border: 2px solid rgba(167, 139, 250, 0.3) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  font-family: "Courier New", monospace !important;
+  transition: all 0.3s ease !important;
+  color: #4c1d95 !important;
+  height: 100% !important;
+}
+
+.anime-textarea .el-textarea__inner:focus {
+  border-color: #8b5cf6 !important;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+}
+
+.anime-table {
+  --el-table-border-color: rgba(167, 139, 250, 0.3) !important;
+  --el-table-header-bg-color: rgba(237, 233, 254, 0.8) !important;
+  --el-table-tr-bg-color: rgba(255, 255, 255, 0.9) !important;
+  --el-table-row-hover-bg-color: rgba(199, 210, 254, 0.3) !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.anime-table th {
+  color: #5b21b6 !important;
+  font-weight: bold !important;
+  letter-spacing: 0.5px !important;
+}
+
+.anime-table td {
+  color: #4c1d95 !important;
+  font-size: 14px !important;
+}
+
+.anime-pagination .el-pager li,
+.anime-pagination .el-pagination button {
+  border-radius: 8px !important;
+  margin: 0 3px !important;
+  min-width: 28px !important;
+  background: rgba(167, 139, 250, 0.1) !important;
+  color: #6b21a8 !important;
+}
+
+.anime-pagination .el-pager li.active {
+  background: linear-gradient(to right, #8b5cf6, #6366f1) !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+.anime-pagination .el-pager li:hover {
+  background: rgba(167, 139, 250, 0.2) !important;
+  color: #6b21a8 !important;
+}
+
+.anime-empty .el-empty__description p {
+  color: #6b21a8 !important;
+  font-size: 16px !important;
+  margin-top: 10px !important;
+}
+
+.anime-popover {
+  border-radius: 12px !important;
+  border: 2px solid rgba(236, 72, 153, 0.2) !important;
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15) !important;
+}
+
 @font-face {
   font-family: hywFont;
   /* 导入的字体文件 */
@@ -35,7 +129,8 @@
 }
 
 /* 卡片悬浮效果 */
-.el-card, .base-border {
+.el-card,
+.base-border {
   transition: all 0.3s ease;
   &:hover {
     transform: translateY(-3px);

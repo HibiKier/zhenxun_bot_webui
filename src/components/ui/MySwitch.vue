@@ -1,176 +1,149 @@
 <template>
   <div
-    class="button r"
-    id="button-1"
-    :style="{ 'pointer-events': disabled ? 'none' : null }"
+    class="my-switch"
+    :class="{
+      'is-disabled': disabled,
+      'is-checked': myValue,
+    }"
+    @click="toggleSwitch"
   >
     <input
       v-model="myValue"
-      @input="
-        () => {
-          $emit('input', myValue)
-          $emit('change', myValue)
-        }
-      "
       type="checkbox"
-      class="checkbox"
+      class="my-switch__input"
+      :disabled="disabled"
     />
-    <div class="knobs"></div>
-    <div class="layer"></div>
+    <span class="my-switch__core">
+      <span class="my-switch__button">
+        <span v-if="myValue" class="my-switch__emoji">🌸</span>
+        <span v-else class="my-switch__emoji">🌼</span>
+      </span>
+    </span>
   </div>
 </template>
 
 <script>
 export default {
   name: "MySwitch",
-  props: ["value", "disabled"],
+  props: {
+    value: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      myValue: true,
+      myValue: this.value,
     }
   },
-  mounted() {
-    this.myValue = !this.value
+  watch: {
+    value(newVal) {
+      this.myValue = newVal
+    },
+  },
+  methods: {
+    toggleSwitch() {
+      if (!this.disabled) {
+        this.myValue = !this.myValue
+        this.$emit("input", this.myValue)
+        this.$emit("change", this.myValue)
+      }
+    },
   },
 }
 </script>
+
 <style lang="scss" scoped>
-* {
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-*:focus {
-  outline: none;
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-  background-color: #f1f9f9;
-}
-
-#app-cover {
-  display: table;
-  width: 600px;
-  margin: 40px auto;
-  counter-reset: button-counter;
-}
-
-.row {
-  display: table-row;
-}
-
-.toggle-button-cover {
-  display: table-cell;
+.my-switch {
+  display: inline-flex;
+  align-items: center;
   position: relative;
-  width: 200px;
-  height: 140px;
-  box-sizing: border-box;
-}
-
-.button-cover {
-  height: 100px;
-  margin: 20px;
-  background-color: #fff;
-  box-shadow: 0 10px 20px -8px #c5d6d6;
-  border-radius: 4px;
-}
-
-.button-cover:before {
-  counter-increment: button-counter;
-  content: counter(button-counter);
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  color: #d7e3e3;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1;
-  padding: 5px;
-}
-
-.button-cover,
-.knobs,
-.layer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.button {
-  position: relative;
-  // top: 50%;
-  width: 76px;
-  height: 36px;
-  // margin: -20px auto 0 auto;
-  overflow: hidden;
-}
-
-.button.r,
-.button.r .layer {
-  border-radius: 100px;
-}
-
-.button.b2 {
-  border-radius: 2px;
-}
-
-.checkbox {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  opacity: 0;
+  height: 32px;
+  vertical-align: middle;
   cursor: pointer;
-  z-index: 3;
-}
 
-.knobs {
-  z-index: 2;
-}
+  &.is-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
-.layer {
-  width: 100%;
-  background-color: #ebf7fc;
-  transition: 0.3s ease all;
-  z-index: 1;
-}
+  &__input {
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    margin: 0;
+  }
 
-/* Button 1 */
-#button-1 .knobs:before {
-  content: "YES";
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 22px;
-  height: 10px;
-  color: #fff;
-  font-size: 10px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 1;
-  padding: 9px 4px;
-  background-color: #03a9f4;
-  border-radius: 50%;
-  transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
-}
+  &__core {
+    margin: 0;
+    display: inline-block;
+    position: relative;
+    width: 60px;
+    height: 32px;
+    border: 2px solid #ffb6c1;
+    outline: none;
+    border-radius: 16px;
+    box-sizing: border-box;
+    background: #fff5f7;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-#button-1 .checkbox:checked + .knobs:before {
-  content: "NO";
-  left: 42px;
-  background-color: #f44336;
-}
+    .my-switch.is-checked & {
+      border-color: #c4b5fd;
+      background: #f5f3ff;
+    }
 
-#button-1 .checkbox:checked ~ .layer {
-  background-color: #fcebeb;
-}
+    .my-switch.is-disabled & {
+      opacity: 0.6;
+    }
+  }
 
-#button-1 .knobs,
-#button-1 .knobs:before,
-#button-1 .layer {
-  transition: 0.3s ease all;
+  &__button {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(145deg, #ffb6c1, #ff8fab);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    .my-switch.is-checked & {
+      left: calc(100% - 26px);
+      background: linear-gradient(145deg, #c4b5fd, #a78bfa);
+      transform: scale(1.1);
+    }
+  }
+
+  &__emoji {
+    font-size: 14px;
+    transition: all 0.3s;
+    transform: scale(1);
+
+    .my-switch.is-checked & {
+      transform: scale(1.2);
+    }
+  }
+
+  &:active:not(.is-disabled) {
+    .my-switch__button {
+      width: 28px;
+
+      .my-switch.is-checked & {
+        left: calc(100% - 30px);
+      }
+    }
+  }
 }
 </style>

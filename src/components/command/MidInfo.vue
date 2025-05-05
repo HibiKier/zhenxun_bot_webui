@@ -33,7 +33,7 @@
             :width="progressWidth"
             :stroke-width="8"
             :color="item.color"
-            :format="() => chCnt[key]"
+            :format="() => String(chCnt[key])"
           />
           <p class="text-sm md:text-base font-medium mt-2 text-gray-700">
             {{ item.label }}
@@ -65,7 +65,7 @@
             :width="progressWidth"
             :stroke-width="8"
             :color="item.color"
-            :format="() => callCnt[key] || '0'"
+            :format="() => String(callCnt[key])"
           />
           <p class="text-sm md:text-base font-medium mt-2 text-gray-700">
             {{ item.label }}

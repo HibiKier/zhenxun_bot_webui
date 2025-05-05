@@ -142,6 +142,7 @@
               :total="historyTotal"
               @current-change="getConnectLog"
               :current-page.sync="historyIndex"
+              class="anime-pagination"
               background
               small
               :pager-count="windowWidth < 768 ? 3 : 5"

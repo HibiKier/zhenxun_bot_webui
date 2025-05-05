@@ -1,87 +1,149 @@
 <template>
-  <div class="chat-window" ref="chatWindow">
-    <meta name="referrer" content="never" />
-    <div class="inner-chat-box" ref="innerChatBox" v-if="isStartChat">
-      <div class="top-box" ref="tabBox">
-        <p class="title">{{ chatInfo.name }}</p>
-        <div class="btn-group">
-          <my-button
-            text="清空记录"
-            @click="clearMessage"
-            :height="35"
-            :fontSize="13"
-          />
-        </div>
-      </div>
-      <el-divider />
+  <div
+    class="chat-window bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg overflow-hidden h-full flex flex-col"
+  >
+    <!-- 空状态 -->
+    <div
+      v-if="!isStartChat"
+      class="flex-1 flex flex-col items-center justify-center p-6"
+    >
+      <img
+        src="@/assets/image/empty1.png"
+        class="w-64 h-64 object-contain mb-4 animate-bounce"
+        alt="等待聊天开始"
+      />
+      <p class="text-pink-500 text-lg font-medium">
+        选择一个好友或群组开始聊天吧~
+      </p>
+    </div>
+
+    <!-- 聊天界面 -->
+    <div v-else class="flex-1 flex flex-col h-full p-4">
+      <!-- 顶部标题栏 -->
       <div
-        class="chat-area"
+        class="flex items-center justify-between mb-4 p-3 bg-white rounded-t-xl shadow-sm"
+      >
+        <div class="flex items-center min-w-0">
+          <el-avatar
+            :src="chatInfo.ava_url"
+            :size="40"
+            class="flex-shrink-0 border-2 border-pink-200 transform hover:scale-110 transition-transform"
+          ></el-avatar>
+          <h2
+            class="ml-3 text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 truncate min-w-0"
+            :title="chatInfo.name"
+          >
+            {{ chatInfo.name }}
+          </h2>
+        </div>
+
+        <MyButton
+          text="清空"
+          @click="clearMessage"
+          type="pink"
+          :rounded="'lg'"
+          :shadow="'sm'"
+          :height="30"
+          :width="60"
+          :fontSize="12"
+        />
+      </div>
+
+      <!-- 消息区域 -->
+      <div
+        class="flex-1 overflow-y-auto p-3 bg-white rounded-lg shadow-inner mb-3"
         id="chat"
-        :key="reloadKey"
-        :style="{ height: chatHeight + 'px' }"
       >
         <div
           v-for="(data, index) in $store.state.chatObj[chatId].msgList || []"
           :key="index"
-          class="msg-item"
+          class="flex mb-4 last:mb-0"
+          :class="{ 'justify-end': data.isSelf }"
         >
-          <el-avatar :src="data.ava_url" class="ava"></el-avatar>
-          <div class="msg-box">
-            <p class="user-name">{{ data.name }}</p>
-            <p class="msg-text">
-              <span v-for="(msg, index) in data.message" :key="index">
+          <!-- 头像 -->
+          <el-avatar
+            v-if="!data.isSelf"
+            :src="data.ava_url"
+            :size="45"
+            class="flex-shrink-0 border-2 border-pink-200 shadow-sm transform hover:scale-110 transition-transform"
+          />
+
+          <!-- 消息内容 -->
+          <div
+            class="flex flex-col max-w-[80%] mx-3"
+            :class="{ 'items-end': data.isSelf }"
+          >
+            <p class="text-sm text-gray-500 mb-1">{{ data.name }}</p>
+            <div
+              class="px-4 py-2 rounded-2xl break-words transition-all duration-200"
+              :class="{
+                'bg-pink-100 text-gray-800': !data.isSelf,
+                'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md':
+                  data.isSelf,
+              }"
+            >
+              <div v-for="(msg, msgIndex) in data.message" :key="msgIndex">
                 <img
                   v-if="msg.type == 'img'"
                   :src="msg.msg"
+                  class="max-w-full rounded-lg shadow-sm transform hover:scale-105 transition-transform"
                   :style="{
                     width: msg.width + 'px',
                     height: msg.height + 'px',
                   }"
                 />
-                <span v-else>{{ msg.msg }}</span>
-              </span>
-            </p>
+                <span v-else class="whitespace-pre-wrap">{{ msg.msg }}</span>
+              </div>
+            </div>
           </div>
+
+          <!-- 自己头像 -->
+          <el-avatar
+            v-if="data.isSelf"
+            :src="data.ava_url"
+            :size="45"
+            class="flex-shrink-0 border-2 border-blue-200 shadow-sm transform hover:scale-110 transition-transform"
+          />
         </div>
       </div>
-      <el-divider />
-      <div class="input-area" ref="inputArea">
+
+      <!-- 输入区域 -->
+      <div class="bg-white rounded-b-xl p-3 shadow-sm">
         <el-input
           v-model="message"
-          :rows="4"
+          :rows="3"
           type="textarea"
           resize="none"
+          placeholder="输入消息..."
+          class="mb-3"
+          @keyup.enter.native="sendMessage"
         ></el-input>
-        <div style="margin-top: 10px">
-          <span style="float: right; display: flex">
-            <MyButton
-              :height="35"
-              :width="70"
-              text="清空"
-              @click="message = ''"
-              :fontSize="14"
-            />
-            <MyButton
-              :height="35"
-              :width="70"
-              :fontSize="14"
-              text="发送"
-              @click="sendMessage"
-              style="margin-left: 10px"
-            />
-          </span>
+
+        <div class="flex justify-end space-x-2">
+          <MyButton
+            text="清空"
+            @click="message = ''"
+            type="default"
+            :rounded="'lg'"
+            :shadow="'sm'"
+            :height="35"
+            :width="70"
+            :fontSize="14"
+          />
+          <MyButton
+            text="发送"
+            @click="sendMessage"
+            type="purple"
+            :rounded="'lg'"
+            :shadow="'md'"
+            :glow="true"
+            :height="35"
+            :width="70"
+            :fontSize="14"
+          />
         </div>
       </div>
     </div>
-    <template v-else>
-      <div class="empty">
-        <el-empty
-          :image-size="350"
-          :image="require('../../assets/image/empty1.png')"
-          description=" "
-        ></el-empty>
-      </div>
-    </template>
   </div>
 </template>
 
@@ -96,202 +158,187 @@ export default {
       message: "",
       isStartChat: false,
       chatInfo: {},
-      chatWs: null,
-      botInfo: null,
       chatId: "default",
       reloadKey: 0,
-      chatObj: { default: [] },
-      chatHeight: window.innerHeight,
     }
-  },
-  computed: {
-    computedHeight() {
-      return this.chatHeight
-    },
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
-    this.handleResize()
     this.$store.dispatch("initChatSocket")
   },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.handleResize)
-  },
   methods: {
-    handleResize() {
-      this.$nextTick(() => {
-        if (this.$refs.innerChatBox) {
-          this.chatHeight =
-            this.$refs.innerChatBox.offsetHeight -
-            this.$refs.tabBox.offsetHeight -
-            this.$refs.inputArea.offsetHeight -
-            100
-        }
-      })
-    },
     async sendMessage() {
-      if (!this.message) {
-        return
-      }
-      const loading = this.getLoading(".el-textarea")
+      if (!this.message.trim()) return
 
-      this.$chatWebSocket
-        .sendMessage(
+      const loading = this.$loading({
+        target: ".el-textarea",
+        text: "发送中...",
+        spinner: "el-icon-loading",
+        background: "rgba(255, 255, 255, 0.7)",
+      })
+
+      try {
+        await this.$chatWebSocket.sendMessage(
           this.botInfo,
           this.chatInfo.group_id,
           this.chatInfo.user_id,
           this.message
         )
-        .then((resp) => {
-          this.message = ""
-          this.reloadKey++
-          this.$nextTick(() => {
-            var divElement = document.getElementById("chat")
-            divElement.scrollTop = divElement.scrollHeight
-          })
-          loading.close()
+        this.message = ""
+        this.reloadKey++
+        this.$nextTick(() => {
+          this.scrollToBottom()
         })
+      } finally {
+        loading.close()
+      }
     },
+
+    scrollToBottom() {
+      const chatElement = document.getElementById("chat")
+      if (chatElement) {
+        chatElement.scrollTop = chatElement.scrollHeight
+      }
+    },
+
     startChat(data) {
       this.chatInfo = data
       const chatId = data.group_id || data.user_id
-      if (!this.chatObj[chatId]) {
-        this.chatObj[chatId] = []
-      }
       this.chatId = chatId
       this.$store.commit("SET_CHAT_ID", chatId)
       this.$store.commit("ADD_CHAT_MSG", { chatId })
       this.isStartChat = true
-      this.$nextTick(() => {
-        var divElement = document.getElementById("chat")
-        divElement.scrollTop = divElement.scrollHeight
-      })
-      this.handleResize()
+      this.$nextTick(this.scrollToBottom)
     },
+
     clearMessage() {
       this.$confirm("确认清空聊天记录?", "提示", {
         confirmButtonText: "确认",
         cancelButtonText: "取消",
-        showClose: true,
+        customClass: "confirm-box",
         type: "warning",
-      }).then(() => {
-        this.$store.commit("CLEAR_CHAT", this.chatId)
-        this.$message.success("清空记录成功!")
+        confirmButtonClass: "el-button--danger",
+        iconClass: "el-icon-warning text-red-500",
       })
+        .then(() => {
+          this.$store.commit("CLEAR_CHAT", this.chatId)
+          this.$message.success({
+            message: "清空记录成功!",
+            iconClass: "el-icon-success",
+            customClass: "cute-message",
+          })
+        })
+        .catch(() => {
+          this.$message.info({
+            message: "已取消操作",
+            iconClass: "el-icon-info",
+            customClass: "cute-message",
+          })
+        })
     },
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.chat-window {
-  box-sizing: border-box;
-  background-color: var(--el-bg-color-secondary);
-  padding: 30px 20px;
-  border-radius: 10px;
+<style scoped>
+/* 二次元风格弹窗 */
+.confirm-box {
+  border-radius: 16px !important;
+  border: 2px solid #f9a8d4 !important;
+  background-color: #fdf2f8 !important;
+  font-family: '"Comic Sans MS", cursive' !important;
+}
 
-  .inner-chat-box {
-    height: 100%;
-    width: 100%;
-  }
-  .top-box {
-    height: 25px;
-  }
+/* 美化滚动条 */
+#chat::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .title {
-    color: var(--el-text-color-secondary);
-    font-size: 20px;
-    margin-left: 30px;
-    float: left;
-  }
+#chat::-webkit-scrollbar-track {
+  background: rgba(251, 207, 232, 0.3);
+  border-radius: 3px;
+}
 
-  /deep/ .el-textarea {
-    height: calc(100% - 50px);
-    .el-textarea__inner {
-      height: 100%;
-      background-color: var(--el-fill-color) !important;
-      color: var(--el-text-color-primary) !important;
-      border-color: var(--el-border-color) !important;
-      border-radius: 4px;
-      box-shadow: none !important;
-      &:focus {
-        border-color: var(--el-color-primary) !important;
-        box-shadow: 0 0 0 1px var(--el-color-primary) inset !important;
-      }
-      &::placeholder {
-         color: var(--el-text-color-placeholder) !important;
-      }
-    }
-  }
+#chat::-webkit-scrollbar-thumb {
+  background: rgba(236, 72, 153, 0.5);
+  border-radius: 3px;
+}
 
-  .btn-group {
-    float: right;
-  }
+#chat::-webkit-scrollbar-thumb:hover {
+  background: rgba(236, 72, 153, 0.7);
+}
 
-  .chat-area {
-    height: 70%;
-    overflow: auto;
+/* 输入框样式 */
+:deep(.el-textarea__inner) {
+  border-radius: 12px !important;
+  border: 1px solid #f3a3c3 !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s;
+  font-family: '"Comic Sans MS", cursive' !important;
+}
 
-    .ava {
-      width: 55px;
-      height: 55px;
-    }
+:deep(.el-textarea__inner:focus) {
+  border-color: #ec4899 !important;
+  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2) !important;
+}
 
-    .msg-item {
-      display: flex;
-      margin-bottom: 30px;
+/* 消息气泡动画 */
+.message-bubble {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-      .msg-box-self {
-        float: right;
-      }
-      .user-name {
-        color: var(--el-text-color-regular);
-        font-size: 15px;
-      }
-      .msg-text {
-        margin-top: 5px;
-        font-size: 20px;
-        background-color: var(--el-fill-color-light);
-        color: var(--el-text-color-primary);
-        padding: 10px;
-        border-radius: 10px;
-        word-wrap: break-word;
-        word-break: break-all;
-        max-width: 300px;
-      }
+.message-bubble:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-      .msg-box {
-        margin-left: 20px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-    }
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .chat-window {
+    padding: 12px;
+    border-radius: 0;
   }
 
-  .input-area {
-    height: calc(30% - 95px);
+  #chat {
+    max-height: 60vh;
   }
 
-  .empty {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  :deep(.el-textarea__inner) {
+    font-size: 14px;
   }
+}
+</style>
 
-  &.dark {
-    :deep(.el-textarea__inner) {
-      background-color: var(--el-fill-color-lighter) !important;
-      color: var(--el-text-color-primary);
-    }
-    :deep(.el-button) {
-      background-color: var(--el-bg-color-page);
-    }
-  }
+<style>
+/* 可爱的消息提示框 */
+.cute-message {
+  border-radius: 12px !important;
+  border: 1px solid #e9d5ff !important;
+  background-color: #fff !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  font-family: '"Comic Sans MS", cursive' !important;
+}
+
+.cute-message .el-message__content {
+  color: #7c3aed !important;
+}
+
+.cute-message.el-message--success {
+  border-color: #a7f3d0 !important;
+}
+
+.cute-message.el-message--info {
+  border-color: #bfdbfe !important;
+}
+
+.cute-message.el-message--warning {
+  border-color: #fde68a !important;
+}
+
+.cute-message.el-message--error {
+  border-color: #fecaca !important;
 }
 </style>

@@ -1,37 +1,62 @@
 <template>
-  <div class="system-status">
-    <div class="chart-item" :style="{ height: statusBorderHeight + 'px' }">
-      <p class="title" :style="{ fontSize: fontSizeMana.statusTip + 'px' }">
-        CPU
-      </p>
-      <div class="cpu">
+  <div class="system-status p-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- CPU 卡片 -->
+      <div
+        class="chart-item bg-white rounded-xl shadow-md p-4 transition-all hover:shadow-lg anime-hover"
+        :style="{ height: statusBorderHeight + 'px' }"
+      >
+        <div class="flex items-center mb-2">
+          <div
+            class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mr-2"
+          >
+            <svg-icon icon-class="cpu" class="text-pink-500 text-lg" />
+          </div>
+          <p class="title text-lg font-bold text-pink-600">CPU</p>
+        </div>
         <div
           ref="cpuChart"
-          class="base-chart"
+          class="base-chart w-full"
           :style="{ height: computedChartHeight + 'px' }"
         ></div>
       </div>
-    </div>
-    <div class="chart-item" :style="{ height: statusBorderHeight + 'px' }">
-      <p class="title" :style="{ fontSize: fontSizeMana.statusTip + 'px' }">
-        MEMORY
-      </p>
-      <div class="memory">
+
+      <!-- 内存卡片 -->
+      <div
+        class="chart-item bg-white rounded-xl shadow-md p-4 transition-all hover:shadow-lg anime-hover"
+        :style="{ height: statusBorderHeight + 'px' }"
+      >
+        <div class="flex items-center mb-2">
+          <div
+            class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-2"
+          >
+            <svg-icon icon-class="memory" class="text-purple-500 text-lg" />
+          </div>
+          <p class="title text-lg font-bold text-purple-600">MEMORY</p>
+        </div>
         <div
           ref="memoryChart"
-          class="base-chart"
+          class="base-chart w-full"
           :style="{ height: computedChartHeight + 'px' }"
         ></div>
       </div>
-    </div>
-    <div class="chart-item" :style="{ height: statusBorderHeight + 'px' }">
-      <p class="title" :style="{ fontSize: fontSizeMana.statusTip + 'px' }">
-        DISK
-      </p>
-      <div class="disk">
+
+      <!-- 磁盘卡片 -->
+      <div
+        class="chart-item bg-white rounded-xl shadow-md p-4 transition-all hover:shadow-lg anime-hover"
+        :style="{ height: statusBorderHeight + 'px' }"
+      >
+        <div class="flex items-center mb-2">
+          <div
+            class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2"
+          >
+            <svg-icon icon-class="disk" class="text-blue-500 text-lg" />
+          </div>
+          <p class="title text-lg font-bold text-blue-600">DISK</p>
+        </div>
         <div
           ref="diskChart"
-          class="base-chart"
+          class="base-chart w-full"
           :style="{ height: computedChartHeight + 'px' }"
         ></div>
       </div>
@@ -42,14 +67,14 @@
 <script>
 import { getFontSize } from "@/utils/utils"
 import { mapGetters } from "vuex"
+
 export default {
   name: "SystemStatus",
   data() {
     return {
-      fontSizeMana: { statusTip: 25 },
       windowHeight: window.innerHeight,
-      statusBorderHeight: 0,
-      chartHeight: 0,
+      statusBorderHeight: 300, // 默认高度
+      chartHeight: 240, // 默认图表高度
       cpuChart: null,
       memoryChart: null,
       diskChart: null,
@@ -61,25 +86,23 @@ export default {
       chartOpt: {
         backgroundColor: "transparent",
         grid: {
-          top: "20%", // 控制数据表距离画布顶部的距离
-          bottom: "18%", // 控制数据表距离画布底部的距禿
-          left: "15%", // 控制数据表距离画布左侧的距离
-          right: "15%", // 控制数据表距离画布右侧的距离
+          top: "20%",
+          bottom: "18%",
+          left: "15%",
+          right: "15%",
         },
-        // x 轴 类型与数据
         xAxis: {
           type: "category",
           data: [],
           name: "时间",
           axisLabel: {
-            interval: 0, //强制显示所有标签
+            interval: 0,
             rotate: 18,
             formatter: function (value) {
               return value.length > 8 ? value.slice(0, 8) + "..." : value
             },
           },
         },
-        // y 轴 类型与数据
         yAxis: {
           type: "value",
           name: "百分比 %",
@@ -87,10 +110,34 @@ export default {
         series: [
           {
             data: [],
-            // 表示该系列使用折线图进行展示
             type: "line",
-            // smooth: true 表示启用平滑曲线
-            // smooth:true
+            smooth: true,
+            lineStyle: {
+              width: 3,
+              color: "#ec4899", // 粉色线条
+            },
+            itemStyle: {
+              color: "#ec4899", // 粉色点
+            },
+            areaStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "rgba(236, 72, 153, 0.3)", // 粉色渐变
+                  },
+                  {
+                    offset: 1,
+                    color: "rgba(236, 72, 153, 0.1)",
+                  },
+                ],
+              },
+            },
           },
         ],
       },
@@ -100,134 +147,124 @@ export default {
     ...mapGetters({
       statusObj: "getWsStatusObj",
     }),
-    computedStatusBorderHeight() {
-      if (!this.centerLogHeight) {
-        this.handleResize()
-      }
-      return this.statusBorderHeight
-    },
     computedChartHeight() {
-      if (!this.chartHeight) {
-        this.handleResize()
-      }
       return this.chartHeight
     },
   },
   mounted() {
+    this.handleResize()
     window.addEventListener("resize", this.handleResize)
+
     this.cpuChart = this.$echarts.init(this.$refs.cpuChart)
     this.memoryChart = this.$echarts.init(this.$refs.memoryChart)
     this.diskChart = this.$echarts.init(this.$refs.diskChart)
+
     this.initSystemStatus()
     this.timer = setInterval(() => {
       this.initSystemStatus()
     }, 1000)
   },
   methods: {
-    initFontSize() {
-      this.fontSizeMana.statusTip = getFontSize(20)
-    },
     handleResize() {
       this.windowHeight = window.innerHeight
-      this.statusBorderHeight = this.windowHeight / 3.5
-      this.chartHeight = this.statusBorderHeight - 75
-      this.initFontSize()
+
+      // 移动端调整为单列布局
+      if (window.innerWidth < 768) {
+        this.statusBorderHeight = this.windowHeight / 3
+        this.chartHeight = this.statusBorderHeight - 80
+      } else {
+        this.statusBorderHeight = 300
+        this.chartHeight = 240
+      }
+
       this.$nextTick(() => {
-        setTimeout(() => {
-          this.cpuChart.resize()
-          this.memoryChart.resize()
-          this.diskChart.resize()
-        }, 100)
+        this.cpuChart?.resize()
+        this.memoryChart?.resize()
+        this.diskChart?.resize()
       })
     },
     initSystemStatus() {
-      this.cpuOpt = JSON.parse(JSON.stringify(this.chartOpt))
-      this.cpuOpt.series[0].data = this.statusObj.cpuList
-      this.cpuOpt.xAxis.data = this.statusObj.timeList
-      this.memoryOpt = JSON.parse(JSON.stringify(this.chartOpt))
-      this.memoryOpt.series[0].data = this.statusObj.memoryList
-      this.memoryOpt.xAxis.data = this.statusObj.timeList
-      this.diskOpt = JSON.parse(JSON.stringify(this.chartOpt))
-      this.diskOpt.series[0].data = this.statusObj.diskList
-      this.diskOpt.xAxis.data = this.statusObj.timeList
-      
-      // --- 为所有图表应用主题化 Start ---
-      const applyThemeToOptions = (opt) => {
-        try {
-          const computedStyle = getComputedStyle(document.documentElement);
-          const textColor = computedStyle.getPropertyValue('--el-text-color-regular').trim() || '#c0c4cc';
-          const axisLineColor = computedStyle.getPropertyValue('--el-border-color-light').trim() || '#e0e6ed'; // 坐标轴线颜色
-          const splitLineColor = computedStyle.getPropertyValue('--el-border-color-lighter').trim() || '#ebeef5'; // 分隔线颜色
-          
-          // X 轴
-          opt.xAxis.axisLabel = opt.xAxis.axisLabel || {};
-          opt.xAxis.axisLabel.color = textColor;
-          opt.xAxis.nameTextStyle = opt.xAxis.nameTextStyle || {};
-          opt.xAxis.nameTextStyle.color = textColor;
-          opt.xAxis.axisLine = opt.xAxis.axisLine || {};
-          opt.xAxis.axisLine.lineStyle = opt.xAxis.axisLine.lineStyle || {};
-          opt.xAxis.axisLine.lineStyle.color = axisLineColor;
-
-          // Y 轴
-          opt.yAxis.axisLabel = opt.yAxis.axisLabel || {};
-          opt.yAxis.axisLabel.color = textColor;
-          opt.yAxis.nameTextStyle = opt.yAxis.nameTextStyle || {};
-          opt.yAxis.nameTextStyle.color = textColor;
-          opt.yAxis.axisLine = opt.yAxis.axisLine || {};
-          opt.yAxis.axisLine.lineStyle = opt.yAxis.axisLine.lineStyle || {};
-          opt.yAxis.axisLine.lineStyle.color = axisLineColor;
-          opt.yAxis.splitLine = opt.yAxis.splitLine || {}; // 分隔线
-          opt.yAxis.splitLine.lineStyle = opt.yAxis.splitLine.lineStyle || {};
-          opt.yAxis.splitLine.lineStyle.color = splitLineColor;
-
-          // 系列线条颜色（可选，如果需要根据主题变）
-          if (opt.series && opt.series[0]) {
-             // opt.series[0].lineStyle = { color: 'var(--el-color-primary)' }; // 示例：使用主色
-             // opt.series[0].itemStyle = { color: 'var(--el-color-primary)' };
-          }
-
-        } catch (e) {
-          console.error("Failed to apply theme to chart options:", e);
-        }
-        return opt;
+      // 为每个图表设置不同颜色
+      const colors = {
+        cpu: "#ec4899", // 粉色
+        memory: "#a855f7", // 紫色
+        disk: "#3b82f6", // 蓝色
       }
 
-      this.cpuChart.setOption(applyThemeToOptions(this.cpuOpt))
-      this.memoryChart.setOption(applyThemeToOptions(this.memoryOpt))
-      this.diskChart.setOption(applyThemeToOptions(this.diskOpt))
-      // --- 为所有图表应用主题化 End ---
+      const createChartOptions = (type) => {
+        const opt = JSON.parse(JSON.stringify(this.chartOpt))
+        opt.series[0].data = this.statusObj[`${type}List`]
+        opt.xAxis.data = this.statusObj.timeList
+
+        // 设置不同颜色
+        opt.series[0].lineStyle.color = colors[type]
+        opt.series[0].itemStyle.color = colors[type]
+        opt.series[0].areaStyle.color.colorStops[0].color = `rgba(${this.hexToRgb(
+          colors[type]
+        )}, 0.3)`
+        opt.series[0].areaStyle.color.colorStops[1].color = `rgba(${this.hexToRgb(
+          colors[type]
+        )}, 0.1)`
+
+        return opt
+      }
+
+      this.cpuChart.setOption(createChartOptions("cpu"))
+      this.memoryChart.setOption(createChartOptions("memory"))
+      this.diskChart.setOption(createChartOptions("disk"))
+    },
+    hexToRgb(hex) {
+      // 转换十六进制颜色为RGB格式
+      const r = parseInt(hex.slice(1, 3), 16)
+      const g = parseInt(hex.slice(3, 5), 16)
+      const b = parseInt(hex.slice(5, 7), 16)
+      return `${r}, ${g}, ${b}`
     },
   },
   beforeDestroy() {
-    // 在组件销毁前清除定时器
     clearInterval(this.timer)
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.system-status {
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
+<style scoped>
+/* 自定义滚动条（可选） */
+.system-status::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.system-status::-webkit-scrollbar-thumb {
+  @apply bg-pink-300 rounded-full;
+}
+
+.system-status::-webkit-scrollbar-track {
+  @apply bg-pink-100 rounded-full;
+}
+
+/* 悬停动画 */
+.anime-hover {
+  transition: all 0.3s ease;
+}
+
+.anime-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .system-status {
+    padding: 10px;
+  }
 
   .chart-item {
-    background-color: var(--bg-color-secondary);
-    border-radius: 10px;
-    // padding: 20px;
-    box-sizing: border-box;
-    margin-top: 10px;
-    width: calc(33% - 27px);
+    width: 100% !important;
+    margin-bottom: 12px;
   }
 
   .title {
-    color: var(--text-color-secondary);
-    margin-left: 30px;
-    margin-top: 30px;
-    font-size: 20px;
-  }
-  .base-chart {
-    height: 240px;
+    font-size: 16px !important;
   }
 }
 </style>
