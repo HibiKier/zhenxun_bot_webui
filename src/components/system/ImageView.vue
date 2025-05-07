@@ -1,6 +1,5 @@
 <template>
   <el-dialog width="500" :visible="true" @close="close">
-    <one-mark />
     <div class="file-name">
       {{ name }}
     </div>
@@ -14,12 +13,8 @@
 </template>
 
 <script>
-import OneMark from "../ui/OneMark.vue"
 export default {
-  name: "EditFile",
-  components: {
-    OneMark,
-  },
+  name: 'EditFile',
   props: {
     name: {
       type: String,
@@ -40,7 +35,7 @@ export default {
   },
   methods: {
     getImage() {
-      const loading = this.getLoading(".el-dialog")
+      const loading = this.getLoading('.el-dialog')
       this.getRequest(`${this.$root.prefix}/system/get_image`, {
         full_path: this.fullPath,
       }).then((resp) => {
@@ -49,8 +44,8 @@ export default {
             this.$message.warning(resp.warning)
           } else {
             this.$message.success(resp.info)
-            resp.data = resp.data.replace("base64://", "")
-            this.imageData = "data:image/png;base64," + resp.data
+            resp.data = resp.data.replace('base64://', '')
+            this.imageData = 'data:image/png;base64,' + resp.data
           }
         } else {
           this.$message.error(resp.info)
@@ -59,7 +54,7 @@ export default {
       })
     },
     close() {
-      this.$emit("close")
+      this.$emit('close')
     },
   },
 }

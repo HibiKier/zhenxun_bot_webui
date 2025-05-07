@@ -192,13 +192,6 @@
         <h3 class="text-lg font-bold text-pink-600 mb-4">最喜爱的插件</h3>
         <div ref="likePluginChart" class="h-80 w-full"></div>
       </div>
-
-      <!-- 好友专属标记 -->
-      <template v-if="detailType == 'private'">
-        <div class="mt-6">
-          <OneMark text="不太清楚，这是一个标记的魔法" :showDivider="false" />
-        </div>
-      </template>
     </template>
   </div>
 </template>
@@ -206,11 +199,10 @@
 <script>
 import MyButton from '../ui/MyButton.vue'
 import MySwitch from '../ui/MySwitch.vue'
-import OneMark from '../ui/OneMark.vue'
 
 import { cloneDeep } from 'lodash'
 export default {
-  components: { MySwitch, OneMark, MyButton },
+  components: { MySwitch, MyButton },
   name: 'DetailInfo',
   data() {
     return {

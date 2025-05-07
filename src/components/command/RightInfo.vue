@@ -329,6 +329,7 @@ export default {
           }
           this.chartHeight =
             this.chartAreaHeight - this.$refs.groupType.offsetHeight - 20
+          console.log('this.chartHeight', this.chartHeight)
         }
       })
     },

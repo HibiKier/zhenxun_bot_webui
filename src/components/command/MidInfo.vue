@@ -414,7 +414,6 @@ export default {
         this.chartBorderHeight =
           this.$refs.midInfo.offsetHeight - this.areaHeight * 2 - 100
         this.chartBorderHeight = Math.max(this.chartBorderHeight, 180)
-        console.log('this.chartBorderHeigh', this.chartBorderHeigh)
 
         this.chart.resize()
       })

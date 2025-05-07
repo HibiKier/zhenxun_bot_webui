@@ -1,6 +1,5 @@
 <template>
   <el-dialog width="500" :visible="true" @close="close">
-    <one-mark />
     <div class="file-name">
       {{ name }}
     </div>
@@ -38,15 +37,13 @@
 </template>
 
 <script>
-import MyButton from "../ui/MyButton.vue"
-import CodeEditor from "../ui/MyCodeEditor.vue"
-import OneMark from "../ui/OneMark.vue"
+import MyButton from '../ui/MyButton.vue'
+import CodeEditor from '../ui/MyCodeEditor.vue'
 export default {
-  name: "EditFile",
+  name: 'EditFile',
   components: {
     CodeEditor,
     MyButton,
-    OneMark,
   },
   props: {
     name: {
@@ -65,18 +62,18 @@ export default {
   data() {
     return {
       codeKey: 0,
-      text: "",
+      text: '',
       fileType: null,
-      language: "application/json",
+      language: 'application/json',
     }
   },
   mounted() {
     const z2d = {
-      py: "Python",
-      js: "Javascript",
+      py: 'Python',
+      js: 'Javascript',
     }
     if (this.name) {
-      const arr = this.name.split(".")
+      const arr = this.name.split('.')
       if (arr.length) {
         this.fileType = arr[arr.length - 1]
       }
@@ -86,15 +83,15 @@ export default {
   },
   methods: {
     formatJson() {
-      this.$refs["codeEditor"].formatStrInJson()
+      this.$refs['codeEditor'].formatStrInJson()
     },
     clearFile() {
-      this.text = ""
+      this.text = ''
       this.codeKey++
-      this.$message.success("清空成功!")
+      this.$message.success('清空成功!')
     },
     saveFile() {
-      const loading = this.getLoading(".CodeMirror")
+      const loading = this.getLoading('.CodeMirror')
       this.postRequest(`${this.$root.prefix}/system/save_file`, {
         full_path: this.fullPath,
         content: this.text,
@@ -112,7 +109,7 @@ export default {
       })
     },
     readFile() {
-      const loading = this.getLoading(".CodeMirror")
+      const loading = this.getLoading('.CodeMirror')
 
       this.getRequest(`${this.$root.prefix}/system/read_file`, {
         full_path: this.fullPath,
@@ -132,7 +129,7 @@ export default {
       })
     },
     close() {
-      this.$emit("close")
+      this.$emit('close')
     },
   },
 }
