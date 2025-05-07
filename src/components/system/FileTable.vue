@@ -18,29 +18,33 @@
 
     <!-- 操作按钮 -->
     <div class="action-buttons mb-4 flex flex-wrap gap-2">
-      <el-button
+      <CuteButton
+        size="sm"
         type="primary"
-        icon="el-icon-document-add"
+        solid
         @click="clickRootAddFile"
-        class="bg-pink-500 border-pink-500 hover:bg-pink-600"
+        icon="add-file"
       >
         新建文件
-      </el-button>
-      <el-button
+      </CuteButton>
+      <CuteButton
+        size="sm"
         type="primary"
-        icon="el-icon-folder-add"
+        solid
         @click="clickRootAddFolder"
-        class="bg-purple-500 border-purple-500 hover:bg-purple-600"
+        icon="add-folder"
       >
         新建文件夹
-      </el-button>
-      <el-button
-        icon="el-icon-refresh"
+      </CuteButton>
+      <CuteButton
+        size="sm"
+        type="info"
+        solid
         @click="refreshFiles"
-        class="bg-blue-500 border-blue-500 hover:bg-blue-600 text-white"
+        icon="refresh"
       >
         刷新
-      </el-button>
+      </CuteButton>
     </div>
 
     <!-- 文件表格 -->
@@ -80,7 +84,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" min-width="100" align="right">
+        <el-table-column label="操作" min-width="100" align="center">
           <template slot-scope="scope">
             <el-button
               v-if="scope.row.is_file"
@@ -145,7 +149,24 @@
         v-model="newItemName"
         class="fm-input"
         :placeholder="
-          createType === 'file' ? '输入文件名...' : '输入文件夹名...'
+          createType === 'file' ? '输入文件名称...' : '输入文件夹名称...'
+        "
+      />
+    </NeonDialog>
+
+    <NeonDialog
+      :visible.sync="showRenameDialogFlag"
+      :title="renameType === 'file' ? '重命名文件' : '重命名文件夹'"
+      icon-class="rename"
+      @confirm="confirmRename"
+    >
+      <NeonInput
+        v-model="renameValue"
+        class="fm-input"
+        :placeholder="
+          renameType === 'file'
+            ? '输入重命名文件名称...'
+            : '输入重命名文件夹名称...'
         "
       />
     </NeonDialog>
@@ -170,9 +191,17 @@
     <edit-file
       v-if="editVisible"
       @close="editVisible = false"
+      :title="currentFile.name"
+      :filePath="currentFile.full_path"
+      :readOnly="currentFile.is_image"
+      :icon="getIconClass(currentFile)"
+      :language="iconMap[currentFile.name.split('.').pop().toLowerCase()]"
+    />
+    <image-view
+      v-if="viewVisible && currentFile.is_image"
       :name="currentFile.name"
       :fullPath="currentFile.full_path"
-      :onlyRead="currentFile.is_image"
+      @close="viewVisible = false"
     />
   </div>
 </template>
@@ -180,10 +209,19 @@
 <script>
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import EditFile from './EditFile.vue'
+import ImageView from './ImageView.vue'
 import NeonDialog from '@/components/ui/NeonDialog.vue'
 import NeonInput from '@/components/ui/NeonInput.vue'
+import CuteButton from '@/components/ui/CuteButton.vue'
 export default {
-  components: { SvgIcon, EditFile, NeonDialog, NeonInput },
+  components: {
+    SvgIcon,
+    EditFile,
+    NeonDialog,
+    NeonInput,
+    CuteButton,
+    ImageView,
+  },
   name: 'FileManager',
   data() {
     return {
@@ -193,6 +231,7 @@ export default {
       vscodeIcons: [],
       showCreateDialog: false,
       createType: 'file',
+      renameType: 'file',
       newItemName: '',
       showRenameDialogFlag: false,
       renameValue: '',
@@ -200,6 +239,7 @@ export default {
       showDeleteDialogFlag: false,
       itemToDelete: {},
       editVisible: false,
+      viewVisible: false,
       currentFile: {},
       iconMap: {
         folder: 'folder',
@@ -234,20 +274,28 @@ export default {
   methods: {
     async loadFiles(path = '') {
       try {
+        var loading = this.getLoading('.file-table-container')
         const resp = await this.getRequest(
           `${this.$root.prefix}/system/get_dir_list`,
           { path: path || this.currentPath }
         )
 
         if (resp.suc) {
-          this.fileList = resp.data.map((item) => ({
-            ...item,
-            full_path: item.parent ? `${item.parent}/${item.name}` : item.name,
-          }))
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+            this.fileList = resp.data.map((item) => ({
+              ...item,
+              full_path: item.parent
+                ? `${item.parent}/${item.name}`
+                : item.name,
+            }))
 
-          if (path !== '') {
-            this.currentPath = path
-            this.updateBreadcrumb(path)
+            if (path !== '') {
+              this.currentPath = path
+              this.updateBreadcrumb(path)
+            }
           }
         } else {
           this.$message.error(resp.info)
@@ -256,6 +304,7 @@ export default {
         this.$message.error('加载文件列表失败')
         console.error(error)
       }
+      loading.close()
     },
 
     refreshFiles() {
@@ -272,7 +321,9 @@ export default {
 
     clickPath(index) {
       if (index === 0) {
-        this.loadFiles('')
+        this.currentPath = ''
+        this.pathList = ['/']
+        this.loadFiles()
       } else {
         const path = this.pathList.slice(1, index + 1).join('/')
         this.loadFiles(path)
@@ -297,11 +348,12 @@ export default {
     editFile(item) {
       this.currentFile = item
       this.editVisible = true
+      console.log('Editing file:', this.editVisible, item)
     },
 
     viewImage(item) {
       this.currentFile = item
-      this.editVisible = true
+      this.viewVisible = true
     },
 
     clickRootAddFile() {
@@ -350,6 +402,9 @@ export default {
     },
 
     showRenameDialog(item) {
+      console.log('showRenameDialog', item)
+
+      this.renameType = item.is_file ? 'file' : 'folder'
       this.itemToRename = item
       this.renameValue = item.name
       this.showRenameDialogFlag = true

@@ -64,7 +64,6 @@ export default {
 }
 
 .cute-card:hover {
-  transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(168, 85, 247, 0.15);
   border-color: rgba(236, 72, 153, 0.3);
 }
@@ -116,7 +115,7 @@ export default {
 }
 
 /* 动画效果 */
-@keyframes cute-bounce {
+/* @keyframes cute-bounce {
   0%,
   100% {
     transform: translateY(0);
@@ -138,7 +137,7 @@ export default {
     opacity: 0;
     transform: scale(1.2);
   }
-}
+} */
 
 .cute-card:hover {
   animation: cute-bounce 0.5s ease;

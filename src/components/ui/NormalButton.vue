@@ -30,7 +30,6 @@ export default {
     disabled: Boolean,
     iconClass: {
       type: String,
-      required: true,
     },
     text: {
       type: String,
