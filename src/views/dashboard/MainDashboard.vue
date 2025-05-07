@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import LeftInfo from "@/components/dashboard/LeftInfo.vue"
-import MidInfo from "@/components/dashboard/MidInfo.vue"
-import RightInfo from "@/components/dashboard/RightInfo.vue"
-import { getHeaderHeight } from "@/utils/utils"
+import LeftInfo from '@/components/dashboard/LeftInfo.vue'
+import MidInfo from '@/components/dashboard/MidInfo.vue'
+import RightInfo from '@/components/dashboard/RightInfo.vue'
+import { getHeaderHeight } from '@/utils/utils'
 export default {
-  name: "MainDashboard",
+  name: 'MainDashboard',
   data() {
     return {
       botInfo: {},
@@ -46,7 +46,7 @@ export default {
   },
   created() {},
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
   },
   methods: {
     handleResize() {

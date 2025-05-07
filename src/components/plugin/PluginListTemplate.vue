@@ -1,5 +1,5 @@
 <template>
-  <div class="plugin-list-container">
+  <div class="plugin-list-container h-full overflow-auto">
     <div
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4"
     >
@@ -15,7 +15,7 @@
           ),
           'bg-gradient-to-br from-pink-50 to-purple-50': true,
         }"
-        @click="toggleSelection(data.module)"
+        @click="toggleSelection(data)"
       >
         <!-- 选中标记 -->
         <div
@@ -60,43 +60,52 @@
             class="flex justify-end items-center mt-3 pt-2 border-t border-pink-100"
           >
             <!-- 开关按钮 -->
-            <button
-              @click.stop="changeSwitch(data)"
-              class="p-2 rounded-lg transition-all duration-200 hover:scale-110 flex items-center ml-2"
-              :class="{
-                'bg-green-100 text-green-600 hover:bg-green-200': data.status,
-                'bg-red-100 text-red-500 hover:bg-red-200': !data.status,
-              }"
-              :title="data.status ? '关闭插件' : '开启插件'"
-            >
-              <i
-                class="fas text-lg"
-                :class="data.status ? 'fa-toggle-on' : 'fa-toggle-off'"
-              ></i>
-              <span class="ml-1 text-xs hidden sm:inline">{{
-                data.status ? "开启" : "关闭"
-              }}</span>
-            </button>
+            <NormalButton
+              :text="data.status ? '开启' : '关闭'"
+              :iconClass="
+                !data.allow_switch
+                  ? 'switch-disabled'
+                  : data.status
+                  ? 'switch-green'
+                  : 'switch-red'
+              "
+              title="切换插件状态"
+              :disabled="!data.allow_switch"
+              :base-class="'hover:scale-110'"
+              :active-class="
+                data.status
+                  ? 'bg-green-100 text-green-600 hover:bg-green-200'
+                  : 'bg-red-100 text-red-500 hover:bg-red-200'
+              "
+              @click="changeSwitch(data)"
+            />
 
             <!-- 配置按钮 -->
-            <button
-              @click.stop="openSetting(data)"
-              class="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800 transition-all duration-200 hover:scale-110 flex items-center ml-2"
+            <NormalButton
+              icon-class="fas fa-cog text-lg"
+              :iconClass="
+                data.allow_switch ? 'setting-blue' : 'setting-disabled'
+              "
+              :disabled="!data.allow_setting"
+              text="配置"
               title="插件配置"
-            >
-              <i class="fas fa-cog text-lg"></i>
-              <span class="ml-1 text-xs hidden sm:inline">配置</span>
-            </button>
+              base-class="hover:scale-110"
+              active-class="bg-blue-100 text-blue-600 hover:bg-blue-200 hover:text-blue-800"
+              @click="openSetting(data)"
+            />
 
             <!-- 卸载按钮 -->
-            <button
-              @click.stop="uninstallPlugin(data)"
-              class="p-2 rounded-lg bg-purple-100 text-purple-600 hover:bg-purple-200 hover:text-purple-800 transition-all duration-200 hover:scale-110 flex items-center ml-2"
-              title="卸载插件"
-            >
-              <i class="fas fa-trash-alt text-lg"></i>
-              <span class="ml-1 text-xs hidden sm:inline">卸载</span>
-            </button>
+            <NormalButton
+              text="卸载"
+              :iconClass="
+                data.is_builtin ? 'uninstall-disabled' : 'uninstall-purple'
+              "
+              :title="data.is_builtin ? '系统内置插件不可卸载' : '卸载插件'"
+              :disabled="data.is_builtin"
+              :base-class="'hover:scale-110'"
+              :active-class="'bg-purple-100 text-purple-600 hover:bg-purple-200 hover:text-purple-800'"
+              @click="uninstallPlugin(data)"
+            />
           </div>
         </div>
       </div>
@@ -111,12 +120,13 @@
 </template>
 
 <script>
-import UpdateDialog from "./UpdateDialog"
+import UpdateDialog from './UpdateDialog'
+import NormalButton from '@/components/ui/NormalButton.vue'
 
 export default {
-  name: "PluginListTemplate",
+  name: 'PluginListTemplate',
   props: { pluginType: String, menuType: String },
-  components: { UpdateDialog },
+  components: { UpdateDialog, NormalButton },
   data() {
     return {
       dataList: [],
@@ -131,12 +141,7 @@ export default {
   methods: {
     getPluginList() {
       this.clearSelection()
-      const loading = this.$loading({
-        target: ".plugin-list-container",
-        background: "rgba(255, 255, 255, 0.7)",
-        spinner: "el-icon-loading",
-        text: "正在加载插件...",
-      })
+      const loading = this.getLoading('.plugin-list-container')
 
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
         plugin_type: [this.pluginType],
@@ -146,27 +151,15 @@ export default {
           if (resp?.suc) {
             this.dataList = Array.isArray(resp.data) ? resp.data : []
             if (resp.warning) {
-              this.$notify.warning({
-                title: "提示",
-                message: resp.warning,
-                duration: 3000,
-              })
+              this.$message.warning(resp.warning)
             }
           } else {
-            this.$notify.error({
-              title: "错误",
-              message: resp?.info || "获取插件列表失败",
-              duration: 3000,
-            })
+            this.$message.error(resp?.info || '获取插件列表失败')
             this.dataList = []
           }
         })
         .catch((error) => {
-          this.$notify.error({
-            title: "错误",
-            message: "请求插件列表失败: " + error,
-            duration: 3000,
-          })
+          this.$message.error('请求插件列表失败: ' + error)
           this.dataList = []
         })
         .finally(() => loading.close())
@@ -177,18 +170,10 @@ export default {
         status: !data.status,
       }).then((resp) => {
         if (resp.suc) {
-          this.$notify.success({
-            title: "成功",
-            message: resp.info,
-            duration: 2000,
-          })
+          this.$message.success(resp.info)
           this.getPluginList()
         } else {
-          this.$notify.error({
-            title: "错误",
-            message: resp.info,
-            duration: 3000,
-          })
+          this.$message.error(resp.info)
         }
       })
     },
@@ -200,57 +185,59 @@ export default {
       this.dialogVisible = false
       if (isRefresh) this.getPluginList()
     },
-    uninstallPlugin(data) {
-      this.$confirm(`确定要卸载插件 "${data.plugin_name}" 吗?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        customClass: "anime-confirm-dialog",
+    async uninstallPlugin(data) {
+      const result = await this.$cuteConfirm({
+        title: '卸载确认',
+        message: `确定要卸载插件 "${data.plugin_name}" 吗?`,
+        cancelButtonText: '我再想想',
+        confirmButtonText: '狠心卸载',
       })
-        .then(() => {
-          this.postRequest(`${this.$root.prefix}/plugin/uninstall`, {
-            module: data.module,
+
+      if (result) {
+        try {
+          this.postRequest(`${this.$root.prefix}/store/remove_plugin`, {
+            id: data.id,
           }).then((resp) => {
             if (resp.suc) {
-              this.$notify.success({
-                title: "成功",
-                message: `插件 "${data.plugin_name}" 已卸载`,
-                duration: 3000,
-              })
-              this.getPluginList()
+              if (resp.warning) {
+                this.$message.warning(resp.warning)
+              } else {
+                this.$message.success(resp.info)
+                this.getPluginList()
+              }
             } else {
-              this.$notify.error({
-                title: "错误",
-                message: resp.info || "卸载失败",
-                duration: 3000,
-              })
+              this.$message.error(resp.info || '卸载失败')
             }
           })
-        })
-        .catch(() => {
-          this.$notify.info({
-            title: "已取消",
-            message: "取消卸载操作",
-            duration: 2000,
-          })
-        })
+        } catch (error) {
+          this.$message.error('卸载失败: ' + error.message)
+        }
+      } else {
+        console.log('取消卸载')
+      }
     },
     isSelected(module) {
       return this.selectedPlugins.includes(module)
     },
-    toggleSelection(module) {
+    toggleSelection(data) {
+      const module = data.module
+      if (!data.allow_switch || !data.allow_setting) {
+        this.$message.warning('该插件不支持切换或配置')
+        return
+      }
+
       const index = this.selectedPlugins.indexOf(module)
       if (index > -1) {
         this.selectedPlugins.splice(index, 1)
       } else {
         this.selectedPlugins.push(module)
       }
-      this.$emit("update:selection", [...this.selectedPlugins])
+      this.$emit('update:selection', [...this.selectedPlugins])
     },
     clearSelection() {
       if (this.selectedPlugins.length > 0) {
         this.selectedPlugins = []
-        this.$emit("update:selection", [])
+        this.$emit('update:selection', [])
       }
     },
   },
@@ -306,16 +293,6 @@ export default {
 /* 按钮区域 */
 .plugin-card .button-area {
   border-left: 1px dashed rgba(236, 72, 153, 0.3);
-}
-
-/* 按钮动画 */
-button {
-  transition: all 0.3s ease;
-}
-
-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* 移动端适配 */

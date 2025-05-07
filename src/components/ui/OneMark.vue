@@ -14,14 +14,14 @@
 </template>
 
 <script>
-import { getFontSize, getConvertSize } from "@/utils/utils"
+import { getFontSize, getConvertSize } from '@/utils/validate'
 
 export default {
-  name: "OneMark",
+  name: 'OneMark',
   props: {
     text: {
       type: String,
-      default: "施展了来自奇迹的魔法",
+      default: '施展了来自奇迹的魔法',
     },
     showDivider: {
       type: Boolean,
@@ -36,7 +36,7 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
     this.handleResize()
   },
 
@@ -48,7 +48,7 @@ export default {
     },
   },
   destroyed() {
-    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>

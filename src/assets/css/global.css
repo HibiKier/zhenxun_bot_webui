@@ -1,11 +1,9 @@
+@import './typography.css';
+@import './message.css';
+@import './notify.css';
+
 .CodeMirror-hints {
   z-index: 100000 !important;
-}
-
-@font-face {
-  font-family: fzrzFont;
-  /* 导入的字体文件 */
-  src: url("../font/fzrzExtraBold.ttf");
 }
 
 /* 全局消息样式 */
@@ -39,7 +37,7 @@
   border-radius: 12px !important;
   border: 2px solid rgba(167, 139, 250, 0.3) !important;
   background-color: rgba(255, 255, 255, 0.8) !important;
-  font-family: "Courier New", monospace !important;
+  font-family: 'Courier New', monospace !important;
   transition: all 0.3s ease !important;
   color: #4c1d95 !important;
   height: 100% !important;
@@ -102,12 +100,6 @@
   box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15) !important;
 }
 
-@font-face {
-  font-family: hywFont;
-  /* 导入的字体文件 */
-  src: url("../font/msyh.ttf");
-}
-
 /* 可爱的滚动条 */
 ::-webkit-scrollbar {
   width: 8px;
@@ -156,7 +148,7 @@
 }
 
 .chart-tooltip {
-  font-family: "Microsoft YaHei", sans-serif;
+  font-family: 'Microsoft YaHei', sans-serif;
 }
 .tooltip-title {
   color: #7e22ce;
@@ -166,4 +158,62 @@
 .tooltip-value {
   color: #ec4899;
   font-size: 14px;
+}
+
+/* 自定义下拉框样式 - 使用字体变量 */
+.cute-select-dropdown {
+  background-color: white !important;
+  border: 1px solid #f3e8ff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.1) !important;
+  font-size: var(--font-size-sm) !important;
+}
+
+.cute-select-dropdown .el-select-dropdown__item {
+  color: #6b7280 !important;
+  padding: 8px 16px !important;
+  font-size: var(--font-size-sm) !important;
+  line-height: var(--line-height-normal) !important;
+}
+
+.cute-select-dropdown .el-select-dropdown__item.hover,
+.cute-select-dropdown .el-select-dropdown__item:hover {
+  background-color: #fdf2f8 !important;
+  color: #ec4899 !important;
+}
+
+.cute-select-dropdown .el-select-dropdown__item.selected {
+  background-color: #fce7f3 !important;
+  color: #ec4899 !important;
+  font-weight: bold !important;
+}
+
+/* 多选标签样式 */
+.el-select__tags .el-tag {
+  background-color: #fce7f3 !important;
+  border-color: #fbcfe8 !important;
+  color: #ec4899 !important;
+  font-size: var(--font-size-xs) !important;
+}
+
+.el-select__tags .el-tag .el-tag__close {
+  color: #ec4899 !important;
+}
+
+.el-select__tags .el-tag .el-tag__close:hover {
+  background-color: #ec4899 !important;
+  color: white !important;
+}
+
+/* 调整输入框字体大小 */
+.el-select .el-input__inner {
+  font-size: var(--font-size-sm) !important;
+  line-height: var(--line-height-normal) !important;
+}
+
+/* 全局进度条文本样式 */
+.el-progress__text {
+  font-size: var(--progress-font-size, 14px) !important;
+  font-weight: bold;
+  color: #7c3aed;
 }

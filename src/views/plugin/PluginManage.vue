@@ -1,5 +1,8 @@
 <template>
-  <div class="plugin-manager bg-pink-50 p-4 md:p-6 rounded-2xl">
+  <div
+    ref="pluginManager"
+    class="plugin-manager bg-pink-50 p-4 md:p-6 rounded-2xl"
+  >
     <!-- 顶部插件类型选择 -->
     <div
       class="type-selector bg-white rounded-xl shadow-md p-1 mb-6 inline-flex border border-pink-200"
@@ -117,6 +120,7 @@
         :menuType="searchMenuType"
         :key="pltKey"
         @update:selection="handleSelectionUpdate"
+        :style="{ height: pluginListHeight + 'px' }"
       />
     </div>
 
@@ -178,24 +182,25 @@
 </template>
 
 <script>
-import PluginListTemplate from "@/components/plugin/PluginListTemplate.vue"
+import PluginListTemplate from '@/components/plugin/PluginListTemplate.vue'
 
 export default {
-  name: "PluginList",
+  name: 'PluginList',
   components: {
     PluginListTemplate,
   },
   data() {
     return {
       pluginTypes: [
-        { value: "NORMAL", label: "普通插件", countKey: "normal", first: true },
-        { value: "ADMIN", label: "管理员插件", countKey: "admin" },
-        { value: "SUPERUSER", label: "超级用户插件", countKey: "superuser" },
-        { value: "HIDDEN", label: "其他插件", countKey: "other", last: true },
+        { value: 'NORMAL', label: '普通插件', countKey: 'normal', first: true },
+        { value: 'ADMIN', label: '管理员插件', countKey: 'admin' },
+        { value: 'SUPERUSER', label: '超级用户插件', countKey: 'superuser' },
+        { value: 'HIDDEN', label: '其他插件', countKey: 'other', last: true },
       ],
       pluginCount: { normal: 0, admin: 0, superuser: 0, other: 0 },
-      activeBtn: "NORMAL",
+      activeBtn: 'NORMAL',
       pltKey: 0,
+      pluginListHeight: 0,
       menuTypeList: [],
       searchMenuType: null,
       selectedPluginModules: [],
@@ -209,20 +214,28 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener('resize', this.handleResize)
     this.getPluginCount()
     this.getPluginMenuType()
+    this.handleResize()
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    handleResize() {
+      this.pluginListHeight = this.$refs.pluginManager.offsetHeight - 235
+    },
     getTopItemClass(pluginType) {
       return {
-        "top-select-btn-item": true,
-        "top-btn-item-select": this.activeBtn == pluginType,
+        'top-select-btn-item': true,
+        'top-btn-item-select': this.activeBtn == pluginType,
       }
     },
     getTagClass(tag) {
       return {
-        "filter-tag-item": true,
-        "active-tag": this.searchMenuType === tag,
+        'filter-tag-item': true,
+        'active-tag': this.searchMenuType === tag,
       }
     },
     clickPluginType(pluginType) {
@@ -234,30 +247,30 @@ export default {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_count`)
         .then((resp) => {
           if (!resp) {
-            this.$message.error("获取插件数量失败：无效的响应")
+            this.$message.error('获取插件数量失败：无效的响应')
             return
           }
           if (resp.suc) {
             if (resp.warning) {
               this.$message.warning(resp.warning)
             } else {
-              console.log("resp", resp.data)
+              console.log('resp', resp.data)
 
               this.pluginCount = resp.data
             }
           } else {
-            this.$message.error(resp.info || "获取插件数量失败")
+            this.$message.error(resp.info || '获取插件数量失败')
           }
         })
         .catch((error) => {
-          this.$message.error("请求插件数量失败: " + error)
+          this.$message.error('请求插件数量失败: ' + error)
         })
     },
     getPluginMenuType() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_menu_type`)
         .then((resp) => {
           if (!resp) {
-            this.$message.error("获取菜单类型失败：无效的响应")
+            this.$message.error('获取菜单类型失败：无效的响应')
             return
           }
           if (resp.suc) {
@@ -269,16 +282,19 @@ export default {
               ).filter(Boolean)
             }
           } else {
-            this.$message.error(resp.info || "获取菜单类型失败")
+            this.$message.error(resp.info || '获取菜单类型失败')
           }
         })
         .catch((error) => {
-          this.$message.error("请求菜单类型失败: " + error)
+          this.$message.error('请求菜单类型失败: ' + error)
         })
     },
     selectMenuType(menuType) {
       if (this.searchMenuType !== menuType) {
         this.searchMenuType = menuType
+        this.pltKey++
+      } else {
+        this.searchMenuType = ''
         this.pltKey++
       }
     },
@@ -293,17 +309,17 @@ export default {
 
     bulkToggleSwitch(enable) {
       if (this.selectedPluginModules.length === 0) return
-      const actionText = enable ? "启用" : "禁用"
+      const actionText = enable ? '启用' : '禁用'
       const loading = this.$loading({
         lock: true,
         text: `正在批量${actionText}...`,
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
       })
 
       const updates = this.selectedPluginModules.map((module) => ({
         module: module,
-        block_type: enable ? null : "ALL",
+        block_type: enable ? null : 'ALL',
       }))
 
       this.putRequest(`${this.$root.prefix}/plugin/plugins/batch_update`, {
@@ -335,10 +351,10 @@ export default {
                 let errorMsg = `批量${actionText}失败`
                 if (result.errors && result.errors.length > 0) {
                   errorMsg +=
-                    ": " +
+                    ': ' +
                     result.errors
                       .map((e) => `${e.module}(${e.error})`)
-                      .join(", ")
+                      .join(', ')
                 }
                 this.$message.error(errorMsg)
               }
@@ -355,16 +371,16 @@ export default {
 
     bulkUpdateMenuType() {
       if (!this.targetMenuTypeBulk) {
-        this.$message.warning("请先在上方选择目标菜单类型")
+        this.$message.warning('请先在上方选择目标菜单类型')
         return
       }
       if (this.selectedPluginModules.length === 0) return
 
       const loading = this.$loading({
         lock: true,
-        text: "正在批量修改菜单类型...",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
+        text: '正在批量修改菜单类型...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)',
       })
 
       const updates = this.selectedPluginModules.map((module) => ({
@@ -378,7 +394,7 @@ export default {
         .then((resp) => {
           loading.close()
           if (!resp) {
-            this.$message.error("批量修改菜单类型失败：无效的响应")
+            this.$message.error('批量修改菜单类型失败：无效的响应')
             return
           }
           if (resp.suc) {
@@ -399,38 +415,38 @@ export default {
                 this.cancelSelection()
                 this.pltKey++
               } else {
-                let errorMsg = "批量修改菜单类型失败"
+                let errorMsg = '批量修改菜单类型失败'
                 if (result.errors && result.errors.length > 0) {
                   errorMsg +=
-                    ": " +
+                    ': ' +
                     result.errors
                       .map((e) => `${e.module}(${e.error})`)
-                      .join(", ")
+                      .join(', ')
                 }
                 this.$message.error(errorMsg)
               }
             }
           } else {
-            this.$message.error(resp.info || "批量修改菜单类型失败")
+            this.$message.error(resp.info || '批量修改菜单类型失败')
           }
         })
         .catch((error) => {
           loading.close()
-          this.$message.error("请求失败: " + error)
+          this.$message.error('请求失败: ' + error)
         })
     },
 
     addNewMenuType() {
-      this.$prompt("请输入新的菜单类型名称：", "新增菜单类型", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$prompt('请输入新的菜单类型名称：', '新增菜单类型', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         inputPattern: /\S+/,
-        inputErrorMessage: "菜单类型名称不能为空",
+        inputErrorMessage: '菜单类型名称不能为空',
       })
         .then(({ value }) => {
           const newType = value.trim()
           if (!newType) {
-            this.$message.warning("菜单类型名称不能为空")
+            this.$message.warning('菜单类型名称不能为空')
             return
           }
           const exists = this.menuTypeList.some(
@@ -446,28 +462,28 @@ export default {
           }
         })
         .catch(() => {
-          this.$message.info("已取消新增")
+          this.$message.info('已取消新增')
         })
     },
 
     editMenuType(oldName) {
       if (!oldName) return
 
-      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, "重命名菜单类型", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, '重命名菜单类型', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         inputValue: oldName,
         inputPattern: /\S+/,
-        inputErrorMessage: "菜单类型名称不能为空",
+        inputErrorMessage: '菜单类型名称不能为空',
       })
         .then(({ value }) => {
           const newName = value.trim()
           if (!newName) {
-            this.$message.warning("菜单类型名称不能为空")
+            this.$message.warning('菜单类型名称不能为空')
             return
           }
           if (newName === oldName) {
-            this.$message.info("名称未改变")
+            this.$message.info('名称未改变')
             return
           }
 
@@ -483,9 +499,9 @@ export default {
 
           const loading = this.$loading({
             lock: true,
-            text: "正在重命名...",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)",
+            text: '正在重命名...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
           })
           this.putRequest(`${this.$root.prefix}/plugin/menu_type/rename`, {
             old_name: oldName,
@@ -494,11 +510,11 @@ export default {
             .then((resp) => {
               loading.close()
               if (!resp) {
-                this.$message.error("重命名失败：无效的响应")
+                this.$message.error('重命名失败：无效的响应')
                 return
               }
               if (resp.suc) {
-                this.$message.success(resp.info || "重命名成功！")
+                this.$message.success(resp.info || '重命名成功！')
                 const index = this.menuTypeList.findIndex(
                   (type) => type === oldName
                 )
@@ -509,7 +525,7 @@ export default {
                   this.searchMenuType = newName
                 }
               } else {
-                this.$message.error(resp.info || "重命名失败")
+                this.$message.error(resp.info || '重命名失败')
               }
             })
             .catch((error) => {
@@ -518,7 +534,7 @@ export default {
             })
         })
         .catch(() => {
-          this.$message.info("已取消重命名")
+          this.$message.info('已取消重命名')
         })
     },
 
@@ -529,21 +545,21 @@ export default {
     triggerRenameType(oldName) {
       if (!oldName) return
 
-      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, "重命名菜单类型", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
+      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, '重命名菜单类型', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         inputValue: oldName,
         inputPattern: /\S+/,
-        inputErrorMessage: "菜单类型名称不能为空",
+        inputErrorMessage: '菜单类型名称不能为空',
       })
         .then(({ value }) => {
           const newName = value.trim()
           if (!newName) {
-            this.$message.warning("菜单类型名称不能为空")
+            this.$message.warning('菜单类型名称不能为空')
             return
           }
           if (newName === oldName) {
-            this.$message.info("名称未改变")
+            this.$message.info('名称未改变')
             return
           }
 
@@ -559,9 +575,9 @@ export default {
 
           const loading = this.$loading({
             lock: true,
-            text: "正在重命名...",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)",
+            text: '正在重命名...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
           })
           this.putRequest(`${this.$root.prefix}/plugin/menu_type/rename`, {
             old_name: oldName,
@@ -570,11 +586,11 @@ export default {
             .then((resp) => {
               loading.close()
               if (!resp) {
-                this.$message.error("重命名失败：无效的响应")
+                this.$message.error('重命名失败：无效的响应')
                 return
               }
               if (resp.suc) {
-                this.$message.success(resp.info || "重命名成功！")
+                this.$message.success(resp.info || '重命名成功！')
                 const index = this.menuTypeList.findIndex(
                   (type) => type === oldName
                 )
@@ -583,7 +599,7 @@ export default {
                 }
                 this.manageTypesDialogVisible = false
               } else {
-                this.$message.error(resp.info || "重命名失败")
+                this.$message.error(resp.info || '重命名失败')
               }
             })
             .catch((error) => {
@@ -592,7 +608,7 @@ export default {
             })
         })
         .catch(() => {
-          this.$message.info("已取消重命名")
+          this.$message.info('已取消重命名')
         })
     },
   },

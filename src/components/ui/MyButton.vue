@@ -65,12 +65,11 @@
 </template>
 
 <script>
-import { getConvertSize } from "@/utils/utils"
-import SvgIcon from "../SvgIcon/SvgIcon.vue"
+import SvgIcon from '../SvgIcon/SvgIcon.vue'
 
 export default {
   components: { SvgIcon },
-  name: "MyButton",
+  name: 'MyButton',
   props: {
     text: String,
     icon: String,
@@ -79,21 +78,21 @@ export default {
     iconHeight: { type: Number, default: 20 },
     type: {
       type: String,
-      default: "default",
+      default: 'default',
       validator: (value) =>
         [
-          "default",
-          "primary",
-          "success",
-          "warning",
-          "danger",
-          "pink",
-          "purple",
-          "mint",
-          "peach",
-          "sky",
-          "lavender",
-          "coral",
+          'default',
+          'primary',
+          'success',
+          'warning',
+          'danger',
+          'pink',
+          'purple',
+          'mint',
+          'peach',
+          'sky',
+          'lavender',
+          'coral',
         ].includes(value),
     },
     width: { type: Number, default: 0 },
@@ -102,13 +101,13 @@ export default {
     fontSize: { type: Number, default: 14 },
     rounded: {
       type: String,
-      default: "full",
-      validator: (value) => ["none", "sm", "md", "lg", "full"].includes(value),
+      default: 'full',
+      validator: (value) => ['none', 'sm', 'md', 'lg', 'full'].includes(value),
     },
     shadow: {
       type: String,
-      default: "md",
-      validator: (value) => ["none", "sm", "md", "lg", "xl"].includes(value),
+      default: 'md',
+      validator: (value) => ['none', 'sm', 'md', 'lg', 'xl'].includes(value),
     },
     glow: {
       type: Boolean,
@@ -128,71 +127,71 @@ export default {
   },
   computed: {
     computedWidth() {
-      return this.sizeMana.width === 0 ? "100%" : `${this.sizeMana.width}px`
+      return this.sizeMana.width === 0 ? '100%' : `${this.sizeMana.width}px`
     },
     computedHeight() {
-      return this.sizeMana.height === 0 ? "100%" : `${this.sizeMana.height}px`
+      return this.sizeMana.height === 0 ? '100%' : `${this.sizeMana.height}px`
     },
     typeClass() {
       const classes = {
         default:
-          "bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50",
+          'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50',
         primary:
-          "bg-blue-400 text-white hover:bg-blue-500 border-2 border-blue-300",
+          'bg-blue-400 text-white hover:bg-blue-500 border-2 border-blue-300',
         success:
-          "bg-green-400 text-white hover:bg-green-500 border-2 border-green-300",
+          'bg-green-400 text-white hover:bg-green-500 border-2 border-green-300',
         warning:
-          "bg-yellow-400 text-white hover:bg-yellow-500 border-2 border-yellow-300",
+          'bg-yellow-400 text-white hover:bg-yellow-500 border-2 border-yellow-300',
         danger:
-          "bg-red-400 text-white hover:bg-red-500 border-2 border-red-300",
-        pink: "bg-pink-300 text-white hover:bg-pink-400 border-2 border-pink-200",
+          'bg-red-400 text-white hover:bg-red-500 border-2 border-red-300',
+        pink: 'bg-pink-300 text-white hover:bg-pink-400 border-2 border-pink-200',
         purple:
-          "bg-purple-400 text-white hover:bg-purple-500 border-2 border-purple-300",
-        mint: "bg-teal-300 text-white hover:bg-teal-400 border-2 border-teal-200",
+          'bg-purple-400 text-white hover:bg-purple-500 border-2 border-purple-300',
+        mint: 'bg-teal-300 text-white hover:bg-teal-400 border-2 border-teal-200',
         peach:
-          "bg-orange-300 text-white hover:bg-orange-400 border-2 border-orange-200",
-        sky: "bg-cyan-300 text-white hover:bg-cyan-400 border-2 border-cyan-200",
+          'bg-orange-300 text-white hover:bg-orange-400 border-2 border-orange-200',
+        sky: 'bg-cyan-300 text-white hover:bg-cyan-400 border-2 border-cyan-200',
         lavender:
-          "bg-indigo-300 text-white hover:bg-indigo-400 border-2 border-indigo-200",
+          'bg-indigo-300 text-white hover:bg-indigo-400 border-2 border-indigo-200',
         coral:
-          "bg-rose-300 text-white hover:bg-rose-400 border-2 border-rose-200",
+          'bg-rose-300 text-white hover:bg-rose-400 border-2 border-rose-200',
       }
       return classes[this.type] || classes.default
     },
     roundedClass() {
       return {
-        none: "rounded-none",
-        sm: "rounded-sm",
-        md: "rounded-md",
-        lg: "rounded-lg",
-        full: "rounded-full",
+        none: 'rounded-none',
+        sm: 'rounded-sm',
+        md: 'rounded-md',
+        lg: 'rounded-lg',
+        full: 'rounded-full',
       }[this.rounded]
     },
     shadowClass() {
       return {
-        none: "shadow-none",
-        sm: "shadow-sm",
-        md: "shadow-md",
-        lg: "shadow-lg",
-        xl: "shadow-xl",
+        none: 'shadow-none',
+        sm: 'shadow-sm',
+        md: 'shadow-md',
+        lg: 'shadow-lg',
+        xl: 'shadow-xl',
       }[this.shadow]
     },
     glowEffect() {
-      if (!this.glow || this.disabled) return ""
+      if (!this.glow || this.disabled) return ''
 
       const glowColors = {
-        default: "hover:shadow-gray-300",
-        primary: "hover:shadow-blue-300",
-        success: "hover:shadow-green-300",
-        warning: "hover:shadow-yellow-300",
-        danger: "hover:shadow-red-300",
-        pink: "hover:shadow-pink-200",
-        purple: "hover:shadow-purple-300",
-        mint: "hover:shadow-teal-200",
-        peach: "hover:shadow-orange-200",
-        sky: "hover:shadow-cyan-200",
-        lavender: "hover:shadow-indigo-200",
-        coral: "hover:shadow-rose-200",
+        default: 'hover:shadow-gray-300',
+        primary: 'hover:shadow-blue-300',
+        success: 'hover:shadow-green-300',
+        warning: 'hover:shadow-yellow-300',
+        danger: 'hover:shadow-red-300',
+        pink: 'hover:shadow-pink-200',
+        purple: 'hover:shadow-purple-300',
+        mint: 'hover:shadow-teal-200',
+        peach: 'hover:shadow-orange-200',
+        sky: 'hover:shadow-cyan-200',
+        lavender: 'hover:shadow-indigo-200',
+        coral: 'hover:shadow-rose-200',
       }
 
       return `transition-shadow duration-300 ${
@@ -201,27 +200,27 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
     this.handleResize()
   },
   methods: {
     handleResize() {
       this.sizeMana = {
-        iconWidth: getConvertSize(this.iconWidth, 1024),
-        iconHeight: getConvertSize(this.iconHeight, 1024),
-        fontSize: getConvertSize(this.fontSize, 1024),
-        width: getConvertSize(this.width, 1024),
-        height: getConvertSize(this.height, 1024),
+        iconWidth: this.iconWidth,
+        iconHeight: this.iconHeight,
+        fontSize: this.fontSize,
+        width: this.width,
+        height: this.height,
       }
     },
     handleClick() {
       if (!this.disabled) {
-        this.$emit("click")
+        this.$emit('click')
       }
     },
   },
   beforeDestroy() {
-    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>
@@ -236,7 +235,7 @@ export default {
   @apply flex items-center justify-center relative overflow-hidden;
   width: 100%;
   height: 100%;
-  font-family: "Comic Sans MS", "Segoe UI", sans-serif;
+  font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   font-size: v-bind('sizeMana.fontSize + "px"');
   padding: 0 1.25em;
@@ -306,7 +305,7 @@ export default {
   border: 1px solid #e9d5ff !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  font-family: "Comic Sans MS", sans-serif !important;
+  font-family: 'Comic Sans MS', sans-serif !important;
   border-radius: 12px !important;
   padding: 8px 12px !important;
 }

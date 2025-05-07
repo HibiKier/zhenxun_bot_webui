@@ -145,7 +145,7 @@
               class="anime-pagination"
               background
               small
-              :pager-count="windowWidth < 768 ? 3 : 5"
+              :pager-count="$isMobile() ? 3 : 5"
             />
           </div>
         </div>
@@ -155,10 +155,10 @@
 </template>
 
 <script>
-import SvgIcon from "../SvgIcon/SvgIcon.vue"
+import SvgIcon from '../SvgIcon/SvgIcon.vue'
 
 export default {
-  name: "LeftInfo",
+  name: 'LeftInfo',
   components: { SvgIcon },
   data() {
     return {
@@ -168,7 +168,6 @@ export default {
       historyIndex: 1,
       historyTotal: 0,
       botListHeight: 0,
-      windowWidth: window.innerWidth,
       tableHeight: 230, // 默认高度
     }
   },
@@ -181,8 +180,8 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener("resize", this.calculateTableHeight)
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.calculateTableHeight)
+    window.addEventListener('resize', this.handleResize)
     this.getBotList()
     this.getConnectLog()
     this.handleResize()
@@ -223,16 +222,16 @@ export default {
     handleResize() {
       this.$nextTick(() => {
         this.calculateTableHeight()
-        this.windowWidth = window.innerWidth
         this.botListHeight =
           window.innerHeight - this.$refs.connectLog.offsetHeight - 170
+        this.botListHeight = Math.max(this.botListHeight, 300)
       })
     },
     formateSeconds(endTime) {
       let secondTime = parseInt(endTime)
       let min = 0
       let h = 0
-      let result = ""
+      let result = ''
       if (secondTime > 60) {
         min = parseInt(secondTime / 60)
         secondTime = parseInt(secondTime % 60)
@@ -241,9 +240,9 @@ export default {
           min = parseInt(min % 60)
         }
       }
-      result = `${h.toString().padStart(2, "0")}:${min
+      result = `${h.toString().padStart(2, '0')}:${min
         .toString()
-        .padStart(2, "0")}:${secondTime.toString().padStart(2, "0")}`
+        .padStart(2, '0')}:${secondTime.toString().padStart(2, '0')}`
       return result
     },
     addInterval(bot) {
@@ -255,7 +254,7 @@ export default {
       this.conTimes.push(timerId)
     },
     getConnectLog() {
-      var loading = this.getLoading(".connect-log")
+      var loading = this.getLoading('.connect-log')
       this.postRequest(`${this.$root.prefix}/dashboard/get_connect_log`, {
         index: this.historyIndex,
         size: 5,
@@ -268,7 +267,7 @@ export default {
             this.tableData = resp.data.data
             this.historyTotal = resp.data.total
             for (let v of this.tableData) {
-              v.typeStr = v.type == 1 ? "连接" : "断开"
+              v.typeStr = v.type == 1 ? '连接' : '断开'
             }
           }
         } else {
@@ -278,7 +277,7 @@ export default {
       })
     },
     getBotList() {
-      var loading = this.getLoading(".bot-list")
+      var loading = this.getLoading('.bot-list')
       this.getRequest(`${this.$root.prefix}/dashboard/get_bot_list`).then(
         (resp) => {
           if (resp.suc) {
@@ -288,7 +287,7 @@ export default {
               this.$message.success(resp.info)
               this.botList = resp.data
               for (let bot of this.botList) {
-                bot.connectTime = "00:00"
+                bot.connectTime = '00:00'
                 this.addInterval(bot)
               }
             }
@@ -301,13 +300,13 @@ export default {
     },
   },
   beforeDestroy() {
-    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener('resize', this.handleResize)
     if (this.conTimes) {
       for (let timer of this.conTimes) {
         clearInterval(timer)
       }
     }
-    window.removeEventListener("resize", this.calculateTableHeight)
+    window.removeEventListener('resize', this.calculateTableHeight)
   },
 }
 </script>
@@ -315,11 +314,12 @@ export default {
 <style scoped>
 .left-info-container {
   height: 100%;
-  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  font-size: var(--font-size-md); /* 设置基础字体大小 */
 }
 
 .top-text {
-  font-size: 20px;
+  font-size: var(--font-size-xl);
   font-weight: 600;
   margin-bottom: 15px;
   display: flex;
@@ -331,23 +331,25 @@ export default {
 }
 
 .icon-bot {
-  margin-right: 8px;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.5em;
   color: #ec4899;
 }
 
 .bot-list {
   overflow: auto;
   background-color: #fff;
-  padding: 15px;
-  border-radius: 12px;
+  padding: 1em;
+  border-radius: 0.75em;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .bot-item {
-  margin-bottom: 20px;
-  padding: 15px;
+  margin-bottom: 1.25em;
+  padding: 1em;
   background: #fff;
-  border-radius: 10px;
+  border-radius: 0.625em;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
@@ -363,11 +365,11 @@ export default {
 }
 
 .ava-img {
-  width: 100px;
-  height: 100px;
-  border-radius: 12px;
-  margin-right: 15px;
-  border: 3px solid rgba(236, 72, 153, 0.2);
+  width: 6.25em;
+  height: 6.25em;
+  border-radius: 0.75em;
+  margin-right: 1em;
+  border: 0.1875em solid rgba(236, 72, 153, 0.2);
   transition: all 0.3s ease;
 }
 
@@ -391,14 +393,14 @@ export default {
 .info-name {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0.5em;
 }
 
 .line-line {
-  width: 4px;
-  height: 18px;
-  border-radius: 4px;
-  margin-right: 10px;
+  width: 0.25em;
+  height: 1.125em;
+  border-radius: 0.25em;
+  margin-right: 0.625em;
 }
 
 .pink-line {
@@ -410,7 +412,7 @@ export default {
 }
 
 .bot-name {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 700;
   color: #333;
   white-space: nowrap;
@@ -421,8 +423,8 @@ export default {
 .info-id {
   display: flex;
   align-items: center;
-  font-size: 14px;
-  margin-bottom: 10px;
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.625em;
 }
 
 .purple-text {
@@ -432,54 +434,58 @@ export default {
 .info-gf {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 1em;
 }
 
 .gf-item {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
 }
 
 .blue-icon {
   color: #60a5fa;
-  margin-right: 5px;
+  margin-right: 0.3125em;
+  width: 1em;
+  height: 1em;
 }
 
 .green-icon {
   color: #4ade80;
-  margin-right: 5px;
+  margin-right: 0.3125em;
+  width: 1em;
+  height: 1em;
 }
 
 .gf-value {
-  margin-left: 5px;
+  margin-left: 0.3125em;
   font-weight: 600;
-  font-size: 16px;
+  font-size: var(--font-size-md);
   color: #333;
 }
 
 .custom-divider {
-  margin: 12px 0;
+  margin: 0.75em 0;
   background-color: #e5e7eb;
 }
 
 .bot-detail-info {
-  padding-top: 10px;
+  padding-top: 0.625em;
 }
 
 .detail-row {
   display: flex;
-  gap: 15px;
-  margin-bottom: 12px;
+  gap: 1em;
+  margin-bottom: 0.75em;
 }
 
 .message {
   flex: 1;
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 0.5em 0.75em;
   background: rgba(236, 72, 153, 0.05);
-  border-radius: 8px;
+  border-radius: 0.5em;
   transition: all 0.3s ease;
 }
 
@@ -487,33 +493,36 @@ export default {
   background: rgba(236, 72, 153, 0.1);
 }
 
+.pink-icon,
+.blue-icon,
+.purple-icon,
+.green-icon {
+  width: 1.25em;
+  height: 1.25em;
+  margin-right: 0.625em;
+}
+
 .pink-icon {
   color: #ec4899;
-  font-size: 20px;
-  margin-right: 10px;
 }
 
 .blue-icon {
   color: #3b82f6;
-  font-size: 20px;
-  margin-right: 10px;
 }
 
 .purple-icon {
   color: #a855f7;
-  font-size: 20px;
-  margin-right: 10px;
 }
 
 .green-icon {
   color: #10b981;
-  font-size: 20px;
-  margin-right: 10px;
 }
 
 .yellow-icon {
   color: #f59e0b;
-  margin-right: 8px;
+  margin-right: 0.5em;
+  width: 1em;
+  height: 1em;
 }
 
 .message-content {
@@ -522,13 +531,13 @@ export default {
 }
 
 .message-title {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
   color: #6b7280;
-  margin-bottom: 2px;
+  margin-bottom: 0.125em;
 }
 
 .message-value {
-  font-size: 16px;
+  font-size: var(--font-size-md);
   font-weight: 600;
   color: #333;
 }
@@ -536,40 +545,42 @@ export default {
 .connect-date {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 0.5em 0.75em;
   background: rgba(245, 158, 11, 0.05);
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 0.5em;
+  font-size: var(--font-size-sm);
   color: #333;
-  margin-top: 10px;
+  margin-top: 0.625em;
 }
 
 .connect-log {
-  margin-top: 20px;
+  margin-top: 1.1em;
   background-color: #fff;
-  padding: 15px;
-  border-radius: 12px;
+  padding: 1em;
+  border-radius: 0.75em;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
 }
 
 .base-title {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 1em;
   display: flex;
   align-items: center;
-  padding-bottom: 8px;
+  padding-bottom: 0.5em;
   border-bottom: 1px dashed #e5e7eb;
 }
 
 .icon-log {
-  margin-right: 8px;
+  margin-right: 0.5em;
   color: #ec4899;
+  width: 1em;
+  height: 1em;
 }
 
 .log-table {
-  border-radius: 8px;
+  border-radius: 0.5em;
   overflow: hidden;
 }
 
@@ -578,29 +589,29 @@ export default {
 }
 
 .custom-tag {
-  border-radius: 12px;
-  padding: 0 10px;
-  height: 26px;
-  line-height: 26px;
-  min-width: 60px;
+  border-radius: 0.75em;
+  padding: 0 0.625em;
+  height: 1.625em;
+  line-height: 1.625em;
+  min-width: 3.75em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 .pagination {
-  margin-top: 15px;
+  margin-top: 1em;
   display: flex;
   justify-content: center;
 }
 
 @media (max-width: 768px) {
   .left-info-container {
-    padding: 0 10px;
+    padding: 0.625em 0.625em 1.25em;
   }
 
   .bot-item {
-    padding: 10px;
+    padding: 0.625em;
   }
 
   .item-ava {
@@ -609,26 +620,48 @@ export default {
   }
 
   .ava-img {
+    width: 5em;
+    height: 5em;
     margin-right: 0;
-    margin-bottom: 10px;
+    margin-bottom: 0.625em;
   }
 
   .detail-row {
     flex-direction: column;
-    gap: 8px;
+    gap: 0.5em;
   }
 
   .el-pagination button,
   .el-pagination li {
-    margin: 0 2px;
+    margin: 0 0.125em;
   }
 
   .el-pagination .btn-prev,
   .el-pagination .btn-next,
   .el-pagination .number {
-    min-width: 28px;
-    height: 28px;
-    line-height: 28px;
+    min-width: 1.75em;
+    height: 1.75em;
+    line-height: 1.75em;
+  }
+}
+
+/* 针对超小屏幕的额外调整 */
+@media (max-width: 480px) {
+  .left-info-container {
+    padding: 0.75em 0.5em 1.5em; /* More bottom padding for very small screens */
+  }
+
+  .ava-img {
+    width: 4em;
+    height: 4em;
+  }
+
+  .message {
+    padding: 0.375em 0.5em;
+  }
+
+  .connect-log {
+    padding: 0.75em;
   }
 }
 </style>

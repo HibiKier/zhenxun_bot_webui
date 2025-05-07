@@ -1,31 +1,36 @@
 <template>
   <div class="main-container" style="overflow: hidden">
-    <div class="main bg-gradient-to-br from-pink-50 to-purple-50 p-4">
+    <div
+      class="main bg-gradient-to-br from-pink-50 to-purple-50 overflow-hidden"
+    >
       <!-- 添加可爱的标题 -->
       <div class="flex items-center mb-4">
         <svg-icon icon-class="database" class="text-purple-500 text-3xl mr-2" />
         <h1 class="text-2xl md:text-3xl font-bold text-purple-600 cute-title">
           数据库管理
-          <span class="text-pink-400 text-xl ml-2">(≧▽≦)</span>
         </h1>
       </div>
 
-      <el-row :gutter="16" class="flex flex-wrap">
+      <el-row
+        :gutter="16"
+        class="flex flex-wrap"
+        :style="{ height: computedHeight + 55 + 'px' }"
+      >
         <!-- 左侧表格列表 - 宽度较小 -->
-        <el-col :span="24" :md="6" class="mb-4">
+        <el-col :span="24" :md="6">
           <div
-            class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-pink-200"
+            class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-pink-200 h-full"
           >
             <table-list :style="{ height: computedHeight + 'px' }" />
           </div>
         </el-col>
 
         <!-- 右侧命令区域 - 占据更多空间 -->
-        <el-col :span="24" :md="18" class="mb-4">
+        <el-col :span="24" :md="18">
           <div
             class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-blue-200"
           >
-            <cmd-main :style="{ height: computedHeight + 'px' }" />
+            <cmd-main :style="{ height: computedHeight + 22 + 'px' }" />
           </div>
         </el-col>
       </el-row>
@@ -34,12 +39,12 @@
 </template>
 
 <script>
-import { getHeaderHeight } from "@/utils/utils"
-import TableList from "@/components/database/TableList.vue"
-import CmdMain from "@/components/database/CmdMain.vue"
+import { getHeaderHeight } from '@/utils/utils'
+import TableList from '@/components/database/TableList.vue'
+import CmdMain from '@/components/database/CmdMain.vue'
 export default {
   components: { TableList, CmdMain },
-  name: "DatabaseMana",
+  name: 'DatabaseMana',
   data() {
     return {
       windowHeight: window.innerHeight,
@@ -47,11 +52,11 @@ export default {
   },
   computed: {
     computedHeight() {
-      return this.windowHeight - getHeaderHeight() - 180
+      return this.windowHeight - getHeaderHeight() - 150
     },
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
   },
   methods: {
     handleResize() {
@@ -59,7 +64,7 @@ export default {
     },
   },
   destroyed() {
-    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>
@@ -88,7 +93,7 @@ export default {
 }
 
 .cute-title::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -5px;
   left: 0;
@@ -112,7 +117,7 @@ export default {
 
 /* 左侧卡片装饰线 */
 .card-container:first-child::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -123,7 +128,7 @@ export default {
 
 /* 右侧卡片装饰线 */
 .card-container:last-child::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;

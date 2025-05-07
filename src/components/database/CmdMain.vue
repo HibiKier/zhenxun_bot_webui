@@ -1,6 +1,6 @@
 <template>
   <div
-    class="cmd-main p-4 md:p-6 bg-gradient-to-br from-pink-50 to-purple-50"
+    class="cmd-main p-4 bg-gradient-to-br from-pink-50 to-purple-50 h-full"
     ref="cmdMain"
   >
     <!-- 按钮组 - 使用MyButton组件 -->
@@ -9,8 +9,8 @@
         icon="play"
         text="执行"
         type="success"
-        :rounded="windowWidth < 768 ? 'md' : 'lg'"
-        :width="windowWidth < 768 ? 80 : 100"
+        :rounded="$isMobile() ? 'md' : 'lg'"
+        :width="$isMobile() ? 80 : 100"
         :height="36"
         glow
         @click="execSql"
@@ -20,8 +20,8 @@
         icon="delete"
         text="清空"
         type="danger"
-        :rounded="windowWidth < 768 ? 'md' : 'lg'"
-        :width="windowWidth < 768 ? 80 : 100"
+        :rounded="$isMobile() ? 'md' : 'lg'"
+        :width="$isMobile() ? 80 : 100"
         :height="36"
         @click="sqlMessage = ''"
       />
@@ -61,17 +61,17 @@
           icon="notebook"
           text="常用SQL"
           type="warning"
-          :rounded="windowWidth < 768 ? 'md' : 'lg'"
-          :width="windowWidth < 768 ? 80 : 100"
+          :rounded="$isMobile() ? 'md' : 'lg'"
+          :width="$isMobile() ? 80 : 100"
           :height="36"
         />
       </el-popover>
     </div>
-
     <!-- 主内容区域 -->
     <div
       class="cmd-main-box bg-white rounded-xl shadow-lg p-4 md:p-6 border-2 border-pink-200"
       ref="cmdMainBox"
+      :style="{ height: sizeMana.mainBoxHeight + 'px' }"
     >
       <el-row :gutter="16">
         <el-col :span="24" :md="12">
@@ -82,7 +82,7 @@
               type="textarea"
               resize="none"
               class="anime-textarea"
-              :style="{ height: sizeMana.inputHeight + 'px' }"
+              :style="{ height: sizeMana.inputHeight - 50 + 'px' }"
               placeholder="输入SQL命令... ✍(◔◡◔)"
             ></el-input>
           </div>
@@ -98,7 +98,7 @@
             </p>
             <div
               class="history-box flex-grow overflow-y-auto"
-              :style="{ height: sizeMana.topHeight + 12 + 'px' }"
+              :style="{ height: sizeMana.topHeight - 40 + 'px' }"
             >
               <div
                 v-for="(n, index) in historyList"
@@ -117,7 +117,7 @@
                 :current-page.sync="historyIndex"
                 class="anime-pagination"
                 small
-                :pager-count="windowWidth < 768 ? 3 : 5"
+                :pager-count="$isMobile() ? 3 : 5"
               ></el-pagination>
             </div>
           </div>
@@ -139,9 +139,12 @@
 
     <!-- 结果区域 -->
     <div
-      class="result-box bg-white rounded-xl shadow-lg p-4 md:p-6 border-2 border-purple-200"
+      class="result-box bg-white rounded-xl shadow-lg p-4 md:p-6 border-2 border-purple-200 mt-4"
       ref="resultBox"
-      :style="{ height: sizeMana.resultHeight + 'px' }"
+      :style="{
+        height: sizeMana.resultHeight + 40 + 'px',
+        overflow: 'auto',
+      }"
     >
       <p
         v-if="info"
@@ -154,7 +157,7 @@
         class="empty h-full flex items-center justify-center"
       >
         <el-empty
-          :image-size="windowWidth < 768 ? 200 : 350"
+          :image-size="$isMobile() ? 200 : 350"
           :image="require('../../assets/image/empty.png')"
           description="空空如也 ┐(ﾟ～ﾟ)┌ "
           class="anime-empty"
@@ -164,7 +167,7 @@
         <el-table
           :data="resultData"
           border
-          :height="sizeMana.resultHeight"
+          :height="sizeMana.resultHeight - 13"
           class="anime-table"
         >
           <el-table-column
@@ -181,10 +184,10 @@
 </template>
 
 <script>
-import MyButton from "../ui/MyButton.vue"
+import MyButton from '../ui/MyButton.vue'
 export default {
   components: { MyButton },
-  name: "CmdMain",
+  name: 'CmdMain',
   data() {
     return {
       sqlMessage: null,
@@ -201,17 +204,18 @@ export default {
         resultHeight: 90,
       },
       windowWidth: window.innerWidth,
+      maxResultHeight: 0,
     }
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
     this.getSqlLog()
     this.handleResize()
-    if (this.$store.state.botType == "zhenxun") {
+    if (this.$store.state.botType == 'zhenxun') {
       this.getCommonSql()
     }
     this.windowWidth = window.innerWidth
-    window.addEventListener("resize", this.updateWindowWidth)
+    window.addEventListener('resize', this.updateWindowWidth)
   },
   methods: {
     updateWindowWidth() {
@@ -219,16 +223,40 @@ export default {
     },
     handleResize() {
       this.$nextTick(() => {
-        this.sizeMana.topHeight =
-          this.$refs.cmdMainBox.offsetHeight -
-          (this.windowWidth < 768 ? 160 : 132)
-        this.sizeMana.inputHeight = this.$refs.cmdMainBox.offsetHeight
+        const cmdMainHeight = this.$refs.cmdMain.offsetHeight
+        const btnGroupHeight = this.$refs.btnGroup.offsetHeight
+        const spacing = this.$isMobile() ? 100 : 120
 
-        this.sizeMana.resultHeight =
-          this.$refs.cmdMain.offsetHeight -
-          this.$refs.btnGroup.offsetHeight -
-          this.$refs.cmdMainBox.offsetHeight -
-          (this.windowWidth < 768 ? 100 : 165)
+        // 计算可用总高度（减去按钮组和间距）
+        const availableHeight = cmdMainHeight - btnGroupHeight - spacing
+
+        // 计算1:2比例的高度
+        const desiredMainHeight = availableHeight * 0.33
+        const desiredResultHeight = availableHeight - desiredMainHeight
+
+        // 设置主内容区域高度（最小200px）
+        this.sizeMana.mainBoxHeight = Math.max(desiredMainHeight, 200)
+
+        // 计算实际可用的结果区域高度
+        const remainingHeight =
+          cmdMainHeight - btnGroupHeight - this.sizeMana.mainBoxHeight - spacing
+
+        console.log('remainingHeight', remainingHeight)
+
+        // 设置结果区域高度（不超过剩余空间，最小400px）
+        this.sizeMana.resultHeight = Math.max(
+          Math.min(desiredResultHeight, remainingHeight),
+          200
+        )
+        console.log('this.sizeMana.resultHeight', this.sizeMana.resultHeight)
+
+        // 更新最大结果高度限制
+        this.maxResultHeight = remainingHeight
+
+        // 调整内部元素高度
+        this.sizeMana.topHeight =
+          this.sizeMana.mainBoxHeight - (this.$isMobile() ? 160 : 132)
+        this.sizeMana.inputHeight = this.sizeMana.mainBoxHeight
       })
     },
     getCommonSql() {
@@ -249,23 +277,23 @@ export default {
     },
     copyHistory(n) {
       this.$message.success({
-        message: "复制成功 (●ˊωˋ●)",
-        customClass: "anime-message",
+        message: '复制成功 (●ˊωˋ●)',
+        customClass: 'anime-message',
       })
       this.sqlMessage = n
     },
     formatBoolean(row, i, cellValue) {
-      return cellValue + ""
+      return cellValue + ''
     },
     execSql() {
       if (!this.sqlMessage || !this.sqlMessage.trim()) {
         this.$message.warning({
-          message: "请输入SQL命令哦 (｡•́︿•̀｡)",
-          customClass: "anime-message",
+          message: '请输入SQL命令哦 (｡•́︿•̀｡)',
+          customClass: 'anime-message',
         })
         return
       }
-      const loading = this.getLoading(".result-box")
+      const loading = this.getLoading('.result-box')
       this.postRequest(`${this.$root.prefix}/database/exec_sql`, {
         sql: this.sqlMessage,
       }).then((resp) => {
@@ -273,37 +301,37 @@ export default {
           if (resp.warning) {
             this.$message.warning({
               message: resp.warning,
-              customClass: "anime-message",
+              customClass: 'anime-message',
             })
             this.info = resp.warning
           } else {
-            this.info = ""
+            this.info = ''
             this.resultData = []
             this.columns = []
             this.$message.success({
               message: resp.info,
-              customClass: "anime-message",
+              customClass: 'anime-message',
             })
             if (resp.data && resp.data.length) {
               this.columns = Object.keys(resp.data[0])
             }
             this.resultData = resp.data
-            if (!this.sqlMessage.toLowerCase().startsWith("select")) {
-              this.info = "执行成功! ✧*。٩(ˊωˋ*)و✧*。"
+            if (!this.sqlMessage.toLowerCase().startsWith('select')) {
+              this.info = '执行成功! ✧*。٩(ˊωˋ*)و✧*。'
             }
           }
           this.getSqlLog()
         } else {
           this.$message.error({
             message: resp.info,
-            customClass: "anime-message",
+            customClass: 'anime-message',
           })
         }
         loading.close()
       })
     },
     getSqlLog() {
-      const loading = this.getLoading(".history")
+      const loading = this.getLoading('.history')
       this.postRequest(`${this.$root.prefix}/database/get_sql_log`, {
         index: this.historyIndex,
         size: 7,
@@ -312,12 +340,12 @@ export default {
           if (resp.warning) {
             this.$message.warning({
               message: resp.warning,
-              customClass: "anime-message",
+              customClass: 'anime-message',
             })
           } else {
             this.$message.success({
               message: resp.info,
-              customClass: "anime-message",
+              customClass: 'anime-message',
             })
             this.historyTotal = resp.data.total
             this.historyList = resp.data.data
@@ -325,7 +353,7 @@ export default {
         } else {
           this.$message.error({
             message: resp.info,
-            customClass: "anime-message",
+            customClass: 'anime-message',
           })
         }
         loading.close()
@@ -333,8 +361,8 @@ export default {
     },
   },
   destroyed() {
-    window.removeEventListener("resize", this.handleResize)
-    window.removeEventListener("resize", this.updateWindowWidth)
+    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('resize', this.updateWindowWidth)
   },
 }
 </script>

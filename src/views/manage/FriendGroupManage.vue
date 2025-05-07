@@ -1,9 +1,11 @@
 <template>
   <div
+    ref="main"
     class="friend-manager-container w-full flex flex-col bg-gradient-to-br from-pink-50 to-purple-100 overflow-hidden"
   >
     <!-- 顶部导航栏 -->
     <div
+      ref="topHeader"
       class="header-bar h-14 flex items-center justify-between px-4 bg-white bg-opacity-80 backdrop-blur-sm border-b border-pink-200"
     >
       <!-- 标题 -->
@@ -29,7 +31,7 @@
             class="flex items-center px-4 py-2 rounded-full bg-pink-100 hover:bg-pink-200 text-pink-600 transition-colors shadow-sm"
           >
             <svg-icon icon-class="request" class="w-5 h-5 mr-2" />
-            <span class="text-sm font-medium">请求管理</span>
+            <span class="text-sm font-medium hidden md:block">请求管理</span>
           </button>
         </el-badge>
       </div>
@@ -65,7 +67,12 @@
             showDetail,
         }"
       >
-        <DetailInfo ref="detailInfo" @startChat="startChat" class="h-full" />
+        <DetailInfo
+          ref="detailInfo"
+          @startChat="startChat"
+          class="h-full"
+          :style="{ height: computedHeight + 'px' }"
+        />
       </div>
     </div>
 
@@ -98,7 +105,6 @@
             class="flex flex-col items-center justify-center p-2 rounded-lg text-purple-600 transition-colors"
           >
             <svg-icon icon-class="request" class="w-6 h-6" />
-            <span class="text-xs mt-1">请求管理</span>
           </button>
         </el-badge>
       </div>
@@ -125,14 +131,14 @@
 </template>
 
 <script>
-import { getHeaderHeight } from "@/utils/utils"
-import ChatWindow from "@/components/manage/ChatWindow.vue"
-import DataList from "@/components/manage/DataList.vue"
-import DetailInfo from "@/components/manage/DetailInfo.vue"
-import RequestDialog from "@/components/manage/RequestDialog.vue"
+import { getHeaderHeight } from '@/utils/utils'
+import ChatWindow from '@/components/manage/ChatWindow.vue'
+import DataList from '@/components/manage/DataList.vue'
+import DetailInfo from '@/components/manage/DetailInfo.vue'
+import RequestDialog from '@/components/manage/RequestDialog.vue'
 
 export default {
-  name: "FriendGroupMana",
+  name: 'FriendGroupMana',
   components: {
     DataList,
     ChatWindow,
@@ -146,18 +152,49 @@ export default {
       showList: false,
       showDetail: false,
       requestCount: 0,
+      height: 0,
     }
   },
   computed: {
     computedHeight() {
-      return this.windowHeight - getHeaderHeight()
+      if (!this.height) {
+        this.computeHeight()
+      }
+      return this.height
     },
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
     this.fetchRequestCount()
+    this.getRequestCount()
   },
   methods: {
+    getRequestCount() {
+      this.getRequest(`${this.$root.prefix}/manage/get_request_count`).then(
+        (resp) => {
+          if (resp.suc) {
+            if (resp.warning) {
+              this.$message.warning(resp.warning)
+            } else {
+              this.$message.success(resp.info)
+              this.requestCount = resp.data.friend_count + resp.data.group_count
+            }
+          } else {
+            this.$message.error(resp.info)
+          }
+        }
+      )
+    },
+    computeHeight() {
+      if (this.$refs.main) {
+        this.height =
+          this.$refs.main -
+          getHeaderHeight() -
+          this.$refs.topHeader.offsetHeight
+      } else {
+        this.height = window.innerHeight - getHeaderHeight() - 112
+      }
+    },
     openRequest() {
       this.requestDialogVisible = true
     },
@@ -190,7 +227,7 @@ export default {
       this.showDetail = false
     },
     getDetail(type, id) {
-      if (type == "private") {
+      if (type == 'private') {
         this.$refs.detailInfo.getFriend(id)
       } else {
         this.$refs.detailInfo.getGroup(id)
@@ -208,7 +245,7 @@ export default {
     },
   },
   beforeDestroy() {
-    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>

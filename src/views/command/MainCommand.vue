@@ -26,12 +26,12 @@
 </template>
 
 <script>
-import LeftInfo from "@/components/command/LeftInfo.vue"
-import MidInfo from "@/components/command/MidInfo.vue"
-import RightInfo from "@/components/command/RightInfo.vue"
-import { getHeaderHeight } from "@/utils/utils"
+import LeftInfo from '@/components/command/LeftInfo.vue'
+import MidInfo from '@/components/command/MidInfo.vue'
+import RightInfo from '@/components/command/RightInfo.vue'
+import { getHeaderHeight } from '@/utils/utils'
 export default {
-  name: "MainCommand",
+  name: 'MainCommand',
   data() {
     return {
       botInfo: {},
@@ -46,7 +46,7 @@ export default {
   },
   created() {},
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
   },
   methods: {
     handleResize() {
@@ -54,7 +54,7 @@ export default {
     },
   },
   beforeDestroy() {
-    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener('resize', this.handleResize)
   },
 }
 </script>

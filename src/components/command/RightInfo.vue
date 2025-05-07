@@ -61,7 +61,7 @@
             活跃群组
           </p>
 
-          <div class="flex flex-wrap gap-1">
+          <div ref="groupType" class="flex flex-wrap gap-1">
             <button
               v-for="type in timeTypes"
               :key="'group' + type.value"
@@ -79,7 +79,11 @@
           </div>
         </div>
 
-        <div ref="groupChart" class="w-full h-full min-h-[200px]"></div>
+        <div
+          ref="groupChart"
+          class="w-full h-full min-h-[200px]"
+          :style="{ height: computedChartHeight + 'px' }"
+        ></div>
       </div>
 
       <!-- 热门插件图表 -->
@@ -114,65 +118,169 @@
           </div>
         </div>
 
-        <div ref="hotPluginChart" class="w-full h-full min-h-[200px]"></div>
+        <div
+          ref="hotPluginChart"
+          class="w-full h-full min-h-[200px]"
+          :style="{ height: computedChartHeight + 'px' }"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { debounce } from "lodash"
+import { debounce, cloneDeep } from 'lodash'
 export default {
-  name: "RightInfo",
+  name: 'RightInfo',
   data() {
     return {
+      chartHeight: 100,
       timeTypes: [
-        { label: "全部", value: "all" },
-        { label: "日", value: "day" },
-        { label: "周", value: "week" },
-        { label: "月", value: "month" },
-        { label: "年", value: "year" },
+        { label: '全部', value: 'all' },
+        { label: '日', value: 'day' },
+        { label: '周', value: 'week' },
+        { label: '月', value: 'month' },
+        { label: '年', value: 'year' },
       ],
       chartAreaHeight: 0,
       botInfo: {
         connect_count: 42,
-        connectTime: "12:34:56",
-        connect_date: "2023-10-15",
+        connectTime: '12:34:56',
+        connect_date: '2023-10-15',
         connect_time: Date.now() / 1000 - 45296, // 示例数据
-        self_id: "123456",
+        self_id: '123456',
       },
-      selectGroupType: "all",
-      selectHotPluginType: "all",
+      selectGroupType: 'all',
+      selectHotPluginType: 'all',
       groupChart: null,
       hotPluginChart: null,
       groupCntInterval: null,
       timer: null,
       chartOpt: {
         grid: {
-          top: "15%",
-          bottom: "10%",
-          left: "20%",
-          right: "20%",
+          top: '15%',
+          bottom: '15%',
+          left: '20%',
+          right: '20%',
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: (params) => `
+    <div class="chart-tooltip">
+      <div class="tooltip-title">${params.name}</div>
+      <div class="tooltip-value">${params.value}次</div>
+    </div>
+  `,
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderColor: '#FF9FF3', // 改为粉红色
+          borderWidth: 2, // 加粗边框
+          padding: [8, 12],
+          extraCssText:
+            'box-shadow: 0 4px 20px rgba(255, 159, 243, 0.3); border-radius: 8px;',
         },
         xAxis: {
-          type: "category",
-          data: [],
+          type: 'category',
+          axisLine: {
+            lineStyle: {
+              color: '#FF9FF3',
+              width: 2,
+            },
+          },
+          axisTick: {
+            alignWithLabel: true,
+            lineStyle: {
+              color: '#f3e8ff',
+            },
+          },
           axisLabel: {
+            interval: 0,
             rotate: 30,
-            fontSize: 10,
+            color: '#9333ea',
+            fontSize: 11,
+            fontFamily: 'Microsoft YaHei, sans-serif',
+            formatter: (value) =>
+              value.length > 6 ? value.slice(0, 6) + '...' : value,
+          },
+          axisPointer: {
+            type: 'shadow',
+            label: {
+              backgroundColor: '#a855f7',
+            },
           },
         },
-        yAxis: { type: "value" },
+        yAxis: {
+          type: 'value',
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#FF9FF3',
+              width: 2,
+            },
+          },
+          axisTick: {
+            lineStyle: {
+              color: '#f3e8ff',
+            },
+          },
+          axisLabel: {
+            color: '#9333ea',
+            fontSize: 11,
+            fontFamily: 'Microsoft YaHei, sans-serif',
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#fae8ff',
+              type: 'dashed',
+            },
+          },
+        },
         series: [
           {
-            type: "bar",
-            data: [120, 200, 150, 80, 70],
+            type: 'bar',
+            barWidth: '65%',
+            barGap: '30%',
+            barCategoryGap: '40%',
+            label: {
+              show: true,
+              position: 'top',
+              color: '#9333ea',
+              fontSize: 10,
+              fontFamily: 'Microsoft YaHei, sans-serif',
+              formatter: (params) => (params.value > 0 ? params.value : ''),
+            },
             itemStyle: {
-              color: "#ec4899",
-              borderRadius: [4, 4, 0, 0],
+              color: (params) => {
+                const colors = [
+                  'rgba(236, 72, 153, 0.8)',
+                  'rgba(168, 85, 247, 0.8)',
+                  'rgba(244, 114, 182, 0.8)',
+                  'rgba(249, 168, 212, 0.8)',
+                  'rgba(216, 180, 254, 0.8)',
+                ]
+                return colors[params.dataIndex % colors.length]
+              },
+              borderRadius: [6, 6, 0, 0],
+              shadowColor: 'rgba(236, 72, 153, 0.3)',
+              shadowBlur: 8,
+              shadowOffsetY: 3,
+            },
+            emphasis: {
+              itemStyle: {
+                shadowColor: 'rgba(236, 72, 153, 0.5)',
+                shadowBlur: 12,
+                shadowOffsetY: 6,
+              },
+              label: {
+                fontWeight: 'bold',
+                color: '#7e22ce',
+              },
             },
           },
         ],
+        // 添加动画效果
+        animationDuration: 1200,
+        animationEasing: 'elasticOut',
+        animationDelay: (idx) => idx * 100,
       },
     }
   },
@@ -184,9 +292,10 @@ export default {
       return this.chartAreaHeight
     },
     computedChartHeight() {
-      console.log("this.chartAreaHeight", this.chartAreaHeight)
-
-      return this.chartAreaHeight - 10
+      if (!this.chartHeight) {
+        this.calculateHeights()
+      }
+      return this.chartHeight
     },
   },
   mounted() {
@@ -211,9 +320,15 @@ export default {
       this.$nextTick(() => {
         if (this.$refs.rightInfo) {
           const infoHeight =
-            this.$refs.rightInfo.querySelector(".base-info").offsetHeight
+            this.$refs.rightInfo.querySelector('.base-info').offsetHeight
           this.chartAreaHeight =
             this.$refs.rightInfo.offsetHeight - infoHeight - 48 // 减去padding和margin
+          this.chartAreaHeight = Math.max(this.chartAreaHeight, 300)
+          if (this.$isMobile()) {
+            this.chartAreaHeight = Math.max(this.chartAreaHeight, 400)
+          }
+          this.chartHeight =
+            this.chartAreaHeight - this.$refs.groupType.offsetHeight - 20
         }
       })
     },
@@ -225,9 +340,9 @@ export default {
           this.hotPluginChart?.resize()
         })
       }, 200)
-      window.addEventListener("resize", resizeHandler)
-      this.$once("hook:beforeDestroy", () => {
-        window.removeEventListener("resize", resizeHandler)
+      window.addEventListener('resize', resizeHandler)
+      this.$once('hook:beforeDestroy', () => {
+        window.removeEventListener('resize', resizeHandler)
       })
     },
 
@@ -254,13 +369,13 @@ export default {
     formatSeconds(seconds) {
       const h = Math.floor(seconds / 3600)
         .toString()
-        .padStart(2, "0")
+        .padStart(2, '0')
       const m = Math.floor((seconds % 3600) / 60)
         .toString()
-        .padStart(2, "0")
+        .padStart(2, '0')
       const s = Math.floor(seconds % 60)
         .toString()
-        .padStart(2, "0")
+        .padStart(2, '0')
       return `${h}:${m}:${s}`
     },
 
@@ -275,11 +390,11 @@ export default {
     },
 
     getActiveGroupData(date_type, no_loading) {
-      if (date_type == "all") {
+      if (date_type == 'all') {
         date_type = null
       }
       if (!no_loading) {
-        var loading = this.getLoading(".active-group")
+        var loading = this.getLoading('.active-group')
       }
 
       this.getRequest(`${this.$root.prefix}/main/get_active_group`, {
@@ -295,7 +410,7 @@ export default {
             if (loading) {
               this.$message.success(resp.info)
             }
-            const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
+            const tmpOpt = cloneDeep(this.chartOpt)
             const group_list = []
             const data = resp.data.map((e) => {
               group_list.push(e.name)
@@ -304,10 +419,10 @@ export default {
                 value: e.chat_num,
               }
             })
-            tmpOpt.xAxis.name = "群组"
+            tmpOpt.xAxis.name = '群组'
             tmpOpt.xAxis.data = group_list
             tmpOpt.series[0].data = data
-            tmpOpt.series[0].series = "#a855f7"
+            tmpOpt.series[0].series = '#a855f7'
 
             this.groupChart.setOption(tmpOpt)
           }
@@ -324,11 +439,11 @@ export default {
 
     clickHotPluginType(type) {
       this.selectHotPluginType = type
-      this.getHotPlugin(type === "all" ? null : type)
+      this.getHotPlugin(type === 'all' ? null : type)
     },
 
     getHotPlugin(date_type) {
-      const loading = this.getLoading(".hot-plugin")
+      const loading = this.getLoading('.hot-plugin')
       this.getRequest(`${this.$root.prefix}/main/get_hot_plugin`, {
         date_type: date_type,
         bot_id: this.botInfo.self_id,
@@ -338,7 +453,7 @@ export default {
             this.$message.warning(resp.info)
           } else {
             this.$message.success(resp.info)
-            const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
+            const tmpOpt = cloneDeep(this.chartOpt)
             const hotPluginList = []
             const data = resp.data.map((e) => {
               hotPluginList.push(e.name)
@@ -347,7 +462,7 @@ export default {
                 value: e.count,
               }
             })
-            tmpOpt.xAxis.name = "插件"
+            tmpOpt.xAxis.name = '插件'
             tmpOpt.xAxis.data = hotPluginList
             tmpOpt.series[0].data = data
             this.hotPluginChart.setOption(tmpOpt)

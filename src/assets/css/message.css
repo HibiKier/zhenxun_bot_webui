@@ -1,0 +1,113 @@
+/* 二次元可爱风格 Message 组件样式 */
+/* 基础样式 */
+.kawaii-message {
+  font-family: 'Comic Sans MS', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'PingFang SC', 'Microsoft YaHei', cursive, sans-serif !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 20px rgba(255, 105, 180, 0.25) !important;
+  min-width: 200px !important;
+  padding: 15px 20px !important;
+  border: none !important;
+  backdrop-filter: blur(5px) !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  border-top: 3px solid transparent !important;
+}
+
+/* 消息图标样式 */
+.kawaii-message .el-message__icon {
+  font-size: 22px !important;
+  margin-right: 12px !important;
+  vertical-align: middle !important;
+}
+
+/* 消息内容样式 */
+.kawaii-message .el-message__content {
+  font-size: 16px !important;
+  vertical-align: middle !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 关闭按钮样式 */
+.kawaii-message .el-message__closeBtn {
+  font-size: 18px !important;
+  color: inherit !important;
+  opacity: 0.7 !important;
+  transition: all 0.2s ease !important;
+}
+
+.kawaii-message .el-message__closeBtn:hover {
+  opacity: 1 !important;
+  transform: scale(1.2) !important;
+  color: #ff69b4 !important;
+}
+
+/* 不同类型消息的样式 */
+.kawaii-message.el-message--info {
+  color: #5b8cff !important;
+  border-top-color: #91d5ff !important;
+  background-color: rgba(230, 247, 255, 0.95) !important;
+}
+
+.kawaii-message.el-message--success {
+  color: #6ac045 !important;
+  border-top-color: #95de64 !important;
+  background-color: rgba(246, 255, 237, 0.95) !important;
+}
+
+.kawaii-message.el-message--warning {
+  color: #ffb637 !important;
+  border-top-color: #ffe58f !important;
+  background-color: rgba(255, 251, 230, 0.95) !important;
+}
+
+.kawaii-message.el-message--error {
+  color: #ff7875 !important;
+  border-top-color: #ffa39e !important;
+  background-color: rgba(255, 242, 240, 0.95) !important;
+}
+
+/* 悬停效果 */
+.kawaii-message:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 6px 24px rgba(255, 105, 180, 0.35) !important;
+}
+
+/* 进入动画 */
+.kawaii-message-fade-enter-active {
+  animation: kawaii-bounce-in 0.5s;
+}
+
+/* 离开动画 */
+.kawaii-message-fade-leave-active {
+  animation: kawaii-bounce-out 0.5s;
+}
+
+@keyframes kawaii-bounce-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes kawaii-bounce-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}

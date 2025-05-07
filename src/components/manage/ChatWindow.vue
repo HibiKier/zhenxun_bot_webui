@@ -9,7 +9,7 @@
     >
       <img
         src="@/assets/image/empty1.png"
-        class="w-64 h-64 object-contain mb-4 animate-bounce"
+        class="w-64 h-64 object-contain mb-4"
         alt="等待聊天开始"
       />
       <p class="text-pink-500 text-lg font-medium">
@@ -22,6 +22,7 @@
       <!-- 顶部标题栏 -->
       <div
         class="flex items-center justify-between mb-4 p-3 bg-white rounded-t-xl shadow-sm"
+        ref="header"
       >
         <div class="flex items-center min-w-0">
           <el-avatar
@@ -50,65 +51,67 @@
       </div>
 
       <!-- 消息区域 -->
-      <div
-        class="flex-1 overflow-y-auto p-3 bg-white rounded-lg shadow-inner mb-3"
-        id="chat"
-      >
+      <div class="message-container" :style="{ height: chatHeight + 'px' }">
         <div
-          v-for="(data, index) in $store.state.chatObj[chatId].msgList || []"
-          :key="index"
-          class="flex mb-4 last:mb-0"
-          :class="{ 'justify-end': data.isSelf }"
+          class="flex-1 overflow-y-auto p-3 bg-white rounded-lg shadow-inner mb-3"
+          id="chat"
         >
-          <!-- 头像 -->
-          <el-avatar
-            v-if="!data.isSelf"
-            :src="data.ava_url"
-            :size="45"
-            class="flex-shrink-0 border-2 border-pink-200 shadow-sm transform hover:scale-110 transition-transform"
-          />
-
-          <!-- 消息内容 -->
           <div
-            class="flex flex-col max-w-[80%] mx-3"
-            :class="{ 'items-end': data.isSelf }"
+            v-for="(data, index) in $store.state.chatObj[chatId].msgList || []"
+            :key="index"
+            class="flex mb-4 last:mb-0"
+            :class="{ 'justify-end': data.isSelf }"
           >
-            <p class="text-sm text-gray-500 mb-1">{{ data.name }}</p>
+            <!-- 头像 -->
+            <el-avatar
+              v-if="!data.isSelf"
+              :src="data.ava_url"
+              :size="45"
+              class="flex-shrink-0 border-2 border-pink-200 shadow-sm transform hover:scale-110 transition-transform"
+            />
+
+            <!-- 消息内容 -->
             <div
-              class="px-4 py-2 rounded-2xl break-words transition-all duration-200"
-              :class="{
-                'bg-pink-100 text-gray-800': !data.isSelf,
-                'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md':
-                  data.isSelf,
-              }"
+              class="flex flex-col max-w-[80%] mx-3"
+              :class="{ 'items-end': data.isSelf }"
             >
-              <div v-for="(msg, msgIndex) in data.message" :key="msgIndex">
-                <img
-                  v-if="msg.type == 'img'"
-                  :src="msg.msg"
-                  class="max-w-full rounded-lg shadow-sm transform hover:scale-105 transition-transform"
-                  :style="{
-                    width: msg.width + 'px',
-                    height: msg.height + 'px',
-                  }"
-                />
-                <span v-else class="whitespace-pre-wrap">{{ msg.msg }}</span>
+              <p class="text-sm text-gray-500 mb-1">{{ data.name }}</p>
+              <div
+                class="px-4 py-2 rounded-2xl break-words transition-all duration-200"
+                :class="{
+                  'bg-pink-100 text-gray-800': !data.isSelf,
+                  'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md':
+                    data.isSelf,
+                }"
+              >
+                <div v-for="(msg, msgIndex) in data.message" :key="msgIndex">
+                  <img
+                    v-if="msg.type == 'img'"
+                    :src="msg.msg"
+                    class="max-w-full rounded-lg shadow-sm transform hover:scale-105 transition-transform"
+                    :style="{
+                      width: msg.width + 'px',
+                      height: msg.height + 'px',
+                    }"
+                  />
+                  <span v-else class="whitespace-pre-wrap">{{ msg.msg }}</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- 自己头像 -->
-          <el-avatar
-            v-if="data.isSelf"
-            :src="data.ava_url"
-            :size="45"
-            class="flex-shrink-0 border-2 border-blue-200 shadow-sm transform hover:scale-110 transition-transform"
-          />
+            <!-- 自己头像 -->
+            <el-avatar
+              v-if="data.isSelf"
+              :src="data.ava_url"
+              :size="45"
+              class="flex-shrink-0 border-2 border-blue-200 shadow-sm transform hover:scale-110 transition-transform"
+            />
+          </div>
         </div>
       </div>
 
       <!-- 输入区域 -->
-      <div class="bg-white rounded-b-xl p-3 shadow-sm">
+      <div ref="inputArea" class="bg-white rounded-b-xl p-3 shadow-sm">
         <el-input
           v-model="message"
           :rows="3"
@@ -148,36 +151,75 @@
 </template>
 
 <script>
-import MyButton from "../ui/MyButton.vue"
+import { debounce } from 'lodash'
+import MyButton from '../ui/MyButton.vue'
 
 export default {
-  name: "ChatWindow",
+  name: 'ChatWindow',
   components: { MyButton },
   data() {
     return {
-      message: "",
+      message: '',
       isStartChat: false,
       chatInfo: {},
-      chatId: "default",
+      chatId: 'default',
       reloadKey: 0,
+      chatHeight: 400,
+      windowHeight: window.innerHeight,
     }
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    this.$store.dispatch("initChatSocket")
+    this.$store.dispatch('initChatSocket')
+    this.calculateChatHeight()
+    this.debouncedResize = debounce(this.handleResize, 100)
+    window.addEventListener('resize', this.debouncedResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.debouncedResize)
   },
   methods: {
+    calculateChatHeight() {
+      const chatWindow = this.$el
+      const header = this.$refs.header
+      const inputArea = this.$refs.inputArea
+
+      console.log('header', header)
+      console.log('inputArea', inputArea)
+
+      if (!header || !inputArea) return
+
+      // 获取各元素高度
+      const headerHeight = header.offsetHeight
+      const inputHeight = inputArea.offsetHeight
+
+      // 计算可用高度
+      const windowHeight = this.windowHeight
+      const chatWindowTop = chatWindow.getBoundingClientRect().top
+      const padding = 24 // 上下边距总和
+
+      // 计算消息容器高度
+      this.chatHeight = Math.max(
+        200, // 最小高度
+        windowHeight - chatWindowTop - headerHeight - inputHeight - padding - 60 // 额外20px缓冲
+      )
+
+      // 强制重新渲染以确保高度生效
+      this.$nextTick(() => {
+        this.scrollToBottom()
+      })
+    },
+
+    handleResize() {
+      this.windowHeight = window.innerHeight
+      this.calculateChatHeight()
+    },
     async sendMessage() {
       if (!this.message.trim()) return
 
-      const loading = this.$loading({
-        target: ".el-textarea",
-        text: "发送中...",
-        spinner: "el-icon-loading",
-        background: "rgba(255, 255, 255, 0.7)",
-      })
+      const loading = this.getLoading('.el-textarea')
 
       try {
         await this.$chatWebSocket.sendMessage(
@@ -186,7 +228,7 @@ export default {
           this.chatInfo.user_id,
           this.message
         )
-        this.message = ""
+        this.message = ''
         this.reloadKey++
         this.$nextTick(() => {
           this.scrollToBottom()
@@ -197,7 +239,7 @@ export default {
     },
 
     scrollToBottom() {
-      const chatElement = document.getElementById("chat")
+      const chatElement = document.getElementById('chat')
       if (chatElement) {
         chatElement.scrollTop = chatElement.scrollHeight
       }
@@ -207,34 +249,35 @@ export default {
       this.chatInfo = data
       const chatId = data.group_id || data.user_id
       this.chatId = chatId
-      this.$store.commit("SET_CHAT_ID", chatId)
-      this.$store.commit("ADD_CHAT_MSG", { chatId })
+      this.$store.commit('SET_CHAT_ID', chatId)
+      this.$store.commit('ADD_CHAT_MSG', { chatId })
       this.isStartChat = true
       this.$nextTick(this.scrollToBottom)
+      this.$nextTick(this.calculateChatHeight)
     },
 
     clearMessage() {
-      this.$confirm("确认清空聊天记录?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        customClass: "confirm-box",
-        type: "warning",
-        confirmButtonClass: "el-button--danger",
-        iconClass: "el-icon-warning text-red-500",
+      this.$confirm('确认清空聊天记录?', '提示', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        customClass: 'confirm-box',
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger',
+        iconClass: 'el-icon-warning text-red-500',
       })
         .then(() => {
-          this.$store.commit("CLEAR_CHAT", this.chatId)
+          this.$store.commit('CLEAR_CHAT', this.chatId)
           this.$message.success({
-            message: "清空记录成功!",
-            iconClass: "el-icon-success",
-            customClass: "cute-message",
+            message: '清空记录成功!',
+            iconClass: 'el-icon-success',
+            customClass: 'cute-message',
           })
         })
         .catch(() => {
           this.$message.info({
-            message: "已取消操作",
-            iconClass: "el-icon-info",
-            customClass: "cute-message",
+            message: '已取消操作',
+            iconClass: 'el-icon-info',
+            customClass: 'cute-message',
           })
         })
     },
@@ -243,6 +286,18 @@ export default {
 </script>
 
 <style scoped>
+.message-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px; /* 最小高度保证 */
+}
+
+#chat {
+  flex: 1;
+  overflow-y: auto;
+  /* 移除之前的高度设置 */
+}
+
 /* 二次元风格弹窗 */
 .confirm-box {
   border-radius: 16px !important;

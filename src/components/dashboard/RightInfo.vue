@@ -5,9 +5,7 @@
       class="base-border bg-white rounded-lg p-4 shadow-sm mb-2 h-auto min-h-[120px]"
       ref="baseBorder"
     >
-      <p
-        class="base-title text-base font-bold mb-1 text-purple-600 flex items-center"
-      >
+      <p class="base-title mb-1 text-purple-600 flex items-center">
         <i class="fas fa-cog mr-1 text-xs"></i> NoneBot配置
       </p>
       <div class="nb-config grid grid-cols-2 gap-1 px-0.5">
@@ -23,13 +21,13 @@
             popper-class="max-w-xs break-words"
           >
             <p
-              class="config-info-item-text text-xs font-mono truncate leading-tight cursor-default"
+              class="config-info-item-text truncate leading-tight cursor-default"
             >
               {{ item.value }}
             </p>
           </el-tooltip>
           <p
-            class="config-small-title text-[9px] text-pink-500 font-bold uppercase tracking-tighter mt-0"
+            class="config-small-title text-pink-500 font-bold uppercase tracking-tighter mt-0"
           >
             {{ item.label }}
           </p>
@@ -44,13 +42,12 @@
         class="base-border bg-white rounded-xl p-4 shadow-lg h-full min-h-[300px]"
         :style="{ height: computedChartDivHeight + 'px' }"
       >
-        <div class="flex justify-between items-center mb-2">
-          <p
-            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
-          >
-            <i
-              class="fas fa-users mr-1 text-pink-500 animate-bounce text-sm"
-            ></i>
+        <div
+          ref="activeGroupBorder"
+          class="flex justify-between items-center mb-2"
+        >
+          <p class="text-purple-600 mb-1 md:mb-0 flex items-center">
+            <i class="fas fa-users mr-1 text-pink-500 animate-bounce"></i>
             活跃群组
           </p>
           <div class="flex flex-wrap gap-1">
@@ -58,7 +55,7 @@
               v-for="type in timeTypes"
               :key="'group' + type.value"
               @click="clickGroupType(type.value)"
-              class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
+              class="px-2 py-0.5 rounded-full transition-all duration-200"
               :class="{
                 'bg-purple-500 text-white shadow-sm':
                   selectGroupType === type.value,
@@ -82,13 +79,12 @@
         class="base-border bg-white rounded-xl p-4 shadow-lg h-full min-h-[300px]"
         :style="{ height: computedChartDivHeight + 'px' }"
       >
-        <div class="flex justify-between items-center mb-2">
-          <p
-            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
-          >
-            <i
-              class="fas fa-users mr-1 text-pink-500 animate-bounce text-sm"
-            ></i>
+        <div
+          ref="hotPluginBorder"
+          class="flex justify-between items-center mb-2"
+        >
+          <p class="text-purple-600 mb-1 md:mb-0 flex items-center">
+            <i class="fas fa-users mr-1 text-pink-500 animate-bounce"></i>
             热门插件
           </p>
           <div class="flex flex-wrap gap-1">
@@ -96,7 +92,7 @@
               v-for="type in timeTypes"
               :key="'plugin' + type.value"
               @click="clickHotPluginType(type.value)"
-              class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
+              class="px-2 py-0.5 rounded-full transition-all duration-200"
               :class="{
                 'bg-purple-500 text-white shadow-sm':
                   selectGroupType === type.value,
@@ -119,161 +115,161 @@
 </template>
 
 <script>
-import EventBus from "@/utils/event-bus"
-import { debounce } from "lodash"
+import EventBus from '@/utils/event-bus'
+import { debounce, cloneDeep } from 'lodash'
 export default {
-  name: "RightInfo",
+  name: 'RightInfo',
   data() {
     return {
       timeTypes: [
-        { label: "全部", value: "all" },
-        { label: "日", value: "day" },
-        { label: "周", value: "week" },
-        { label: "月", value: "month" },
-        { label: "年", value: "year" },
+        { label: '全部', value: 'all' },
+        { label: '日', value: 'day' },
+        { label: '周', value: 'week' },
+        { label: '月', value: 'month' },
+        { label: '年', value: 'year' },
       ],
       chartHeight: 0,
       chartDivHeight: 0,
       chartBorderHeight: 0,
       botInfo: null,
       botConfig: {
-        host: "127.0.0.1",
-        port: "8080",
-        driver: "~fastapi+~httpx+~websockets",
-        log_level: "INFO",
-        api_timeout: "30.0",
-        session_expire_timeout: "30",
+        host: '127.0.0.1',
+        port: '8080',
+        driver: '~fastapi+~httpx+~websockets',
+        log_level: 'INFO',
+        api_timeout: '30.0',
+        session_expire_timeout: '30',
         nickname: [],
       },
-      selectGroupType: "all",
-      selectHotPluginType: "all",
+      selectGroupType: 'all',
+      selectHotPluginType: 'all',
       groupChart: null,
       hotPluginChart: null,
       groupCntInterval: null,
       chartOpt: {
         grid: {
-          top: "15%",
-          bottom: "30%",
-          left: "20%",
-          right: "10%",
+          top: '15%',
+          bottom: '30%',
+          left: '20%',
+          right: '10%',
         },
         tooltip: {
-          trigger: "item",
+          trigger: 'item',
           formatter: (params) => `
-      <div class="chart-tooltip">
-        <div class="tooltip-title">${params.name}</div>
-        <div class="tooltip-value">${params.value}次</div>
-      </div>
-    `,
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          borderColor: "#ec4899",
-          borderWidth: 1,
+    <div class="chart-tooltip">
+      <div class="tooltip-title">${params.name}</div>
+      <div class="tooltip-value">${params.value}次</div>
+    </div>
+  `,
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          borderColor: '#FF9FF3', // 改为粉红色
+          borderWidth: 2, // 加粗边框
           padding: [8, 12],
           extraCssText:
-            "box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15); border-radius: 8px;",
+            'box-shadow: 0 4px 20px rgba(255, 159, 243, 0.3); border-radius: 8px;',
         },
         xAxis: {
-          type: "category",
+          type: 'category',
           axisLine: {
             lineStyle: {
-              color: "#d8b4fe",
+              color: '#FF9FF3',
               width: 2,
             },
           },
           axisTick: {
             alignWithLabel: true,
             lineStyle: {
-              color: "#f3e8ff",
+              color: '#f3e8ff',
             },
           },
           axisLabel: {
             interval: 0,
             rotate: 30,
-            color: "#9333ea",
+            color: '#9333ea',
             fontSize: 11,
-            fontFamily: "Microsoft YaHei, sans-serif",
+            fontFamily: 'Microsoft YaHei, sans-serif',
             formatter: (value) =>
-              value.length > 6 ? value.slice(0, 6) + "..." : value,
+              value.length > 6 ? value.slice(0, 6) + '...' : value,
           },
           axisPointer: {
-            type: "shadow",
+            type: 'shadow',
             label: {
-              backgroundColor: "#a855f7",
+              backgroundColor: '#a855f7',
             },
           },
         },
         yAxis: {
-          type: "value",
+          type: 'value',
           axisLine: {
             show: true,
             lineStyle: {
-              color: "#d8b4fe",
+              color: '#FF9FF3',
               width: 2,
             },
           },
           axisTick: {
             lineStyle: {
-              color: "#f3e8ff",
+              color: '#f3e8ff',
             },
           },
           axisLabel: {
-            color: "#9333ea",
+            color: '#9333ea',
             fontSize: 11,
-            fontFamily: "Microsoft YaHei, sans-serif",
+            fontFamily: 'Microsoft YaHei, sans-serif',
           },
           splitLine: {
             lineStyle: {
-              color: "#fae8ff",
-              type: "dashed",
+              color: '#fae8ff',
+              type: 'dashed',
             },
           },
         },
         series: [
           {
-            type: "bar",
-            barWidth: "65%",
-            barGap: "30%",
-            barCategoryGap: "40%",
+            type: 'bar',
+            barWidth: '65%',
+            barGap: '30%',
+            barCategoryGap: '40%',
             label: {
               show: true,
-              position: "top",
-              color: "#9333ea",
+              position: 'top',
+              color: '#9333ea',
               fontSize: 10,
-              fontFamily: "Microsoft YaHei, sans-serif",
-              formatter: (params) => (params.value > 0 ? params.value : ""),
+              fontFamily: 'Microsoft YaHei, sans-serif',
+              formatter: (params) => (params.value > 0 ? params.value : ''),
             },
             itemStyle: {
               color: (params) => {
                 const colors = [
-                  "rgba(236, 72, 153, 0.8)",
-                  "rgba(168, 85, 247, 0.8)",
-                  "rgba(244, 114, 182, 0.8)",
-                  "rgba(249, 168, 212, 0.8)",
-                  "rgba(216, 180, 254, 0.8)",
+                  'rgba(236, 72, 153, 0.8)',
+                  'rgba(168, 85, 247, 0.8)',
+                  'rgba(244, 114, 182, 0.8)',
+                  'rgba(249, 168, 212, 0.8)',
+                  'rgba(216, 180, 254, 0.8)',
                 ]
                 return colors[params.dataIndex % colors.length]
               },
               borderRadius: [6, 6, 0, 0],
-              shadowColor: "rgba(236, 72, 153, 0.3)",
+              shadowColor: 'rgba(236, 72, 153, 0.3)',
               shadowBlur: 8,
               shadowOffsetY: 3,
             },
             emphasis: {
               itemStyle: {
-                shadowColor: "rgba(236, 72, 153, 0.5)",
+                shadowColor: 'rgba(236, 72, 153, 0.5)',
                 shadowBlur: 12,
                 shadowOffsetY: 6,
               },
               label: {
-                fontWeight: "bold",
-                color: "#7e22ce",
+                fontWeight: 'bold',
+                color: '#7e22ce',
               },
             },
           },
         ],
         // 添加动画效果
         animationDuration: 1200,
-        animationEasing: "elasticOut",
+        animationEasing: 'elasticOut',
         animationDelay: (idx) => idx * 100,
       },
     }
@@ -281,18 +277,18 @@ export default {
   computed: {
     configItems() {
       return [
-        { label: "Host", value: this.botConfig.host },
-        { label: "Port", value: this.botConfig.port },
-        { label: "Driver", value: this.botConfig.driver },
-        { label: "Log Level", value: this.botConfig.log_level },
-        { label: "API Timeout", value: this.botConfig.api_timeout },
+        { label: 'Host', value: this.botConfig.host },
+        { label: 'Port', value: this.botConfig.port },
+        { label: 'Driver', value: this.botConfig.driver },
+        { label: 'Log Level', value: this.botConfig.log_level },
+        { label: 'API Timeout', value: this.botConfig.api_timeout },
         {
-          label: "Session Timeout",
+          label: 'Session Timeout',
           value: this.botConfig.session_expire_timeout,
         },
         {
-          label: "Nicknames",
-          value: this.botConfig.nickname?.join(", ") || "无",
+          label: 'Nicknames',
+          value: this.botConfig.nickname?.join(', ') || '无',
         },
       ]
     },
@@ -313,7 +309,7 @@ export default {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
     this.groupChart = this.$echarts.init(this.$refs.groupChart)
     this.hotPluginChart = this.$echarts.init(this.$refs.hotPluginChart)
     this.getNonebotConfig()
@@ -323,11 +319,11 @@ export default {
       this.getActiveGroupData(this.selectGroupType, true)
     }, 25000)
     this.handleResize()
-    EventBus.$on("sidebar-aside", debounce(this.handleResize, 200))
+    EventBus.$on('sidebar-aside', debounce(this.handleResize, 200))
   },
   destroyed() {
-    window.removeEventListener("resize", this.handleResize)
-    EventBus.$off("sidebar-aside", this.handleResize)
+    window.removeEventListener('resize', this.handleResize)
+    EventBus.$off('sidebar-aside', this.handleResize)
     if (this.groupCntInterval) {
       clearInterval(this.groupCntInterval)
     }
@@ -345,7 +341,10 @@ export default {
               const containerHeight = this.$refs.rightInfo.offsetHeight
               this.chartDivHeight =
                 (containerHeight - this.$refs.baseBorder.offsetHeight - 54) / 2
-              this.chartHeight = this.chartDivHeight - 80
+              this.chartHeight =
+                this.chartDivHeight -
+                this.$refs.activeGroupBorder.offsetHeight -
+                30
             }
           }
 
@@ -355,7 +354,7 @@ export default {
       })
     },
     getNonebotConfig() {
-      const loading = this.getLoading(".base-border")
+      const loading = this.getLoading('.base-border')
       this.getRequest(`${this.$root.prefix}/dashboard/get_nonebot_config`).then(
         (resp) => {
           if (resp.suc) {
@@ -364,9 +363,9 @@ export default {
             } else {
               this.$message.success(resp.info)
               this.botConfig = resp.data
-              this.botConfig.nicknames = ""
+              this.botConfig.nicknames = ''
               if (this.botConfig.nickname) {
-                this.botConfig.nicknames = this.botConfig.nickname.join(",")
+                this.botConfig.nicknames = this.botConfig.nickname.join(',')
               }
             }
           } else {
@@ -381,20 +380,20 @@ export default {
       this.getActiveGroupData(type)
 
       // 添加点击动画效果
-      const buttons = document.querySelectorAll(".btn-group button")
+      const buttons = document.querySelectorAll('.btn-group button')
       buttons.forEach((btn) => {
         if (btn.textContent.toLowerCase() === type) {
-          btn.classList.add("animate-pulse")
-          setTimeout(() => btn.classList.remove("animate-pulse"), 500)
+          btn.classList.add('animate-pulse')
+          setTimeout(() => btn.classList.remove('animate-pulse'), 500)
         }
       })
     },
     getActiveGroupData(date_type, no_loading) {
-      if (date_type == "all") {
+      if (date_type == 'all') {
         date_type = null
       }
       if (!no_loading) {
-        var loading = this.getLoading(".active-group")
+        var loading = this.getLoading('.active-group')
       }
       this.getRequest(`${this.$root.prefix}/main/get_active_group`, {
         date_type,
@@ -408,7 +407,8 @@ export default {
             if (loading) {
               this.$message.success(resp.info)
             }
-            const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
+
+            const tmpOpt = cloneDeep(this.chartOpt)
             const group_list = []
             const data = resp.data.map((e) => {
               group_list.push(e.name)
@@ -423,18 +423,18 @@ export default {
               const computedStyle = getComputedStyle(document.documentElement)
               const textColor =
                 computedStyle
-                  .getPropertyValue("--el-text-color-regular")
-                  .trim() || "#c0c4cc"
+                  .getPropertyValue('--el-text-color-regular')
+                  .trim() || '#c0c4cc'
               const bgColorOverlay =
                 computedStyle
-                  .getPropertyValue("--el-bg-color-overlay")
-                  .trim() || "#303133"
+                  .getPropertyValue('--el-bg-color-overlay')
+                  .trim() || '#303133'
               const borderColorLight =
                 computedStyle
-                  .getPropertyValue("--el-border-color-light")
-                  .trim() || "#4C4D4F"
+                  .getPropertyValue('--el-border-color-light')
+                  .trim() || '#4C4D4F'
 
-              tmpOpt.backgroundColor = "transparent" // 设置背景透明
+              tmpOpt.backgroundColor = 'transparent' // 设置背景透明
 
               // X 轴
               tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {}
@@ -457,7 +457,7 @@ export default {
                 tmpOpt.series[0].label.color = textColor
               }
             } catch (e) {
-              console.error("Failed to apply theme to group chart:", e)
+              console.error('Failed to apply theme to group chart:', e)
             }
             // --- 主题化修改 End ---
 
@@ -480,16 +480,16 @@ export default {
       this.getHotPlugin(type)
 
       // 添加点击动画效果
-      const buttons = document.querySelectorAll(".hot-plugin .btn-group button")
+      const buttons = document.querySelectorAll('.hot-plugin .btn-group button')
       buttons.forEach((btn) => {
         if (btn.textContent.toLowerCase() === type) {
-          btn.classList.add("animate-pulse")
-          setTimeout(() => btn.classList.remove("animate-pulse"), 500)
+          btn.classList.add('animate-pulse')
+          setTimeout(() => btn.classList.remove('animate-pulse'), 500)
         }
       })
     },
     getHotPlugin(date_type) {
-      const loading = this.getLoading(".hot-plugin")
+      const loading = this.getLoading('.hot-plugin')
       this.getRequest(`${this.$root.prefix}/main/get_hot_plugin`, {
         date_type,
       }).then((resp) => {
@@ -498,7 +498,7 @@ export default {
             this.$message.warning(resp.info)
           } else {
             this.$message.success(resp.info)
-            const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
+            const tmpOpt = cloneDeep(this.chartOpt)
             const hotPluginList = []
             const data = resp.data.map((e) => {
               hotPluginList.push(e.name)
@@ -513,18 +513,18 @@ export default {
               const computedStyle = getComputedStyle(document.documentElement)
               const textColor =
                 computedStyle
-                  .getPropertyValue("--el-text-color-regular")
-                  .trim() || "#c0c4cc"
+                  .getPropertyValue('--el-text-color-regular')
+                  .trim() || '#c0c4cc'
               const bgColorOverlay =
                 computedStyle
-                  .getPropertyValue("--el-bg-color-overlay")
-                  .trim() || "#303133"
+                  .getPropertyValue('--el-bg-color-overlay')
+                  .trim() || '#303133'
               const borderColorLight =
                 computedStyle
-                  .getPropertyValue("--el-border-color-light")
-                  .trim() || "#4C4D4F"
+                  .getPropertyValue('--el-border-color-light')
+                  .trim() || '#4C4D4F'
 
-              tmpOpt.backgroundColor = "transparent" // 设置背景透明
+              tmpOpt.backgroundColor = 'transparent' // 设置背景透明
 
               // X 轴
               tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {}
@@ -547,7 +547,7 @@ export default {
                 tmpOpt.series[0].label.color = textColor
               }
             } catch (e) {
-              console.error("Failed to apply theme to plugin chart:", e)
+              console.error('Failed to apply theme to plugin chart:', e)
             }
             // --- 主题化修改 End ---
 
@@ -566,7 +566,59 @@ export default {
 </script>
 
 <style scoped>
-/* 基础样式 */
+/* 使用CSS变量优化字体大小 */
+.base-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+}
+
+.config-info-item-text {
+  font-size: var(--font-size-xs);
+  font-family: monospace;
+  margin-bottom: 0;
+  line-height: var(--line-height-dense);
+}
+
+.config-small-title {
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-dense);
+}
+
+/* 图表标题样式 */
+.base-border > div > p {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+}
+
+/* 按钮字体大小 */
+.base-border button {
+  font-size: var(--font-size-xxs);
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .base-title {
+    font-size: var(--font-size-md);
+  }
+
+  .config-info-item-text {
+    font-size: var(--font-size-xxs);
+  }
+
+  .config-small-title {
+    font-size: var(--font-size-micro);
+  }
+
+  .base-border > div > p {
+    font-size: var(--font-size-md);
+  }
+
+  .base-border button {
+    font-size: var(--font-size-micro);
+  }
+}
+
+/* 其他样式保持不变 */
 .right-info {
   scrollbar-width: thin;
   scrollbar-color: #d8b4fe #f5f3ff;
@@ -586,11 +638,9 @@ export default {
   border-radius: 10px;
 }
 
-/* 卡片悬停效果 */
 .base-border {
   transition: all 0.3s ease;
   border: 1px solid rgba(216, 180, 254, 0.3);
-  overflow: hidden;
 }
 
 .base-border:hover {
@@ -602,55 +652,12 @@ export default {
   padding: 0;
 }
 
-.config-info-item-text {
-  margin-bottom: 0;
-  line-height: 1.2;
-}
-
-/* 移动端更紧凑 */
-@media (max-width: 640px) {
-  .right-info {
-    padding: 0.5rem;
-  }
-
-  .base-border {
-    padding: 0.5rem;
-    min-height: 110px;
-  }
-
-  .nb-config {
-    grid-template-columns: 1fr !important;
-    gap: 0.25rem;
-  }
-
-  .config-info-item-text {
-    font-size: 11px;
-  }
-
-  .config-small-title {
-    font-size: 8px;
-  }
-}
-
-/* 标题动画 */
 .base-title {
   text-shadow: 1px 1px 2px rgba(216, 180, 254, 0.5);
 }
 
-/* 确保小屏幕下也能显示完整 */
-@media (max-width: 640px) {
-  .base-border {
-    min-height: auto;
-  }
-
-  .right-info {
-    padding: 0.75rem;
-  }
-}
-
-/* 二次元风格装饰元素 */
 .base-border::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -5px;
   left: -5px;
@@ -682,16 +689,16 @@ export default {
   border: 1px solid #f472b6 !important;
   background-color: rgba(255, 255, 255, 0.95) !important;
   color: #6b46c1 !important;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   border-radius: 12px !important;
   box-shadow: 0 4px 12px rgba(244, 114, 182, 0.2) !important;
 }
 
-::v-deep .el-tooltip__popper[x-placement^="top"] .popper__arrow {
+::v-deep .el-tooltip__popper[x-placement^='top'] .popper__arrow {
   border-top-color: #f472b6 !important;
 }
 
-::v-deep .el-tooltip__popper[x-placement^="bottom"] .popper__arrow {
+::v-deep .el-tooltip__popper[x-placement^='bottom'] .popper__arrow {
   border-bottom-color: #f472b6 !important;
 }
 </style>

@@ -7,6 +7,7 @@
     <div class="top-area" ref="topArea">
       <!-- 欢迎标题 -->
       <div
+        v-if="!$isMobile()"
         ref="welcomeBox"
         class="welcome-box bg-white rounded-xl z-10 p-5 shadow-lg mb-5 transform hover:scale-105 transition-transform"
       >
@@ -158,48 +159,48 @@
 </template>
 
 <script>
-import { default as AnsiUp } from "ansi_up"
-import { mapGetters } from "vuex"
+import { default as AnsiUp } from 'ansi_up'
+import { mapGetters } from 'vuex'
 export default {
-  name: "MidInfo",
+  name: 'MidInfo',
   data() {
     return {
       systemCards: [
         {
-          icon: "cpu",
-          title: "CPU",
-          key: "cpu",
-          iconColor: "text-blue-500",
-          textColor: "text-blue-600",
+          icon: 'cpu',
+          title: 'CPU',
+          key: 'cpu',
+          iconColor: 'text-blue-500',
+          textColor: 'text-blue-600',
         },
         {
-          icon: "memory",
-          title: "MEMORY",
-          key: "memory",
-          iconColor: "text-green-500",
-          textColor: "text-green-600",
+          icon: 'memory',
+          title: 'MEMORY',
+          key: 'memory',
+          iconColor: 'text-green-500',
+          textColor: 'text-green-600',
         },
         {
-          icon: "disk",
-          title: "DISK",
-          key: "disk",
-          iconColor: "text-yellow-500",
-          textColor: "text-yellow-600",
+          icon: 'disk',
+          title: 'DISK',
+          key: 'disk',
+          iconColor: 'text-yellow-500',
+          textColor: 'text-yellow-600',
         },
       ],
       chatCards: [
-        { title: "消息总数", key: "chat_num" },
-        { title: "今日消息", key: "chat_day" },
-        { title: "调用总数", key: "call_num" },
-        { title: "今日调用", key: "call_day" },
+        { title: '消息总数', key: 'chat_num' },
+        { title: '今日消息', key: 'chat_day' },
+        { title: '调用总数', key: 'call_num' },
+        { title: '今日调用', key: 'call_day' },
       ],
       detailCards: [
-        { title: "一周内消息", key: "chat_week" },
-        { title: "一月内消息", key: "chat_month" },
-        { title: "一年内消息", key: "chat_year" },
-        { title: "一周内调用", key: "call_week" },
-        { title: "一月内调用", key: "call_month" },
-        { title: "一年内调用", key: "call_year" },
+        { title: '一周内消息', key: 'chat_week' },
+        { title: '一月内消息', key: 'chat_month' },
+        { title: '一年内消息', key: 'chat_year' },
+        { title: '一周内调用', key: 'call_week' },
+        { title: '一月内调用', key: 'call_month' },
+        { title: '一年内调用', key: 'call_year' },
       ],
       windowHeight: window.innerHeight,
       botInfo: null,
@@ -223,23 +224,23 @@ export default {
       callChart: null,
       chartOpt: {
         title: {
-          text: "30天内记录次数",
-          left: "center",
-          textStyle: { color: "#7c3aed" },
-          subtextStyle: { color: "#9ca3af" },
+          text: '30天内记录次数',
+          left: 'center',
+          textStyle: { color: '#7c3aed' },
+          subtextStyle: { color: '#9ca3af' },
         },
-        xAxis: { type: "category", name: "日期", data: [] },
-        yAxis: { type: "value", name: "次数" },
-        tooltip: { trigger: "axis" },
+        xAxis: { type: 'category', name: '日期', data: [] },
+        yAxis: { type: 'value', name: '次数' },
+        tooltip: { trigger: 'axis' },
         series: [
           {
             data: [],
-            type: "line",
+            type: 'line',
             smooth: true,
-            lineStyle: { color: "#a78bfa" },
+            lineStyle: { color: '#a78bfa' },
           },
         ],
-        backgroundColor: "#fdf2f8",
+        backgroundColor: '#fdf2f8',
       },
       mainHeight: 0,
       logHeight: 0,
@@ -248,15 +249,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      systemStatus: "getWsStatusData",
+      systemStatus: 'getWsStatusData',
     }),
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
-    this.clgDiv = document.getElementById("clg")
+    window.addEventListener('resize', this.handleResize)
+    this.clgDiv = document.getElementById('clg')
     this.ansi_up = new AnsiUp()
     this.getChatAndCallCount()
     this.chatCntInterval = setInterval(() => {
@@ -264,10 +265,10 @@ export default {
     }, 30000)
     this.chatChart = this.$echarts.init(this.$refs.chatChart)
     this.callChart = this.$echarts.init(this.$refs.callChart)
-    this.$store.dispatch("initLogSocket", this.logCallable)
+    this.$store.dispatch('initLogSocket', this.logCallable)
     this.calculateMainHeight()
     this.setupResizeObserver()
-    window.addEventListener("resize", this.calculateMainHeight)
+    window.addEventListener('resize', this.calculateMainHeight)
   },
   beforeDestroy() {
     this.destroyWebsocket()
@@ -277,18 +278,18 @@ export default {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect()
     }
-    window.removeEventListener("resize", this.calculateMainHeight)
+    window.removeEventListener('resize', this.calculateMainHeight)
   },
   methods: {
     calculateMainHeight() {
       this.$nextTick(() => {
         // 获取容器总高度
-        const midInfoHeight = this.$refs.midInfo?.clientHeight || 0
+        const midInfoHeight = this.$refs.midInfo?.offsetHeight || 0
 
         // 获取上方所有元素的高度
-        const welcomeBoxHeight = this.$refs.welcomeBox?.clientHeight || 0
-        const systemCardsHeight = this.$refs.systemCards?.clientHeight || 0
-        const chatCardsHeight = this.$refs.chatCards?.clientHeight || 0
+        const welcomeBoxHeight = this.$refs.welcomeBox?.offsetHeight || 0
+        const systemCardsHeight = this.$refs.systemCards?.offsetHeight || 0
+        const chatCardsHeight = this.$refs.chatCards?.offsetHeight || 0
         const collapseHeaderHeight = 48 // 折叠面板标题固定高度
 
         // 计算剩余可用高度
@@ -297,14 +298,24 @@ export default {
           systemCardsHeight +
           chatCardsHeight +
           collapseHeaderHeight
-        const remainingHeight = midInfoHeight - usedHeight - 32 // 减去padding/margin
 
-        // 设置主内容区和日志区高度
-        this.mainHeight = remainingHeight
-        this.logHeight = this.mainHeight - 167 // 日志区比主内容区稍小
+        // 添加额外的margin/padding补偿（移动端可能需要调整这个值）
+        const mobileCompensation = this.$isMobile() ? 20 : 0
 
-        // 确保高度不为负
-        this.logHeight = Math.max(this.logHeight, 50)
+        // 设置主内容区高度
+        this.mainHeight = Math.max(
+          midInfoHeight - usedHeight - mobileCompensation + 85,
+          200
+        )
+
+        // 设置日志区高度（减去标题和padding）
+        this.logHeight = Math.max(this.mainHeight - 280, 100)
+
+        // 如果是移动设备，使用更紧凑的布局
+        if (this.$isMobile()) {
+          this.mainHeight = Math.max(this.mainHeight, 500)
+          this.logHeight = Math.max(this.mainHeight * 0.4, 250)
+        }
       })
     },
 
@@ -337,7 +348,7 @@ export default {
       }
     },
     getAllChatAndCallCount() {
-      var loading = this.getLoading(".detail-count")
+      var loading = this.getLoading('.detail-count')
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_all_chat_and_call_count`
       ).then((resp) => {
@@ -355,7 +366,7 @@ export default {
       })
     },
     getMonthChatAndCallCount() {
-      var loading = this.getLoading(".chart")
+      var loading = this.getLoading('.chart')
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_chat_and_call_month`
       ).then((resp) => {
@@ -369,8 +380,8 @@ export default {
             const callOpt = JSON.parse(JSON.stringify(this.chartOpt))
             chatOpt.xAxis.data = this.chatAndCallMonth.date
             callOpt.xAxis.data = this.chatAndCallMonth.date
-            chatOpt.title.text = "聊天记录"
-            callOpt.title.text = "调用记录"
+            chatOpt.title.text = '聊天记录'
+            callOpt.title.text = '调用记录'
             chatOpt.series[0].data = this.chatAndCallMonth.chat
             callOpt.series[0].data = this.chatAndCallMonth.call
             this.chatChart.setOption(chatOpt)
@@ -386,7 +397,7 @@ export default {
     },
     getChatAndCallCount(no_loading) {
       if (!no_loading) {
-        var loading = this.getLoading(".ch-count")
+        var loading = this.getLoading('.ch-count')
       }
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_chat_and_call_count`
@@ -409,8 +420,8 @@ export default {
     },
     logCallable(data) {
       let log = this.ansi_up.ansi_to_html(data)
-      log = log.replace("color:rgb(0,0,187)", "color:rgb(55,186,255)")
-      let childDom = document.createElement("div")
+      log = log.replace('color:rgb(0,0,187)', 'color:rgb(55,186,255)')
+      let childDom = document.createElement('div')
       childDom.innerHTML = log
 
       this.clgDiv.appendChild(childDom)
@@ -421,14 +432,14 @@ export default {
       }
 
       this.$nextTick(() => {
-        if (this.$refs["dashBoardScrollbar"]) {
-          const div = this.$refs["dashBoardScrollbar"].$refs["wrap"]
+        if (this.$refs['dashBoardScrollbar']) {
+          const div = this.$refs['dashBoardScrollbar'].$refs['wrap']
           div.scrollTop = div.scrollHeight
         }
       })
     },
     destroyWebsocket() {
-      window.removeEventListener("resize", this.handleResize)
+      window.removeEventListener('resize', this.handleResize)
     },
   },
 }
@@ -436,64 +447,96 @@ export default {
 
 <style scoped>
 .mid-info {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
 }
 
-.log-area {
-  flex: 1;
-  min-height: 150px;
-  overflow: hidden;
+/* 欢迎标题 */
+.welcome-box p.text-2xl {
+  font-size: var(--font-size-xxl);
+  line-height: var(--line-height-dense);
 }
 
-.top-area {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.welcome-box p.text-sm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
 }
 
-#main {
-  flex: 1;
-  overflow-y: auto;
+/* 系统卡片 */
+.system-cards .text-sm {
+  font-size: var(--font-size-xs);
 }
 
-/* 确保折叠内容展开时不会溢出 */
-.el-collapse-item__content {
-  max-height: none !important;
+.system-cards .text-2xl {
+  font-size: var(--font-size-xl);
 }
 
-/* 自定义二次元风格滚动条 */
-.el-scrollbar__thumb {
-  @apply bg-pink-300 hover:bg-pink-400;
+/* 聊天统计卡片 */
+.chat-cards .text-xs {
+  font-size: var(--font-size-xxs);
 }
 
-/* 折叠面板自定义样式 */
+.chat-cards .text-xl {
+  font-size: var(--font-size-lg);
+}
+
+/* 详细统计卡片 */
+.detail-cards .text-xs {
+  font-size: var(--font-size-xxs);
+}
+
+.detail-cards .text-lg {
+  font-size: var(--font-size-sm);
+}
+
+/* 日志区域 */
+.log-area .text-lg {
+  font-size: var(--font-size-md);
+}
+
+.log-area .text-xs {
+  font-size: var(--font-size-xxs);
+}
+
+/* 代码日志 */
+#clg {
+  font-size: var(--font-size-code);
+  line-height: var(--line-height-normal);
+}
+
+/* 折叠面板标题 */
 .el-collapse-item__header {
-  @apply bg-gradient-to-r from-pink-100 to-purple-100 hover:from-pink-200 hover:to-purple-200;
+  font-size: var(--font-size-sm);
 }
 
-.el-collapse-item__content {
-  @apply bg-pink-50;
+/* 响应式微调 */
+@media (max-width: 480px) {
+  .welcome-box p.text-2xl {
+    font-size: var(--font-size-xl);
+  }
+
+  .system-cards .text-2xl {
+    font-size: var(--font-size-lg);
+  }
+
+  .chat-cards .text-xl {
+    font-size: var(--font-size-md);
+  }
+
+  /* 小屏幕增加行高 */
+  #clg {
+    line-height: var(--line-height-loose);
+  }
 }
 
-/* 图表区域圆角 */
-.base-chart {
-  border-radius: 0.75rem;
-}
+/* 超大屏幕优化 */
+@media (min-width: 1920px) {
+  .welcome-box p.text-2xl {
+    letter-spacing: 0.02em;
+  }
 
-.log-area {
-  display: flex;
-  flex-direction: column;
-}
-
-.log-content {
-  flex: 1;
-  min-height: 0; /* 关键！允许内容收缩 */
-  overflow: hidden;
-}
-
-.el-scrollbar {
-  height: 100%;
+  .log-area {
+    font-size: var(--font-size-sm);
+  }
 }
 </style>
