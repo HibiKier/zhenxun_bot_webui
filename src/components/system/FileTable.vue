@@ -54,7 +54,7 @@
       <el-table
         :data="fileList"
         style="width: 100%"
-        height="calc(100vh - 300px)"
+        :height="getTableHeight()"
         highlight-current-row
         @row-dblclick="handleDoubleClick"
         class="kawaii-table"
@@ -272,6 +272,13 @@ export default {
     this.loadIcons()
   },
   methods: {
+    getTableHeight() {
+      if (this.$isMobile()) {
+        return 'calc(100vh - 500px)'
+      } else {
+        return 'calc(100vh - 300px)'
+      }
+    },
     async loadFiles(path = '') {
       try {
         var loading = this.getLoading('.file-table-container')

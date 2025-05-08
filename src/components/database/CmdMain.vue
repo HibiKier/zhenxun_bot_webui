@@ -6,7 +6,7 @@
     <!-- 按钮组 - 使用MyButton组件 -->
     <div class="btn-group flex flex-wrap gap-2 mb-4" ref="btnGroup">
       <my-button
-        icon="play"
+        icon="exec"
         text="执行"
         type="success"
         :rounded="$isMobile() ? 'md' : 'lg'"
@@ -17,7 +17,7 @@
       />
 
       <my-button
-        icon="delete"
+        icon="clear4"
         text="清空"
         type="danger"
         :rounded="$isMobile() ? 'md' : 'lg'"
@@ -36,7 +36,7 @@
           <p
             class="small-title text-center text-purple-600 font-bold mb-3 border-b-2 border-pink-200 pb-2"
           >
-            常用SQL <span class="text-pink-400">(◕‿◕✿)</span>
+            常用SQL
           </p>
           <div class="max-h-60 overflow-y-auto pr-2">
             <el-tooltip
@@ -58,7 +58,7 @@
 
         <my-button
           slot="reference"
-          icon="notebook"
+          icon="text"
           text="常用SQL"
           type="warning"
           :rounded="$isMobile() ? 'md' : 'lg'"

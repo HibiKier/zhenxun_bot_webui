@@ -472,7 +472,7 @@ export default {
 
 /* ================= 代码编辑器区域 ================= */
 .code-editor-wrapper {
-  height: 50vh;
+  height: 41vh;
   min-height: 300px;
   max-height: 70vh;
   position: relative;

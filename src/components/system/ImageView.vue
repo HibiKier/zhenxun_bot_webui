@@ -9,17 +9,14 @@
     <!-- 顶部装饰 -->
     <div class="dialog-header-decoration">
       <div class="decoration-line"></div>
-      <div class="decoration-icons">🌸✨🌟✨🌸</div>
     </div>
 
     <!-- 文件信息 -->
     <div class="file-info-box">
       <div class="file-name">
-        <span class="icon">🖼️</span>
         <span class="text">{{ name }}</span>
       </div>
       <div class="file-path">
-        <span class="icon">📁</span>
         <span class="text">{{ fullPath }}</span>
       </div>
     </div>
@@ -178,7 +175,6 @@ export default {
 }
 
 .file-info-box .text {
-  max-width: calc(100% - 30px);
   overflow: hidden;
   text-overflow: ellipsis;
 }

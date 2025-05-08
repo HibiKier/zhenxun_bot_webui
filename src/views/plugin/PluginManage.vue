@@ -224,7 +224,11 @@ export default {
   },
   methods: {
     handleResize() {
-      this.pluginListHeight = this.$refs.pluginManager.offsetHeight - 235
+      if (this.$isMobile()) {
+        this.pluginListHeight = this.$refs.pluginManager.offsetHeight
+      } else {
+        this.pluginListHeight = this.$refs.pluginManager.offsetHeight - 235
+      }
     },
     getTopItemClass(pluginType) {
       return {

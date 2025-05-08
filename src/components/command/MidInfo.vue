@@ -360,7 +360,7 @@ export default {
     updateAreaHeight() {
       if (this.$isMobile()) {
         // 移动端使用固定高度
-        this.areaHeight = 400
+        this.areaHeight = 500
       } else {
         // 桌面端保持原有动态计算逻辑
         const height = window.innerHeight

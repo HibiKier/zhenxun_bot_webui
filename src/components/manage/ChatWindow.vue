@@ -39,13 +39,13 @@
         </div>
 
         <MyButton
-          text="清空"
+          text="清空记录"
           @click="clearMessage"
           type="pink"
           :rounded="'lg'"
           :shadow="'sm'"
-          :height="30"
-          :width="60"
+          :height="35"
+          :width="100"
           :fontSize="12"
         />
       </div>
@@ -352,7 +352,6 @@ export default {
 /* 响应式调整 */
 @media (max-width: 768px) {
   .chat-window {
-    padding: 12px;
     border-radius: 0;
   }
 
