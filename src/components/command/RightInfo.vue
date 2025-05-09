@@ -308,9 +308,6 @@ export default {
     this.initCharts()
     this.setupResizeListener()
     this.startTimers()
-    this.groupCntInterval = setInterval(() => {
-      this.getActiveGroupData(this.selectGroupType, true)
-    }, 25000)
   },
   beforeDestroy() {
     this.cleanup()

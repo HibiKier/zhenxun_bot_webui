@@ -18,7 +18,11 @@
           class="flex items-center px-5 py-4 border-b"
           :class="headerBorderClass"
         >
-          <i :class="['text-xl mr-3', iconClass]"></i>
+          <SvgIcon
+            :iconClass="iconClass"
+            v-if="iconClass"
+            class="text-xl mr-3"
+          />
           <h3 class="text-lg font-bold" :class="titleTextClass">{{ title }}</h3>
         </div>
 
@@ -48,29 +52,31 @@
 </template>
 
 <script>
-import NormalButton from '@/components/ui/NormalButton.vue'
+import NormalButton from "@/components/ui/NormalButton.vue"
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
 export default {
-  name: 'NeonDialog',
+  name: "NeonDialog",
   components: {
     NormalButton,
+    SvgIcon,
   },
   props: {
     visible: Boolean,
     title: String,
     type: {
       type: String,
-      default: 'primary',
+      default: "primary",
       validator: (val) =>
-        ['primary', 'danger', 'warning', 'success'].includes(val),
+        ["primary", "danger", "warning", "success"].includes(val),
     },
     iconClass: String,
     cancelText: {
       type: String,
-      default: '取消',
+      default: "取消",
     },
     confirmText: {
       type: String,
-      default: '确定',
+      default: "确定",
     },
     showCancel: {
       type: Boolean,
@@ -80,52 +86,52 @@ export default {
   computed: {
     dialogBorderClass() {
       const map = {
-        primary: 'border-pink-300',
-        danger: 'border-red-300',
-        warning: 'border-yellow-300',
-        success: 'border-green-300',
+        primary: "border-pink-300",
+        danger: "border-red-300",
+        warning: "border-yellow-300",
+        success: "border-green-300",
       }
       return map[this.type] || map.primary
     },
     headerBorderClass() {
       const map = {
-        primary: 'border-pink-100',
-        danger: 'border-red-100',
-        warning: 'border-yellow-100',
-        success: 'border-green-100',
+        primary: "border-pink-100",
+        danger: "border-red-100",
+        warning: "border-yellow-100",
+        success: "border-green-100",
       }
       return map[this.type] || map.primary
     },
     titleTextClass() {
       const map = {
-        primary: 'text-pink-600',
-        danger: 'text-red-600',
-        warning: 'text-yellow-600',
-        success: 'text-green-600',
+        primary: "text-pink-600",
+        danger: "text-red-600",
+        warning: "text-yellow-600",
+        success: "text-green-600",
       }
       return map[this.type] || map.primary
     },
     confirmBtnClass() {
       const map = {
-        primary: 'bg-pink-500 hover:bg-pink-600',
-        danger: 'bg-red-500 hover:bg-red-600',
-        warning: 'bg-yellow-500 hover:bg-yellow-600',
-        success: 'bg-green-500 hover:bg-green-600',
+        primary: "bg-pink-500 hover:bg-pink-600",
+        danger: "bg-red-500 hover:bg-red-600",
+        warning: "bg-yellow-500 hover:bg-yellow-600",
+        success: "bg-green-500 hover:bg-green-600",
       }
       return map[this.type] || map.primary
     },
   },
   methods: {
     handleClose() {
-      this.$emit('update:visible', false)
-      this.$emit('close')
+      this.$emit("update:visible", false)
+      this.$emit("close")
     },
     handleCancel() {
-      this.$emit('cancel')
+      this.$emit("cancel")
       this.handleClose()
     },
     handleConfirm() {
-      this.$emit('confirm')
+      this.$emit("confirm")
     },
   },
 }

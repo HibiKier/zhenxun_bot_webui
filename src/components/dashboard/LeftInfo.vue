@@ -31,16 +31,31 @@
                     <span class="line-line purple-line"></span>
                     <span class="purple-text">ID: {{ bot.self_id }}</span>
                   </div>
-                  <div class="info-gf">
-                    <div class="gf-item">
-                      <svg-icon icon-class="friend" class="blue-icon" />
-                      <span class="gf-value">{{ bot.friend_count }}</span>
+                </div>
+              </div>
+              <div class="info-gf bg-white rounded-lg p-3 shadow-sm mt-3">
+                <div class="flex space-x-3">
+                  <div
+                    class="gf-item flex-1 flex items-center justify-between bg-blue-50 rounded-md p-2"
+                  >
+                    <div class="flex items-center">
+                      <svg-icon icon-class="friend" class="blue-icon mr-2" />
+                      <span class="text-gray-600">好友</span>
                     </div>
-                    <el-divider direction="vertical" />
-                    <div class="gf-item">
-                      <svg-icon icon-class="group" class="green-icon" />
-                      <span class="gf-value">{{ bot.group_count }}</span>
+                    <span class="gf-value text-blue-600 font-semibold"
+                      >{{ bot.friend_count }}1111</span
+                    >
+                  </div>
+                  <div
+                    class="gf-item flex-1 flex items-center justify-between bg-green-50 rounded-md p-2"
+                  >
+                    <div class="flex items-center">
+                      <svg-icon icon-class="group" class="green-icon mr-2" />
+                      <span class="text-gray-600">群组</span>
                     </div>
+                    <span class="gf-value text-green-600 font-semibold"
+                      >{{ bot.group_count }}1111</span
+                    >
                   </div>
                 </div>
               </div>
@@ -155,10 +170,10 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
 
 export default {
-  name: 'LeftInfo',
+  name: "LeftInfo",
   components: { SvgIcon },
   data() {
     return {
@@ -180,13 +195,21 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('resize', this.calculateTableHeight)
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.calculateTableHeight)
+    window.addEventListener("resize", this.handleResize)
     this.getBotList()
     this.getConnectLog()
     this.handleResize()
   },
   methods: {
+    formatNumber(num) {
+      if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + "M"
+      } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + "K"
+      }
+      return num.toString()
+    },
     calculateTableHeight() {
       this.$nextTick(() => {
         // 获取父容器总高度
@@ -231,7 +254,7 @@ export default {
       let secondTime = parseInt(endTime)
       let min = 0
       let h = 0
-      let result = ''
+      let result = ""
       if (secondTime > 60) {
         min = parseInt(secondTime / 60)
         secondTime = parseInt(secondTime % 60)
@@ -240,9 +263,9 @@ export default {
           min = parseInt(min % 60)
         }
       }
-      result = `${h.toString().padStart(2, '0')}:${min
+      result = `${h.toString().padStart(2, "0")}:${min
         .toString()
-        .padStart(2, '0')}:${secondTime.toString().padStart(2, '0')}`
+        .padStart(2, "0")}:${secondTime.toString().padStart(2, "0")}`
       return result
     },
     addInterval(bot) {
@@ -254,7 +277,7 @@ export default {
       this.conTimes.push(timerId)
     },
     getConnectLog() {
-      var loading = this.getLoading('.connect-log')
+      var loading = this.getLoading(".connect-log")
       this.postRequest(`${this.$root.prefix}/dashboard/get_connect_log`, {
         index: this.historyIndex,
         size: 5,
@@ -267,7 +290,7 @@ export default {
             this.tableData = resp.data.data
             this.historyTotal = resp.data.total
             for (let v of this.tableData) {
-              v.typeStr = v.type == 1 ? '连接' : '断开'
+              v.typeStr = v.type == 1 ? "连接" : "断开"
             }
           }
         } else {
@@ -277,7 +300,7 @@ export default {
       })
     },
     getBotList() {
-      var loading = this.getLoading('.bot-list')
+      var loading = this.getLoading(".bot-list")
       this.getRequest(`${this.$root.prefix}/dashboard/get_bot_list`).then(
         (resp) => {
           if (resp.suc) {
@@ -287,7 +310,7 @@ export default {
               this.$message.success(resp.info)
               this.botList = resp.data
               for (let bot of this.botList) {
-                bot.connectTime = '00:00'
+                bot.connectTime = "00:00"
                 this.addInterval(bot)
               }
             }
@@ -300,13 +323,13 @@ export default {
     },
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
     if (this.conTimes) {
       for (let timer of this.conTimes) {
         clearInterval(timer)
       }
     }
-    window.removeEventListener('resize', this.calculateTableHeight)
+    window.removeEventListener("resize", this.calculateTableHeight)
   },
 }
 </script>
@@ -314,7 +337,7 @@ export default {
 <style scoped>
 .left-info-container {
   height: 100%;
-  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
   font-size: var(--font-size-md); /* 设置基础字体大小 */
 }
 
@@ -361,7 +384,7 @@ export default {
 
 .item-ava {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .ava-img {
@@ -371,6 +394,7 @@ export default {
   margin-right: 1em;
   border: 0.1875em solid rgba(236, 72, 153, 0.2);
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .ava-img:hover {
@@ -432,36 +456,35 @@ export default {
 }
 
 .info-gf {
-  display: flex;
-  align-items: center;
-  gap: 1em;
+  width: 100%;
 }
 
 .gf-item {
-  display: flex;
-  align-items: center;
   font-size: var(--font-size-sm);
+  width: 100%;
+  transition: all 0.3s ease;
 }
 
-.blue-icon {
-  color: #60a5fa;
-  margin-right: 0.3125em;
-  width: 1em;
-  height: 1em;
-}
-
-.green-icon {
-  color: #4ade80;
-  margin-right: 0.3125em;
-  width: 1em;
-  height: 1em;
+.gf-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .gf-value {
-  margin-left: 0.3125em;
   font-weight: 600;
   font-size: var(--font-size-md);
-  color: #333;
+}
+
+.blue-icon {
+  color: #3b82f6;
+  width: 1.25em;
+  height: 1.25em;
+}
+
+.green-icon {
+  color: #10b981;
+  width: 1.25em;
+  height: 1.25em;
 }
 
 .custom-divider {
@@ -494,9 +517,7 @@ export default {
 }
 
 .pink-icon,
-.blue-icon,
-.purple-icon,
-.green-icon {
+.purple-icon {
   width: 1.25em;
   height: 1.25em;
   margin-right: 0.625em;
@@ -506,16 +527,8 @@ export default {
   color: #ec4899;
 }
 
-.blue-icon {
-  color: #3b82f6;
-}
-
 .purple-icon {
   color: #a855f7;
-}
-
-.green-icon {
-  color: #10b981;
 }
 
 .yellow-icon {

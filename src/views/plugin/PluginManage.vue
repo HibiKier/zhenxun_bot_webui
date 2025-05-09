@@ -43,7 +43,7 @@
         </span>
 
         <button
-          @click="addNewMenuType"
+          @click="showAddDialogFlag = true"
           class="ml-auto px-3 py-1 text-xs rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors duration-200 flex items-center"
         >
           <i class="fas fa-plus mr-1"></i>新增类型
@@ -160,7 +160,7 @@
           >
             <span class="text-pink-700">{{ type }}</span>
             <button
-              @click="triggerRenameType(type)"
+              @click="startRenameType(type)"
               class="px-2 py-1 text-xs rounded-full bg-pink-100 text-pink-600 hover:bg-pink-200 transition-colors duration-200"
             >
               <i class="fas fa-edit mr-1"></i>重命名
@@ -178,16 +178,44 @@
         </div>
       </div>
     </div>
+    <NeonDialog
+      :visible.sync="showAddDialogFlag"
+      title="新增菜单类型"
+      icon-class="add-menu"
+      @confirm="addNewMenuType"
+    >
+      <NeonInput
+        v-model="newMenuTypeName"
+        class="fm-input"
+        placeholder="请输入新的菜单类型名称..."
+      />
+    </NeonDialog>
+    <NeonDialog
+      :visible.sync="showRenameDialogFlag"
+      title="重命名菜单类型"
+      icon-class="rename1"
+      @confirm="triggerRenameType"
+    >
+      <NeonInput
+        v-model="renameMenuTypeName"
+        class="fm-input"
+        placeholder="请输入新的菜单类型名称..."
+      />
+    </NeonDialog>
   </div>
 </template>
 
 <script>
 import PluginListTemplate from "@/components/plugin/PluginListTemplate.vue"
+import NeonDialog from "@/components/ui/NeonDialog.vue"
+import NeonInput from "@/components/ui/NeonInput.vue"
 
 export default {
   name: "PluginList",
   components: {
     PluginListTemplate,
+    NeonDialog,
+    NeonInput,
   },
   data() {
     return {
@@ -206,6 +234,11 @@ export default {
       selectedPluginModules: [],
       targetMenuTypeBulk: null,
       manageTypesDialogVisible: false,
+      showAddDialogFlag: false,
+      showRenameDialogFlag: false,
+      newMenuTypeName: "",
+      renameMenuTypeName: "",
+      oldRenameMenuTypeName: "",
     }
   },
   computed: {
@@ -439,178 +472,82 @@ export default {
     },
 
     addNewMenuType() {
-      this.$prompt("请输入新的菜单类型名称：", "新增菜单类型", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputPattern: /\S+/,
-        inputErrorMessage: "菜单类型名称不能为空",
-      })
-        .then(({ value }) => {
-          const newType = value.trim()
-          if (!newType) {
-            this.$message.warning("菜单类型名称不能为空")
-            return
-          }
-          const exists = this.menuTypeList.some(
-            (type) => type.toLowerCase() === newType.toLowerCase()
-          )
-          if (exists) {
-            this.$message.warning(`菜单类型 "${newType}" 已存在`)
-          } else {
-            this.menuTypeList.push(newType)
-            this.$message.success(
-              `菜单类型 "${newType}" 已添加，您可以现在将其应用到插件`
-            )
-          }
-        })
-        .catch(() => {
-          this.$message.info("已取消新增")
-        })
+      const newType = this.newMenuTypeName.trim()
+      if (!newType) {
+        this.$message.warning("菜单类型名称不能为空")
+        return
+      }
+      const exists = this.menuTypeList.some(
+        (type) => type.toLowerCase() === newType.toLowerCase()
+      )
+      if (exists) {
+        this.$message.warning(`菜单类型 "${newType}" 已存在`)
+      } else {
+        this.menuTypeList.push(newType)
+        this.$message.success(
+          `菜单类型 "${newType}" 已添加，您可以现在将其应用到插件`
+        )
+      }
+      this.showAddDialogFlag = false
     },
-
-    editMenuType(oldName) {
-      if (!oldName) return
-
-      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, "重命名菜单类型", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputValue: oldName,
-        inputPattern: /\S+/,
-        inputErrorMessage: "菜单类型名称不能为空",
-      })
-        .then(({ value }) => {
-          const newName = value.trim()
-          if (!newName) {
-            this.$message.warning("菜单类型名称不能为空")
-            return
-          }
-          if (newName === oldName) {
-            this.$message.info("名称未改变")
-            return
-          }
-
-          const exists = this.menuTypeList.some(
-            (type) =>
-              type.toLowerCase() === newName.toLowerCase() &&
-              type.toLowerCase() !== oldName.toLowerCase()
-          )
-          if (exists) {
-            this.$message.warning(`菜单类型名称 "${newName}" 已存在`)
-            return
-          }
-
-          const loading = this.$loading({
-            lock: true,
-            text: "正在重命名...",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)",
-          })
-          this.putRequest(`${this.$root.prefix}/plugin/menu_type/rename`, {
-            old_name: oldName,
-            new_name: newName,
-          })
-            .then((resp) => {
-              loading.close()
-              if (!resp) {
-                this.$message.error("重命名失败：无效的响应")
-                return
-              }
-              if (resp.suc) {
-                this.$message.success(resp.info || "重命名成功！")
-                const index = this.menuTypeList.findIndex(
-                  (type) => type === oldName
-                )
-                if (index !== -1) {
-                  this.$set(this.menuTypeList, index, newName)
-                }
-                if (this.searchMenuType === oldName) {
-                  this.searchMenuType = newName
-                }
-              } else {
-                this.$message.error(resp.info || "重命名失败")
-              }
-            })
-            .catch((error) => {
-              loading.close()
-              this.$message.error(`请求失败: ${error}`)
-            })
-        })
-        .catch(() => {
-          this.$message.info("已取消重命名")
-        })
-    },
-
     openManageTypesDialog() {
       this.manageTypesDialogVisible = true
     },
+    startRenameType(type) {
+      this.showRenameDialogFlag = true
+      this.oldRenameMenuTypeName = type
+    },
+    triggerRenameType() {
+      if (!this.renameMenuTypeName) return
 
-    triggerRenameType(oldName) {
-      if (!oldName) return
+      const newName = this.renameMenuTypeName.trim()
+      if (!newName) {
+        this.$message.warning("菜单类型名称不能为空")
+        return
+      }
+      if (newName === this.oldRenameMenuTypeName) {
+        this.$message.info("名称未改变")
+        return
+      }
 
-      this.$prompt(`重命名菜单类型 "${oldName}" 为：`, "重命名菜单类型", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputValue: oldName,
-        inputPattern: /\S+/,
-        inputErrorMessage: "菜单类型名称不能为空",
+      const exists = this.menuTypeList.some(
+        (type) =>
+          type.toLowerCase() === newName.toLowerCase() &&
+          type.toLowerCase() !== this.oldRenameMenuTypeName.toLowerCase()
+      )
+      if (exists) {
+        this.$message.warning(`菜单类型名称 "${newName}" 已存在`)
+        return
+      }
+
+      const loading = this.getLoading(".animate-pop-in")
+      this.putRequest(`${this.$root.prefix}/plugin/menu_type/rename`, {
+        old_name: this.oldRenameMenuTypeName,
+        new_name: newName,
       })
-        .then(({ value }) => {
-          const newName = value.trim()
-          if (!newName) {
-            this.$message.warning("菜单类型名称不能为空")
+        .then((resp) => {
+          loading.close()
+          if (!resp) {
+            this.$message.error("重命名失败：无效的响应")
             return
           }
-          if (newName === oldName) {
-            this.$message.info("名称未改变")
-            return
+          if (resp.suc) {
+            this.$message.success(resp.info || "重命名成功！")
+            const index = this.menuTypeList.findIndex(
+              (type) => type === this.oldRenameMenuTypeName
+            )
+            if (index !== -1) {
+              this.menuTypeList.splice(index, 1, newName)
+            }
+            this.manageTypesDialogVisible = false
+            this.showRenameDialogFlag = false
+          } else {
+            this.$message.error(resp.info || "重命名失败")
           }
-
-          const exists = this.menuTypeList.some(
-            (type) =>
-              type.toLowerCase() === newName.toLowerCase() &&
-              type.toLowerCase() !== oldName.toLowerCase()
-          )
-          if (exists) {
-            this.$message.warning(`菜单类型名称 "${newName}" 已存在`)
-            return
-          }
-
-          const loading = this.$loading({
-            lock: true,
-            text: "正在重命名...",
-            spinner: "el-icon-loading",
-            background: "rgba(0, 0, 0, 0.7)",
-          })
-          this.putRequest(`${this.$root.prefix}/plugin/menu_type/rename`, {
-            old_name: oldName,
-            new_name: newName,
-          })
-            .then((resp) => {
-              loading.close()
-              if (!resp) {
-                this.$message.error("重命名失败：无效的响应")
-                return
-              }
-              if (resp.suc) {
-                this.$message.success(resp.info || "重命名成功！")
-                const index = this.menuTypeList.findIndex(
-                  (type) => type === oldName
-                )
-                if (index !== -1) {
-                  this.menuTypeList.splice(index, 1, newName)
-                }
-                this.manageTypesDialogVisible = false
-              } else {
-                this.$message.error(resp.info || "重命名失败")
-              }
-            })
-            .catch((error) => {
-              loading.close()
-              this.$message.error(`请求失败: ${error}`)
-            })
         })
-        .catch(() => {
-          this.$message.info("已取消重命名")
+        .catch((error) => {
+          loading.close()
+          this.$message.error(`请求失败: ${error}`)
         })
     },
   },

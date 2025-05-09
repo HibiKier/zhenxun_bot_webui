@@ -142,7 +142,7 @@
     <NeonDialog
       :visible.sync="showCreateDialog"
       :title="createType === 'file' ? '新建文件' : '新建文件夹'"
-      :icon-class="createType === 'file' ? 'icon-file-add' : 'icon-folder-add'"
+      :icon-class="createType === 'file' ? 'add-file1' : 'add-folder1'"
       @confirm="confirmCreate"
     >
       <NeonInput
@@ -157,7 +157,7 @@
     <NeonDialog
       :visible.sync="showRenameDialogFlag"
       :title="renameType === 'file' ? '重命名文件' : '重命名文件夹'"
-      icon-class="rename"
+      icon-class="rename1"
       @confirm="confirmRename"
     >
       <NeonInput
