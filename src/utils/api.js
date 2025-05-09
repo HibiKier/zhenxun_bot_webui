@@ -107,7 +107,7 @@ export const postRequest = (url, params) => {
   }
   return axios({
     method: "post",
-    url: `${getBaseUrl()}${url}`,
+    url: url,
     data: params,
   })
 }
@@ -118,7 +118,7 @@ export const putRequest = (url, params) => {
   }
   return axios({
     method: "put",
-    url: `${getBaseUrl()}${url}`,
+    url: url,
     data: params,
   })
 }
