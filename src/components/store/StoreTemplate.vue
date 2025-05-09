@@ -1,125 +1,292 @@
 <template>
-  <div class="main">
-    <div class="title">插件商店</div>
-    <div class="filter">
-      <div class="search-input">
+  <div class="main p-4 md:p-6 bg-pink-50">
+    <!-- 标题部分 -->
+    <div class="title text-center mb-6">
+      <h1 class="text-3xl md:text-4xl font-bold text-purple-600 animate-bounce">
+        <span class="inline-block transform rotate-3">✨</span>
+        插件商店
+        <span class="inline-block transform -rotate-3">✨</span>
+      </h1>
+      <div class="text-sm text-pink-400 mt-2">发现更多有趣的功能吧~</div>
+    </div>
+
+    <!-- 筛选部分 -->
+    <div
+      class="filter mb-6 flex flex-col md:flex-row items-center justify-between gap-4"
+    >
+      <!-- 搜索框 -->
+      <div class="search-input w-full md:w-1/3 relative">
         <el-input
           v-model="search"
-          placeholder="搜索..."
-          style="width: 30%"
-        ></el-input>
-      </div>
-      <div class="search-tag">
-        <div
-          class="search-tag-item"
-          @mouseover="mouseover"
-          @mouseout="mouseout"
+          placeholder="搜索插件..."
+          class="rounded-full"
+          :class="{ 'focus:ring-2 focus:ring-pink-300': true }"
         >
-          <el-dropdown @command="handleCommand">
-            <span class="el-dropdown-link">
-              <svg-icon
-                :icon-class="authorIcon"
-                style="margin-right: 10px"
-              />作者
-            </span>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item
-                v-for="(v, i) in authorList"
-                :key="i"
-                :command="v"
-                >{{ v }}</el-dropdown-item
-              >
-            </el-dropdown-menu>
-          </el-dropdown>
-        </div>
+          <template #prefix>
+            <svg-icon icon-class="search" class="text-pink-400" />
+          </template>
+        </el-input>
       </div>
+
+      <!-- 作者筛选 -->
+      <!-- <div class="search-tag">
+        <el-dropdown
+          @command="handleCommand"
+          trigger="click"
+          class="cursor-pointer"
+        >
+          <div
+            class="flex items-center px-4 py-2 rounded-full bg-white shadow-md hover:bg-pink-100 transition-colors duration-200 border border-pink-200"
+            @mouseover="mouseover"
+            @mouseout="mouseout"
+          >
+            <svg-icon :icon-class="authorIcon" class="mr-2 text-pink-500" />
+            <span class="text-pink-600 font-medium">作者</span>
+          </div>
+
+          <el-dropdown-menu
+            slot="dropdown"
+            class="rounded-lg shadow-lg border border-pink-100 overflow-hidden"
+          >
+            <el-dropdown-item
+              v-for="(v, i) in authorList"
+              :key="i"
+              :command="v"
+              class="hover:bg-pink-50 text-pink-600 font-medium"
+            >
+              <div class="flex items-center">
+                <svg-icon icon-class="user" class="mr-2 text-pink-400" />
+                {{ v }}
+              </div>
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div> -->
     </div>
-    <div class="table-border">
-      <el-table
-        :data="filterTableData"
-        stripe
-        height="100%"
-        border
-        style="width: 100%"
+
+    <!-- 表格部分 -->
+    <div
+      class="table-container flex flex-col flex-1 min-h-0"
+      :style="{ height: getTableBorderHeight() + 'px' }"
+    >
+      <div
+        ref="tableWrapper"
+        class="table-border bg-white rounded-xl p-4 shadow-lg border border-pink-100 flex-1 flex flex-col"
       >
-        <el-table-column prop="id" label="ID" width="50"> </el-table-column>
-        <el-table-column prop="name" label="名称" width="200px">
-          <template slot-scope="scope">
-            <div class="name-border">
-              <span style="margin-left: 10px">{{ scope.row.name }}</span>
-              <a
-                v-if="scope.row.github_url"
-                :href="scope.row.github_url"
-                target="_blank"
+        <el-table
+          :data="filterTableData"
+          stripe
+          :height="tableHeight"
+          border
+          style="width: 100%"
+          class="rounded-lg overflow-hidden flex-1"
+          :row-class-name="tableRowClassName"
+          :key="tableKey"
+        >
+          <el-table-column
+            prop="id"
+            label="ID"
+            width="70"
+            align="center"
+            header-align="center"
+          >
+            <template #header>
+              <span class="text-pink-500 font-bold">ID</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="name"
+            label="名称"
+            width="200px"
+            header-align="center"
+          >
+            <template #header>
+              <span class="text-pink-500 font-bold">名称</span>
+            </template>
+            <template slot-scope="scope">
+              <div class="name-border flex items-center">
+                <el-tooltip
+                  :content="scope.row.name"
+                  placement="top"
+                  effect="light"
+                >
+                  <span
+                    class="truncate max-w-[120px] md:max-w-[160px] ml-2 font-medium text-gray-700"
+                  >
+                    {{ scope.row.name }}
+                  </span>
+                </el-tooltip>
+
+                <a
+                  v-if="scope.row.github_url"
+                  :href="scope.row.github_url"
+                  target="_blank"
+                  class="ml-2 hover:scale-110 transform transition-transform"
+                >
+                  <svg-icon
+                    class="github-icon w-6 h-6 text-gray-600 hover:text-purple-600"
+                    icon-class="github"
+                  />
+                </a>
+
+                <span
+                  v-if="installModule.includes(scope.row.module)"
+                  class="is-install ml-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full flex items-center"
+                >
+                  <svg-icon icon-class="check" class="mr-1 w-3 h-3" />
+                  已安装
+                </span>
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="author"
+            label="作者"
+            width="180px"
+            header-align="center"
+          >
+            <template #header>
+              <span class="text-pink-500 font-bold">作者</span>
+            </template>
+            <template slot-scope="scope">
+              <div class="flex items-center">
+                <svg-icon
+                  icon-class="user"
+                  class="mr-2 text-pink-400 w-4 h-4"
+                />
+                <span class="text-gray-700">{{ scope.row.author }}</span>
+              </div>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="version"
+            label="版本"
+            width="100px"
+            align="center"
+            header-align="center"
+          >
+            <template #header>
+              <span class="text-pink-500 font-bold">版本</span>
+            </template>
+            <template slot-scope="scope">
+              <el-tag
+                size="small"
+                effect="plain"
+                class="border border-pink-200 bg-pink-50 text-pink-600"
               >
-                <svg-icon class="github-icon" icon-class="github" />
-              </a>
-              <span
-                class="is-install"
-                v-if="installModule.includes(scope.row.module)"
-                >已安装</span
+                v{{ scope.row.version }}
+              </el-tag>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="plugin_type"
+            label="类型"
+            width="120px"
+            align="center"
+            header-align="center"
+          >
+            <template #header>
+              <span class="text-pink-500 font-bold">类型</span>
+            </template>
+            <template slot-scope="scope">
+              <el-tag
+                :type="getPluginTypeColor(scope.row.plugin_type)"
+                size="small"
+                effect="dark"
               >
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="author" label="作者" width="200px">
-        </el-table-column>
-        <el-table-column prop="version" label="版本" width="120px">
-        </el-table-column>
-        <el-table-column prop="plugin_type" label="插件类型" width="120px">
-        </el-table-column>
-        <el-table-column prop="description" label="简介"> </el-table-column>
-        <el-table-column label="操作" min-width="140px">
-          <template slot-scope="scope">
-            <div style="display: flex">
-              <my-button
-                text="README"
-                icon="readme"
-                :iconWidth="23"
-                :iconHeight="23"
-                height="30"
-                width="100"
-                @click="handleReadme(scope.$index, scope.row)"
-                class="handle-btn"
-                :disabled="true"
-              />
-              <my-button
-                text="安装"
-                icon="download"
-                :iconWidth="23"
-                :iconHeight="23"
-                height="30"
-                width="100"
-                @click="handleInstall(scope.$index, scope.row)"
-                class="handle-btn"
-                :disabled="installModule.includes(scope.row.module)"
-              />
-              <my-button
-                text="更新"
-                icon="update"
-                :iconWidth="23"
-                :iconHeight="23"
-                height="30"
-                width="100"
-                @click="handleUpdate(scope.$index, scope.row)"
-                class="handle-btn"
-                :disabled="!installModule.includes(scope.row.module)"
-              />
-              <my-button
-                text="移除"
-                icon="remove"
-                :iconWidth="23"
-                :iconHeight="23"
-                height="30"
-                width="100"
-                @click="handleRemove(scope.$index, scope.row)"
-                class="handle-btn"
-                :disabled="!installModule.includes(scope.row.module)"
-              />
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+                {{ scope.row.plugin_type }}
+              </el-tag>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            prop="description"
+            label="简介"
+            header-align="center"
+          >
+            <template #header>
+              <span class="text-pink-500 font-bold">简介</span>
+            </template>
+            <template slot-scope="scope">
+              <el-tooltip
+                :content="scope.row.description"
+                placement="top"
+                effect="light"
+              >
+                <span class="line-clamp-2 text-gray-600">
+                  {{ scope.row.description }}
+                </span>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+
+          <el-table-column
+            label="操作"
+            width="420px"
+            align="center"
+            header-align="center"
+          >
+            <template #header>
+              <span class="text-pink-500 font-bold">操作</span>
+            </template>
+            <template slot-scope="scope">
+              <div class="flex flex-wrap justify-center gap-1 md:gap-2">
+                <my-button
+                  text="README"
+                  icon="readme"
+                  :iconWidth="20"
+                  :iconHeight="20"
+                  :height="28"
+                  :width="80"
+                  @click="handleReadme(scope.$index, scope.row)"
+                  class="handle-btn bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-200"
+                  :disabled="true"
+                />
+
+                <my-button
+                  text="安装"
+                  icon="download"
+                  :iconWidth="20"
+                  :iconHeight="20"
+                  :height="28"
+                  :width="80"
+                  @click="handleInstall(scope.$index, scope.row)"
+                  class="handle-btn bg-green-50 hover:bg-green-100 text-green-600 border-green-200"
+                  :disabled="installModule.includes(scope.row.module)"
+                />
+
+                <my-button
+                  text="更新"
+                  icon="update"
+                  :iconWidth="20"
+                  :iconHeight="20"
+                  :height="28"
+                  :width="80"
+                  @click="handleUpdate(scope.$index, scope.row)"
+                  class="handle-btn bg-yellow-50 hover:bg-yellow-100 text-yellow-600 border-yellow-200"
+                  :disabled="!installModule.includes(scope.row.module)"
+                />
+
+                <my-button
+                  text="移除"
+                  icon="remove"
+                  :iconWidth="20"
+                  :iconHeight="20"
+                  :height="28"
+                  :width="80"
+                  @click="handleRemove(scope.$index, scope.row)"
+                  class="handle-btn bg-red-50 hover:bg-red-100 text-red-600 border-red-200"
+                  :disabled="!installModule.includes(scope.row.module)"
+                />
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -132,11 +299,14 @@ export default {
   data() {
     return {
       handleType: null,
-      authorIcon: "author-primary",
+      authorIcon: "author-red",
       authorList: [],
       tableData: [],
       search: "",
       installModule: [],
+      tableHeight: null,
+      resizeObserver: null,
+      tableKey: 0, // 用于强制刷新表格
     }
   },
   computed: {
@@ -153,97 +323,281 @@ export default {
   },
   mounted() {
     this.getPluginList()
+    this.calculateTableHeight()
+    this.setupResizeObserver()
+  },
+  beforeDestroy() {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect()
+    }
   },
   methods: {
-    handleReadme(i, data) {},
+    getTableBorderHeight() {
+      if (this.$isMobile()) {
+        return this.tableHeight
+      }
+      return this.tableHeight - 239
+    },
+    calculateTableHeight() {
+      this.$nextTick(() => {
+        const headerHeight =
+          document.querySelector(".title")?.offsetHeight || 100
+        const filterHeight =
+          document.querySelector(".filter")?.offsetHeight || 80
+        const padding = 32 // 上下边距
+
+        // 计算可用高度
+        const windowHeight = window.innerHeight
+        const availableHeight =
+          windowHeight - headerHeight - filterHeight - padding
+
+        // 设置最小高度限制
+        const newHeight = Math.max(availableHeight, 300)
+
+        // 只有当高度确实变化时才更新
+        if (this.tableHeight !== newHeight) {
+          this.tableHeight = newHeight
+
+          this.tableKey += 1 // 强制表格重新渲染
+        }
+      })
+    },
+
+    setupResizeObserver() {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.calculateTableHeight()
+      })
+
+      if (this.$refs.tableWrapper) {
+        this.resizeObserver.observe(this.$refs.tableWrapper)
+      }
+
+      window.addEventListener("resize", this.calculateTableHeight)
+    },
+    tableRowClassName({ row }) {
+      return this.installModule.includes(row.module) ? "installed-row" : ""
+    },
+
+    getPluginTypeColor(type) {
+      const typeMap = {
+        功能: "success",
+        娱乐: "warning",
+        工具: "",
+        管理: "danger",
+        其他: "info",
+      }
+      return typeMap[type] || ""
+    },
+
+    handleReadme(i, data) {
+      this.$message.info("README功能开发中，敬请期待~")
+    },
+
     handleUpdate(i, data) {
-      this.$confirm("确认要执行此操作吗?", "提示", {
-        confirmButtonText: "确定",
+      this.$confirm("确定要更新这个插件吗?", "更新确认", {
+        confirmButtonText: "确定更新",
         cancelButtonText: "取消",
         type: "warning",
-      }).then(() => {
-        var loading = this.getLoading(".table-border")
-        this.postRequest(`${this.$root.prefix}/store/update_plugin`, {
-          id: data.id,
-        }).then((resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-              this.getPluginList()
-            }
-          } else {
-            this.$message.error(resp.info)
-          }
-          loading.close()
-        })
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--warning",
+        iconClass: "el-icon-question text-yellow-500",
       })
+        .then(() => {
+          var loading = this.$loading({
+            target: ".table-border",
+            text: "正在更新插件...",
+            spinner: "el-icon-loading",
+            background: "rgba(255, 255, 255, 0.7)",
+          })
+
+          this.postRequest(`${this.$root.prefix}/store/update_plugin`, {
+            id: data.id,
+          })
+            .then((resp) => {
+              loading.close()
+              if (resp.suc) {
+                if (resp.warning) {
+                  this.$message.warning({
+                    message: resp.warning,
+                    iconClass: "el-icon-warning-outline",
+                  })
+                } else {
+                  this.$message.success({
+                    message: resp.info || "插件更新成功!",
+                    iconClass: "el-icon-success",
+                  })
+                  this.getPluginList()
+                }
+              } else {
+                this.$message.error({
+                  message: resp.info || "插件更新失败",
+                  iconClass: "el-icon-error",
+                })
+              }
+            })
+            .catch((error) => {
+              loading.close()
+              this.$message.error({
+                message: "更新过程中发生错误: " + (error.message || error),
+                iconClass: "el-icon-error",
+              })
+              console.error("[Plugin Store] Update error:", error)
+            })
+        })
+        .catch(() => {
+          this.$message.info({
+            message: "已取消更新",
+            iconClass: "el-icon-info",
+          })
+        })
     },
+
     handleRemove(i, data) {
-      this.$confirm("确认要执行此操作吗?", "提示", {
-        confirmButtonText: "确定",
+      this.$confirm("确定要移除这个插件吗?", "移除确认", {
+        confirmButtonText: "确定移除",
         cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        var loading = this.getLoading(".table-border")
-        this.postRequest(`${this.$root.prefix}/store/remove_plugin`, {
-          id: data.id,
-        }).then((resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-              this.getPluginList()
-            }
-          } else {
-            this.$message.error(resp.info)
-          }
-          loading.close()
-        })
+        type: "error",
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--danger",
+        iconClass: "el-icon-warning text-red-500",
       })
+        .then(() => {
+          var loading = this.$loading({
+            target: ".table-border",
+            text: "正在移除插件...",
+            spinner: "el-icon-loading",
+            background: "rgba(255, 255, 255, 0.7)",
+          })
+
+          this.postRequest(`${this.$root.prefix}/store/remove_plugin`, {
+            id: data.id,
+          })
+            .then((resp) => {
+              loading.close()
+              if (resp.suc) {
+                if (resp.warning) {
+                  this.$message.warning({
+                    message: resp.warning,
+                    iconClass: "el-icon-warning-outline",
+                  })
+                } else {
+                  this.$message.success({
+                    message: resp.info || "插件移除成功!",
+                    iconClass: "el-icon-success",
+                  })
+                  this.getPluginList()
+                }
+              } else {
+                this.$message.error({
+                  message: resp.info || "插件移除失败",
+                  iconClass: "el-icon-error",
+                })
+              }
+            })
+            .catch((error) => {
+              loading.close()
+              this.$message.error({
+                message: "移除过程中发生错误: " + (error.message || error),
+                iconClass: "el-icon-error",
+              })
+              console.error("[Plugin Store] Remove error:", error)
+            })
+        })
+        .catch(() => {
+          this.$message.info({
+            message: "已取消移除",
+            iconClass: "el-icon-info",
+          })
+        })
     },
+
     handleInstall(i, data) {
-      this.$confirm("确认要执行此操作吗?", "提示", {
-        confirmButtonText: "确定",
+      this.$confirm("确定要安装这个插件吗?", "安装确认", {
+        confirmButtonText: "确定安装",
         cancelButtonText: "取消",
-        type: "warning",
-      }).then(() => {
-        var loading = this.getLoading(".table-border")
-        this.postRequest(`${this.$root.prefix}/store/install_plugin`, {
-          id: data.id,
-        }).then((resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-              this.getPluginList()
-            }
-          } else {
-            this.$message.error(resp.info)
-          }
-          loading.close()
-        })
+        type: "success",
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--success",
+        iconClass: "el-icon-question text-green-500",
       })
+        .then(() => {
+          var loading = this.$loading({
+            target: ".table-border",
+            text: "正在安装插件...",
+            spinner: "el-icon-loading",
+            background: "rgba(255, 255, 255, 0.7)",
+          })
+
+          this.postRequest(`${this.$root.prefix}/store/install_plugin`, {
+            id: data.id,
+          })
+            .then((resp) => {
+              loading.close()
+              if (resp.suc) {
+                if (resp.warning) {
+                  this.$message.warning({
+                    message: resp.warning,
+                    iconClass: "el-icon-warning-outline",
+                  })
+                } else {
+                  this.$message.success({
+                    message: resp.info || "插件安装成功!",
+                    iconClass: "el-icon-success",
+                  })
+                  this.getPluginList()
+                }
+              } else {
+                this.$message.error({
+                  message: resp.info || "插件安装失败",
+                  iconClass: "el-icon-error",
+                })
+              }
+            })
+            .catch((error) => {
+              loading.close()
+              this.$message.error({
+                message: "安装过程中发生错误: " + (error.message || error),
+                iconClass: "el-icon-error",
+              })
+              console.error("[Plugin Store] Install error:", error)
+            })
+        })
+        .catch(() => {
+          this.$message.info({
+            message: "已取消安装",
+            iconClass: "el-icon-info",
+          })
+        })
     },
+
     handleCommand(s) {
       this.search = s
+      this.$message.success(`已筛选作者: ${s}`)
     },
+
     getPluginList() {
       var loading = this.getLoading(".table-border")
-      this.getRequest(`${this.$root.prefix}/store/get_plugin_store`).then(
-        (resp) => {
+
+      this.getRequest(`${this.$root.prefix}/store/get_plugin_store`)
+        .then((resp) => {
           loading.close()
           if (resp && resp.suc) {
             if (resp.warning) {
-              this.$message.warning(resp.warning)
+              this.$message.warning({
+                message: resp.warning,
+                iconClass: "el-icon-warning-outline",
+              })
             } else {
-              this.$message.success(resp.info || "获取插件商店列表成功！")
-              this.tableData = Array.isArray(resp.data.plugin_list) ? resp.data.plugin_list : []
+              this.$message.success({
+                message: resp.info || "获取插件商店列表成功!",
+                iconClass: "el-icon-success",
+              })
+              this.tableData = Array.isArray(resp.data.plugin_list)
+                ? resp.data.plugin_list
+                : []
               this.installModule = resp.data.install_module || []
               this.authorList = []
+
               if (Array.isArray(resp.data.plugin_list)) {
                 for (let v of resp.data.plugin_list) {
                   if (v && v.author && !this.authorList.includes(v.author)) {
@@ -253,189 +607,204 @@ export default {
               }
             }
           } else {
-            const errorMsg = resp ? resp.info : "无法获取插件商店列表，请检查网络连接或后端服务。";
-            this.$message.error(errorMsg || "获取插件商店列表失败");
-            this.tableData = [];
-            this.installModule = [];
-            this.authorList = [];
+            const errorMsg = resp
+              ? resp.info
+              : "无法获取插件商店列表，请检查网络连接或后端服务。"
+            this.$message.error({
+              message: errorMsg || "获取插件商店列表失败",
+              iconClass: "el-icon-error",
+            })
+            this.tableData = []
+            this.installModule = []
+            this.authorList = []
           }
-        }
-      ).catch(error => {
-          loading.close();
-          this.$message.error(`获取插件商店列表时出错: ${error.message || error}`);
-          console.error("[StoreTemplate Error] getPluginList catch:", error);
-          this.tableData = [];
-          this.installModule = [];
-          this.authorList = [];
-      });
+        })
+        .catch((error) => {
+          loading.close()
+          this.$message.error({
+            message: `获取插件商店列表时出错: ${error.message || error}`,
+            iconClass: "el-icon-error",
+          })
+          console.error("[StoreTemplate Error] getPluginList catch:", error)
+          this.tableData = []
+          this.installModule = []
+          this.authorList = []
+        })
     },
+
     mouseover() {
       this.authorIcon = "author-white"
     },
+
     mouseout() {
-      this.authorIcon = "author-primary"
+      this.authorIcon = "author-red"
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-dropdown-menu__item:focus,
-::v-deep .el-dropdown-menu__item:not(.is-disabled):hover {
-  color: var(--el-color-primary);
-  background-color: var(--el-color-primary-light-9);
+.table-container {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.el-dropdown-link {
-  cursor: pointer;
-  color: var(--el-color-primary);
+.table-border {
+  transition: height 0.3s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  ::v-deep .el-table {
+    flex: 1;
+
+    .el-table__body-wrapper {
+      overflow-y: auto;
+    }
+  }
 }
 
 .main {
-  border-radius: 10px;
-  height: 100%;
-  background-color: var(--bg-color);
-
   .title {
-    font-size: 40px;
-    font-family: "fzrzFont";
-    width: 100%;
-    text-align: center;
-    color: var(--el-text-color-primary);
+    h1 {
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .search-input {
+    ::v-deep .el-input__inner {
+      border-radius: 9999px;
+      border: 1px solid #f3a3c3;
+      padding-left: 35px;
+      background-color: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s;
+
+      &:focus {
+        border-color: #ec4899;
+        box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+      }
+    }
   }
 
   .table-border {
-    background-color: var(--el-bg-color-secondary);
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    height: calc(100% - 205px);
-    box-shadow: var(--el-box-shadow-light);
+    ::v-deep .el-table {
+      --el-table-border-color: #f9b8d0;
+      --el-table-header-bg-color: #fdf2f8;
+      --el-table-row-hover-bg-color: #fce7f3;
 
-    .name-border {
-      display: flex;
-      //   justify-content: center;
-      align-items: center;
-    }
-
-    .github-icon {
-      width: 25px;
-      height: 25px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
-
-    /deep/ .button-class {
-      font-size: 14px;
-    }
-
-    .is-install {
-      background-color: var(--el-color-success);
-      color: var(--bg-color-secondary);
-      padding: 2px 5px;
-      border-radius: 5px;
-      margin-left: 10px;
-    }
-  }
-
-  .handle-btn {
-    margin-right: 10px;
-  }
-
-  .filter {
-    padding: 20px, 0;
-    width: 100%;
-
-    .search-input {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      /deep/ .el-input__inner {
-        //   background-color: #f2f2f2;
-        border-radius: 50px;
-      }
-    }
-
-    .search-tag {
-      margin-top: 35px;
-
-      .search-tag-item {
-        border-radius: 10px;
-        background-color: var(--el-bg-color-secondary);
-        height: 30px;
-        width: 70px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: 600;
-        border: 1px solid var(--primary-color);
-        color: var(--primary-color);
-        cursor: pointer;
+      th {
+        font-weight: bold;
+        color: #831843;
       }
 
-      .search-tag-item:hover {
-        background-color: var(--primary-color);
-        /deep/ .el-dropdown {
-          color: var(--bg-color-secondary);
+      td {
+        border-bottom: 1px solid #fbcfe8;
+      }
+
+      .el-table__body tr.installed-row {
+        background-color: #f0fdf4;
+
+        &:hover {
+          background-color: #dcfce7 !important;
         }
       }
 
-      /deep/ .el-dropdown {
-        font-size: 15px;
-        color: var(--primary-color);
+      .el-table__body tr.el-table__row--striped {
+        background-color: #fff5f7;
+
+        &.installed-row {
+          background-color: #ecfdf5;
+        }
       }
     }
   }
 }
-/deep/ .el-dropdown-menu__item {
-  font-weight: 600;
+
+// 二次元风格弹窗
+.confirm-box {
+  border-radius: 16px !important;
+  border: 2px solid #f9a8d4 !important;
+  background-color: #fdf2f8 !important;
+
+  .el-message-box__header {
+    background-color: #fce7f3;
+    border-radius: 14px 14px 0 0;
+    padding: 15px 20px;
+
+    .el-message-box__title {
+      color: #831843;
+      font-weight: bold;
+    }
+  }
+
+  .el-message-box__content {
+    padding: 20px;
+    color: #701a75;
+  }
+
+  .el-message-box__btns {
+    padding: 15px 20px;
+
+    .el-button {
+      border-radius: 9999px;
+      padding: 10px 20px;
+      font-weight: bold;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
 }
 
-/* 添加 Element UI 表格主题化样式 */
-.table-border ::v-deep .el-table,
-.table-border ::v-deep .el-table__expanded-cell {
-  background-color: transparent; /* 使表格背景透明以继承 .table-border 的背景 */
+// 响应式调整
+@media (max-width: 768px) {
+  .main {
+    padding: 2px;
+
+    .title h1 {
+      font-size: 1.8rem;
+    }
+
+    .filter {
+      flex-direction: column;
+
+      .search-input {
+        width: 100%;
+      }
+    }
+
+    .table-border {
+      padding: 8px;
+
+      ::v-deep .el-table {
+        font-size: 0.85rem;
+
+        th,
+        td {
+          padding: 8px 4px;
+        }
+      }
+    }
+  }
 }
 
-.table-border ::v-deep .el-table th,
-.table-border ::v-deep .el-table tr,
-.table-border ::v-deep .el-table td {
-  background-color: transparent !important; /* 强制单元格背景透明 */
-  color: var(--el-text-color-regular); /* 使用主题文本颜色 */
-  border-color: var(--el-border-color-light); /* 使用主题边框颜色 */
+// 动画效果
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
-/* 覆盖表头背景和文字颜色 */
-.table-border ::v-deep .el-table th {
-  background-color: var(--el-fill-color-lighter) !important;
-  color: var(--el-text-color-primary);
+.animate-bounce {
+  animation: bounce 2s infinite;
 }
-
-
-/* 覆盖斑马纹背景色 */
-.table-border ::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: var(--el-fill-color-lighter) !important;
-}
-
-/* 覆盖鼠标悬停行的背景色 */
-.table-border ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
-  background-color: var(--el-table-row-hover-bg-color) !important;
-}
-
-/* 覆盖表格边框颜色 */
-.table-border ::v-deep .el-table--border::after,
-.table-border ::v-deep .el-table--group::after,
-.table-border ::v-deep .el-table::before {
-    background-color: var(--el-border-color-light);
-}
-.table-border ::v-deep .el-table--border th.is-leaf,
-.table-border ::v-deep .el-table--border td {
-    border-bottom: 1px solid var(--el-border-color-light);
-}
-.table-border ::v-deep .el-table--border th,
-.table-border ::v-deep .el-table--border td {
-    border-right: 1px solid var(--el-border-color-light);
-}
-/* --- */
 </style>

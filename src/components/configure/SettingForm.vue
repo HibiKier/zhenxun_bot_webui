@@ -65,7 +65,7 @@
         </el-button>
       </el-form-item>
     </el-form>
-    <CuteDialog
+    <CuteConfirm
       :visible.sync="isCompleteWindows"
       title="温馨提示"
       :message="completeTextWindows"
@@ -73,7 +73,7 @@
       :onCancel="handleCancel"
       class="dialog"
     />
-    <CuteDialog
+    <CuteConfirm
       :visible.sync="isCompleteLinux"
       title="温馨提示"
       :message="completeTextLinux"
@@ -85,27 +85,27 @@
 </template>
 
 <script>
-import CuteDialog from "../ui/CuteDialog.vue"
-import InteractiveInput from "../ui/InteractiveInput.vue"
+import CuteConfirm from '../ui/CuteConfirm.vue'
+import InteractiveInput from '../ui/NeonInput.vue'
 export default {
-  name: "SettingForm",
-  components: { InteractiveInput, CuteDialog },
+  name: 'SettingForm',
+  components: { InteractiveInput, CuteConfirm },
   data() {
     var checkHost = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("运行地址不能为空"))
+        return callback(new Error('运行地址不能为空'))
       }
       const ipv4Pattern =
         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
       if (!ipv4Pattern.test(value)) {
-        callback(new Error("ip地址不合法"))
+        callback(new Error('ip地址不合法'))
       } else {
         callback()
       }
     }
     var checkPort = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("运行端口不能为空"))
+        return callback(new Error('运行端口不能为空'))
       }
       const num = Number(value)
       if (
@@ -116,15 +116,15 @@ export default {
       ) {
         callback()
       } else {
-        callback(new Error("端口不合法"))
+        callback(new Error('端口不合法'))
       }
     }
     var checkDb = (rule, value, callback) => {
       if (!value) {
-        this.suffixIcon = ""
-        return callback(new Error("数据库地址不能为空"))
+        this.suffixIcon = ''
+        return callback(new Error('数据库地址不能为空'))
       }
-      if (value.startsWith("sqlite:")) {
+      if (value.startsWith('sqlite:')) {
         callback()
       } else {
         this.getRequest(`${this.$root.prefix}/configure/test_db`, {
@@ -132,11 +132,11 @@ export default {
         }).then((resp) => {
           if (resp.suc) {
             callback()
-            this.suffixIcon = "yes-green"
+            this.suffixIcon = 'yes-green'
             this.db_key++
             this.isComplete = true
           } else {
-            this.suffixIcon = "no-red"
+            this.suffixIcon = 'no-red'
             callback(new Error(resp.info))
             this.db_key++
           }
@@ -145,48 +145,48 @@ export default {
     }
     return {
       completeTextWindows:
-        "恭喜配置完成！\n如果希望立即重启，请选择确定。\n如果希望手动重启，请选择取消。",
-      completeTextLinux: "恭喜配置完成！\n请手动重启程序。",
+        '恭喜配置完成！\n如果希望立即重启，请选择确定。\n如果希望手动重启，请选择取消。',
+      completeTextLinux: '恭喜配置完成！\n请手动重启程序。',
       setting: {
-        superusers: "",
-        db_url: "sqlite:data/db/zhenxun.db",
-        username: "admin",
-        password: "",
-        host: "127.0.0.1",
+        superusers: '',
+        db_url: 'sqlite:data/db/zhenxun.db',
+        username: 'admin',
+        password: '',
+        host: '127.0.0.1',
         port: 8080,
       },
       isCompleteWindows: false,
       isCompleteLinux: false,
-      suffixIcon: "yes-green",
+      suffixIcon: 'yes-green',
       db_key: 0,
       windowHeight: window.innerHeight,
       rules: {
         superusers: [
-          { required: true, message: "请输入超级用户ID", trigger: "blur" },
+          { required: true, message: '请输入超级用户ID', trigger: 'blur' },
         ],
-        db_url: [{ required: true, validator: checkDb, trigger: "blur" }],
+        db_url: [{ required: true, validator: checkDb, trigger: 'blur' }],
         username: [
-          { required: true, message: "请输入前端登录用户名", trigger: "blur" },
+          { required: true, message: '请输入前端登录用户名', trigger: 'blur' },
         ],
         password: [
-          { required: true, message: "请输入前端登录密码", trigger: "blur" },
+          { required: true, message: '请输入前端登录密码', trigger: 'blur' },
         ],
-        host: [{ required: true, validator: checkHost, trigger: "change" }],
-        port: [{ required: true, validator: checkPort, trigger: "change" }],
+        host: [{ required: true, validator: checkHost, trigger: 'change' }],
+        port: [{ required: true, validator: checkPort, trigger: 'change' }],
       },
     }
   },
   methods: {
     handleCancel() {
       this.$router.replace({
-        name: "Login", // 路由名称
+        name: 'Login', // 路由名称
         params: {
           firstSetting: true, // 传递的参数
         },
       })
     },
     handleConfirm() {
-      var loading = this.getLoading(".dialog")
+      var loading = this.getLoading('.dialog')
       this.postRequest(`${this.$root.prefix}/configure/restart`).then(
         (resp) => {
           if (resp.suc) {
@@ -195,7 +195,7 @@ export default {
             } else {
               this.$message.success(resp.info)
               this.$router.replace({
-                name: "Login", // 路由名称
+                name: 'Login', // 路由名称
                 params: {
                   firstSetting: true, // 传递的参数
                 },
@@ -211,10 +211,10 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          var loading = this.getLoading(".base")
+          var loading = this.getLoading('.base')
           const superusers = this.setting.superusers
-            .replace("，", ",")
-            .split(",")
+            .replace('，', ',')
+            .split(',')
           this.postRequest(`${this.$root.prefix}/configure/set_configure`, {
             ...this.setting,
             superusers,
@@ -241,7 +241,7 @@ export default {
       })
     },
     changeApi() {
-      this.$router.push("/myapi")
+      this.$router.push('/myapi')
     },
   },
 }
@@ -260,7 +260,7 @@ export default {
   background-color: #fbe4e4;
 
   .setting-title {
-    font-family: "fzrzFont";
+    font-family: 'fzrzFont';
     font-size: 50px;
     margin-bottom: 40px;
     color: #ffadd2;

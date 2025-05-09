@@ -1,118 +1,94 @@
 <template>
-  <div class="left-info" ref="leftInfo">
-    <div class="ava-info" ref="avaInfo">
-      <el-row>
-        <el-col :span="24">
-          <el-image
-            :src="botInfo.ava_url"
-            class="ava-img main-ava"
-            :style="{ width: avaImageSize + 'px', height: avaImageSize + 'px' }"
-          />
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <p
-            class="nickname"
-            :style="{ fontSize: fontSizeMana.nameText + 'px' }"
-          >
-            {{ botInfo.nickname }}
-          </p>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
+  <div
+    class="left-info-container bg-pink-50 p-4 h-full overflow-y-auto"
+    ref="leftInfoContainer"
+  >
+    <!-- 头像和信息区域 -->
+    <div
+      class="avatar-section bg-white rounded-xl p-6 shadow-lg transform transition-all hover:scale-[1.01]"
+    >
+      <div class="flex flex-col items-center">
+        <!-- 头像 -->
+        <el-image
+          :src="botInfo.ava_url"
+          class="w-24 h-24 rounded-full border-4 border-pink-200 shadow-md hover:border-pink-300 transition-all"
+          fit="cover"
+        >
           <div
-            class="account"
-            :style="{ fontSize: fontSizeMana.accountText + 'px' }"
+            slot="error"
+            class="w-full h-full flex items-center justify-center bg-pink-100 rounded-full"
           >
-            {{ botInfo.self_id }}
+            <i class="el-icon-picture-outline text-3xl text-pink-400"></i>
           </div>
-        </el-col>
-      </el-row>
-      <el-row style="width: 100%">
-        <el-col :span="24">
-          <div class="fg-cnt">
-            <el-row :gutter="20">
-              <el-col
-                :span="8"
-                style="border-right: 1px solid #f5f6f8; line-height: 25px"
-              >
-                <div class="fg-cnt-item">
-                  <p
-                    class="fg-cnt-text"
-                    :style="{ fontSize: fontSizeMana.fgCntText + 'px' }"
-                  >
-                    {{ botInfo.friend_count }}
-                  </p>
-                  <p
-                    class="base-small-title"
-                    :style="{ fontSize: fontSizeMana.fgCntTip + 'px' }"
-                  >
-                    好友数量
-                  </p>
-                </div>
-              </el-col>
-              <el-col
-                :span="8"
-                style="border-right: 1px solid #f5f6f8; line-height: 25px"
-              >
-                <div class="fg-cnt-item">
-                  <p class="fg-cnt-text" @click="handleBotStatus">
-                    <svg-icon
-                      style="cursor: pointer"
-                      :icon-class="
-                        botInfo.status ? 'power-open' : 'power-close'
-                      "
-                    />
-                  </p>
-                  <p
-                    class="base-small-title"
-                    :style="{ fontSize: fontSizeMana.fgCntTip + 'px' }"
-                  >
-                    全局开关
-                  </p>
-                </div>
-              </el-col>
-              <el-col :span="8" style="line-height: 25px">
-                <div class="fg-cnt-item">
-                  <p
-                    class="fg-cnt-text"
-                    :style="{ fontSize: fontSizeMana.fgCntText + 'px' }"
-                  >
-                    {{ botInfo.group_count }}
-                  </p>
-                  <p
-                    class="base-small-title"
-                    :style="{ fontSize: fontSizeMana.fgCntTip + 'px' }"
-                  >
-                    群组数量
-                  </p>
-                </div>
-              </el-col>
-            </el-row>
+        </el-image>
+
+        <!-- 昵称 -->
+        <h2 class="mt-4 text-xl font-bold text-pink-600 anime-font">
+          {{ botInfo.nickname }}
+        </h2>
+
+        <!-- ID -->
+        <div
+          class="mt-2 px-3 py-1 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-full text-xs font-medium shadow-md"
+        >
+          ID: {{ botInfo.self_id }}
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="w-full mt-6 grid grid-cols-3 divide-x divide-pink-100">
+          <!-- 好友数量 -->
+          <div class="text-center">
+            <p class="text-xl font-bold text-blue-500">
+              {{ botInfo.friend_count }}
+            </p>
+            <p class="text-xxs text-gray-500 mt-1">好友数量</p>
           </div>
-        </el-col>
-      </el-row>
+
+          <!-- 开关 -->
+          <div
+            class="switch-border text-center cursor-pointer"
+            @click="handleBotStatus"
+          >
+            <svg-icon
+              :icon-class="botInfo.status ? 'power-open' : 'power-close'"
+              class="text-lg"
+              :class="botInfo.status ? 'text-green-400' : 'text-red-400'"
+            />
+            <p class="text-xxs text-gray-500 mt-2">全局开关</p>
+          </div>
+
+          <!-- 群组数量 -->
+          <div class="text-center">
+            <p class="text-xl font-bold text-green-500">
+              {{ botInfo.group_count }}
+            </p>
+            <p class="text-xxs text-gray-500 mt-1">群组数量</p>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="base-info" :style="{ height: computedHeight + 'px' }">
-      <p
-        class="left-title-text"
-        :style="{ fontSize: fontSizeMana.titleText + 'px' }"
-      >
+
+    <!-- 插件管理区域 -->
+    <div class="plugin-section" :style="{ height: pluginSectionHeight + 'px' }">
+      <h3 class="text-md font-bold text-purple-600 mb-4 flex items-center">
+        <svg-icon icon-class="plugin" class="mr-2 text-purple-400" />
         Bot插件管理
-      </p>
-      <div class="bot-manage" :style="{ height: computedHeight - 90 + 'px' }">
-        <el-row v-if="this.$store.state.botType == 'zhenxun'">
-          <el-col :span="6">
-            <span>全局禁用被动</span>
-          </el-col>
-          <el-col :span="18">
+      </h3>
+
+      <div class="space-y-6">
+        <!-- 全局禁用被动 -->
+        <div
+          v-if="$store.state.botType == 'zhenxun'"
+          class="grid grid-cols-12 gap-4 items-center"
+        >
+          <label class="col-span-3 text-xs text-gray-600">全局禁用被动</label>
+          <div class="col-span-9">
             <el-select
               v-model="postData.blockTasks"
               multiple
-              placeholder=""
-              style="width: 100%"
+              placeholder="请选择要禁用的被动"
+              class="w-full"
+              popper-class="cute-select-dropdown"
             >
               <el-option
                 v-for="v in botModuleData.blockTasks"
@@ -121,18 +97,19 @@
                 :key="v.module"
               ></el-option>
             </el-select>
-          </el-col>
-        </el-row>
-        <el-row style="margin-top: 30px">
-          <el-col :span="6">
-            <span>全局禁用插件</span>
-          </el-col>
-          <el-col :span="18">
+          </div>
+        </div>
+
+        <!-- 全局禁用插件 -->
+        <div class="grid grid-cols-12 gap-4 items-center">
+          <label class="col-span-3 text-xs text-gray-600">全局禁用插件</label>
+          <div class="col-span-9">
             <el-select
               v-model="postData.blockPlugins"
-              placeholder=""
               multiple
-              style="width: 100%"
+              placeholder="请选择要禁用的插件"
+              class="w-full"
+              popper-class="cute-select-dropdown"
             >
               <el-option
                 v-for="n in botModuleData.blockPlugins"
@@ -141,31 +118,29 @@
                 :key="n.module"
               ></el-option>
             </el-select>
-          </el-col>
-        </el-row>
-        <el-row style="margin-top: 30px">
-          <MyButton @click="clickBotManage" text="应用" class="apply-button" />
-        </el-row>
+          </div>
+        </div>
+
+        <!-- 应用按钮 -->
+        <button
+          @click="clickBotManage"
+          class="w-full py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 text-sm"
+        >
+          应用设置
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getFontSize, getConvertSize } from "@/utils/utils"
-import MyButton from "../ui/MyButton.vue"
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
+
 export default {
   name: "LeftInfo",
-  components: { MyButton },
+  components: { SvgIcon },
   data() {
     return {
-      fontSizeMana: {
-        nameText: 30,
-        accountText: 15,
-        fgCntText: 25,
-        fgCntTip: 13,
-        titleText: 17,
-      },
       botModuleData: {
         blockPlugins: [],
         blockTasks: [],
@@ -175,43 +150,37 @@ export default {
         blockTasks: [],
       },
       botInfo: {},
-      avaImageSize: 100,
-      baseHeight: 0,
+      pluginSectionHeight: 0,
     }
-  },
-  computed: {
-    computedHeight() {
-      return this.baseHeight
-    },
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
-    this.handleResize()
     this.getBotModuleData()
+    this.calculateHeights()
+    window.addEventListener("resize", this.calculateHeights)
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.calculateHeights)
   },
   methods: {
-    handleResize() {
-      this.initFontSize()
-      this.avaImageSize = getConvertSize(100)
+    calculateHeights() {
       this.$nextTick(() => {
-        this.baseHeight =
-          this.$refs.leftInfo.offsetHeight -
-          this.$refs.avaInfo.offsetHeight -
-          20
+        const container = this.$refs.leftInfoContainer
+        if (container) {
+          const containerHeight = container.clientHeight
+          const avatarSection = container.querySelector(".avatar-section")
+          const avatarHeight = avatarSection ? avatarSection.clientHeight : 0
+          const padding = 16 // 根据实际padding调整
+
+          this.pluginSectionHeight = containerHeight - avatarHeight - padding
+        }
       })
-    },
-    initFontSize() {
-      this.fontSizeMana.nameText = getFontSize(30)
-      this.fontSizeMana.accountText = getFontSize(20)
-      this.fontSizeMana.fgCntText = getFontSize(25)
-      this.fontSizeMana.fgCntTip = getFontSize(16)
-      this.fontSizeMana.titleText = getFontSize(17)
     },
     handleBotStatus() {
       var loading = this.getLoading(".left-info")
+
       this.postRequest(`${this.$root.prefix}/main/change_bot_status`, {
         bot_id: this.botInfo.self_id,
         status: !this.botInfo.status,
@@ -231,6 +200,7 @@ export default {
     },
     getBotModuleData() {
       var loading = this.getLoading(".left-info")
+
       this.getRequest(`${this.$root.prefix}/main/get_bot_block_module`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
@@ -252,6 +222,7 @@ export default {
     },
     clickBotManage() {
       var loading = this.getLoading(".left-info")
+
       this.postRequest(`${this.$root.prefix}/main/update_bot_manage`, {
         bot_id: this.botInfo.self_id,
         block_plugins: this.postData.blockPlugins,
@@ -270,269 +241,40 @@ export default {
       })
     },
   },
-  destroyed() {
-    window.removeEventListener("resize", this.handleResize)
-  },
 }
 </script>
 
-<style lang="scss" scoped>
-.left-info {
-  height: 100%;
-  background-color: var(--bg-color);
-  overflow-x: hidden;
-  padding: 20px;
-  text-align: left;
-}
+<style scoped>
+/* 自定义字体 */
+@import url("https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&display=swap");
 
-.left-info::-webkit-scrollbar {
-  width: 5px;
-  height: 1px;
-}
-.left-info::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background: var(--scrollbar-thumb-color);
-}
-.left-info::-webkit-scrollbar-track {
-  border-radius: 10px;
-  background: var(--scrollbar-track-color);
-}
-
-.top-text {
-  background-color: var(--bg-color-secondary);
-  border-radius: 8px;
-  padding: 20px;
-  overflow: hidden;
-}
-
-.top-text-left {
-  float: left;
-  width: 70%;
-}
-
-.top-text-right {
-  width: 30%;
-  float: right;
-  position: relative;
-  top: 10px;
-  margin-left: -20px;
-  img {
-    width: 100%;
-  }
-}
-
-.head-text {
-  color: var(--text-color);
-  font-weight: bold;
-  font-family: Microsoft YaHei;
-}
-
-.head-tip {
-  margin-top: 5px;
-  color: var(--text-color-secondary);
-}
-
-.bot-list {
-  margin-top: 20px;
-  background-color: var(--bg-color-secondary);
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.bot-item {
-  margin-top: 15px;
-  position: relative;
-  height: 70px;
-  border-radius: 5px;
-  box-shadow: var(--el-box-shadow-lighter);
-  background-color: var(--bg-color-card);
-  overflow: hidden;
-}
-
-.bot-avatar {
-  position: relative;
-  height: 100%;
-  float: left;
-}
-
-.bot-avatar-pic {
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  position: relative;
-  top: 12px;
-  left: 15px;
-}
-
-.bot-name {
-  position: absolute;
-  left: 70px;
-  top: 13px;
-  font-weight: bold;
-  color: var(--text-color);
-}
-
-.bot-id {
-  position: absolute;
-  left: 70px;
-  top: 35px;
-  color: var(--text-color-secondary);
-}
-
-.bot-status {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: #ccc;
-  position: absolute;
-  right: 20px;
-  top: 28px;
-}
-
-.green {
-  background-color: #67c23a;
-}
-
-.red {
-  background-color: #f56c6c;
-}
-
-::v-deep .el-divider--horizontal {
-  margin: 50px 0;
-}
-
-.left-title-text {
-  color: #9f9fa1;
-  margin-bottom: 30px;
-}
-
-.base-small-title {
-  color: #afb2b9;
-  font-size: 13px;
-  margin-top: 10px;
-}
-
-.ava-info {
-  align-items: center;
-  padding: auto;
+.switch-border {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-color-secondary);
-  border-radius: 10px;
-  padding: 30px;
-
-  .ava-img {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    margin-top: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  }
-
-  .nickname {
-    font-size: 30px;
-    font-weight: 500;
-    margin-top: 10px;
-  }
-  .account {
-    color: #ffffff;
-    background-color: #5c87ff;
-    padding: 6px;
-    margin-top: 13px;
-    border-radius: 5px;
-  }
-
-  .fg-cnt {
-    margin-top: 45px;
-    width: 100%;
-
-    .fg-cnt-item {
-      text-align: center;
-      .fg-cnt-text {
-        font-size: 25px;
-      }
-    }
-  }
+  align-items: center;
+  margin-top: 5px;
 }
 
-.base-info {
-  padding: 0 50px;
-  box-sizing: border-box;
-  border-radius: 10px;
-  background-color: var(--bg-color-secondary);
-  margin-top: 20px;
-  padding: 30px;
-  height: 370px;
-
-  .bot-manage {
-    color: #939395;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  ::v-deep .el-input__inner {
-      background-color: var(--el-fill-color-blank);
-      color: var(--el-text-color-primary);
-      &:focus {
-        border-color: var(--primary-color);
-      }
-  }
-
-  ::v-deep .el-select-dropdown {
-      background-color: var(--bg-color-overlay);
-      border: 1px solid var(--border-color-light);
-  }
-  ::v-deep .el-select-dropdown__item {
-      color: var(--text-color-regular);
-  }
-  ::v-deep .el-select-dropdown__item.hover,
-  ::v-deep .el-select-dropdown__item:hover {
-      background-color: var(--bg-color-secondary);
-      color: var(--primary-color);
-  }
-  ::v-deep .el-select-dropdown__item.selected {
-      background-color: var(--bg-color-secondary);
-      color: var(--primary-color);
-      font-weight: bold;
-  }
-  ::v-deep .el-tag {
-      background-color: var(--bg-color);
-      color: var(--text-color-regular);
-      border-color: var(--border-color-light);
-  }
-  ::v-deep .el-tag .el-tag__close {
-      color: var(--text-color-secondary);
-      &:hover {
-         background-color: var(--primary-color);
-         color: white;
-      }
-  }
-
-  /deep/ .el-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  ::v-deep .el-divider--horizontal {
-    margin: 0;
-  }
+.left-info-container {
+  @apply flex flex-col h-full p-4 bg-pink-50 overflow-hidden;
+  gap: 16px; /* 设置两个部分之间的间距 */
 }
 
-.apply-button ::v-deep button {
-  background-color: var(--el-color-primary) !important;
-  border-color: var(--el-color-primary) !important;
-  color: #FFFFFF !important;
+.avatar-section {
+  @apply bg-white rounded-xl p-6 shadow-lg;
+  flex-shrink: 0; /* 防止压缩 */
 }
-.apply-button ::v-deep button span {
-    color: #FFFFFF !important;
+
+.plugin-section {
+  @apply bg-white rounded-xl p-6 shadow-lg overflow-y-auto;
+  flex-grow: 1; /* 填充剩余空间 */
+  min-height: 300px; /* 设置最小高度 */
 }
-.apply-button ::v-deep button:hover {
-  background-color: var(--el-color-primary-light-3) !important;
-  border-color: var(--el-color-primary-light-3) !important;
-}
-.apply-button ::v-deep button:active {
-  background-color: var(--el-color-primary-dark-2) !important;
-  border-color: var(--el-color-primary-dark-2) !important;
+
+/* 使用全局字体变量 */
+.anime-font {
+  font-family: "Mochiy Pop P One", sans-serif;
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-dense);
 }
 </style>

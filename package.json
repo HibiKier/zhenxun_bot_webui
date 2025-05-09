@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.3.0",
     "ansi_up": "^5.2.1",
     "async": "^3.2.3",
     "axios": "0.26.1",
@@ -19,6 +20,7 @@
     "gsap": "^3.12.7",
     "jshint": "^2.13.6",
     "jsonlint": "^1.6.3",
+    "lodash": "^4.17.21",
     "node-sass": "^9.0.0",
     "qs": "^6.11.1",
     "sass-loader": "^16.0.0",
@@ -37,8 +39,11 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "autoprefixer": "^9.8.8",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "postcss": "^7.0.39",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {

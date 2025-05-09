@@ -1,19 +1,24 @@
 <template>
-  <div class="base">
-    <el-row :gutter="1">
-      <el-col :span="6">
-        <div class="base-info">
-          <LeftInfo :style="{ height: computedHeight + 'px' }" />
+  <div
+    class="base bg-gradient-to-br from-pink-100 to-purple-100"
+    :style="{ height: computedHeight + 'px' }"
+  >
+    <el-row :gutter="1" class="h-full">
+      <el-col :xs="24" :sm="24" :md="8" :lg="6" class="h-full">
+        <div class="base-info h-full pr-0 md:pr-0">
+          <LeftInfo class="h-full" />
         </div>
       </el-col>
-      <el-col :span="12">
-        <div class="main-info">
-          <MidInfo :style="{ height: computedHeight + 'px' }" />
+
+      <el-col :xs="24" :sm="24" :md="16" :lg="12" class="h-full">
+        <div class="main-info h-full px-0 md:px-0">
+          <MidInfo class="h-full" />
         </div>
       </el-col>
-      <el-col :span="6">
-        <div class="config-info">
-          <RightInfo :style="{ height: computedHeight + 'px' }" />
+
+      <el-col :xs="24" :sm="24" :md="24" :lg="6" class="h-full">
+        <div class="config-info h-full pl-0 md:pl-0">
+          <RightInfo class="h-full" />
         </div>
       </el-col>
     </el-row>
@@ -48,7 +53,7 @@ export default {
       this.windowHeight = window.innerHeight
     },
   },
-  destroyed() {
+  beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
   },
 }
@@ -56,30 +61,57 @@ export default {
 
 <style lang="scss" scoped>
 .base {
-  background-color: var(--bg-color);
-  height: 100%;
-  width: 100%;
+  @apply transition-all duration-300;
+  overflow: auto;
 }
 
 .base-info {
-  background-color: var(--bg-color);
-  height: 100%;
-  min-width: 367px;
+  @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
+  border: 1px solid rgba(255, 192, 203, 0.3);
 }
 
 .main-info {
-  height: 100%;
-  background-color: var(--bg-color);
-}
-
-.test {
-  ::v-deep .el-divider--vertical {
-    height: 100%;
-    margin-left: 40px;
-  }
+  @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
+  border: 1px solid rgba(216, 180, 254, 0.3);
 }
 
 .config-info {
-  background-color: var(--bg-color);
+  @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
+  border: 1px solid rgba(255, 192, 203, 0.3);
+}
+
+/* 自定义二次元风格阴影 */
+.shadow-cute {
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.1),
+    0 2px 5px rgba(192, 132, 252, 0.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .el-col {
+    &:nth-child(1),
+    &:nth-child(2),
+    &:nth-child(3) {
+      @apply h-auto;
+    }
+  }
+
+  .base-info,
+  .main-info,
+  .config-info {
+    @apply mb-2;
+  }
+}
+
+@media (max-width: 768px) {
+  .el-row {
+    @apply flex-col;
+  }
+
+  .base-info,
+  .main-info,
+  .config-info {
+    @apply px-2;
+  }
 }
 </style>

@@ -85,7 +85,11 @@ export default new Vuex.Store({
     CLEAR_CHAT(state, chatId) {
       let chatObj = { ...state.chatObj }
       if (chatId) {
-        chatObj[chatId] = []
+        chatObj[chatId] = {
+          unreadCount: 0,
+          msgList: [],
+          time: 0,
+        }
       } else {
         chatObj = {}
       }

@@ -1,295 +1,301 @@
 <template>
-  <div class="right-info" ref="rightInfo">
-    <div class="base-info" ref="baseInfo">
-      <p
-        class="base-title"
-        :style="{ fontSize: fontSizeMana.titleText + 'px' }"
-      >
-        基础信息
-      </p>
-      <div class="base-border">
-        <div class="base-info-box">
-          <div class="base-info-box-item">
-            <p
-              class="base-info-item-text"
-              :style="{ fontSize: fontSizeMana.botConfig + 'px' }"
-            >
-              {{ botInfo.connect_count }}
-            </p>
-            <p
-              class="base-small-title"
-              :style="{ fontSize: fontSizeMana.botConfigTip + 'px' }"
-            >
-              累计登录
-            </p>
-          </div>
-          <el-divider direction="vertical" />
-          <div class="base-info-box-item">
-            <p
-              class="base-info-item-text"
-              :style="{ fontSize: fontSizeMana.botConfig + 'px' }"
-            >
-              {{ botInfo.connectTime }}
-            </p>
-            <p
-              class="base-small-title"
-              :style="{ fontSize: fontSizeMana.botConfigTip + 'px' }"
-            >
-              连接时长
-            </p>
-          </div>
+  <div class="right-info bg-pink-50 p-2 md:p-4 h-full" ref="rightInfo">
+    <!-- 机器人信息卡片 - 三行垂直布局 -->
+    <div
+      class="base-info bg-white rounded-xl p-3 shadow-md mb-4 border-2 border-pink-200"
+    >
+      <div class="space-y-2">
+        <!-- 累计登录 -->
+        <div class="flex items-center justify-between">
+          <p
+            class="text-xs font-semibold text-pink-500 uppercase tracking-wider"
+          >
+            累计登录
+          </p>
+          <p class="text-base font-bold text-purple-700">
+            {{ botInfo.connect_count }}
+          </p>
         </div>
-        <el-divider />
-        <div class="base-info-box" style="margin-top: 18px">
-          <div class="base-info-box-item" style="width: 100%">
-            <p
-              class="base-info-item-text"
-              :style="{ fontSize: fontSizeMana.botConfig + 'px' }"
-            >
-              {{ botInfo.connect_date }}
-            </p>
-            <p
-              class="base-small-title"
-              :style="{ fontSize: fontSizeMana.botConfigTip + 'px' }"
-            >
-              连接日期
-            </p>
-          </div>
+
+        <!-- 连接时长 -->
+        <div class="flex items-center justify-between">
+          <p
+            class="text-xs font-semibold text-pink-500 uppercase tracking-wider"
+          >
+            连接时长
+          </p>
+          <p class="text-base font-bold text-purple-700">
+            {{ botInfo.connectTime }}
+          </p>
+        </div>
+
+        <!-- 连接日期 -->
+        <div class="flex items-center justify-between">
+          <p
+            class="text-xs font-semibold text-pink-500 uppercase tracking-wider"
+          >
+            连接日期
+          </p>
+          <p class="text-base font-bold text-purple-700">
+            {{ botInfo.connect_date }}
+          </p>
         </div>
       </div>
     </div>
-    <div :style="{ height: computedChartBorderHeight + 'px' }">
+
+    <!-- 图表区域 - 自适应高度 -->
+    <div class="chart-area" :style="{ height: computedChartAreaHeight + 'px' }">
+      <!-- 活跃群聊图表 -->
       <div
-        class="base-border"
-        :style="{
-          marginTop: '18px',
-          fontSize: fontSizeMana.chartTip + 'px',
-          height: chartDivHeight + 'px',
-        }"
+        class="active-group chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
       >
-        <div class="active-group">
-          <div style="height: 40px">
-            <p
-              class="base-title"
-              :style="{
-                fontSize: fontSizeMana.titleText + 'px',
-                marginTop: '5px',
-                float: 'left',
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between mb-3"
+        >
+          <p
+            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
+          >
+            <i
+              class="fas fa-users mr-1 text-pink-500 animate-bounce text-sm"
+            ></i>
+            活跃群组
+          </p>
+
+          <div ref="groupType" class="flex flex-wrap gap-1">
+            <button
+              v-for="type in timeTypes"
+              :key="'group' + type.value"
+              @click="clickGroupType(type.value)"
+              class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
+              :class="{
+                'bg-purple-500 text-white shadow-sm':
+                  selectGroupType === type.value,
+                'bg-pink-100 text-pink-600 hover:bg-pink-200':
+                  selectGroupType !== type.value,
               }"
             >
-              活跃群聊
-            </p>
-            <div class="btn-group">
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'all' }"
-                @click="clickGroupType('all')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >ALL</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'day' }"
-                @click="clickGroupType('day')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >DAY</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'week' }"
-                @click="clickGroupType('week')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >WEEK</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'month' }"
-                @click="clickGroupType('month')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >MONTH</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectGroupType == 'year' }"
-                @click="clickGroupType('year')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >YEAR</el-button
-              >
-            </div>
-          </div>
-          <div class="group-chart">
-            <div
-              ref="groupChart"
-              class="base-chart"
-              :style="{ height: computedChartHeight + 'px' }"
-            ></div>
+              {{ type.label }}
+            </button>
           </div>
         </div>
+
+        <div
+          ref="groupChart"
+          class="w-full"
+          :style="{ height: computedChartHeight + 'px' }"
+        ></div>
       </div>
+
+      <!-- 热门插件图表 -->
       <div
-        class="base-border"
-        :style="{
-          marginTop: '18px',
-          fontSize: fontSizeMana.chartTip + 'px',
-          height: chartDivHeight + 'px',
-        }"
+        class="hot-plugin chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
       >
-        <div class="hot-plugin">
-          <div style="height: 40px">
-            <p
-              class="base-title"
-              :style="{
-                fontSize: fontSizeMana.titleText + 'px',
-                marginTop: '5px',
-                float: 'left',
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between mb-3"
+        >
+          <p
+            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
+          >
+            <i class="fas fa-plug mr-1 text-pink-500 animate-pulse text-sm"></i>
+            热门插件
+          </p>
+
+          <div class="flex flex-wrap gap-1">
+            <button
+              v-for="type in timeTypes"
+              :key="'plugin' + type.value"
+              @click="clickHotPluginType(type.value)"
+              class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
+              :class="{
+                'bg-purple-500 text-white shadow-sm':
+                  selectHotPluginType === type.value,
+                'bg-pink-100 text-pink-600 hover:bg-pink-200':
+                  selectHotPluginType !== type.value,
               }"
             >
-              热门插件
-            </p>
-            <div class="btn-group">
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'all' }"
-                @click="clickHotPluginType('all')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >ALL</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'day' }"
-                @click="clickHotPluginType('day')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >DAY</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'week' }"
-                @click="clickHotPluginType('week')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >WEEK</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'month' }"
-                @click="clickHotPluginType('month')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >MONTH</el-button
-              >
-              <el-button
-                type="text"
-                :class="{ 'select-query-type': selectHotPluginType == 'year' }"
-                @click="clickHotPluginType('year')"
-                :style="{ fontSize: fontSizeMana.chartTip + 'px' }"
-                >YEAR</el-button
-              >
-            </div>
-          </div>
-          <div>
-            <div
-              ref="hotPluginChart"
-              class="base-chart"
-              :style="{ height: computedChartHeight + 'px' }"
-            ></div>
+              {{ type.label }}
+            </button>
           </div>
         </div>
+
+        <div
+          ref="hotPluginChart"
+          class="w-full h-full min-h-[200px]"
+          :style="{ height: computedChartHeight + 'px' }"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getFontSize, getConvertSize } from "@/utils/utils"
+import { debounce, cloneDeep } from "lodash"
 export default {
   name: "RightInfo",
   data() {
     return {
-      fontSizeMana: {
-        botConfig: 25,
-        botConfigTip: 13,
-        titleText: 20,
-        chartTip: 15,
-      },
-      chartHeight: 0,
-      chartDivHeight: 0,
-      chartBorderHeight: 0,
-      tableData: [
-        { date: "2025/10/3", ip: "0.0.0.0", time: "11:45:14" },
-        { date: "2025/10/2", ip: "127.0.0.1", time: "11:45:14" },
+      chartHeight: 100,
+      timeTypes: [
+        { label: "全部", value: "all" },
+        { label: "日", value: "day" },
+        { label: "周", value: "week" },
+        { label: "月", value: "month" },
+        { label: "年", value: "year" },
       ],
-      botInfo: null,
-      botConfig: {},
+      chartAreaHeight: 0,
+      botInfo: {
+        connect_count: 42,
+        connectTime: "12:34:56",
+        connect_date: "2023-10-15",
+        connect_time: Date.now() / 1000 - 45296, // 示例数据
+        self_id: "123456",
+      },
       selectGroupType: "all",
       selectHotPluginType: "all",
       groupChart: null,
       hotPluginChart: null,
-      groupCntInterval: null, //活跃数量定时器
+      groupCntInterval: null,
+      timer: null,
       chartOpt: {
         grid: {
-          top: "10%", // 控制数据表距离画布顶部的距离
-          bottom: "20%", // 控制数据表距离画布底部的距禿
-          left: "15%", // 控制数据表距离画布左侧的距离
-          right: "15%", // 控制数据表距离画布右侧的距离
+          top: "15%",
+          bottom: "15%",
+          left: "20%",
+          right: "20%",
         },
-        tooltip: {}, // 工具提示组件
+        tooltip: {
+          trigger: "item",
+          formatter: (params) => `
+    <div class="chart-tooltip">
+      <div class="tooltip-title">${params.name}</div>
+      <div class="tooltip-value">${params.value}次</div>
+    </div>
+  `,
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          borderColor: "#FF9FF3", // 改为粉红色
+          borderWidth: 2, // 加粗边框
+          padding: [8, 12],
+          extraCssText:
+            "box-shadow: 0 4px 20px rgba(255, 159, 243, 0.3); border-radius: 8px;",
+        },
         xAxis: {
           type: "category",
-          name: "",
-          data: null,
-          axisLabel: {
-            interval: 0, //强制显示所有标签
-            rotate: 10,
+          axisLine: {
+            lineStyle: {
+              color: "#FF9FF3",
+              width: 2,
+            },
           },
-        }, // X轴
-        yAxis: { type: "value" }, // Y轴
+          axisTick: {
+            alignWithLabel: true,
+            lineStyle: {
+              color: "#f3e8ff",
+            },
+          },
+          axisLabel: {
+            interval: 0,
+            rotate: 30,
+            color: "#9333ea",
+            fontSize: 11,
+            fontFamily: "Microsoft YaHei, sans-serif",
+            formatter: (value) =>
+              value.length > 6 ? value.slice(0, 6) + "..." : value,
+          },
+          axisPointer: {
+            type: "shadow",
+            label: {
+              backgroundColor: "#a855f7",
+            },
+          },
+        },
+        yAxis: {
+          type: "value",
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#FF9FF3",
+              width: 2,
+            },
+          },
+          axisTick: {
+            lineStyle: {
+              color: "#f3e8ff",
+            },
+          },
+          axisLabel: {
+            color: "#9333ea",
+            fontSize: 11,
+            fontFamily: "Microsoft YaHei, sans-serif",
+          },
+          splitLine: {
+            lineStyle: {
+              color: "#fae8ff",
+              type: "dashed",
+            },
+          },
+        },
         series: [
           {
-            type: "bar", // 柱状图系列
-            barWidth: "40%", // 柱子宽度
-            label: { show: true }, // 标签展示
+            type: "bar",
+            barWidth: "65%",
+            barGap: "30%",
+            barCategoryGap: "40%",
+            label: {
+              show: true,
+              position: "top",
+              color: "#9333ea",
+              fontSize: 10,
+              fontFamily: "Microsoft YaHei, sans-serif",
+              formatter: (params) => (params.value > 0 ? params.value : ""),
+            },
             itemStyle: {
-              //通常情况下：
-              normal: {
-                //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
-                color: (params) => {
-                  var colorList = [
-                    "#855BD7",
-                    "#4B6FB8",
-                    "#0F6E43",
-                    "#B69C2B",
-                    "#2588BB",
-                    "#BB612D",
-                    "#1D9394",
-                    "#C24545",
-                  ]
-                  return colorList[params.dataIndex]
-                },
+              color: (params) => {
+                const colors = [
+                  "rgba(236, 72, 153, 0.8)",
+                  "rgba(168, 85, 247, 0.8)",
+                  "rgba(244, 114, 182, 0.8)",
+                  "rgba(249, 168, 212, 0.8)",
+                  "rgba(216, 180, 254, 0.8)",
+                ]
+                return colors[params.dataIndex % colors.length]
+              },
+              borderRadius: [6, 6, 0, 0],
+              shadowColor: "rgba(236, 72, 153, 0.3)",
+              shadowBlur: 8,
+              shadowOffsetY: 3,
+            },
+            emphasis: {
+              itemStyle: {
+                shadowColor: "rgba(236, 72, 153, 0.5)",
+                shadowBlur: 12,
+                shadowOffsetY: 6,
+              },
+              label: {
+                fontWeight: "bold",
+                color: "#7e22ce",
               },
             },
-            emphasis: { focus: "series" }, // 高亮效果
-            data: null, // 数据源
           },
         ],
+        // 添加动画效果
+        animationDuration: 1200,
+        animationEasing: "elasticOut",
+        animationDelay: (idx) => idx * 100,
       },
     }
   },
   computed: {
+    computedChartAreaHeight() {
+      if (!this.chartAreaHeight) {
+        this.calculateHeights()
+      }
+      return this.chartAreaHeight
+    },
     computedChartHeight() {
       if (!this.chartHeight) {
-        this.handleResize()
+        this.calculateHeights()
       }
       return this.chartHeight
-    },
-    computedChartDivHeight() {
-      if (!this.chartDivHeight) {
-        this.handleResize()
-      }
-      return this.chartDivHeight
-    },
-    computedChartBorderHeight() {
-      if (!this.chartBorderHeight) {
-        this.handleResize()
-      }
-      return this.chartBorderHeight
     },
   },
   created() {
@@ -299,70 +305,97 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
-    this.handleResize()
-    if (this.botInfo) {
-      if (this.botInfo.connect_time) {
-        this.botInfo.connectTime = "00:00"
-        this.conTime = new Date().getTime() / 1000
-        if (!this.timer) {
-          clearTimeout(this.timer)
-        }
-        this.timer = setInterval(() => {
-          const time = Math.floor(new Date().getTime() / 1000)
-          this.botInfo.connectTime = this.formateSeconds(
-            time - this.botInfo.connect_time
-          )
-          this.$forceUpdate()
-        }, 1000)
-      }
-    }
-    this.groupChart = this.$echarts.init(this.$refs.groupChart)
-    this.hotPluginChart = this.$echarts.init(this.$refs.hotPluginChart)
-    this.getActiveGroupData()
-    this.getHotPlugin()
-    this.groupCntInterval = setInterval(() => {
-      this.getActiveGroupData(this.selectGroupType, true)
-    }, 25000)
+    this.initCharts()
+    this.setupResizeListener()
+    this.startTimers()
   },
-  destroyed() {
-    window.removeEventListener("resize", this.handleResize)
-    if (this.groupCntInterval) {
-      clearInterval(this.groupCntInterval)
-    }
+  beforeDestroy() {
+    this.cleanup()
   },
   methods: {
-    handleResize() {
-      this.initFontSize()
+    initCharts() {
+      this.groupChart = this.$echarts.init(this.$refs.groupChart)
+      this.hotPluginChart = this.$echarts.init(this.$refs.hotPluginChart)
+      this.getActiveGroupData()
+      this.getHotPlugin()
+    },
+    calculateHeights() {
       this.$nextTick(() => {
-        setTimeout(() => {
-          if (this.$refs.rightInfo && this.$refs.baseInfo) {
-            this.chartBorderHeight =
-              this.$refs.rightInfo.offsetHeight -
-              this.$refs.baseInfo.offsetHeight -
-              18
-            this.chartDivHeight = (this.chartBorderHeight - 16) / 2
-            this.chartHeight = this.chartDivHeight - 82
-            if (this.groupChart) {
-              this.groupChart.resize()
-            }
-            if (this.hotPluginChart) {
-              this.hotPluginChart.resize()
-            }
+        if (this.$refs.rightInfo) {
+          const infoHeight =
+            this.$refs.rightInfo.querySelector(".base-info").offsetHeight
+          this.chartAreaHeight =
+            this.$refs.rightInfo.offsetHeight - infoHeight - 48 // 减去padding和margin
+          this.chartAreaHeight = Math.max(this.chartAreaHeight, 300)
+          if (this.$isMobile()) {
+            this.chartAreaHeight = Math.max(this.chartAreaHeight, 400)
           }
-        }, 500)
+          this.chartHeight =
+            this.chartAreaHeight / 2 - this.$refs.groupType.offsetHeight - 20
+          this.$nextTick(() => {
+            this.groupChart.resize()
+            this.hotPluginChart.resize()
+          })
+        }
       })
     },
-    initFontSize() {
-      this.fontSizeMana.botConfig = getFontSize(26, 29)
-      this.fontSizeMana.botConfigTip = getFontSize(13, 16)
-      this.fontSizeMana.titleText = getFontSize(15, 18)
-      this.fontSizeMana.chartTip = getFontSize(12, 15)
+
+    setupResizeListener() {
+      const resizeHandler = debounce(() => {
+        this.$nextTick(() => {
+          this.groupChart?.resize()
+          this.hotPluginChart?.resize()
+        })
+      }, 200)
+      window.addEventListener("resize", resizeHandler)
+      this.$once("hook:beforeDestroy", () => {
+        window.removeEventListener("resize", resizeHandler)
+      })
     },
+
+    startTimers() {
+      // 连接时间计时器
+      if (this.botInfo.connect_time) {
+        this.updateConnectTime()
+        this.timer = setInterval(this.updateConnectTime, 1000)
+      }
+
+      // 数据刷新定时器
+      this.groupCntInterval = setInterval(() => {
+        this.getActiveGroupData(this.selectGroupType, true)
+      }, 25000)
+    },
+
+    updateConnectTime() {
+      const now = Math.floor(Date.now() / 1000)
+      this.botInfo.connectTime = this.formatSeconds(
+        now - this.botInfo.connect_time
+      )
+    },
+
+    formatSeconds(seconds) {
+      const h = Math.floor(seconds / 3600)
+        .toString()
+        .padStart(2, "0")
+      const m = Math.floor((seconds % 3600) / 60)
+        .toString()
+        .padStart(2, "0")
+      const s = Math.floor(seconds % 60)
+        .toString()
+        .padStart(2, "0")
+      return `${h}:${m}:${s}`
+    },
+
+    cleanup() {
+      if (this.groupCntInterval) clearInterval(this.groupCntInterval)
+      if (this.timer) clearInterval(this.timer)
+    },
+
     clickGroupType(type) {
       this.selectGroupType = type
       this.getActiveGroupData(type)
     },
+
     getActiveGroupData(date_type, no_loading) {
       if (date_type == "all") {
         date_type = null
@@ -384,7 +417,7 @@ export default {
             if (loading) {
               this.$message.success(resp.info)
             }
-            const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
+            const tmpOpt = cloneDeep(this.chartOpt)
             const group_list = []
             const data = resp.data.map((e) => {
               group_list.push(e.name)
@@ -393,9 +426,11 @@ export default {
                 value: e.chat_num,
               }
             })
-            tmpOpt.xAxis.name = "群聊"
+            tmpOpt.xAxis.name = "群组"
             tmpOpt.xAxis.data = group_list
             tmpOpt.series[0].data = data
+            tmpOpt.series[0].series = "#a855f7"
+
             this.groupChart.setOption(tmpOpt)
           }
         } else {
@@ -408,13 +443,12 @@ export default {
         }
       })
     },
+
     clickHotPluginType(type) {
       this.selectHotPluginType = type
-      if (type == "all") {
-        type = null
-      }
-      this.getHotPlugin(type)
+      this.getHotPlugin(type === "all" ? null : type)
     },
+
     getHotPlugin(date_type) {
       const loading = this.getLoading(".hot-plugin")
       this.getRequest(`${this.$root.prefix}/main/get_hot_plugin`, {
@@ -426,7 +460,7 @@ export default {
             this.$message.warning(resp.info)
           } else {
             this.$message.success(resp.info)
-            const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
+            const tmpOpt = cloneDeep(this.chartOpt)
             const hotPluginList = []
             const data = resp.data.map((e) => {
               hotPluginList.push(e.name)
@@ -446,121 +480,78 @@ export default {
         loading.close()
       })
     },
-    formateSeconds(endTime) {
-      let secondTime = parseInt(endTime) //将传入的秒的值转化为Number
-      let min = 0 // 初始化分
-      let h = 0 // 初始化小时
-      let result = ""
-      if (secondTime > 60) {
-        //如果秒数大于60，将秒数转换成整数
-        min = parseInt(secondTime / 60) //获取分钟，除以60取整数，得到整数分钟
-        secondTime = parseInt(secondTime % 60) //获取秒数，秒数取佘，得到整数秒数
-        if (min > 60) {
-          //如果分钟大于60，将分钟转换成小时
-          h = parseInt(min / 60) //获取小时，获取分钟除以60，得到整数小时
-          min = parseInt(min % 60) //获取小时后取佘的分，获取分钟除以60取佘的分
-        }
-      }
-      result = `${h.toString().padStart(2, "0")}:${min
-        .toString()
-        .padStart(2, "0")}:${secondTime.toString().padStart(2, "0")}`
-      return result
-    },
   },
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .right-info {
-  padding: 0 20px;
-  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #d8b4fe #f5f3ff;
+}
 
-  .base-border {
-    border-radius: 10px;
-    padding: 20px;
-    background-color: var(--bg-color-secondary);
-    box-sizing: border-box;
-  }
-  ::v-deep .el-divider--horizontal {
-    margin: 10px 0;
-  }
+.right-info::-webkit-scrollbar {
+  width: 6px;
+}
 
-  .config-small-title {
-    color: #afb2b9;
-    font-size: 13px;
-  }
+.right-info::-webkit-scrollbar-track {
+  background: #f5f3ff;
+  border-radius: 10px;
+}
 
-  .btn-group {
-    float: right;
-  }
+.right-info::-webkit-scrollbar-thumb {
+  background-color: #d8b4fe;
+  border-radius: 10px;
+}
 
-  .base-title {
-    color: #939395;
-  }
-  .base-chart {
-    width: 100%;
-    height: 298px;
-  }
+.chart-area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-  .active-group {
-    // display: flex;
+.chart-container {
+  flex: 1;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-    .el-button {
-      color: #a3a6af;
-    }
-  }
-  .select-query-type {
-    font-weight: bold;
-    color: #262729;
-  }
-  .hot-plugin {
-    .el-button {
-      color: #a3a6af;
-    }
+.base-info {
+  transition: all 0.3s ease;
+}
+
+.base-info div:not(:last-child) {
+  border-bottom: 1px dashed #f3e8ff;
+  padding-bottom: 8px;
+}
+
+.base-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15);
+}
+
+button {
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+  .right-info {
+    padding: 0.75rem;
   }
 
   .base-info {
-    box-sizing: border-box;
-    border-radius: 10px;
-    background-color: var(--bg-color-secondary);
-    padding: 20px;
+    padding: 0.75rem;
+  }
 
-    .base-border {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    ::v-deep .el-divider--horizontal {
-      margin: 0;
-    }
-
-    .base-info-box {
-      display: flex;
-
-      ::v-deep .el-divider--vertical {
-        margin: 0;
-        height: 73px;
-      }
-
-      .base-info-box-item {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        justify-content: center;
-        width: 150px;
-
-        .base-small-title {
-          color: #aaacb3;
-        }
-
-        .base-info-item-text {
-          font-size: 25px;
-          margin-bottom: 10px;
-        }
-      }
-    }
+  .chart-container {
+    padding: 0.75rem;
   }
 }
 </style>

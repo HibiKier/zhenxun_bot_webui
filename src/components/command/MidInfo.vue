@@ -1,301 +1,120 @@
 <template>
-  <div class="mid-info" ref="midInfo">
-    <div class="top-border" ref="topBorder">
-      <div class="head">
-        <p
-          class="head-text"
-          :style="{ fontSize: fontSizeMana.headText + 'px' }"
+  <div ref="midInfo" class="mid-info text-gray-800 p-4 flex flex-col h-full">
+    <!-- 消息接收区域 -->
+    <div
+      class="message-area bg-white rounded-xl shadow-md p-4 mb-4"
+      :style="{ height: areaHeight + 'px' }"
+    >
+      <div class="title-box flex items-center mb-3">
+        <p class="text-md font-bold text-purple-600 flex items-center">
+          <span class="mr-2">(◕‿◕✿)</span>消息接收
+        </p>
+        <span class="text-xs text-gray-500 ml-3">
+          勇者结识伙伴，收到的问候，口才+1
+        </span>
+      </div>
+
+      <div
+        class="grid grid-cols-2 md:grid-cols-5 gap-3"
+        :style="{ height: areaHeight - 80 + 'px' }"
+      >
+        <div
+          v-for="(item, key) in progressItems.chat"
+          :key="key"
+          class="flex flex-col p-1 justify-center"
         >
-          一位勇者的磨砺...
-        </p>
-        <p class="head-tip" :style="{ fontSize: fontSizeMana.headTip + 'px' }">
-          挥剑吧，勇者...
-        </p>
+          <div
+            class="progress-container flex-col w-full flex justify-center items-center"
+          >
+            <div
+              class="progress-container w-full flex justify-center items-center"
+            >
+              <el-progress
+                type="circle"
+                :percentage="getPercentageChat(key)"
+                :width="progressWidth"
+                :stroke-width="strokeWidth"
+                :color="item.color"
+                :format="() => String(chCnt[key])"
+                :style="{
+                  '--progress-font-size': fontSize + 'px',
+                  'max-width': '100%',
+                }"
+              />
+            </div>
+            <p
+              class="text-sm font-medium mt-2 text-gray-700 text-center truncate w-full"
+            >
+              {{ item.label }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="ch-count-border" ref="chCountBorder">
-      <div class="title-box">
-        <p
-          class="title-text"
-          :style="{ fontSize: fontSizeMana.titleText + 'px' }"
-        >
-          消息接收
+
+    <!-- 功能调用区域 -->
+    <div
+      class="function-area bg-white rounded-xl shadow-md p-4 mb-4"
+      :style="{ height: areaHeight + 'px' }"
+    >
+      <div class="title-box flex items-center mb-3">
+        <p class="text-md font-bold text-blue-600 flex items-center">
+          <span class="mr-2">(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧</span>功能调用
         </p>
-        <span
-          class="title-tip"
-          :style="{ fontSize: fontSizeMana.titleTip + 'px' }"
-          >勇者结识伙伴，收到的问候，口才+1</span
-        >
+        <span class="text-xs text-gray-500 ml-3">
+          勇者磨砺自身，辛勤的汗水，力量+1
+        </span>
       </div>
-      <div class="ch-count">
-        <el-row :gutter="10" style="margin-left: -25px">
-          <el-col :span="5">
-            <div class="circle-box">
+
+      <div
+        class="grid grid-cols-2 md:grid-cols-5 gap-3"
+        :style="{ height: areaHeight - 80 + 'px' }"
+      >
+        <div
+          v-for="(item, key) in progressItems.chat"
+          :key="key"
+          class="flex flex-col p-1 justify-center"
+        >
+          <div
+            class="progress-container flex-col w-full flex justify-center items-center"
+          >
+            <div
+              class="progress-container w-full flex justify-center items-center"
+            >
+              <!-- 添加 items-center 和 flex-grow -->
               <el-progress
-                color="#4cbeff"
                 type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageChat('num')"
+                :percentage="getPercentageCall(key)"
                 :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(chCnt.num)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                总数
-              </p>
+                :stroke-width="strokeWidth"
+                :color="item.color"
+                :format="() => String(callCnt[key])"
+                :style="{
+                  '--progress-font-size': fontSize + 'px',
+                  'max-width': '100%',
+                }"
+              />
             </div>
-          </el-col>
-          <el-col :span="5">
-            <div class="circle-box">
-              <el-progress
-                color="#5c87ff"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageChat('day')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(chCnt.day)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一日内
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="5">
-            <div class="circle-box">
-              <el-progress
-                color="#af5eff"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageChat('week')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(chCnt.week)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一周内
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="5">
-            <div class="circle-box">
-              <el-progress
-                color="#53ca74"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageChat('month')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(chCnt.month)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一月内
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="4">
-            <div class="circle-box">
-              <el-progress
-                color="#f97d6e"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageChat('year')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(chCnt.year)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一年内
-              </p>
-            </div>
-          </el-col>
-        </el-row>
+            <p
+              class="text-sm font-medium mt-2 text-gray-700 text-center truncate w-full"
+            >
+              {{ item.label }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="ch-count-border" ref="countBorder">
-      <div class="title-box">
-        <p
-          class="title-text"
-          :style="{ fontSize: fontSizeMana.titleText + 'px' }"
-        >
-          功能调用
-        </p>
-        <span
-          class="title-tip"
-          :style="{ fontSize: fontSizeMana.titleTip + 'px' }"
-          >勇者磨砺自身，辛勤的汗水，力量+1</span
-        >
-      </div>
-      <div class="ch-count">
-        <el-row :gutter="10" style="margin-left: -25px">
-          <el-col :span="5">
-            <div class="circle-box">
-              <el-progress
-                color="#4cbeff"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageCall('num')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(callCnt.num)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                总数
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="5">
-            <div class="circle-box">
-              <el-progress
-                color="#5c87ff"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageCall('day')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(callCnt.day)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一日内
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="5">
-            <div class="circle-box">
-              <el-progress
-                color="#af5eff"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageCall('week')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(callCnt.week)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一周内
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="5">
-            <div class="circle-box">
-              <el-progress
-                color="#53ca74"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageCall('month')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(callCnt.month)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一月内
-              </p>
-            </div>
-          </el-col>
-          <el-col :span="4">
-            <div class="circle-box">
-              <el-progress
-                color="#f97d6e"
-                type="circle"
-                :stroke-width="10"
-                :percentage="getPercentageCall('year')"
-                :width="progressWidth"
-                :height="progressWidth"
-                :format="
-                  () => {
-                    return String(callCnt.year)
-                  }
-                "
-              >
-              </el-progress>
-              <p
-                class="ch-count-text"
-                :style="{ fontSize: fontSizeMana.countText + 'px' }"
-              >
-                一年内
-              </p>
-            </div>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-    <div class="chart-border" :style="{ height: chartBorderHeight + 'px' }">
+
+    <!-- 图表区域 -->
+    <div
+      class="chart-area bg-white rounded-xl shadow-md p-4 flex-1 min-h-[100px]"
+      ref="chartArea"
+      :style="{ height: computedChartHeight + 'px' }"
+    >
       <div
         ref="chart"
-        class="chart"
-        :style="{ height: computedChartHeight + 'px' }"
+        class="w-full h-full"
+        :style="{ height: computedChartHeight - 20 + 'px' }"
       ></div>
     </div>
   </div>
@@ -303,107 +122,210 @@
 
 <script>
 import { default as AnsiUp } from "ansi_up"
-import { getFontSize } from "@/utils/utils"
 export default {
   name: "MidInfo",
   data() {
     return {
-      fontSizeMana: {
-        headText: 27,
-        headTip: 12,
-        titleText: 17,
-        titleTip: 12,
-        countText: 18,
-      },
-      chartHeight: 308,
-      chartBorderHeight: 310,
-      progressWidth: 167,
+      progressWidth: 80,
+      strokeWidth: 8,
+      fontSize: 14,
+      areaHeight: 300,
+      chartBorderHeight: 0,
       botInfo: null,
       chCnt: { num: 0, day: 0, week: 0, month: 0, year: 0 },
       callCnt: { num: 0, day: 0, week: 0, month: 0, year: 0 },
-      ansi_up: null,
-      clgDiv: null,
-      chatCntInterval: null, //聊天数量定时器
+      progressItems: {
+        chat: {
+          num: { label: "总数", color: "#f97316" },
+          day: { label: "一日内", color: "#ec4899" },
+          week: { label: "一周内", color: "#a855f7" },
+          month: { label: "一月内", color: "#3b82f6" },
+          year: { label: "一年内", color: "#10b981" },
+        },
+        call: {
+          num: { label: "总数", color: "#f97316" },
+          day: { label: "一日内", color: "#ec4899" },
+          week: { label: "一周内", color: "#a855f7" },
+          month: { label: "一月内", color: "#3b82f6" },
+          year: { label: "一年内", color: "#10b981" },
+        },
+      },
+      chatCntInterval: null,
       callInterval: null,
       chart: null,
       chatAndCallMonth: {},
       chartOpt: {
         title: {
           text: "消息/调用统计",
+          textStyle: {
+            color: "#7c3aed",
+            fontSize: 16,
+          },
         },
         tooltip: {
           trigger: "axis",
+          backgroundColor: "rgba(255,255,255,0.9)",
+          borderColor: "#e9d5ff",
+          borderWidth: 1,
+          textStyle: {
+            color: "#6b21a8",
+            fontSize: 14,
+          },
         },
         legend: {
           data: ["消息统计", "调用统计"],
+          textStyle: {
+            color: "#6b21a8",
+            fontSize: 14,
+          },
         },
         grid: {
           left: "3%",
           right: "4%",
           bottom: "3%",
           containLabel: true,
+          backgroundColor: "#fdf4ff",
         },
         toolbox: {
           feature: {
-            saveAsImage: {},
+            saveAsImage: {
+              title: "保存图片",
+              pixelRatio: 2,
+            },
+          },
+          iconStyle: {
+            borderColor: "#c084fc",
           },
         },
         xAxis: {
           type: "category",
           boundaryGap: false,
           data: [],
+          axisLine: {
+            lineStyle: {
+              color: "#c084fc",
+            },
+          },
+          axisLabel: {
+            color: "#9333ea",
+            fontSize: 12,
+          },
         },
         yAxis: [
           {
             type: "value",
             name: "消息统计",
+            axisLine: {
+              lineStyle: {
+                color: "#c084fc",
+              },
+            },
+            axisLabel: {
+              color: "#9333ea",
+              fontSize: 12,
+            },
+            splitLine: {
+              lineStyle: {
+                color: "#f3e8ff",
+              },
+            },
           },
           {
             type: "value",
             name: "调用统计",
             position: "right",
+            axisLine: {
+              lineStyle: {
+                color: "#c084fc",
+              },
+            },
+            axisLabel: {
+              color: "#9333ea",
+              fontSize: 12,
+            },
+            splitLine: {
+              lineStyle: {
+                color: "#f3e8ff",
+              },
+            },
           },
         ],
         series: [
           {
             name: "消息统计",
             type: "line",
-            // stack: "Total",
+            smooth: true,
             data: [],
             yAxisIndex: 0,
+            lineStyle: {
+              width: 3,
+              color: "#c084fc",
+            },
+            itemStyle: {
+              color: "#a855f7",
+            },
+            areaStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "#e9d5ff",
+                  },
+                  {
+                    offset: 1,
+                    color: "#f3e8ff",
+                  },
+                ],
+              },
+            },
           },
           {
             name: "调用统计",
             type: "line",
-            // stack: "Total",
+            smooth: true,
             data: [],
             yAxisIndex: 1,
+            lineStyle: {
+              width: 3,
+              color: "#f0abfc",
+            },
+            itemStyle: {
+              color: "#d946ef",
+            },
+            areaStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: "#f5d0fe",
+                  },
+                  {
+                    offset: 1,
+                    color: "#fae8ff",
+                  },
+                ],
+              },
+            },
           },
         ],
       },
     }
-  },
-  computed: {
-    computedChartBorderHeight() {
-      if (!this.chartBorderHeight) {
-        this.handleResize()
-      }
-      return this.chartBorderHeight
-    },
-    computedChartHeight() {
-      if (!this.chartHeight) {
-        this.handleResize()
-      }
-      return this.chartHeight
-    },
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
     window.addEventListener("resize", this.handleResize)
-    this.clgDiv = document.getElementById("clg")
-    this.ansi_up = new AnsiUp()
     this.getChCount(this.botInfo.self_id)
     this.getCallCount(this.botInfo.self_id)
     this.getMonthChatAndCallCount(this.botInfo.self_id)
@@ -417,6 +339,14 @@ export default {
     this.chart = this.$echarts.init(this.$refs.chart)
     this.handleResize()
   },
+  computed: {
+    computedChartHeight() {
+      if (!this.chartBorderHeight) {
+        this.handleResize()
+      }
+      return this.chartBorderHeight
+    },
+  },
   beforeDestroy() {
     if (this.chatCntInterval) {
       clearInterval(this.chatCntInterval)
@@ -424,67 +354,84 @@ export default {
     if (this.callInterval) {
       clearInterval(this.callInterval)
     }
-  },
-  destroyed() {
     window.removeEventListener("resize", this.handleResize)
   },
   methods: {
-    handleResize() {
-      this.initFontSize()
-      const width = this.$refs.countBorder.offsetWidth - 200
-      this.progressWidth = width / 5
-
-      this.chartBorderHeight =
-        this.$refs.midInfo.offsetHeight -
-        this.$refs.topBorder.offsetHeight -
-        this.$refs.chCountBorder.offsetHeight -
-        this.$refs.countBorder.offsetHeight -
-        100
-      console.log("this.chartBorderHeight", this.chartBorderHeight)
-
-      if (this.chartBorderHeight < 280) {
-        this.chartBorderHeight = 280
+    updateAreaHeight() {
+      if (this.$isMobile()) {
+        // 移动端使用固定高度
+        this.areaHeight = 500
+      } else {
+        // 桌面端保持原有动态计算逻辑
+        const height = window.innerHeight
+        this.areaHeight = height * 0.2
+        if (height > 1080) {
+          this.areaHeight = height * 0.25
+        }
+        if (height > 1440) {
+          this.areaHeight = height * 0.3
+        }
+        // 确保最小高度
+        this.areaHeight = Math.max(this.areaHeight, 200)
       }
-      this.chartHeight = this.chartBorderHeight - 80
-
-      this.chart.resize()
     },
-    initFontSize() {
-      this.fontSizeMana.headText = getFontSize(27)
-      this.fontSizeMana.headTip = getFontSize(12)
-      this.fontSizeMana.titleText = getFontSize(16)
-      this.fontSizeMana.titleTip = getFontSize(12)
-      this.fontSizeMana.countText = getFontSize(18)
+
+    handleResize() {
+      const width = window.innerWidth
+      const height = window.innerHeight
+
+      // 进度条大小调整逻辑保持不变
+      if (width < 640) {
+        this.progressWidth = Math.min(70, Math.max(50, width * 0.15))
+        this.strokeWidth = 6
+        this.fontSize = 10
+      } else if (width < 1024) {
+        this.progressWidth = 75
+        this.strokeWidth = 7
+        this.fontSize = 12
+      } else {
+        this.progressWidth = 90
+        this.strokeWidth = 8
+        this.fontSize = 14
+      }
+
+      // 高分辨率适配
+      if (height > 1080) {
+        this.progressWidth = Math.floor(height * 0.15)
+        this.strokeWidth = Math.floor(this.progressWidth * 0.2)
+        this.fontSize = Math.floor(this.progressWidth * 0.15)
+      }
+
+      // 确保最小和最大值
+      this.progressWidth = Math.max(50, Math.min(this.progressWidth, 120))
+      this.strokeWidth = Math.max(6, Math.min(this.strokeWidth, 12))
+      this.fontSize = Math.max(10, Math.min(this.fontSize, 18))
+
+      // 调用更新高度方法
+      this.updateAreaHeight()
+
+      this.$nextTick(() => {
+        this.chartBorderHeight =
+          this.$refs.midInfo.offsetHeight - this.areaHeight * 2 - 100
+        this.chartBorderHeight = Math.max(this.chartBorderHeight, 180)
+
+        this.chart.resize()
+      })
     },
     getPercentageChat(type) {
-      if (this.chCnt.num == 0) {
-        return 0
-      }
-      if (type == "num") {
-        return 100
-      }
-      if (this.chCnt[type] == this.chCnt.num) {
-        return 100
-      }
+      if (this.chCnt.num == 0) return 0
+      if (type == "num") return 100
+      if (this.chCnt[type] == this.chCnt.num) return 100
       return (this.chCnt[type] / this.chCnt.num) * 100
     },
     getPercentageCall(type) {
-      if (this.callCnt.num == 0) {
-        return 0
-      }
-      if (type == "num") {
-        return 100
-      }
-      if (this.callCnt[type] == this.callCnt.num) {
-        return 100
-      }
+      if (this.callCnt.num == 0) return 0
+      if (type == "num") return 100
+      if (this.callCnt[type] == this.callCnt.num) return 100
       return (this.callCnt[type] / this.callCnt.num) * 100
     },
-    formatProcess() {
-      return this.chCnt.num
-    },
     getMonthChatAndCallCount(bot_id) {
-      var loading = this.getLoading(".chart")
+      var loading = this.getLoading(".chart-area")
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_chat_and_call_month`,
         { bot_id: bot_id }
@@ -509,10 +456,9 @@ export default {
       })
     },
     getChCount(bot_id, no_loading) {
-      // 获取聊天历史记录数量
       if (bot_id) {
         if (!no_loading) {
-          var loading = this.getLoading(".ch-count")
+          var loading = this.getLoading(".message-area")
         }
 
         this.getRequest(`${this.$root.prefix}/main/get_all_chat_count`, {
@@ -541,7 +487,6 @@ export default {
       }
     },
     getCallCount(bot_id, no_loading) {
-      // 获取聊天历史记录数量
       if (bot_id) {
         if (!no_loading) {
           var loading = this.getLoading(".ch-count")
@@ -559,6 +504,7 @@ export default {
               if (loading) {
                 this.$message.success(resp.info)
               }
+
               this.callCnt = resp.data
             }
           } else {
@@ -576,88 +522,111 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-::v-deep .el-divider--horizontal {
-  margin: 74px 0;
+<style scoped>
+.mid-info {
+  background-color: #fdf2f8;
 }
 
-.mid-info {
-  overflow-y: auto;
+.message-area,
+.function-area,
+.chart-area {
+  border: 1px solid #f3e8ff;
+  transition: height 0.3s ease, font-size 0.3s ease;
+}
 
-  .head {
-    .head-text {
-      font-size: 27px;
-      font-weight: bold;
-    }
+.chart-area {
+  background: linear-gradient(to bottom right, #fdf2ff, #f5f3ff);
+}
 
-    .head-tip {
-      color: var(--text-color-secondary);
-      font-size: 12px;
-      margin-top: 13px;
-    }
-  }
+.title-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
 
-  .top-border {
-    background-color: var(--bg-color-secondary);
-    padding: 10px 30px;
-    border-radius: 10px;
-    box-sizing: border-box;
-  }
-  .ch-count-border {
-    border-radius: 10px;
-    background-color: var(--bg-color-secondary);
-    padding: 30px;
-    margin-top: 20px;
-    overflow: auto;
-    box-sizing: border-box;
-  }
+.text-md {
+  font-size: 1rem;
+  line-height: 1.5;
+}
 
-  .ch-count {
-    .circle-box {
-      position: relative;
-      text-align: center;
-    }
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
 
-    .ch-count-text {
-      font-size: 18px;
-      margin-top: 10px;
-      color: var(--text-color);
-    }
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
 
-    ::v-deep .el-progress__text {
-      font-size: 40px !important;
-      font-weight: bold;
-      color: var(--text-color);
-    }
+.progress-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 移动端响应式样式 */
+@media (max-width: 640px) {
+  .message-area,
+  .function-area {
+    padding: 12px;
   }
 
   .title-box {
-    margin-top: 5px;
-    margin-bottom: 30px;
-    display: flex;
-
-    .title-text {
-      font-size: 17px;
-    }
-    .title-tip {
-      color: var(--text-color-secondary);
-      font-size: 12px;
-      margin-top: 6px;
-      margin-left: 25px;
-    }
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
-  .chart-border {
-    border-radius: 10px;
-    background-color: var(--bg-color-secondary);
-    padding: 30px 30px 0 30px;
-    margin-top: 20px;
-    height: 308px;
-    box-sizing: border-box;
-  }
-  .chart {
-    height: 308px;
+  .title-box span {
+    margin-left: 0;
+    margin-top: 4px;
     width: 100%;
+  }
+
+  .progress-container {
+    min-width: 60px;
+    max-width: 80px;
+  }
+
+  .grid-cols-2 {
+    gap: 8px;
+  }
+}
+
+/* 平板响应式样式 */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .message-area,
+  .function-area {
+    padding: 12px;
+  }
+}
+
+/* 自定义滚动条 */
+.mid-info::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.mid-info::-webkit-scrollbar-thumb {
+  background-color: #f9a8d4;
+  border-radius: 9999px;
+}
+
+.mid-info::-webkit-scrollbar-track {
+  background-color: #fce7f3;
+}
+
+/* 打印样式 */
+@media print {
+  .mid-info {
+    background-color: white !important;
+  }
+
+  .message-area,
+  .function-area,
+  .chart-area {
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
   }
 }
 </style>

@@ -1,0 +1,228 @@
+:root {
+  /* 基础单位（基于16px） */
+  --base-unit: 16px;
+
+  /* 扩展的字体大小体系 - 8级字体大小 */
+  --font-size-xxl: clamp(20px, calc(var(--base-unit) * 1.5 + 0.6vw), 28px); /* 超大标题 */
+  --font-size-xl: clamp(16px, calc(var(--base-unit) * 1.25 + 0.5vw), 24px); /* 大标题 */
+  --font-size-lg: clamp(14px, calc(var(--base-unit) * 1.125 + 0.4vw), 20px); /* 小标题 */
+  --font-size-md: clamp(13px, calc(var(--base-unit) * 1 + 0.3vw), 16px); /* 正文 */
+  --font-size-sm: clamp(12px, calc(var(--base-unit) * 0.9 + 0.2vw), 14px); /* 小正文 */
+  --font-size-xs: clamp(11px, calc(var(--base-unit) * 0.8 + 0.15vw), 13px); /* 辅助文本 */
+  --font-size-xxs: clamp(10px, calc(var(--base-unit) * 0.7 + 0.1vw), 12px); /* 极小文本 */
+  --font-size-micro: clamp(9px, calc(var(--base-unit) * 0.6 + 0.05vw), 11px); /* 微型文本 */
+
+  /* 特殊场景字体 */
+  --font-size-code: clamp(13px, calc(var(--base-unit) * 0.85), 15px); /* 代码字体 */
+
+  /* 行高体系 */
+  --line-height-dense: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-loose: 1.8;
+
+  /* 响应式调整系数 */
+  --mobile-scale: 0.9;
+  --tiny-scale: 0.8;
+  --large-scale: 1.1;
+}
+
+/* 基础文本样式 */
+.text-xxl {
+  font-size: var(--font-size-xxl);
+  line-height: var(--line-height-dense);
+}
+
+.text-xl {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-dense);
+}
+
+.text-lg {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-dense);
+}
+
+.text-md {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+}
+
+.text-sm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.text-xs {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+}
+
+.text-xxs {
+  font-size: var(--font-size-xxs);
+  line-height: var(--line-height-normal);
+}
+
+.text-micro {
+  font-size: var(--font-size-micro);
+  line-height: var(--line-height-normal);
+}
+
+/* 平板设备调整 (1024px以下) */
+@media (max-width: 1024px) {
+  :root {
+    --base-unit: 15px;
+    --line-height-normal: 1.6;
+  }
+}
+
+/* 移动端调整 (768px以下) */
+@media (max-width: 768px) {
+  :root {
+    --base-unit: 14px;
+  }
+
+  .text-xxl {
+    font-size: clamp(18px, calc(var(--base-unit) * 1.4 * var(--mobile-scale) + 0.5vw, 24px));
+    line-height: var(--line-height-dense);
+  }
+
+  .text-xl {
+    font-size: clamp(15px, calc(var(--base-unit) * 1.25 * var(--mobile-scale) + 0.4vw, 20px));
+    line-height: var(--line-height-dense);
+  }
+
+  .text-lg {
+    font-size: clamp(13px, calc(var(--base-unit) * 1.1 * var(--mobile-scale) + 0.3vw, 18px));
+    line-height: var(--line-height-dense);
+  }
+
+  .text-md {
+    font-size: clamp(12px, calc(var(--base-unit) * 1 * var(--mobile-scale) + 0.2vw, 15px));
+    line-height: var(--line-height-normal);
+  }
+
+  .text-sm {
+    font-size: clamp(11px, calc(var(--base-unit) * 0.9 * var(--mobile-scale) + 0.15vw, 13px));
+    line-height: var(--line-height-normal);
+  }
+
+  .text-xs {
+    font-size: clamp(10px, calc(var(--base-unit) * 0.8 * var(--mobile-scale) + 0.1vw, 12px));
+    line-height: var(--line-height-normal);
+  }
+
+  .text-xxs {
+    font-size: clamp(9px, calc(var(--base-unit) * 0.7 * var(--mobile-scale) + 0.05vw, 11px));
+    line-height: var(--line-height-normal);
+  }
+
+  .text-micro {
+    font-size: clamp(8px, calc(var(--base-unit) * 0.6 * var(--mobile-scale)), 10px));
+    line-height: var(--line-height-normal);
+  }
+}
+
+/* 小尺寸手机 (480px以下) */
+@media (max-width: 480px) {
+  :root {
+    --base-unit: 13px;
+  }
+
+  /* 特别小的设备 (如小尺寸手机) */
+  @media (max-height: 600px) {
+    :root {
+      --base-unit: 12px;
+    }
+    
+    .text-xxl {
+      font-size: calc(clamp(18px, calc(var(--base-unit) * 1.4 * var(--mobile-scale) + 0.5vw, 24px) * var(--tiny-scale)));
+    }
+    
+    .text-xl {
+      font-size: calc(clamp(15px, calc(var(--base-unit) * 1.25 * var(--mobile-scale) + 0.4vw, 20px) * var(--tiny-scale)));
+    }
+    
+    .text-lg {
+      font-size: calc(clamp(13px, calc(var(--base-unit) * 1.1 * var(--mobile-scale) + 0.3vw, 18px) * var(--tiny-scale)));
+    }
+    
+    .text-md {
+      font-size: calc(clamp(12px, calc(var(--base-unit) * 1 * var(--mobile-scale) + 0.2vw, 15px) * var(--tiny-scale)));
+    }
+    
+    .text-sm {
+      font-size: calc(clamp(11px, calc(var(--base-unit) * 0.9 * var(--mobile-scale) + 0.15vw, 13px) * var(--tiny-scale)));
+    }
+    
+    .text-xs {
+      font-size: calc(clamp(10px, calc(var(--base-unit) * 0.8 * var(--mobile-scale) + 0.1vw, 12px) * var(--tiny-scale)));
+    }
+    
+    .text-xxs {
+      font-size: calc(clamp(9px, calc(var(--base-unit) * 0.7 * var(--mobile-scale) + 0.05vw, 11px) * var(--tiny-scale)));
+    }
+    
+    .text-micro {
+      font-size: calc(clamp(8px, calc(var(--base-unit) * 0.6 * var(--mobile-scale)), 10px) * var(--tiny-scale)));
+    }
+  }
+}
+
+/* 超大屏幕优化 (1920px以上) */
+@media (min-width: 1920px) {
+  :root {
+    --base-unit: 17px;
+    --font-size-xxl: min(28px, calc(var(--base-unit) * 1.6));
+    --font-size-xl: min(24px, calc(var(--base-unit) * 1.4));
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    --base-unit: 18px;
+    --font-size-xxl: min(32px, calc(var(--base-unit) * 1.7));
+    --font-size-xl: min(26px, calc(var(--base-unit) * 1.5));
+  }
+}
+
+/* 打印样式 */
+@media print {
+  :root {
+    --base-unit: 12pt;
+    --font-size-xxl: 18pt;
+    --font-size-xl: 16pt;
+    --line-height-normal: 1.6;
+  }
+  
+  .text-xxl {
+    font-size: var(--font-size-xxl);
+  }
+  
+  .text-xl {
+    font-size: var(--font-size-xl);
+  }
+  
+  .text-lg {
+    font-size: 14pt;
+  }
+  
+  .text-md {
+    font-size: 12pt;
+  }
+  
+  .text-sm {
+    font-size: 11pt;
+  }
+  
+  .text-xs {
+    font-size: 10pt;
+  }
+  
+  .text-xxs {
+    font-size: 9pt;
+  }
+  
+  .text-micro {
+    font-size: 8pt;
+  }
+}

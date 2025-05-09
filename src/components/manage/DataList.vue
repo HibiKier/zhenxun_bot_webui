@@ -1,81 +1,120 @@
 <template>
-  <div class="fg-list">
-    <div class="request">
-      <el-badge :value="requestCount" class="item" v-if="requestCount > 0">
-        <MyButton
-          size="small"
-          @click="openRequest"
-          :height="31"
-          text="请求管理"
-          :fontSize="12"
-          style="z-index: -1111"
-        />
-      </el-badge>
-      <el-button v-else size="small" @click="openRequest">请求管理</el-button>
-    </div>
-    <div class="fg-select">
-      <div :class="getItemClass('private')" @click="clickListType('private')">
-        好友({{ botInfo.friend_count - 1 }})
+  <div
+    class="fg-list bg-gradient-to-br from-pink-50 to-purple-50 p-4 h-full overflow-hidden"
+  >
+    <!-- 好友/群组切换标签 -->
+    <div class="flex bg-white rounded-lg shadow-inner p-1 mb-4">
+      <div
+        :class="[
+          'flex-1 text-center py-2 rounded-md cursor-pointer transition-all',
+          activeBtn === 'private'
+            ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md'
+            : 'text-pink-600 hover:bg-pink-50',
+        ]"
+        @click="clickListType('private')"
+      >
+        好友({{
+          botInfo.friend_count > 0
+            ? botInfo.friend_count - 1
+            : botInfo.friend_count
+        }})
       </div>
-      <el-divider direction="vertical" />
-      <div :class="getItemClass('group')" @click="clickListType('group')">
+      <div class="w-px bg-pink-200 mx-1 my-2"></div>
+      <div
+        :class="[
+          'flex-1 text-center py-2 rounded-md cursor-pointer transition-all',
+          activeBtn === 'group'
+            ? 'bg-gradient-to-r from-blue-400 to-purple-400 text-white shadow-md'
+            : 'text-blue-600 hover:bg-blue-50',
+        ]"
+        @click="clickListType('group')"
+      >
         群组({{ botInfo.group_count }})
       </div>
     </div>
-    <div class="data-list-border">
+
+    <!-- 列表内容 -->
+    <div
+      class="data-list-container bg-white rounded-xl shadow-md p-2 overflow-y-auto"
+      style="height: calc(100% - 65px)"
+    >
       <div
         v-for="data in dataList"
         :key="data.id"
-        class="data-item"
-        :class="{ 'item-selected': detailId == data.id }"
+        :class="[
+          'data-item flex items-center p-3 rounded-lg mb-2 transition-all',
+          detailId === data.id
+            ? 'bg-gradient-to-r from-pink-100 to-purple-100 border-l-4 border-pink-400'
+            : 'hover:bg-pink-50',
+        ]"
       >
-        <div style="display: flex" @click="getDetail(data)">
-          <div class="ava-box">
-            <el-avatar :src="data.ava_url" class="list-ava"></el-avatar>
-          </div>
-          <div class="u-info">
-            <p class="u-name">
+        <!-- 头像和基本信息 -->
+        <div class="flex items-center flex-1 min-w-0" @click="getDetail(data)">
+          <el-avatar
+            :src="data.ava_url"
+            :size="50"
+            class="flex-shrink-0 border-2 border-pink-200 shadow-sm"
+          >
+            <i class="el-icon-user" v-if="!data.ava_url"></i>
+          </el-avatar>
+
+          <div class="ml-3 min-w-0">
+            <p class="text-gray-800 font-semibold truncate">
               {{ data.remark || data.nickname || data.group_name }}
             </p>
-            <p class="uid">{{ data.id }}</p>
+            <p class="text-gray-500 text-sm mt-1">ID: {{ data.id }}</p>
           </div>
         </div>
-        <div class="new-msg" v-if="getUnreadCount(data.id)">
+
+        <!-- 未读消息标记 -->
+        <div
+          v-if="getUnreadCount(data.id)"
+          class="bg-red-400 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center mr-2"
+        >
           {{ getUnreadCount(data.id) }}
         </div>
+
+        <!-- 更多操作菜单 -->
         <el-dropdown
-          class="more-icon"
           trigger="click"
           @command="(c) => handleCommand(c, data.id)"
+          class="ml-2"
         >
-          <span class="el-dropdown-link">
-            <svg-icon icon-class="more" class="more-icon" />
-          </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="delete">{{
-              activeBtn == "private" ? "删除好友" : "退出群组"
-            }}</el-dropdown-item>
+          <div
+            class="p-1 rounded-full hover:bg-pink-100 text-gray-500 hover:text-pink-600"
+          >
+            <svg-icon icon-class="more" class="w-5 h-5" />
+          </div>
+
+          <el-dropdown-menu
+            slot="dropdown"
+            class="rounded-lg shadow-xl border border-pink-100"
+          >
+            <el-dropdown-item
+              command="delete"
+              class="text-red-500 hover:bg-red-50"
+            >
+              <i class="el-icon-delete mr-2"></i>
+              {{ activeBtn == "private" ? "删除好友" : "退出群组" }}
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
     </div>
-    <RequestDialog v-if="requestDialogVisible" @close="closeRequest" />
   </div>
 </template>
 
 <script>
 import SvgIcon from "../SvgIcon/SvgIcon.vue"
-import RequestDialog from "./RequestDialog.vue"
-import MyButton from "../ui/MyButton.vue"
+
 export default {
   name: "DataList",
-  components: { SvgIcon, RequestDialog, MyButton },
+  components: { SvgIcon },
   data() {
     return {
       dataList: [],
       activeBtn: "private",
       botInfo: {},
-      requestDialogVisible: false,
       requestCount: 0,
       detailId: null,
     }
@@ -117,19 +156,11 @@ export default {
       this.$store.commit("READ_CHAT", data.id)
     },
     refresh() {
-      this.getRequestCount()
       if (this.activeBtn == "private") {
         this.getFriendList()
       } else {
         this.getGroupList()
       }
-    },
-    openRequest() {
-      this.requestDialogVisible = true
-    },
-    closeRequest() {
-      this.requestDialogVisible = false
-      this.refresh()
     },
     clickListType(type) {
       this.activeBtn = type
@@ -144,28 +175,15 @@ export default {
         this.deleteHandle(id)
       }
     },
-    getRequestCount() {
-      this.getRequest(`${this.$root.prefix}/manage/get_request_count`).then(
-        (resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-              this.requestCount = resp.data.friend_count + resp.data.group_count
-            }
-          } else {
-            this.$message.error(resp.info)
-          }
-        }
-      )
-    },
     deleteHandle(id) {
       this.$confirm("确认删除/退出?", "提示", {
         confirmButtonText: "确认",
         cancelButtonText: "取消",
         showClose: true,
         type: "warning",
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--danger",
+        iconClass: "el-icon-warning text-red-500",
       }).then(() => {
         let url = null
         let data = null
@@ -194,21 +212,8 @@ export default {
         )
       })
     },
-    getItemClass(n) {
-      const obj = {
-        "select-btn-item": true,
-        "btn-item-select": this.activeBtn == n,
-      }
-      if (n == "private") {
-        obj["private-btn"] = true
-      } else {
-        obj["group-btn"] = true
-      }
-      return obj
-    },
     getGroupList() {
-      // 获取群组列表
-      const loading = this.getLoading(".data-list-border")
+      const loading = this.getLoading(".data-list-container")
       this.getRequest(`${this.$root.prefix}/manage/get_group_list`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
@@ -229,8 +234,7 @@ export default {
       })
     },
     getFriendList() {
-      // 获取好友列表
-      const loading = this.getLoading(".data-list-border")
+      const loading = this.getLoading(".data-list-container")
       this.getRequest(`${this.$root.prefix}/manage/get_friend_list`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
@@ -254,152 +258,41 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.fg-list {
-  padding: 50px 30px 10px 30px;
-  position: relative;
-  box-sizing: border-box;
+<style scoped>
+/* 二次元风格弹窗 */
+.confirm-box {
+  border-radius: 16px !important;
+  border: 2px solid #f9a8d4 !important;
+  background-color: #fdf2f8 !important;
+}
 
-  .request {
-    position: absolute;
-    right: 31px;
-    top: 11px;
+/* 滚动条美化 */
+.data-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.data-list-container::-webkit-scrollbar-track {
+  background: rgba(251, 207, 232, 0.3);
+  border-radius: 3px;
+}
+
+.data-list-container::-webkit-scrollbar-thumb {
+  background: rgba(236, 72, 153, 0.5);
+  border-radius: 3px;
+}
+
+.data-list-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(236, 72, 153, 0.7);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .fg-list {
+    padding: 12px;
   }
 
-  .fg-select {
-    float: left;
-    display: flex;
-    background-color: var(--bg-color-secondary);
-    height: 50px;
-    width: 100%;
-    border-radius: 5px;
-    color: var(--text-color-secondary);
-
-    ::v-deep .el-divider--vertical {
-      height: 70%;
-      margin: 8px 0;
-    }
-
-    .private-btn {
-      border-top-left-radius: 5px;
-      border-bottom-left-radius: 5px;
-    }
-
-    .group-btn {
-      border-top-right-radius: 5px;
-      border-bottom-right-radius: 5px;
-    }
-
-    .select-btn-item {
-      display: flex;
-      width: 100%;
-      cursor: pointer;
-      height: 100%;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: var(--el-text-color-regular);
-    }
-    .btn-item-select {
-      color: var(--el-text-color-primary);
-      font-weight: bold;
-    }
-  }
-
-  .data-list-border {
-    margin-top: 80px;
-    border-radius: 10px;
-    padding: 10px 0;
-    overflow: auto;
-    box-sizing: border-box;
-    height: calc(100% - 60px);
-    // border: #4d7cfe solid 1px;
-    // border-radius: 5px;
-
-    .data-item {
-      padding: 10px;
-      height: 63px;
-      position: relative;
-      cursor: pointer;
-
-      ::v-deep .el-divider--horizontal {
-        margin: 10px;
-      }
-
-      .new-msg {
-        position: absolute;
-        right: 7px;
-        top: 50px;
-        border-radius: 50%;
-        padding: 0px 6px;
-        margin-right: 10px;
-        background-color: var(--el-color-danger);
-        color: var(--bg-color-secondary);
-        font-size: 14px;
-        width: 23px;
-        text-align: center;
-      }
-
-      .more-icon {
-        width: 25px;
-        height: 25px;
-        float: right;
-        cursor: pointer;
-        position: absolute;
-        right: 10px;
-        top: 3px;
-      }
-
-      .ava-box {
-        .list-ava {
-          width: 60px;
-          height: 60px;
-        }
-      }
-
-      .u-info {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin-left: 10px;
-        .u-name {
-          font-size: 17px;
-          color: var(--el-text-color-primary);
-          font-weight: bold;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .uid {
-          color: var(--el-text-color-secondary);
-          font-size: 14px;
-          margin-top: 8px;
-        }
-      }
-
-      &:hover,
-      &.item-selected {
-        background-color: var(--el-bg-color-hover);
-
-        .more-icon {
-          visibility: visible;
-        }
-      }
-
-      .more-icon {
-        width: 20px;
-        height: 20px;
-        visibility: hidden;
-        cursor: pointer;
-        color: var(--el-text-color-regular);
-      }
-    }
-  }
-
-  /deep/ .el-badge__content {
-    z-index: 11111;
+  .data-list-container {
+    height: calc(100% - 70px);
   }
 }
 </style>

@@ -1,324 +1,213 @@
 <template>
-  <div class="detail-info">
-    <div v-if="!detailType" class="empty">
-      <el-empty
-        :image-size="350"
-        :image="require('../../assets/image/empty.png')"
-        description="空空如也 ┐(ﾟ～ﾟ)┌ "
-      ></el-empty>
+  <div
+    class="detail-info bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg p-6 h-full overflow-y-auto"
+  >
+    <!-- 空状态 -->
+    <div
+      v-if="!detailType"
+      class="flex flex-col items-center justify-center h-full"
+    >
+      <img
+        src="@/assets/image/empty.png"
+        class="w-64 h-64 object-contain mb-4"
+        alt="空空如也"
+      />
+      <p class="text-pink-500 text-lg font-medium">空空如也 ┐(ﾟ～ﾟ)┌</p>
     </div>
+
+    <!-- 详细信息 -->
     <template v-else>
-      <el-row>
-        <el-col :span="24">
-          <div class="ava-info">
-            <el-avatar
-              :src="data.ava_url"
-              class="u-ava"
-              :style="{
-                height: sizeMana.avaSize + 'px',
-                width: sizeMana.avaSize + 'px',
-              }"
-            ></el-avatar>
-            <el-row>
-              <el-col :span="24">
-                <div
-                  class="nickname"
-                  :style="{ fontSize: sizeMana.nameText + 'px' }"
-                >
-                  {{ data.name }}
-                </div>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="24">
-                <div
-                  class="account"
-                  :style="{ fontSize: sizeMana.accountText + 'px' }"
-                >
-                  {{ data.user_id || data.group_id }}
-                </div>
-              </el-col>
-            </el-row>
-          </div>
-        </el-col>
-      </el-row>
-      <div class="base-info" ref="baseInfo">
+      <!-- 头像和信息区域 -->
+      <div class="flex flex-col items-center mb-6">
+        <el-avatar
+          :src="data.ava_url"
+          class="border-4 border-pink-300 shadow-lg mb-4 transform hover:scale-105 transition-transform"
+          :style="{
+            height: sizeMana.avaSize + 'px',
+            width: sizeMana.avaSize + 'px',
+          }"
+        ></el-avatar>
+
+        <h2
+          class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-2"
+        >
+          {{ data.name }}
+        </h2>
+
+        <div
+          class="px-4 py-2 bg-purple-500 text-white rounded-full text-sm shadow-md"
+        >
+          {{ data.user_id || data.group_id }}
+        </div>
+      </div>
+
+      <!-- 基本信息区域 -->
+      <div
+        class="bg-white rounded-xl p-4 shadow-md mb-6 transform hover:shadow-lg transition-shadow"
+      >
         <template v-if="detailType == 'private'">
-          <el-row>
-            <el-col :span="24">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  封禁状态
-                </div>
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  <MySwitch v-model="data.is_ban" :disabled="true" />
-                </div>
+          <!-- 好友信息 -->
+          <div class="grid grid-cols-1 gap-4">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">封禁状态:</span>
+              <MySwitch v-model="data.is_ban" :disabled="true" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">聊天记录:</span>
+                <span class="font-medium text-purple-600">{{
+                  data.chat_count
+                }}</span>
               </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  聊天记录
-                </div>
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  {{ data.chat_count }}
-                </div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-gray-600">调用次数:</span>
+                <span class="font-medium text-pink-600">{{
+                  data.call_count
+                }}</span>
               </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  调用次数
-                </div>
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  {{ data.call_count }}
-                </div>
-              </div>
-            </el-col>
-          </el-row>
+            </div>
+          </div>
         </template>
+
         <template v-else>
-          <el-row>
-            <el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  状态
-                </div>
-                <el-divider direction="vertical" />
-                <div class="value">
-                  <MySwitch v-model="data.status" />
-                </div>
-              </div> </el-col
-            ><el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  群权限
-                </div>
-                <el-divider direction="vertical" class="a-divider" />
-                <div
-                  class="value"
-                  style="margin-left: 5px"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  <el-select
-                    v-model="data.level"
-                    placeholder=""
-                    style="width: 62px"
-                  >
-                    <el-option :label="-1" :value="-1"></el-option>
-                    <el-option
-                      v-for="n in 10"
-                      :label="n"
-                      :value="n"
-                      :key="n"
-                    ></el-option>
-                  </el-select>
-                </div>
+          <!-- 群组信息 -->
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">状态:</span>
+              <MySwitch v-model="data.status" />
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">群权限:</span>
+              <el-select
+                v-model="data.level"
+                placeholder=""
+                class="w-24"
+                popper-class="cute-select"
+              >
+                <el-option :label="-1" :value="-1"></el-option>
+                <el-option
+                  v-for="n in 10"
+                  :label="n"
+                  :value="n"
+                  :key="n"
+                ></el-option>
+              </el-select>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">当前人数:</span>
+              <span class="font-medium text-purple-600">{{
+                data.member_count
+              }}</span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">最大人数:</span>
+              <span class="font-medium text-pink-600">{{
+                data.max_member_count
+              }}</span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">聊天记录:</span>
+              <span class="font-medium text-purple-600">{{
+                data.chat_count
+              }}</span>
+            </div>
+
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">调用次数:</span>
+              <span class="font-medium text-pink-600">{{
+                data.call_count
+              }}</span>
+            </div>
+          </div>
+
+          <!-- 真寻特有设置 -->
+          <template v-if="this.$store.state.botType == 'zhenxun'">
+            <div class="mb-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-gray-600">被动状态:</span>
               </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
+              <el-select
+                v-model="data.task_status"
+                class="w-full"
+                multiple
+                popper-class="cute-select"
+              >
+                <el-option
+                  v-for="n in data.task"
+                  :label="n.zh_name"
+                  :value="n.name"
+                  :key="n.name"
                 >
-                  当前人数
-                </div>
-                <el-divider direction="vertical" />
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  {{ data.member_count }}
-                </div>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  最大人数
-                </div>
-                <el-divider direction="vertical" />
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  {{ data.max_member_count }}
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  聊天记录
-                </div>
-                <el-divider direction="vertical" />
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  {{ data.chat_count }}
-                </div>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  调用次数
-                </div>
-                <el-divider direction="vertical" />
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  {{ data.call_count }}
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row v-if="this.$store.state.botType == 'zhenxun'">
-            <el-col :span="24">
-              <div class="base-info-item">
-                <div
-                  class="label"
-                  :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                >
-                  被动状态
-                </div>
-                <el-divider direction="vertical" class="a-divider" />
-                <div
-                  class="value"
-                  :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                >
-                  <el-select
-                    v-model="data.task_status"
-                    :style="{ width: sizeMana.selectWidth + 'px' }"
-                    multiple
-                  >
-                    <el-option
-                      v-for="n in data.task"
-                      :label="n.zh_name"
-                      :value="n.name"
-                      :key="n.name"
-                    >
-                    </el-option>
-                  </el-select>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <div style="display: flex">
-                <div class="base-info-item" style="width: 100%">
-                  <div
-                    class="label"
-                    :style="{ fontSize: sizeMana.labelFontSize + 'px' }"
-                  >
-                    禁用插件
-                  </div>
-                  <el-divider direction="vertical" class="a-divider" />
-                  <div
-                    class="value"
-                    :style="{ fontSize: sizeMana.valueFontSize + 'px' }"
-                  >
-                    <el-select
-                      v-model="data.plugin_status"
-                      multiple
-                      :style="{ width: sizeMana.selectWidth + 'px' }"
-                    >
-                      <el-option
-                        v-for="n in tmpAllPluginList"
-                        :label="n.plugin_name"
-                        :value="n.module"
-                        :key="n.module"
-                      >
-                      </el-option>
-                    </el-select>
-                  </div>
-                </div>
-              </div>
-            </el-col>
-          </el-row>
-          <div>
+                </el-option>
+              </el-select>
+            </div>
+          </template>
+
+          <!-- 插件设置 -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-gray-600">禁用插件:</span>
+            </div>
+            <el-select
+              v-model="data.plugin_status"
+              multiple
+              class="w-full"
+              popper-class="cute-select"
+            >
+              <el-option
+                v-for="n in tmpAllPluginList"
+                :label="n.plugin_name"
+                :value="n.module"
+                :key="n.module"
+              >
+              </el-option>
+            </el-select>
+          </div>
+
+          <!-- 应用按钮 -->
+          <div class="flex justify-end">
             <MyButton
-              text="应用"
-              class="commit-btn"
-              :width="100"
+              text="应用设置"
+              type="purple"
+              :rounded="'lg'"
+              :shadow="'lg'"
+              :glow="true"
+              :width="120"
               @click="commit"
             />
           </div>
         </template>
-        <el-divider />
-        <p class="base-title">最喜爱的插件</p>
-        <div>
-          <div ref="likePluginChart" class="base-chart"></div>
-        </div>
       </div>
-      <template v-if="detailType == 'private'">
-        <el-divider />
-        <OneMark text="不太清楚，这是一个标记的魔法" :showDivider="false" />
-      </template>
+
+      <!-- 最喜爱的插件图表 -->
+      <div
+        class="bg-white rounded-xl p-4 shadow-md transform hover:shadow-lg transition-shadow"
+      >
+        <h3 class="text-lg font-bold text-pink-600 mb-4">最喜爱的插件</h3>
+        <div ref="likePluginChart" class="h-80 w-full"></div>
+      </div>
     </template>
   </div>
 </template>
 
 <script>
-import { getConvertSize, getFontSize } from "@/utils/utils"
-import MyButton from "../ui/MyButton.vue"
-import MySwitch from "../ui/MySwitch.vue"
-import OneMark from "../ui/OneMark.vue"
+import MyButton from '../ui/MyButton.vue'
+import MySwitch from '../ui/MySwitch.vue'
+
+import { cloneDeep } from 'lodash'
 export default {
-  components: { MySwitch, OneMark, MyButton },
-  name: "DetailInfo",
+  components: { MySwitch, MyButton },
+  name: 'DetailInfo',
   data() {
     return {
       sizeMana: {
-        labelFontSize: 20,
-        valueFontSize: 25,
-        accountText: 20,
-        nameText: 20,
         avaSize: 100,
-        selectWidth: 170,
       },
       data: {},
       botId: null,
@@ -327,44 +216,89 @@ export default {
       tmpAllPluginList: [],
       likePluginChart: null,
       chartOpt: {
-        tooltip: {}, // 工具提示组件
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c}',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#e9d5ff',
+          borderWidth: 1,
+          textStyle: {
+            color: '#7c3aed',
+            fontFamily: '"Comic Sans MS", cursive',
+          },
+        },
         xAxis: {
-          type: "category",
-          name: "",
+          type: 'category',
+          name: '插件',
           data: null,
           axisLabel: {
-            interval: 0, //强制显示所有标签
+            interval: 0,
+            color: '#7c3aed',
+            fontFamily: '"Comic Sans MS", cursive',
           },
-        }, // X轴
-        yAxis: { type: "value" }, // Y轴
+          axisLine: {
+            lineStyle: {
+              color: '#e9d5ff',
+            },
+          },
+        },
+        yAxis: {
+          type: 'value',
+          name: '次数',
+          axisLabel: {
+            color: '#7c3aed',
+            fontFamily: '"Comic Sans MS", cursive',
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#e9d5ff',
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#f3e8ff',
+            },
+          },
+        },
         series: [
           {
-            type: "bar", // 柱状图系列
-            barWidth: "40%", // 柱子宽度
-            label: { show: true }, // 标签展示
+            type: 'bar',
+            barWidth: '40%',
+            label: {
+              show: true,
+              position: 'top',
+              color: '#7c3aed',
+              fontFamily: '"Comic Sans MS", cursive',
+            },
             itemStyle: {
-              //通常情况下：
               normal: {
-                //每个柱子的颜色即为colorList数组里的每一项，如果柱子数目多于colorList的长度，则柱子颜色循环使用该数组
                 color: (params) => {
-                  var colorList = [
-                    "#855BD7",
-                    "#4B6FB8",
-                    "#0F6E43",
-                    "#B69C2B",
-                    "#2588BB",
-                    "#BB612D",
-                    "#1D9394",
-                    "#C24545",
+                  const colorList = [
+                    '#C4B5FD',
+                    '#A5B4FC',
+                    '#86EFAC',
+                    '#FDE047',
+                    '#7DD3FC',
+                    '#FCA5A5',
+                    '#B9F3D0',
+                    '#F9A8D4',
                   ]
-                  return colorList[params.dataIndex]
+                  return colorList[params.dataIndex % colorList.length]
                 },
+                barBorderRadius: [6, 6, 0, 0],
               },
             },
-            emphasis: { focus: "series" }, // 高亮效果
-            data: {}, // 数据源
+            emphasis: {
+              focus: 'series',
+              itemStyle: {
+                shadowBlur: 10,
+                shadowColor: 'rgba(167, 139, 250, 0.5)',
+              },
+            },
+            data: {},
           },
         ],
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
       },
     }
   },
@@ -372,31 +306,20 @@ export default {
     this.botId = this.$store.state.botInfo.self_id
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    window.addEventListener('resize', this.handleResize)
     this.handleResize()
   },
   methods: {
     handleResize() {
-      this.sizeMana.labelFontSize = getFontSize(17)
-      this.sizeMana.valueFontSize = getFontSize(25)
-      this.sizeMana.accountText = getFontSize(20)
-      this.sizeMana.nameText = getFontSize(30)
-      this.sizeMana.avaSize = getConvertSize(100, 1024)
-      if (this.$refs.baseInfo) {
-        this.sizeMana.selectWidth = this.$refs.baseInfo.offsetWidth - 160
-      }
+      this.sizeMana.avaSize = 100
     },
     getAllPluginList() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
-        plugin_type: ["NORMAL", "ADMIN"],
+        plugin_type: ['NORMAL', 'ADMIN'],
       }).then((resp) => {
         if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-            this.allPluginList = resp.data
-          }
+          this.allPluginList = resp.data
+          this.$message.success(resp.info)
         } else {
           this.$message.error(resp.info)
         }
@@ -410,60 +333,28 @@ export default {
         task: this.data.task_status,
         close_plugins: this.data.plugin_status,
       }
-      const loading = this.getLoading(".detail-info")
-      this.postRequest(`${this.$root.prefix}/manage/update_group`, data).then(
-        (resp) => {
-          if (resp) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-              this.getGroup(data.group_id)
-            }
+      const loading = this.getLoading('.detail-info')
+
+      this.postRequest(`${this.$root.prefix}/manage/update_group`, data)
+        .then((resp) => {
+          if (resp.suc) {
+            this.$message.success(resp.info)
+            this.getGroup(data.group_id)
           } else {
             this.$message.error(resp.info)
           }
-          loading.close()
-        }
-      )
+        })
+        .finally(() => loading.close())
     },
     getFriend(user_id) {
-      const loading = this.getLoading(".detail-info")
+      const loading = this.getLoading('.detail-info')
+
       this.getRequest(`${this.$root.prefix}/manage/get_friend_detail`, {
         bot_id: this.botId,
         user_id: user_id,
       }).then((resp) => {
         if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-            resp.data.name = resp.data.remark || resp.data.nickname
-            this.data = resp.data
-            this.detailType = "private"
-            this.$nextTick(() => {
-              this.likePluginChart = this.$echarts.init(
-                this.$refs.likePluginChart
-              )
-              const likePluginObj = resp.data.like_plugin
-              const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
-              const likePluginList = []
-              const likePlugin = Object.keys(likePluginObj).map((e) => {
-                likePluginList.push(e)
-                return {
-                  name: e,
-                  value: likePluginObj[e],
-                }
-              })
-              tmpOpt.yAxis.name = "次数"
-              tmpOpt.xAxis.name = "插件"
-              tmpOpt.xAxis.data = likePluginList
-              tmpOpt.series[0].data = likePlugin
-              this.likePluginChart.setOption(tmpOpt)
-              this.$emit("startChat", this.data)
-              this.handleResize()
-            })
-          }
+          this.processFriendData(resp.data)
         } else {
           this.$message.error(resp.info)
         }
@@ -474,177 +365,139 @@ export default {
       if (!this.allPluginList.length) {
         await this.getAllPluginList()
       }
-      const loading = this.getLoading(".detail-info")
+
+      const loading = this.getLoading('.detail-info')
+
       this.getRequest(`${this.$root.prefix}/manage/get_group_detail`, {
         bot_id: this.botId,
         group_id: group_id,
       }).then((resp) => {
         if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.tmpAllPluginList = JSON.parse(
-              JSON.stringify(this.allPluginList)
-            )
-            this.$message.success(resp.info)
-            resp.data.task_status = resp.data.task
-              .filter((e) => {
-                return e.status
-              })
-              .map((e) => {
-                return e.name
-              })
-            resp.data.plugin_status = resp.data.close_plugins.map((e) => {
-              return e.module
-            })
-            this.data = resp.data
-            if (this.data.close_plugins.length) {
-              let sbList = []
-              this.data.close_plugins.forEach((e) => {
-                if (e.is_super_block) {
-                  sbList.push(e.module)
-                }
-              })
-
-              this.tmpAllPluginList.forEach((e) => {
-                if (sbList.includes(e.module)) {
-                  e.plugin_name = e.plugin_name + "(超级用户禁用)"
-                }
-              })
-            }
-            this.detailType = "group"
-            this.$nextTick(() => {
-              this.likePluginChart = this.$echarts.init(
-                this.$refs.likePluginChart
-              )
-              const likePluginObj = resp.data.like_plugin
-              const tmpOpt = JSON.parse(JSON.stringify(this.chartOpt))
-              const likePluginList = []
-              const likePlugin = Object.keys(likePluginObj).map((e) => {
-                likePluginList.push(e)
-                return {
-                  name: e,
-                  value: likePluginObj[e],
-                }
-              })
-              tmpOpt.yAxis.name = "次数"
-              tmpOpt.xAxis.name = "插件"
-              tmpOpt.xAxis.data = likePluginList
-              tmpOpt.series[0].data = likePlugin
-              this.likePluginChart.setOption(tmpOpt)
-              this.$emit("startChat", this.data)
-              this.handleResize()
-            })
-          }
+          this.processGroupData(resp.data)
         } else {
           this.$message.error(resp.info)
         }
         loading.close()
       })
     },
+    processFriendData(data) {
+      data.name = data.remark || data.nickname
+      this.data = data
+      this.detailType = 'private'
+      this.initChart(data.like_plugin)
+      this.$emit('startChat', this.data)
+    },
+    processGroupData(data) {
+      this.tmpAllPluginList = [...this.allPluginList]
+      data.task_status = data.task.filter((e) => e.status).map((e) => e.name)
+      data.plugin_status = data.close_plugins.map((e) => e.module)
+
+      if (data.close_plugins.length) {
+        const sbList = data.close_plugins
+          .filter((e) => e.is_super_block)
+          .map((e) => e.module)
+        this.tmpAllPluginList.forEach((e) => {
+          if (sbList.includes(e.module)) {
+            e.plugin_name += '(超级用户禁用)'
+          }
+        })
+      }
+
+      this.data = data
+      this.detailType = 'group'
+      this.initChart(data.like_plugin)
+      this.$emit('startChat', this.data)
+    },
+    initChart(likePluginObj) {
+      this.$nextTick(() => {
+        if (!this.likePluginChart) {
+          this.likePluginChart = this.$echarts.init(this.$refs.likePluginChart)
+        }
+
+        const likePluginList = Object.keys(likePluginObj)
+        const chartOpt = cloneDeep(this.chartOpt)
+
+        chartOpt.xAxis.data = likePluginList
+        chartOpt.series[0].data = likePluginList.map((e) => ({
+          name: e,
+          value: likePluginObj[e],
+        }))
+
+        this.likePluginChart.setOption(chartOpt)
+        window.addEventListener('resize', this.resizeChart)
+      })
+    },
+    resizeChart() {
+      if (this.likePluginChart) {
+        this.likePluginChart.resize()
+      }
+    },
   },
-  destroyed() {
-    window.removeEventListener("resize", this.handleResize)
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener('resize', this.resizeChart)
+    if (this.likePluginChart) {
+      this.likePluginChart.dispose()
+    }
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.detail-info {
-  background-color: var(--bg-color);
-  padding: 40px 20px;
-  box-sizing: border-box;
-  height: 100%;
-  overflow-y: auto;
-
-  .empty {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .ava-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    .u-ava {
-      height: 100px;
-      width: 100px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .nickname {
-      font-size: 30px;
-      font-weight: 500;
-      margin-top: 20px;
-      color: var(--el-text-color-primary);
-    }
-  }
-
-  .base-info {
-    margin-top: 15px;
-    .base-info-item {
-      display: flex;
-      margin-left: 30px;
-      margin-top: 5px;
-
-      ::v-deep .el-divider--vertical {
-        height: 30px;
-      }
-
-      .a-divider {
-        margin-top: 6px;
-      }
-
-      .label {
-        color: var(--el-text-color-secondary);
-        font-size: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .value {
-        font-size: 25px;
-        margin-left: 10px;
-        color: var(--el-text-color-primary);
-      }
-    }
-  }
-  .base-chart {
-    width: 100%;
-    height: 360px;
-    background-color: var(--bg-color-secondary);
-    border-radius: 8px;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-
-  .account {
-    color: var(--el-color-white);
-    background-color: var(--el-color-primary);
-    padding: 6px;
-    margin-top: 13px;
-    border-radius: 5px;
-  }
-
-  /deep/ .el-col {
-    margin-top: 10px;
-  }
+<style scoped>
+/* 美化滚动条 */
+.detail-info::-webkit-scrollbar {
+  width: 6px;
 }
 
-.commit-btn {
-  float: right;
-  margin-top: 30px;
+.detail-info::-webkit-scrollbar-track {
+  background: rgba(251, 207, 232, 0.3);
+  border-radius: 3px;
 }
 
-.base-title {
-  color: var(--el-text-color-primary);
-  font-size: 20px;
-  margin-bottom: 20px;
-  margin-top: 50px;
+.detail-info::-webkit-scrollbar-thumb {
+  background: rgba(236, 72, 153, 0.5);
+  border-radius: 3px;
+}
+
+.detail-info::-webkit-scrollbar-thumb:hover {
+  background: rgba(236, 72, 153, 0.7);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .detail-info {
+    padding: 1rem;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<style>
+/* 可爱的下拉选择框样式 */
+.cute-select {
+  background-color: #fff !important;
+  border: 1px solid #e9d5ff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.cute-select .el-select-dropdown__item {
+  color: #7c3aed !important;
+  font-family: '"Comic Sans MS", cursive' !important;
+}
+
+.cute-select .el-select-dropdown__item.hover,
+.cute-select .el-select-dropdown__item:hover {
+  background-color: #f3e8ff !important;
+}
+
+.cute-select .el-select-dropdown__item.selected {
+  background-color: #e9d5ff !important;
+  color: #7c3aed !important;
+  font-weight: bold;
 }
 </style>

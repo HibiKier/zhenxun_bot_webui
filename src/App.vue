@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       windowHeight: window.innerHeight,
-      theme: 'light',
+      theme: "light",
     }
   },
   computed: {
@@ -26,43 +26,43 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.handleResize)
-    const savedTheme = localStorage.getItem('app-theme') || 'light';
-    this.setTheme(savedTheme);
+    const savedTheme = localStorage.getItem("app-theme") || "light"
+    this.setTheme(savedTheme)
   },
   methods: {
     handleResize() {
       this.windowHeight = window.innerHeight
     },
     setTheme(themeName) {
-      if (['light', 'dark', 'pink', 'one-dark'].includes(themeName)) {
-        this.theme = themeName;
-        localStorage.setItem('app-theme', themeName);
-        document.documentElement.setAttribute('data-theme', themeName);
+      if (["light", "dark", "pink", "one-dark"].includes(themeName)) {
+        this.theme = themeName
+        localStorage.setItem("app-theme", themeName)
+        document.documentElement.setAttribute("data-theme", themeName)
       } else {
-        console.warn(`Invalid theme name: ${themeName}. Defaulting to light.`);
-        this.setTheme('light');
+        console.warn(`Invalid theme name: ${themeName}. Defaulting to light.`)
+        this.setTheme("light")
       }
-    }
+    },
   },
   watch: {
     theme(newTheme) {
-      document.documentElement.setAttribute('data-theme', newTheme);
-    }
+      document.documentElement.setAttribute("data-theme", newTheme)
+    },
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
   },
   provide() {
     return {
-      setAppTheme: this.setTheme
-    };
-  }
+      setAppTheme: this.setTheme,
+    }
+  },
 }
 </script>
 
 <style lang="scss">
 // Import theme variables FIRST
-@import "@/styles/theme.scss"; 
+@import "@/styles/theme.scss";
 
 // Then apply global resets and base styles using variables
 

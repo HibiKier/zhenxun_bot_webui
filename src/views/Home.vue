@@ -1,115 +1,269 @@
 <template>
-  <div>
-    <el-container>
-      <el-aside class="left-aside" :class="{ show: asideShow }">
-        <img class="menu-pic" src="../assets/image/menu_pic.png" alt="菜单" />
-        <div class="myscrollbar">
-          <el-menu class="border-right-none" @select="handleSelect">
-            <el-menu-item
-              v-for="menu in menus"
-              :key="menu.module"
-              :index="menu.router"
-            >
-              <span :class="checkClass(menu.module)"></span>
-              <svg-icon
-                v-if="curSelectMenu == menu.router"
-                :icon-class="menu.icon + '-select'"
-                class="menu-icon-class"
-              />
-              <svg-icon
-                v-else
-                :icon-class="menu.icon"
-                class="menu-icon-class"
-              />
-              <span
-                slot="title"
-                :class="{ selectMenu: curSelectMenu == menu.router }"
-                >{{ menu.name }}</span
-              >
-            </el-menu-item>
-          </el-menu>
-        </div>
-      </el-aside>
-      <el-container
-        class="layoutbox"
-        :style="{ height: computedHeight + 'px' }"
+  <div class="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+    <div class="flex">
+      <!-- 侧边栏 -->
+      <aside
+        class="bg-white bg-opacity-90 backdrop-blur-sm shadow-xl fixed md:relative z-50 h-screen flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        :style="{
+          width: getMenuWidth(),
+          transform: getTransform(),
+        }"
       >
-        <el-header class="homeHeader">
-          <router-link class="to-myapi" :to="{ name: 'MyApi' }"
-            >地址设置</router-link
-          >
-          <div class="menu-btn" @click="showMenu">
-            <div class="btn-logo" :class="{ show: asideShow }"></div>
-            <div class="cover" :class="{ coverShow: coverShow }"></div>
-          </div>
-          <div class="change-account">
-            <div class="change-item">
-              <svg-icon icon-class="change" style="margin-right: 10px" />
-              <el-popover width="200" trigger="hover">
-                <div>
-                  <el-scrollbar style="height: 100%">
-                    <div
-                      v-for="bot in botList"
-                      :key="bot.bot_id"
-                      :class="{ 'bot-border': true, active: bot.is_select }"
-                      @click="getBotInfo(bot.self_id)"
-                    >
-                      <el-image :src="bot.ava_url" class="ava-img" />
-                      <div class="bot-name">
-                        <p>{{ bot.nickname }}</p>
-                        <span class="self-id">{{ bot.self_id }}</span>
-                      </div>
-                    </div>
-                  </el-scrollbar>
-                </div>
-                <span slot="reference" style="cursor: pointer">切换账号</span>
-              </el-popover>
+        <div class="flex flex-col h-full overflow-hidden">
+          <!-- 顶部内容 -->
+          <div class="flex-1 overflow-y-auto">
+            <div
+              class="p-4 flex justify-center"
+              style="height: 130px; margin-top: 20px"
+            >
+              <img
+                v-if="!isCollapsed"
+                class="w-48 h-24 object-contain animate-bounce-slow transition-opacity duration-300"
+                src="../assets/image/logo.png"
+                alt="Logo"
+              />
             </div>
 
-            <el-image :src="botInfo.ava_url" class="head-img" />
+            <div class="px-2 pb-4">
+              <el-menu
+                class="border-0 transition-all duration-300"
+                @select="handleSelect"
+                :background-color="'transparent'"
+                :text-color="'var(--text-color-secondary)'"
+                :active-text-color="'var(--primary-color)'"
+                :collapse="isCollapsed"
+                :collapse-transition="false"
+              >
+                <el-menu-item
+                  v-for="menu in menus"
+                  :key="menu.module"
+                  :index="menu.router"
+                  class="group hover:bg-pink-50 rounded-lg my-1 transition-all duration-300"
+                  style="display: flex"
+                >
+                  <div class="flex items-center w-full">
+                    <span
+                      class="h-8 w-1 rounded-full mr-4 transition-all duration-300"
+                      :class="{
+                        'bg-pink-400': curSelectMenu === menu.router,
+                        'bg-transparent': curSelectMenu !== menu.router,
+                      }"
+                    ></span>
+                    <svg-icon
+                      :icon-class="
+                        curSelectMenu === menu.router
+                          ? menu.icon + '-select'
+                          : menu.icon
+                      "
+                      class="w-6 h-6 transition-all duration-300"
+                      :class="{
+                        'text-pink-500': curSelectMenu === menu.router,
+                        'text-gray-500': curSelectMenu !== menu.router,
+                      }"
+                    />
+                    <span
+                      v-if="!isCollapsed"
+                      class="ml-3 text-lg font-medium transition-all duration-300"
+                      :class="{
+                        'text-pink-500 font-bold':
+                          curSelectMenu === menu.router,
+                        'text-gray-600': curSelectMenu !== menu.router,
+                      }"
+                      >{{ menu.name }}</span
+                    >
+                    <el-tooltip
+                      v-else
+                      effect="light"
+                      :content="menu.name"
+                      placement="right"
+                      popper-class="shadow-lg"
+                    >
+                      <span></span>
+                    </el-tooltip>
+                  </div>
+                </el-menu-item>
+              </el-menu>
+            </div>
           </div>
-          <div class="right-content">
-            <el-dropdown @command="handleThemeChange" trigger="click" style="margin-right: 15px;">
-              <span class="el-dropdown-link theme-switcher" title="切换主题">
-                 <i class="el-icon-magic-stick"></i>
+        </div>
+      </aside>
+
+      <!-- 主内容区 -->
+      <div
+        class="flex-1 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        :style="{
+          width: isCollapsed ? 'calc(100% - 5.5rem)' : 'calc(100% - 18.5rem)',
+          overflow: 'hidden',
+        }"
+      >
+        <!-- 顶部导航 -->
+        <header
+          class="bg-white bg-opacity-90 backdrop-blur-sm shadow-sm p-4 flex items-center justify-between sticky top-0 z-30"
+        >
+          <!-- 移动端菜单按钮 -->
+          <button
+            @click="toggleMenu"
+            class="md:hidden p-2 rounded-full hover:bg-pink-100 transition-all duration-300"
+          >
+            <svg-icon
+              :icon-class="!asideShow ? 'arrow-right' : 'arrow-left'"
+              class="w-5 h-5 text-pink-500 transition-transform duration-300"
+              :class="{ 'rotate-180': asideShow }"
+            />
+          </button>
+
+          <!-- 左侧功能区 -->
+          <div class="flex items-center space-x-4">
+            <!-- 桌面端菜单展开/收起按钮 -->
+            <button
+              v-if="!isMobile"
+              @click="toggleCollapse"
+              class="hidden md:flex items-center p-2 rounded-full hover:bg-pink-100 transition-all duration-300"
+            >
+              <svg-icon
+                :icon-class="isCollapsed ? 'arrow-right' : 'arrow-left'"
+                class="w-5 h-5 text-pink-500 transition-transform duration-300"
+                :class="{ 'rotate-180': isCollapsed }"
+              />
+            </button>
+
+            <!-- API地址设置按钮 -->
+            <router-link
+              :to="{ name: 'MyApi' }"
+              class="hidden md:flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full text-pink-600 hover:from-pink-200 hover:to-purple-200 transition-all duration-300 shadow-sm"
+            >
+              <svg-icon icon-class="server" class="w-5 h-5 mr-2" />
+              <span>地址设置</span>
+            </router-link>
+          </div>
+
+          <!-- 右侧功能区 -->
+          <div class="flex items-center space-x-4">
+            <!-- 主题切换 -->
+            <el-dropdown
+              @command="handleThemeChange"
+              trigger="click"
+              class="hover:bg-pink-100 rounded-full p-2 transition-all duration-300"
+            >
+              <span class="el-dropdown-link cursor-pointer">
+                <i class="el-icon-magic-stick text-xl text-pink-500"></i>
               </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="light"> <i class="el-icon-sunny" style="margin-right: 5px;"></i>亮色模式 </el-dropdown-item>
-                <el-dropdown-item command="dark"> <i class="el-icon-moon" style="margin-right: 5px;"></i>暗黑模式 </el-dropdown-item>
-                <el-dropdown-item command="pink"> <i class="el-icon-present" style="margin-right: 5px;"></i>少女粉 </el-dropdown-item>
-                <el-dropdown-item command="one-dark"> <i class="el-icon-monitor" style="margin-right: 5px;"></i>One Dark </el-dropdown-item>
+              <el-dropdown-menu
+                slot="dropdown"
+                class="shadow-lg rounded-xl overflow-hidden transition-all duration-300"
+              >
+                <el-dropdown-item
+                  v-for="theme in themes"
+                  :key="theme.value"
+                  :command="theme.value"
+                  class="flex items-center px-4 py-2 hover:bg-pink-50 transition-all duration-200"
+                >
+                  <i
+                    :class="theme.icon"
+                    class="mr-2"
+                    :style="{ color: theme.color }"
+                  ></i>
+                  <span>{{ theme.label }}</span>
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
 
-            <!-- User Info Dropdown -->
-            <el-dropdown @command="handleCommand">
-              <!-- Restore the trigger element for user dropdown -->
-              <span class="el-dropdown-link" style="cursor: pointer; display: flex; align-items: center;">
-                {{ botInfo.nickname || '用户' }} <i class="el-icon-arrow-down el-icon--right"></i>
+            <!-- 账号切换 -->
+            <el-popover
+              placement="bottom-end"
+              width="280"
+              trigger="hover"
+              popper-class="rounded-xl shadow-xl overflow-hidden transition-all duration-300"
+            >
+              <div class="max-h-96 overflow-y-auto custom-scrollbar">
+                <div
+                  v-for="bot in botList"
+                  :key="bot.bot_id"
+                  @click="getBotInfo(bot.self_id)"
+                  class="flex items-center p-3 hover:bg-pink-50 cursor-pointer transition-all duration-300"
+                  :class="{ 'bg-pink-100': bot.is_select }"
+                >
+                  <el-image
+                    :src="bot.ava_url"
+                    class="w-10 h-10 rounded-full object-cover border-2 border-pink-200 transition-all duration-300"
+                  />
+                  <div class="ml-3">
+                    <p class="font-medium text-gray-800">{{ bot.nickname }}</p>
+                    <span class="text-xs text-gray-500">{{ bot.self_id }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <template #reference>
+                <div class="flex items-center cursor-pointer group">
+                  <span
+                    class="mr-2 text-gray-700 group-hover:text-pink-500 transition-all duration-300"
+                  >
+                    切换账号
+                  </span>
+                  <el-image
+                    :src="botInfo.ava_url"
+                    class="w-10 h-10 rounded-full object-cover border-2 border-pink-300 shadow-sm transition-all duration-300"
+                  />
+                </div>
+              </template>
+            </el-popover>
+
+            <!-- 用户下拉菜单 -->
+            <el-dropdown
+              @command="dropdownClick"
+              trigger="click"
+              class="hover:bg-pink-100 rounded-full p-2 transition-all duration-300"
+            >
+              <span class="el-dropdown-link cursor-pointer flex items-center">
+                <span
+                  class="font-medium text-gray-700 mx-2 transition-all duration-300"
+                  >{{ botInfo.nickname || "用户" }}</span
+                >
+                <i
+                  class="el-icon-arrow-down text-pink-500 transition-transform duration-300"
+                ></i>
               </span>
-              <el-dropdown-menu slot="dropdown">
-                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-                 <!-- Add other user actions if needed -->
+              <el-dropdown-menu
+                slot="dropdown"
+                class="shadow-lg rounded-xl overflow-hidden transition-all duration-300"
+              >
+                <el-dropdown-item
+                  command="logout"
+                  class="flex items-center px-4 py-2 hover:bg-pink-50 text-red-500 transition-all duration-200"
+                >
+                  <i class="el-icon-switch-button mr-2"></i>
+                  <span>退出登录</span>
+                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-        </el-header>
-        <el-main class="my-main"
-          ><router-view class="homeRouterView" :key="rvKey"
-        /></el-main>
-      </el-container>
-    </el-container>
+        </header>
+
+        <!-- 主内容 - 添加平滑的边距过渡 -->
+        <main
+          class="flex-1 h-full p-0 bg-gradient-to-br from-pink-50 to-purple-50"
+          @click="handleMainClick"
+        >
+          <router-view
+            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 h-full"
+            :key="rvKey"
+          />
+        </main>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import EventBus from "@/utils/event-bus"
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: "Home",
+  name: "MainHome",
   data() {
     return {
-      asideShow: false,
-      coverShow: false,
+      asideShow: false, // 默认隐藏菜单栏，移动端会覆盖这个值
+      isCollapsed: false,
+      isMobile: false,
       rvKey: 0,
       menus: [],
       botList: [],
@@ -117,7 +271,41 @@ export default {
       curSelectMenu: null,
       firstLoad: true,
       windowHeight: window.innerHeight,
+      themes: [
+        {
+          value: "light",
+          label: "亮色模式",
+          icon: "el-icon-sunny",
+          color: "#F59E0B",
+        },
+        {
+          value: "dark",
+          label: "暗黑模式",
+          icon: "el-icon-moon",
+          color: "#6B7280",
+        },
+        {
+          value: "pink",
+          label: "少女粉",
+          icon: "el-icon-present",
+          color: "#EC4899",
+        },
+        {
+          value: "one-dark",
+          label: "One Dark",
+          icon: "el-icon-monitor",
+          color: "#7C3AED",
+        },
+      ],
     }
+  },
+  watch: {
+    asideShow() {
+      EventBus.$emit("sidebar-aside", {
+        asideShow: this.asideShow,
+        timestamp: Date.now(),
+      })
+    },
   },
   computed: {
     computedHeight() {
@@ -131,34 +319,85 @@ export default {
     this.getMenus()
     this.$store.dispatch("initStatusSocket")
     window.addEventListener("resize", this.handleResize)
+    this.checkScreenSize()
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
-    window.sessionStorage.removeItem("isAuthenticated")
+    // window.sessionStorage.removeItem("isAuthenticated")
   },
-  inject: ['setAppTheme'],
+  inject: ["setAppTheme"],
   methods: {
+    dropdownClick(cmd) {
+      if (cmd == "logout") {
+        window.sessionStorage.removeItem("isAuthenticated") // 清除登录状态
+        this.$message.success("已退出登录！")
+        this.$router.push("/")
+      }
+    },
+    getMenuWidth() {
+      if (this.isCollapsed) {
+        return this.isMobile ? "0rem" : "5.5rem"
+      }
+      return "13.5rem"
+    },
+    getTransform() {
+      if (this.isMobile) {
+        return this.asideShow ? "translateX(0)" : "translateX(-100%)"
+      }
+      return this.asideShow ? "translateX(0)" : "translateX(-1%)"
+    },
     handleResize() {
       this.windowHeight = window.innerHeight
+      this.checkScreenSize()
     },
-    checkClass(type) {
-      return {
-        "base-select-status": true,
-        "add-select-color": this.curSelectMenu == type,
+    checkScreenSize() {
+      this.isMobile = window.innerWidth <= 768
+
+      // 如果是移动设备或从桌面切换到移动设备
+      if (this.isMobile) {
+        this.$nextTick(() => {})
+        this.asideShow = false // 移动端默认隐藏菜单
+        this.isCollapsed = false // 移动端不折叠菜单
+      } else {
+        // 桌面端根据折叠状态显示菜单
+        this.asideShow = !this.isCollapsed
+      }
+    },
+    handleMainClick() {
+      if (this.isMobile) {
+        // 如果是移动端且菜单显示，点击主内容应该关闭菜单
+        if (this.asideShow) {
+          this.asideShow = false
+          document.body.style.overflow = ""
+        }
       }
     },
     handleSelect(index) {
-      this.asideShow = false
-      this.coverShow = false
+      if (this.isMobile) {
+        this.asideShow = false
+      }
       if (index.charAt(0) !== "/") {
         index = "/" + index
       }
       this.curSelectMenu = index
       this.$router.replace(index)
     },
-    showMenu() {
+    toggleMenu() {
       this.asideShow = !this.asideShow
-      this.coverShow = !this.coverShow
+      if (this.isMobile) {
+        document.body.style.overflow = this.asideShow ? "hidden" : ""
+      }
+    },
+    toggleCollapse() {
+      if (!this.isMobile) {
+        this.isCollapsed = !this.isCollapsed
+        localStorage.setItem("menuCollapsed", this.isCollapsed)
+
+        // 确保主内容宽度正确更新
+        this.$nextTick(() => {
+          this.asideShow = !this.isCollapsed
+        })
+      }
     },
     getMenus() {
       this.getRequest(`${this.$root.prefix}/menu/get_menus`).then((resp) => {
@@ -249,333 +488,140 @@ export default {
       })
     },
     handleThemeChange(command) {
-      if (typeof this.setAppTheme === 'function') {
-        this.setAppTheme(command);
+      if (typeof this.setAppTheme === "function") {
+        this.setAppTheme(command)
       } else {
-        console.error("setAppTheme function not provided/injected correctly.");
-      }
-    },
-    handleCommand(cmd) {
-      if (cmd == "logout") {
-        // ... logout logic ...
+        console.error("setAppTheme function not provided/injected correctly.")
       }
     },
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.my-main {
-  padding: 10px;
-  overflow-x: hidden;
-  box-sizing: border-box;
-  background-color: var(--bg-color);
-  // min-width: 2336px;
-  // min-height: 1167px;
+<style scoped>
+/* 自定义滚动条 */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-.el-menu-item {
-  color: var(--text-color-secondary);
-  &:hover {
-    background-color: var(--bg-color-hover);
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(236, 72, 153, 0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(236, 72, 153, 0.3);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(236, 72, 153, 0.5);
+}
+
+/* 缓慢弹跳动画 */
+@keyframes bounce-slow {
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  &.is-active {
-    color: var(--primary-color);
+  50% {
+    transform: translateY(-10px);
   }
-  span {
-    margin-left: 10px;
-    font-size: larger;
-    font-weight: bold;
+}
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
+}
+
+/* 菜单项悬停效果 */
+.el-menu-item:hover {
+  background-color: rgba(249, 168, 212, 0.2) !important;
+}
+.el-menu-item.is-active {
+  background-color: rgba(249, 168, 212, 0.1) !important;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .el-dropdown-link span {
+    display: none;
   }
 }
 
-.homeHeader {
-  position: relative;
-  // background-color: #409eff;
-  background-color: var(--bg-color-secondary);
+/* 折叠菜单样式 */
+.el-menu--collapse {
+  width: 80px;
+}
+.el-menu--collapse .el-menu-item {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0px 15px;
-  box-sizing: border-box;
-  .right-content {
-    display: flex;
-    align-items: center;
-  }
-}
-.el-menu {
-  border-right: none !important;
-  background-color: var(--bg-color-secondary);
-}
-.menu-btn {
-  display: none;
-  align-items: flex-end;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  padding-bottom: 0.6rem;
-  margin-right: 1rem;
+  padding: 0 10px !important;
 }
-.btn-logo {
-  position: relative;
-  width: 100%;
-  height: 0.2rem;
-  background: #5a9cf8;
-  /* box-shadow: 0 0.6rem 0 0 #fff,
-              0 -0.6rem 0 0 #fff; */
-}
-.btn-logo::before,
-.btn-logo::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: -0.6rem;
-  width: 100%;
-  height: 0.2rem;
-  background: #5a9cf8;
-  transition: all 0.2s ease;
-  transform-origin: center;
-}
-.btn-logo::after {
-  top: -1.2rem;
-}
-.show.btn-logo::before {
-  top: -0.9rem;
-  transform: rotate(-45deg);
-}
-.show.btn-logo::after {
-  top: -0.9rem;
-  transform: rotate(45deg);
-}
-.homeHeader .title {
-  font-size: 30px;
-  font-family: 宋体;
-  color: #adaeb0;
+.el-menu--collapse .el-menu-item .svg-icon {
+  margin-right: 0;
 }
 
-.left-aside {
-  background-color: var(--bg-color-secondary);
-  width: 14rem !important;
-  transition: all 0.2s ease;
-  border-right: 1px solid var(--border-color-light);
-  // border-right: 1px solid #000000;
+/* 淡入淡出动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
-.myscrollbar {
-  /* height: 100%; */
-  // margin-top: 59px;
-  // text-align: center;
-
-  .add-select-color {
-    background-color: var(--primary-color);
-  }
-
-  .svg-icon {
-    vertical-align: -7px;
-  }
-
-  .base-select-status {
-    margin-left: 0 !important;
-    display: inline-block;
-    width: 3px;
-    height: 100%;
-    margin-right: 30px;
-  }
-
-  ::v-deep .el-menu-item {
-    padding-left: 0 !important;
-
-    span {
-      font-weight: 400;
-    }
-    &.is-active span,
-    &.selectMenu span {
-        color: var(--primary-color);
-        font-weight: bold;
-    }
-    &.is-active svg {
-        color: var(--primary-color);
-    }
-  }
+/* 旋转动画 */
+.rotate-180 {
+  transform: rotate(180deg);
 }
-.layoutbox {
-  height: calc(100vh - 60px);
-  background-color: var(--bg-color);
+
+.aside-enter-active,
+.aside-leave-active {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.to-myapi {
-  width: 8rem;
-  height: 30px;
-  line-height: 30px;
-  font-size: 1rem;
-  text-decoration: none;
-  border-radius: 5px;
-  text-align: center;
-  display: inline-block;
-  padding: 0 15px;
-  box-sizing: border-box;
-  color: var(--el-text-color-regular);
-  background-color: var(--el-fill-color-blank);
-  border: 1px solid var(--el-border-color);
+.aside-enter,
+.aside-leave-to {
+  transform: translateX(-100%);
+}
+
+/* 菜单项动画 */
+.menu-item-animate {
   transition: all 0.3s ease;
-
-  &:hover {
-    color: var(--el-color-primary);
-    background-color: var(--el-color-primary-light-9);
-    border-color: var(--el-color-primary-light-7);
-  }
-}
-.border-right-none {
-  border-right: none !important;
+  transform-origin: left center;
 }
 
-.change-account {
-  justify-content: center;
-  align-items: center;
-  display: flex;
+/* 优化后的弹跳动画 */
+@keyframes smooth-bounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.05);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+.animate-smooth-bounce {
+  animation: smooth-bounce 3s infinite;
 }
 
-.change-item {
-  color: #adaeb0;
-  margin-right: 10px;
+/* 优化过渡曲线 */
+.smooth-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@media screen and (max-width: 1750px) {
-  .menu-btn {
-    display: flex;
-  }
-  .left-aside {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 0 !important;
-    height: calc(100vh - 60px);
-    z-index: 999999;
-  }
-  .show {
-    width: 14rem !important;
-  }
-  .cover {
-    position: fixed;
-    top: 60px;
-    right: 0;
-    height: calc(100vh - 60px);
-    width: 0%;
-    background-color: #00000080;
-    z-index: 9999;
-  }
-  .coverShow {
+.main-content {
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .main-content {
     width: 100%;
+    margin-left: 0;
   }
-  .to-myapi {
-    position: absolute;
-    right: 13rem;
-    top: 13px;
-  }
-}
-
-.menu-icon-class {
-  height: 25px;
-  width: 25px;
-  margin-top: 5px;
-}
-.bot-name {
-  margin-left: 60px;
-  margin-top: 4px;
-}
-.head-img {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  margin-right: 30px;
-}
-.ava-img {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  float: left;
-  margin-left: 10px;
-}
-.self-id {
-  color: #abb0ae;
-  font-size: small;
-}
-.bot-border {
-  width: 100%;
-  height: 50px;
-  align-items: center;
-  float: left;
-  padding-top: 5px;
-  cursor: pointer;
-}
-.active {
-  background-color: #e4e3e5;
-}
-
-.menu-pic {
-  width: 120px;
-  height: 170px;
-  margin-left: 50px;
-}
-
-.selectMenu {
-  font-weight: bold !important;
-  color: var(--primary-color) !important;
-}
-
-@media screen and (max-width: 600px) {
-  .menu-btn {
-    display: flex;
-  }
-  .left-aside {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 0 !important;
-    height: calc(100vh - 60px);
-    z-index: 999999;
-  }
-  .show {
-    width: 12rem !important;
-  }
-  .cover {
-    position: fixed;
-    top: 60px;
-    right: 0;
-    height: calc(100vh - 60px);
-    width: 0%;
-    background-color: #00000080;
-    z-index: 9999;
-  }
-  .coverShow {
-    width: 100%;
-  }
-}
-@media screen and (max-width: 600px) {
-  .title {
-    font-size: 1.4rem !important;
-  }
-  .loginContainer {
-    width: calc(100vw - 10rem);
-    top: calc(30%);
-  }
-  .to-myapi {
-    width: 6rem !important;
-    font-size: 1rem !important;
-    border: 2px solid #fff !important;
-  }
-}
-
-.theme-switcher {
-    cursor: pointer;
-    font-size: 20px; /* Adjust icon size */
-    color: var(--el-text-color-primary); /* Use variable for color */
-}
-
-/* Style for dropdown link when active/hover if needed */
-.el-dropdown-link {
-  cursor: pointer;
-  /* color: #409eff; */
-}
-.el-icon-arrow-down {
-  font-size: 12px;
 }
 </style>

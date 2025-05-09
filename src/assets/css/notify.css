@@ -1,0 +1,115 @@
+/* 可爱字体（推荐使用系统自带可爱字体，或引入Web字体） */
+/* @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&display=swap'); */
+
+/* 基础通知样式 */
+.kawaii-notify {
+  /* font-family: 'Mochiy Pop P One', 'Comic Sans MS', cursive, sans-serif !important; */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(255, 155, 243, 0.3) !important;
+  padding: 15px !important;
+  border: 2px solid transparent !important;
+  background-image: linear-gradient(
+    135deg,
+    #fff9fc 0%,
+    #ffebf7 50%,
+    #ffd6f1 100%
+  ) !important;
+  animation: floatIn 0.5s ease-out, shake 0.3s ease-in-out 0.5s;
+}
+
+/* 标题样式 */
+.kawaii-notify .el-notification__title {
+  color: #ff66b2 !important;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 1px 1px 2px rgba(255, 192, 203, 0.7);
+}
+
+/* 消息内容样式 */
+.kawaii-notify .el-notification__content {
+  color: #ff85a2 !important;
+  font-size: 16px;
+  margin-top: 8px !important;
+}
+
+/* 不同类型通知的颜色区分 */
+.kawaii-notify.success {
+  background-image: linear-gradient(
+    135deg,
+    #f0fff4 0%,
+    #e6ffed 50%,
+    #d0ffdf 100%
+  ) !important;
+  border: 2px solid #a0e9a0 !important;
+}
+.kawaii-notify.success .el-notification__title {
+  color: #5cb85c !important;
+}
+
+.kawaii-notify.warning {
+  background-image: linear-gradient(
+    135deg,
+    #fff9e6 0%,
+    #fff2cc 50%,
+    #ffe699 100%
+  ) !important;
+  border: 2px solid #ffdb4d !important;
+}
+.kawaii-notify.warning .el-notification__title {
+  color: #f0ad4e !important;
+}
+
+.kawaii-notify.error {
+  background-image: linear-gradient(
+    135deg,
+    #fff0f0 0%,
+    #ffdddd 50%,
+    #ffc9c9 100%
+  ) !important;
+  border: 2px solid #ff9999 !important;
+}
+.kawaii-notify.error .el-notification__title {
+  color: #ff6666 !important;
+}
+
+/* 关闭按钮样式 */
+.kawaii-notify .el-notification__closeBtn {
+  color: #ff99cc !important;
+  font-size: 16px;
+}
+.kawaii-notify .el-notification__closeBtn:hover {
+  color: #ff66b2 !important;
+}
+
+/* 动画效果 */
+@keyframes floatIn {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-3px);
+  }
+  40%,
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+/* 鼠标悬停时轻微弹跳 */
+.kawaii-notify:hover {
+  transform: scale(1.02) !important;
+  transition: all 0.2s ease;
+}

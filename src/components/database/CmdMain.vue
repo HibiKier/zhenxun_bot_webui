@@ -1,112 +1,175 @@
 <template>
-  <div class="cmd-main" ref="cmdMain">
-    <div class="btn-group" ref="btnGroup">
+  <div
+    class="cmd-main p-4 bg-gradient-to-br from-pink-50 to-purple-50 h-full"
+    ref="cmdMain"
+  >
+    <!-- 按钮组 - 使用MyButton组件 -->
+    <div class="btn-group flex flex-wrap gap-2 mb-4" ref="btnGroup">
       <my-button
-        icon="play"
-        class="btn"
-        :width="40"
-        :height="32"
+        icon="exec"
+        text="执行"
+        type="success"
+        :rounded="$isMobile() ? 'md' : 'lg'"
+        :width="$isMobile() ? 80 : 100"
+        :height="36"
+        glow
         @click="execSql"
-        content="执行"
       />
+
       <my-button
-        icon="delete"
-        content="删除"
-        class="btn"
-        :width="40"
-        :height="32"
-        @click="
-          () => {
-            sqlMessage = ''
-          }
-        "
+        icon="clear4"
+        text="清空"
+        type="danger"
+        :rounded="$isMobile() ? 'md' : 'lg'"
+        :width="$isMobile() ? 80 : 100"
+        :height="36"
+        @click="sqlMessage = ''"
       />
-      <el-popover placement="right" width="400" trigger="click">
-        <div>
-          <p class="small-title">常用sql</p>
-          <el-tooltip
-            v-for="(n, i) in commonSqlList"
-            :key="i"
-            class="item"
-            effect="dark"
-            :content="n.remark"
-            placement="top-start"
+
+      <el-popover
+        placement="right"
+        width="400"
+        trigger="click"
+        popper-class="anime-popover"
+      >
+        <div class="p-4 bg-white rounded-xl shadow-lg border-2 border-pink-200">
+          <p
+            class="small-title text-center text-purple-600 font-bold mb-3 border-b-2 border-pink-200 pb-2"
           >
-            <div class="common-sql-item" @click="copyHistory(n.sql)">
-              <p>{{ n.sql }}</p>
-            </div>
-          </el-tooltip>
+            常用SQL
+          </p>
+          <div class="max-h-60 overflow-y-auto pr-2">
+            <el-tooltip
+              v-for="(n, i) in commonSqlList"
+              :key="i"
+              effect="dark"
+              :content="n.remark"
+              placement="top-start"
+            >
+              <div
+                class="common-sql-item p-3 mb-2 rounded-lg bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-100 hover:border-pink-300 transition-all cursor-pointer"
+                @click="copyHistory(n.sql)"
+              >
+                <p class="text-sm text-purple-800 font-mono">{{ n.sql }}</p>
+              </div>
+            </el-tooltip>
+          </div>
         </div>
+
         <my-button
           slot="reference"
-          icon="notebook"
-          class="btn"
-          :width="40"
-          :height="32"
-          content="常用SQL"
+          icon="text"
+          text="常用SQL"
+          type="warning"
+          :rounded="$isMobile() ? 'md' : 'lg'"
+          :width="$isMobile() ? 120 : 100"
+          :height="36"
         />
       </el-popover>
     </div>
-    <div class="cmd-main-box" ref="cmdMainBox">
-      <el-row>
-        <el-col :span="12">
-          <div class="cmd">
+    <!-- 主内容区域 -->
+    <div
+      class="cmd-main-box bg-white rounded-xl shadow-lg p-4 md:p-6 border-2 border-pink-200"
+      ref="cmdMainBox"
+      :style="{ height: sizeMana.mainBoxHeight + 'px' }"
+    >
+      <el-row :gutter="16">
+        <el-col :span="24" :md="12">
+          <div class="cmd h-full">
             <el-input
               v-model="sqlMessage"
               :rows="10"
               type="textarea"
               resize="none"
-              :style="{ height: sizeMana.inputHeight + 'px' }"
+              class="anime-textarea"
+              :style="{ height: sizeMana.inputHeight - 50 + 'px' }"
+              placeholder="输入SQL命令... ✍(◔◡◔)"
             ></el-input>
           </div>
         </el-col>
-        <el-col :span="12">
-          <div class="history">
-            <p class="title">历史记录</p>
+        <el-col :span="24" :md="12" class="mt-4 md:mt-0">
+          <div
+            class="history h-full flex flex-col border-2 border-blue-200 rounded-xl p-4 bg-gradient-to-b from-blue-50 to-purple-50"
+          >
+            <p
+              class="title text-center text-blue-600 font-bold mb-3 border-b-2 border-blue-200 pb-2"
+            >
+              历史记录 <span class="text-purple-400">(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧</span>
+            </p>
             <div
-              class="history-box"
-              :style="{ height: sizeMana.topHeight + 'px' }"
+              class="history-box flex-grow overflow-y-auto"
+              :style="{ height: sizeMana.topHeight - 40 + 'px' }"
             >
               <div
                 v-for="(n, index) in historyList"
                 :key="index"
-                class="history-item"
+                class="history-item p-3 mb-2 rounded-lg bg-white border border-blue-100 hover:border-blue-300 transition-all cursor-pointer"
                 @click="copyHistory(n.sql)"
               >
-                <p>{{ n.sql }}</p>
+                <p class="text-sm text-blue-800 font-mono">{{ n.sql }}</p>
               </div>
             </div>
-            <div class="pagination">
+            <div class="pagination mt-3">
               <el-pagination
                 layout="prev, pager, next"
                 :total="historyTotal"
                 @current-change="getSqlLog"
                 :current-page.sync="historyIndex"
-              >
-              </el-pagination>
+                class="anime-pagination"
+                small
+                :pager-count="$isMobile() ? 3 : 5"
+              ></el-pagination>
             </div>
           </div>
         </el-col>
       </el-row>
     </div>
-    <el-divider></el-divider>
+
+    <!-- 分割线 - 可爱风格 -->
+    <div class="my-4 relative">
+      <div
+        class="h-1 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-full"
+      ></div>
+      <div
+        class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 text-pink-500 font-bold"
+      >
+        执行结果
+      </div>
+    </div>
+
+    <!-- 结果区域 -->
     <div
-      class="result-box"
+      class="result-box bg-white rounded-xl shadow-lg p-4 md:p-6 border-2 border-purple-200 mt-4"
       ref="resultBox"
-      :style="{ height: sizeMana.resultHeight + 'px' }"
+      :style="{
+        height: sizeMana.resultHeight + 40 + 'px',
+        overflow: 'auto',
+      }"
     >
-      <p v-if="info" class="error-info">
+      <p
+        v-if="info"
+        class="error-info p-4 rounded-lg bg-red-100 border-2 border-red-200 text-red-600"
+      >
         {{ info }}
       </p>
-      <div v-else-if="!resultData.length" class="empty">
+      <div
+        v-else-if="!resultData.length"
+        class="empty h-full flex items-center justify-center"
+      >
         <el-empty
-          :image-size="350"
+          :image-size="$isMobile() ? 200 : 350"
           :image="require('../../assets/image/empty.png')"
           description="空空如也 ┐(ﾟ～ﾟ)┌ "
+          class="anime-empty"
         ></el-empty>
       </div>
       <template v-else>
-        <el-table :data="resultData" border :height="sizeMana.resultHeight">
+        <el-table
+          :data="resultData"
+          border
+          :height="sizeMana.resultHeight - 13"
+          class="anime-table"
+        >
           <el-table-column
             v-for="c in columns"
             :label="c"
@@ -140,6 +203,8 @@ export default {
         inputHeight: 90,
         resultHeight: 90,
       },
+      windowWidth: window.innerWidth,
+      maxResultHeight: 0,
     }
   },
   mounted() {
@@ -149,16 +214,47 @@ export default {
     if (this.$store.state.botType == "zhenxun") {
       this.getCommonSql()
     }
+    this.windowWidth = window.innerWidth
+    window.addEventListener("resize", this.updateWindowWidth)
   },
   methods: {
+    updateWindowWidth() {
+      this.windowWidth = window.innerWidth
+    },
     handleResize() {
-      this.sizeMana.topHeight = this.$refs.cmdMainBox.offsetHeight - 132
-      this.sizeMana.inputHeight = this.$refs.cmdMainBox.offsetHeight
-      this.sizeMana.resultHeight =
-        this.$refs.cmdMain.offsetHeight -
-        this.$refs.btnGroup.offsetHeight -
-        this.$refs.cmdMainBox.offsetHeight -
-        80
+      this.$nextTick(() => {
+        const cmdMainHeight = this.$refs.cmdMain.offsetHeight
+        const btnGroupHeight = this.$refs.btnGroup.offsetHeight
+        const spacing = this.$isMobile() ? 100 : 120
+
+        // 计算可用总高度（减去按钮组和间距）
+        const availableHeight = cmdMainHeight - btnGroupHeight - spacing
+
+        // 计算1:2比例的高度
+        const desiredMainHeight = availableHeight * 0.33
+        const desiredResultHeight = availableHeight - desiredMainHeight
+
+        // 设置主内容区域高度（最小200px）
+        this.sizeMana.mainBoxHeight = Math.max(desiredMainHeight, 280)
+
+        // 计算实际可用的结果区域高度
+        const remainingHeight =
+          cmdMainHeight - btnGroupHeight - this.sizeMana.mainBoxHeight - spacing
+
+        // 设置结果区域高度（不超过剩余空间，最小400px）
+        this.sizeMana.resultHeight = Math.max(
+          Math.min(desiredResultHeight, remainingHeight),
+          100
+        )
+
+        // 更新最大结果高度限制
+        this.maxResultHeight = remainingHeight
+
+        // 调整内部元素高度
+        this.sizeMana.topHeight =
+          this.sizeMana.mainBoxHeight - (this.$isMobile() ? 160 : 132)
+        this.sizeMana.inputHeight = this.sizeMana.mainBoxHeight
+      })
     },
     getCommonSql() {
       this.getRequest(`${this.$root.prefix}/database/get_common_sql`).then(
@@ -177,7 +273,10 @@ export default {
       )
     },
     copyHistory(n) {
-      this.$message.success("复制成功")
+      this.$message.success({
+        message: "复制成功 (●ˊωˋ●)",
+        customClass: "anime-message",
+      })
       this.sqlMessage = n
     },
     formatBoolean(row, i, cellValue) {
@@ -185,39 +284,50 @@ export default {
     },
     execSql() {
       if (!this.sqlMessage || !this.sqlMessage.trim()) {
+        this.$message.warning({
+          message: "请输入SQL命令哦 (｡•́︿•̀｡)",
+          customClass: "anime-message",
+        })
         return
       }
       const loading = this.getLoading(".result-box")
-      // 执行sql
       this.postRequest(`${this.$root.prefix}/database/exec_sql`, {
         sql: this.sqlMessage,
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
-            this.$message.warning(resp.warning)
+            this.$message.warning({
+              message: resp.warning,
+              customClass: "anime-message",
+            })
             this.info = resp.warning
           } else {
             this.info = ""
             this.resultData = []
             this.columns = []
-            this.$message.success(resp.info)
+            this.$message.success({
+              message: resp.info,
+              customClass: "anime-message",
+            })
             if (resp.data && resp.data.length) {
               this.columns = Object.keys(resp.data[0])
             }
             this.resultData = resp.data
             if (!this.sqlMessage.toLowerCase().startsWith("select")) {
-              this.info = "执行成功!"
+              this.info = "执行成功! ✧*。٩(ˊωˋ*)و✧*。"
             }
           }
           this.getSqlLog()
         } else {
-          this.$message.error(resp.info)
+          this.$message.error({
+            message: resp.info,
+            customClass: "anime-message",
+          })
         }
         loading.close()
       })
     },
     getSqlLog() {
-      // 获取sql日志
       const loading = this.getLoading(".history")
       this.postRequest(`${this.$root.prefix}/database/get_sql_log`, {
         index: this.historyIndex,
@@ -225,14 +335,23 @@ export default {
       }).then((resp) => {
         if (resp.suc) {
           if (resp.warning) {
-            this.$message.warning(resp.warning)
+            this.$message.warning({
+              message: resp.warning,
+              customClass: "anime-message",
+            })
           } else {
-            this.$message.success(resp.info)
+            this.$message.success({
+              message: resp.info,
+              customClass: "anime-message",
+            })
             this.historyTotal = resp.data.total
             this.historyList = resp.data.data
           }
         } else {
-          this.$message.error(resp.info)
+          this.$message.error({
+            message: resp.info,
+            customClass: "anime-message",
+          })
         }
         loading.close()
       })
@@ -240,202 +359,61 @@ export default {
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener("resize", this.updateWindowWidth)
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.small-title {
-  font-size: 14px;
-  color: var(--el-text-color-secondary);
-  text-align: center;
-  border: 1px solid var(--el-border-color-light);
-  padding: 5px;
-  border-radius: 10px;
-  margin: 5px;
-}
-
-.common-sql-item {
-  border: 1px solid var(--el-border-color-light);
-  padding: 10px;
-  border-radius: 10px;
-  margin-top: 5px;
-  cursor: pointer;
-  color: var(--el-text-color-regular);
-  background-color: var(--el-fill-color-blank);
-  &:hover {
-    background-color: var(--el-fill-color-lighter);
+<style scoped>
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .cmd-main {
+    padding: 1rem !important;
+    height: auto !important;
+    overflow-y: auto;
   }
-}
 
-.cmd-main {
-  padding: 30px 30px 0 30px;
-  box-sizing: border-box;
-
-  .btn-group {
-    display: flex;
-    margin-bottom: 5px;
-    .btn {
-      margin-right: 5px;
-    }
-  }
-  .title {
-    font-size: 20px;
-    color: var(--el-text-color-secondary);
-    text-align: center;
-    border: 1px solid var(--el-border-color-light);
-    padding: 5px;
-    border-radius: 10px;
-    margin: 10px;
-  }
   .cmd-main-box {
-    height: 40%;
-    .cmd {
-      /deep/ .el-textarea__inner {
-        border-radius: 10px;
-        background-color: var(--el-textarea-bg-color);
-        color: var(--el-input-text-color, var(--el-text-color-regular));
-        border-color: var(--el-border-color);
-        box-shadow: none;
-        &:focus {
-          border-color: var(--el-color-primary);
-          box-shadow: 0 0 0 1px var(--el-color-primary) inset;
-        }
-      }
-    }
-
-    /deep/ textarea {
-      height: 100%;
-    }
-
-    .history {
-      box-sizing: border-box;
-      margin-left: 10px;
-      border: 1px solid var(--el-border-color);
-      border-radius: 10px;
-      padding: 10px;
-      background-color: var(--el-bg-color-overlay);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-
-      .title {
-        margin: 0 0 10px 0;
-      }
-
-      .history-box {
-        overflow: auto;
-        flex-grow: 1;
-        margin-bottom: 10px;
-
-        .history-item {
-          border: 1px solid var(--el-border-color-light);
-          padding: 8px 10px;
-          border-radius: 5px;
-          margin-top: 5px;
-          cursor: pointer;
-          color: var(--el-text-color-regular);
-          background-color: var(--el-fill-color-blank);
-          transition: background-color 0.2s;
-          &:hover {
-            background-color: var(--el-fill-color-lighter);
-          }
-        }
-      }
-
-      .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
+    height: auto !important;
+    margin-bottom: 1rem;
   }
 
   .result-box {
-    background-color: var(--el-bg-color);
+    margin-top: 1rem !important;
+    height: auto !important;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  ::v-deep .anime-empty .el-empty__image {
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  ::v-deep .anime-table {
     width: 100%;
-    overflow: auto;
-    border-radius: 10px;
-    border: 1px solid var(--el-border-color);
-    padding: 10px;
-    box-sizing: border-box;
+    overflow-x: auto;
+  }
 
-    .error-info {
-      margin: 24px;
-      color: var(--el-color-danger);
-    }
+  ::v-deep .anime-table .el-table__body-wrapper {
+    overflow-x: auto;
+  }
 
-    .empty {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /deep/ .el-empty {
-      box-sizing: border-box;
-    }
+  .history-box {
+    max-height: 300px;
+    overflow-y: auto;
   }
 }
 
-.history ::v-deep .el-pagination button,
-.history ::v-deep .el-pager li {
-  background: var(--el-fill-color-blank);
-  color: var(--el-text-color-regular);
-  &:hover {
-    color: var(--el-color-primary);
-  }
-  &:disabled {
-    color: var(--el-text-color-disabled);
-  }
+/* 动画效果 */
+.common-sql-item:hover,
+.history-item:hover {
+  transform: translateX(4px);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.history ::v-deep .el-pager li.active {
-  background: var(--el-color-primary);
-  color: var(--el-color-white);
-  &:hover {
-     color: var(--el-color-white);
-  }
-}
-
-.result-box ::v-deep .el-table,
-.result-box ::v-deep .el-table__expanded-cell {
-  background-color: transparent;
-}
-
-.result-box ::v-deep .el-table th,
-.result-box ::v-deep .el-table tr,
-.result-box ::v-deep .el-table td {
-  background-color: transparent !important;
-  color: var(--el-text-color-regular);
-  border-color: var(--el-border-color-light);
-}
-
-.result-box ::v-deep .el-table th {
-  background-color: var(--el-fill-color-lighter) !important;
-  color: var(--el-text-color-primary);
-}
-
-.result-box ::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: var(--el-fill-color-lighter) !important;
-}
-
-.result-box ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
-  background-color: var(--el-table-row-hover-bg-color) !important;
-}
-
-.result-box ::v-deep .el-table--border::after,
-.result-box ::v-deep .el-table--group::after,
-.result-box ::v-deep .el-table::before {
-    background-color: var(--el-border-color-light);
-}
-.result-box ::v-deep .el-table--border th.is-leaf,
-.result-box ::v-deep .el-table--border td {
-    border-bottom: 1px solid var(--el-border-color-light);
-}
-.result-box ::v-deep .el-table--border th,
-.result-box ::v-deep .el-table--border td {
-    border-right: 1px solid var(--el-border-color-light);
+.common-sql-item,
+.history-item {
+  transition: all 0.3s ease;
 }
 </style>

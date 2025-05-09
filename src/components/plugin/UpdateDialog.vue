@@ -1,136 +1,164 @@
 <template>
   <el-dialog
-    class="dialog-class"
-    :width="dialogWidth"
     :visible.sync="visible"
     @close="close"
+    :class="{
+      'dialog-class': true,
+      'neko-dialog': true,
+      'limit-width': !updateData.config_list || !updateData.config_list.length,
+    }"
   >
-    <OneMark />
     <div class="main">
-      <div>
-        <p class="plugin-name-class">
-          {{ updateData.plugin_name
-          }}<span class="version-class">v{{ updateData.version }}</span>
-        </p>
-        <p style="color: #b8bac0">
-          {{ updateData.module
-          }}<span class="author-class" v-if="updateData.author"
-            >@{{ updateData.author }}</span
-          >
+      <!-- 添加二次元装饰元素 -->
+      <div class="decoration deco-1"></div>
+      <div class="decoration deco-3"></div>
+
+      <div class="header-section">
+        <div class="title-wrapper">
+          <p class="plugin-name-class">
+            {{ updateData.plugin_name }}
+            <span class="version-class">v{{ updateData.version }}</span>
+          </p>
+        </div>
+        <p class="module-info">
+          {{ updateData.module }}
+          <span class="author-class" v-if="updateData.author">
+            @{{ updateData.author }}
+          </span>
         </p>
       </div>
-      <div class="update-info">
-        <div class="base-setting">
-          <p class="base-title">基础配置</p>
+
+      <div class="update-info mt-8 flex flex-col md:flex-row">
+        <!-- 基础配置区域 -->
+        <div class="base-setting w-full">
+          <div class="section-title">
+            <span class="title-text">基础配置</span>
+            <div class="title-decoration"></div>
+          </div>
           <el-form :model="updateData" :rules="rules" ref="form">
             <el-row>
-              <el-col :span="12" prop="default_status">
+              <el-col span="24 md:span-12" prop="default_status">
                 <el-form-item>
-                  <div>
-                    <span slot="label">默认开关</span>
+                  <div class="form-item-cute">
+                    <span class="label-text">默认开关</span>
                     <MySwitch v-model="updateData.default_status" />
+                    <span class="emoji">💡</span>
                   </div>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col span="24 md:span-12">
                 <el-form-item prop="limit_superuser">
-                  <div>
-                    <span slot="label">限制超级用户</span>
+                  <div class="form-item-cute">
+                    <span class="label-text">限制超级用户</span>
                     <MySwitch v-model="updateData.limit_superuser" />
+                    <span class="emoji">👑</span>
                   </div>
                 </el-form-item>
               </el-col>
             </el-row>
+
             <template v-if="this.$store.state.botType == 'zhenxun'">
               <el-row>
-                <el-col :span="12">
+                <el-col span="24 md:span-12">
                   <el-form-item prop="cost_gold">
-                    <div>
-                      <span slot="label">花费金币</span>
-                      <el-input
+                    <div class="form-item-cute">
+                      <span class="label-text">花费金币</span>
+                      <neon-input
                         v-model="updateData.cost_gold"
-                        placeholder="花费金币"
-                      ></el-input>
+                        placeholder="0"
+                        class="mt-1 cute-input"
+                      />
+                      <span class="emoji">💰</span>
                     </div>
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col span="24 md:span-12">
                   <el-form-item prop="menu_type">
-                    <div>
-                      <span slot="label">菜单类型</span>
-                      <el-select
+                    <div class="form-item-cute">
+                      <span class="label-text">菜单类型</span>
+                      <neko-select
                         v-model="updateData.menu_type"
-                        placeholder="菜单类型"
-                      >
-                        <el-option
-                          v-for="data in menuTypeList"
-                          :label="data"
-                          :value="data"
-                          :key="data"
-                        ></el-option>
-                      </el-select>
+                        placeholder="选择类型"
+                        class="mt-1 cute-select"
+                        :options="menuTypeOptions"
+                      />
+                      <span class="emoji">📋</span>
                     </div>
                   </el-form-item>
                 </el-col>
               </el-row>
             </template>
+
             <el-row>
-              <el-col :span="12" v-if="this.$store.state.botType == 'zhenxun'">
+              <el-col
+                span="24 md:span-12"
+                v-if="this.$store.state.botType == 'zhenxun'"
+              >
                 <el-form-item prop="level">
-                  <div>
-                    <span slot="label">群权限</span>
-                    <el-select
+                  <div class="form-item-cute">
+                    <span class="label-text">群权限</span>
+                    <neko-select
                       v-model="updateData.level"
-                      placeholder="禁用类型"
-                      clearable
-                    >
-                      <el-option
-                        v-for="n in 10"
-                        :label="n"
-                        :value="n"
-                        :key="n"
-                      ></el-option>
-                    </el-select>
+                      placeholder="选择等级"
+                      class="mt-1 cute-select"
+                      :options="levelOptions"
+                    />
+                    <span class="emoji">🔒</span>
                   </div>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col span="24 md:span-12">
                 <el-form-item prop="block_type">
-                  <div>
-                    <span slot="label">禁用类型</span>
-                    <el-select
+                  <div class="form-item-cute">
+                    <span class="label-text">禁用类型</span>
+                    <neko-select
                       v-model="updateData.block_type"
-                      placeholder="禁用类型"
+                      placeholder="选择类型"
+                      class="mt-1 cute-select"
+                      :options="blockTypeOptions"
                       clearable
-                    >
-                      <el-option label="全部" value="ALL"></el-option>
-                      <el-option label="群聊" value="GROUP"></el-option>
-                      <el-option label="私聊" value="PRIVATE"></el-option>
-                    </el-select>
+                    />
+                    <span class="emoji">🚫</span>
                   </div>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form>
         </div>
+
+        <!-- 配置项区域 -->
         <div
-          class="config-setting"
+          class="config-setting mt-8 md:mt-0 md:ml-8 w-full md:w-1/2"
           v-if="updateData.config_list && updateData.config_list.length"
         >
-          <p class="base-title" style="margin-left: 0">配置项</p>
-          <div class="config-table">
-            <el-table :data="updateData.config_list" border height="268">
+          <div class="section-title">
+            <span class="title-text">配置项</span>
+            <div class="title-decoration"></div>
+          </div>
+          <div class="config-table cute-scroll">
+            <el-table
+              :data="updateData.config_list"
+              border
+              class="neko-table"
+              height="470"
+            >
               <el-table-column
                 label="键"
                 prop="key"
                 min-width="100px"
+                header-class-name="neko-table-header"
               ></el-table-column>
               <el-table-column
                 label="帮助"
                 prop="help"
                 min-width="200px"
+                header-class-name="neko-table-header"
               ></el-table-column>
-              <el-table-column label="默认值" prop="default_value">
+              <el-table-column
+                label="默认值"
+                prop="default_value"
+                header-class-name="neko-table-header"
+              >
                 <template slot-scope="{ row }">
                   {{
                     row.default_value + "" != "null"
@@ -139,7 +167,11 @@
                   }}
                 </template>
               </el-table-column>
-              <el-table-column label="值" min-width="140px">
+              <el-table-column
+                label="值"
+                min-width="140px"
+                header-class-name="neko-table-header"
+              >
                 <template slot-scope="scope">
                   <AutoComponent
                     :ref="'autoComponent_' + scope.$index"
@@ -154,36 +186,53 @@
         </div>
       </div>
     </div>
-    <el-divider />
-    <div class="footer">
-      <MyButton text="取消" @click="close" :width="120" />
-      <MyButton
-        text="确定"
-        style="margin-left: 50px"
-        :width="120"
+
+    <el-divider class="neko-divider">
+      <div class="divider-content">✨ 配置选项 ✨</div>
+    </el-divider>
+
+    <div class="footer flex justify-center items-center py-4">
+      <CuteButton
+        icon="cancel"
+        @click="close"
+        :rounded="true"
+        color="#A0A0A0"
+        text-color="#fff"
+      >
+        取消
+      </CuteButton>
+
+      <CuteButton
+        class="confirm-btn ml-4 md:ml-12"
         @click="commit"
-      />
+        type="primary"
+        :rounded="true"
+        icon="true"
+        >确定
+      </CuteButton>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import MySwitch from "@/components/ui/MySwitch"
-import MyButton from "@/components/ui/MyButton"
-import OneMark from "@/components/ui/OneMark"
 import AutoComponent from "./AutoComponent.vue"
+import NeonInput from "@/components/ui/NeonInput.vue"
+import NekoSelect from "@/components/ui/NekoSelect.vue"
+import MySwitch from "@/components/ui/MySwitch.vue"
+import CuteButton from "@/components/ui/CuteButton.vue"
 import { checkConfig } from "@/utils/check"
 
 export default {
-  name: "UpdateDialog",
+  name: "NekoPluginDialog",
   props: {
     module: String,
   },
   components: {
-    MySwitch,
-    MyButton,
     AutoComponent,
-    OneMark,
+    "neon-input": NeonInput,
+    "neko-select": NekoSelect,
+    MySwitch,
+    CuteButton,
   },
   data() {
     var checkCostGold = (rule, value, callback) => {
@@ -199,6 +248,16 @@ export default {
       dialogWidth: "1300px",
       visible: false,
       menuTypeList: [],
+      menuTypeOptions: [],
+      levelOptions: Array.from({ length: 10 }, (_, i) => ({
+        value: i + 1,
+        label: `等级 ${i + 1}`,
+      })),
+      blockTypeOptions: [
+        { value: "ALL", label: "全部" },
+        { value: "GROUP", label: "群聊" },
+        { value: "PRIVATE", label: "私聊" },
+      ],
       updateData: {
         plugin_name: "",
         version: 0,
@@ -257,12 +316,26 @@ export default {
               this.$message.warning(resp.warning)
             } else {
               this.menuTypeList = resp.data
+              this.menuTypeOptions = resp.data.map((item) => ({
+                value: item,
+                label: item,
+                icon: this.getMenuTypeIcon(item),
+              }))
             }
           } else {
             this.$message.error(resp.info)
           }
         }
       )
+    },
+    getMenuTypeIcon(type) {
+      const icons = {
+        normal: "menu-normal",
+        group: "menu-group",
+        private: "menu-private",
+        admin: "menu-admin",
+      }
+      return icons[type] || "menu-default"
     },
     commit() {
       if (this.updateData.config_list && this.updateData.config_list) {
@@ -317,151 +390,460 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// Use CSS variables for dialog elements
-::v-deep .el-dialog__header {
-  border-bottom: 1px solid var(--border-color-light);
-}
-
-::v-deep .el-dialog__title {
-  color: var(--text-color);
-}
-
-::v-deep .el-dialog__body {
-  color: var(--text-color-secondary);
-  padding-top: 15px;
-  padding-bottom: 15px;
-}
-
-// Style form items within the dialog
-.el-form-item {
-  margin-bottom: 18px;
-}
-
-::v-deep .el-form-item__label {
-  color: var(--text-color-secondary);
-}
-
-// Input, Select, Switch colors are mostly handled by Element UI variable overrides
-// But we can add specific overrides if needed
-
-.dialog-footer {
-  border-top: 1px solid var(--border-color-light);
-  padding-top: 15px;
-  text-align: right;
-}
-
-// Adjust button styles if necessary (Element UI vars should cover most)
-
-/* Specific styles for elements within the dialog if needed */
-.config-item {
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px dashed var(--border-color-light);
-  
-  &:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
+@keyframes float {
+  0% {
+    transform: translateY(0px);
   }
-
-  .config-label {
-    font-weight: 500;
-    margin-bottom: 8px;
-    color: var(--text-color);
+  50% {
+    transform: translateY(-5px);
   }
-
-  .config-help {
-    font-size: 12px;
-    color: var(--text-color-secondary);
-    margin-top: 5px;
-    line-height: 1.4;
+  100% {
+    transform: translateY(0px);
   }
 }
 
-.dialog-class {
-  padding: 30px 50px;
+@keyframes sparkle {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
 
+.main {
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.limit-width {
+  /deep/ .el-dialog {
+    width: 500px !important;
+  }
+}
+
+.neko-dialog {
   ::v-deep .el-dialog {
-    border-radius: 10px;
+    border-radius: 20px;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 240, 250, 0.98) 0%,
+      rgba(240, 240, 255, 0.98) 100%
+    );
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(255, 150, 200, 0.3);
+    border: 2px solid rgba(255, 220, 240, 0.8);
+    overflow: hidden;
+    position: relative;
   }
 
-  .tip {
-    color: #acafb8;
-    font-size: 12px;
+  ::v-deep .el-dialog__header {
+    border-bottom: 1px solid rgba(255, 200, 220, 0.5);
+    padding: 15px 20px;
+    background: rgba(255, 240, 250, 0.5);
+  }
+
+  ::v-deep .el-dialog__title {
+    color: #ff6b9e;
+    font-weight: bold;
+    font-size: 18px;
+    text-shadow: 0 2px 4px rgba(255, 150, 200, 0.2);
+  }
+
+  ::v-deep .el-dialog__body {
+    color: #758ea1;
+    padding: 20px;
+    position: relative;
+  }
+
+  .decoration {
+    position: absolute;
+    z-index: 0;
+    opacity: 0.1;
+
+    &.deco-1 {
+      top: 20px;
+      right: 20px;
+      width: 80px;
+      height: 80px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23ff6b9e" d="M50 0c13.8 0 25 11.2 25 25s-11.2 25-25 25-25-11.2-25-25 11.2-25 25-25z"/></svg>');
+      animation: float 4s ease-in-out infinite;
+    }
+
+    &.deco-2 {
+      bottom: 40px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%239d65ff" d="M50 0l12.5 37.5h25l-20 15 7.5 25-25-15-25 15 7.5-25-20-15h25z"/></svg>');
+      animation: sparkle 3s ease-in-out infinite;
+    }
+
+    &.deco-3 {
+      top: 50%;
+      right: 10%;
+      width: 40px;
+      height: 40px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%2365ffa3" d="M50 0c27.6 0 50 22.4 50 50s-22.4 50-50 50-50-22.4-50-50 22.4-50 50-50z"/></svg>');
+      animation: float 5s ease-in-out infinite;
+    }
+  }
+
+  .header-section {
     text-align: center;
-  }
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
 
-  .main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    .base-title {
-      color: #939395;
+    .title-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 5px;
-      font-size: 18px;
-      margin-left: 25px;
     }
 
     .plugin-name-class {
-      font-size: 20px;
+      font-size: 2rem;
       font-weight: bold;
+      color: #ff6b9e;
+      text-shadow: 0 2px 4px rgba(255, 150, 200, 0.3);
+      margin: 0;
+      display: inline-block;
+      background: linear-gradient(45deg, #ff6b9e, #9d65ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .version-class {
-      font-size: 16px;
-      font-weight: 400;
-      margin-left: 17px;
-      color: #939395;
+      font-size: 1rem;
+      font-weight: normal;
+      color: #9d65ff;
+      margin-left: 0.5rem;
     }
 
-    .author-class {
-      margin-left: 10px;
-    }
+    .module-info {
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 5px;
 
-    .update-info {
-      margin-top: 30px;
-      display: flex;
-      width: 100%;
-
-      .base-setting {
-        width: 100%;
-        span {
-          color: #758ea1;
-          font-size: 14px;
-        }
-
-        ::v-deep .el-input__inner {
-          width: 230px;
-        }
-
-        ::v-deep .el-select {
-          width: 100%;
-
-          .el-input {
-            width: 230px;
-          }
-        }
-      }
-
-      .config-setting {
-        .config-table {
-          margin-left: 26px;
-          margin-top: 17px;
-        }
-      }
-
-      ::v-deep .el-col {
-        padding-left: 50px;
+      .author-class {
+        color: #9d65ff;
+        font-weight: 500;
       }
     }
   }
 
-  .footer {
+  .section-title {
+    position: relative;
+    margin-bottom: 1.5rem;
     display: flex;
-    justify-content: center;
     align-items: center;
+
+    .title-text {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #ff6b9e;
+      background: linear-gradient(45deg, #ff6b9e, #9d65ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      padding-right: 10px;
+      z-index: 1;
+    }
+
+    .title-decoration {
+      flex-grow: 1;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 107, 158, 0.3),
+        rgba(157, 101, 255, 0.3)
+      );
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        top: -3px;
+        right: 0;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #9d65ff;
+      }
+    }
+  }
+
+  .form-item-cute {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(255, 150, 200, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 150, 200, 0.2);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .label-text {
+      font-size: 14px;
+      color: #666;
+      min-width: 80px;
+      margin-right: 10px;
+    }
+
+    .emoji {
+      margin-left: 8px;
+      font-size: 16px;
+    }
+  }
+
+  .cute-input {
+    ::v-deep .el-input__inner {
+      border-radius: 12px;
+      border: 1px solid rgba(255, 150, 200, 0.5);
+      background: rgba(255, 255, 255, 0.8);
+      color: #ff6b9e;
+      padding-left: 10px;
+
+      &:focus {
+        border-color: #ff6b9e;
+        box-shadow: 0 0 0 2px rgba(255, 107, 158, 0.2);
+      }
+    }
+  }
+
+  .cute-select {
+    ::v-deep .el-select {
+      .el-input__inner {
+        border-radius: 12px;
+        border: 1px solid rgba(255, 150, 200, 0.5);
+        background: rgba(255, 255, 255, 0.8);
+        color: #ff6b9e;
+
+        &:hover {
+          border-color: #ff6b9e;
+        }
+      }
+
+      .el-select__caret {
+        color: #ff6b9e;
+      }
+    }
+  }
+
+  .neko-divider {
+    ::v-deep .el-divider__text {
+      background: linear-gradient(
+        145deg,
+        rgba(255, 240, 245, 0.95) 0%,
+        rgba(240, 240, 255, 0.95) 100%
+      );
+      color: #ff6b9e;
+      font-size: 14px;
+      padding: 0 15px;
+    }
+
+    .divider-content {
+      display: flex;
+      align-items: center;
+
+      &::before,
+      &::after {
+        content: "🌸";
+        margin: 0 5px;
+      }
+    }
+  }
+
+  .neko-table {
+    ::v-deep .el-table {
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 15px !important;
+      overflow: hidden;
+      border: 1px solid rgba(255, 200, 220, 0.5);
+
+      &::before {
+        display: none;
+      }
+    }
+
+    ::v-deep .el-table__header-wrapper {
+      border-radius: 15px 15px 0 0;
+    }
+
+    ::v-deep .el-table__body-wrapper {
+      border-radius: 0 0 15px 15px;
+    }
+
+    .neko-table-header {
+      background: linear-gradient(45deg, #ffebf2 0%, #ebf2ff 100%);
+      color: #ff6b9e;
+      font-weight: bold;
+
+      th {
+        border-bottom: 1px solid rgba(255, 200, 220, 0.5);
+      }
+    }
+
+    ::v-deep .el-table__row {
+      background-color: rgba(255, 255, 255, 0.5);
+      transition: all 0.3s;
+
+      td {
+        border-bottom: 1px solid rgba(255, 200, 220, 0.3);
+      }
+
+      &:hover {
+        background-color: rgba(255, 240, 245, 0.7);
+        transform: translateX(2px);
+      }
+
+      &:nth-child(even) {
+        background-color: rgba(255, 250, 252, 0.5);
+      }
+    }
+  }
+
+  .cute-scroll {
+    ::v-deep ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::v-deep ::-webkit-scrollbar-track {
+      background: rgba(255, 220, 240, 0.3);
+      border-radius: 3px;
+    }
+
+    ::v-deep ::-webkit-scrollbar-thumb {
+      background: rgba(255, 150, 200, 0.5);
+      border-radius: 3px;
+
+      &:hover {
+        background: rgba(255, 150, 200, 0.7);
+      }
+    }
+  }
+
+  .cute-btn {
+    border-radius: 20px;
+    padding: 10px 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.3) 0%,
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 150, 200, 0.4);
+
+      &::before {
+        opacity: 1;
+      }
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
+  .cancel-btn {
+    background: linear-gradient(45deg, #f0f0f0 0%, #e0e0e0 100%);
+    color: #888;
+
+    &:hover {
+      background: linear-gradient(45deg, #f8f8f8 0%, #e8e8e8 100%);
+    }
+  }
+
+  .confirm-btn {
+    background: linear-gradient(45deg, #ff76d0 0%, #a966ff 100%);
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background: linear-gradient(45deg, #ff8cd9 0%, #b57aff 100%);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .neko-dialog {
+    ::v-deep .el-dialog {
+      width: 95% !important;
+      max-width: 95%;
+      margin: 10px auto;
+      border-radius: 15px;
+    }
+
+    .update-info {
+      flex-direction: column;
+
+      .base-setting,
+      .config-setting {
+        width: 100% !important;
+      }
+
+      .config-setting {
+        margin-left: 0 !important;
+        margin-top: 20px;
+      }
+    }
+
+    ::v-deep .el-col {
+      padding-left: 0 !important;
+      margin-bottom: 10px;
+    }
+
+    .form-item-cute {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .label-text {
+        margin-bottom: 5px;
+      }
+
+      .emoji {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+
+    .footer {
+      flex-direction: column;
+
+      .confirm-btn {
+        margin-left: 0 !important;
+        margin-top: 10px;
+      }
+    }
   }
 }
 </style>
