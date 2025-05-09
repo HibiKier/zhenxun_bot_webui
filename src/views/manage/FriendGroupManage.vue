@@ -1,12 +1,13 @@
 <template>
   <div
     ref="main"
-    class="friend-manager-container w-full flex flex-col bg-gradient-to-br from-pink-50 to-purple-100 overflow-hidden"
+    class="friend-manager-container w-full flex flex-col bg-gradient-to-br from-pink-50 to-purple-100"
+    :style="{ height: 'calc(100vh - 77px)' }"
   >
     <!-- 顶部导航栏 -->
     <div
       ref="topHeader"
-      class="header-bar h-14 flex items-center justify-between px-4 bg-white bg-opacity-80 backdrop-blur-sm border-b border-pink-200"
+      class="header-bar h-14 flex-shrink-0 flex items-center justify-between px-4 bg-white bg-opacity-80 backdrop-blur-sm border-b border-pink-200"
     >
       <!-- 标题 -->
       <div class="flex items-center">
@@ -38,10 +39,10 @@
     </div>
 
     <!-- 主内容区 -->
-    <div class="flex-1 flex flex-col md:flex-row overflow-hidden p-2 gap-2">
+    <div class="flex-1 flex flex-col md:flex-row p-2 gap-2 min-h-0">
       <!-- 左侧好友列表 -->
       <div
-        class="data-list-container w-full md:w-1/4 lg:w-1/5 h-1/3 md:h-full bg-white rounded-xl shadow-md transition-all duration-300"
+        class="data-list-container w-full md:w-1/4 lg:w-1/5 bg-white rounded-xl shadow-md transition-all duration-300 flex-shrink-0"
         :class="{
           'hidden md:block': !showList,
           'absolute z-20 top-16 left-2 right-2 h-2/3 md:relative md:top-0 md:left-0 md:right-0 md:h-full':
@@ -53,58 +54,50 @@
 
       <!-- 中间聊天窗口 -->
       <div
-        class="chat-container flex-1 h-1/3 md:h-full bg-white rounded-xl shadow-md overflow-hidden"
+        class="chat-container flex-1 bg-white rounded-xl shadow-md flex-shrink-0"
       >
         <ChatWindow ref="chatWindow" class="h-full" />
       </div>
 
       <!-- 右侧详情信息 -->
       <div
-        class="detail-container w-full md:w-1/3 lg:w-1/4 h-1/3 md:h-full bg-white rounded-xl shadow-md overflow-auto transition-all duration-300"
+        class="detail-container w-full md:w-1/3 lg:w-1/4 bg-white rounded-xl shadow-md transition-all duration-300 flex-shrink-0"
         :class="{
           'hidden md:block': !showDetail,
           'absolute z-20 top-16 left-2 right-2 h-2/3 md:relative md:top-0 md:left-0 md:right-0 md:h-full':
             showDetail,
         }"
       >
-        <DetailInfo
-          ref="detailInfo"
-          @startChat="startChat"
-          class="h-full"
-          :style="{ height: computedHeight + 'px' }"
-        />
+        <DetailInfo ref="detailInfo" @startChat="startChat" class="h-full" />
       </div>
     </div>
 
     <!-- 移动端底部操作栏 -->
     <div
-      class="md:hidden h-16 bg-white bg-opacity-90 backdrop-blur-sm border-t border-pink-200 flex items-center justify-around px-4"
+      class="md:hidden h-16 flex-shrink-0 bg-white bg-opacity-90 backdrop-blur-sm border-t border-pink-200 flex items-center justify-around px-4"
     >
       <!-- 列表切换按钮 -->
       <button
         @click="toggleList"
-        class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors"
+        class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors w-20"
         :class="{ 'text-pink-600': showList, 'text-gray-500': !showList }"
       >
-        <svg-icon
-          :icon-class="showList ? 'friends-solid' : 'friends'"
-          class="w-6 h-6"
-        />
-        <span class="text-xs mt-1">好友列表</span>
+        <span class="text-xs">好友列表</span>
       </button>
 
       <!-- 请求管理按钮 (移动端) -->
-      <div class="relative">
+      <div class="relative w-20">
         <el-badge
           :value="requestCount"
           :hidden="requestCount <= 0"
-          class="absolute -top-2 -right-2"
+          class="absolute -top-4"
+          style="right: 25px"
         >
           <button
             @click="openRequest"
-            class="flex flex-col items-center justify-center p-2 rounded-lg text-purple-600 transition-colors"
+            class="flex flex-col items-center justify-center p-2 rounded-lg text-purple-600 transition-colors w-full"
           >
-            <svg-icon icon-class="request" class="w-6 h-6" />
+            <svg-icon icon-class="request" class="w-6 h-6 mb-1" />
           </button>
         </el-badge>
       </div>
@@ -112,14 +105,10 @@
       <!-- 详情切换按钮 -->
       <button
         @click="toggleDetail"
-        class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors"
+        class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors w-20"
         :class="{ 'text-purple-600': showDetail, 'text-gray-500': !showDetail }"
       >
-        <svg-icon
-          :icon-class="showDetail ? 'info-solid' : 'info'"
-          class="w-6 h-6"
-        />
-        <span class="text-xs mt-1">详细信息</span>
+        <span class="text-xs">详细信息</span>
       </button>
     </div>
     <RequestDialog
@@ -131,14 +120,14 @@
 </template>
 
 <script>
-import { getHeaderHeight } from '@/utils/utils'
-import ChatWindow from '@/components/manage/ChatWindow.vue'
-import DataList from '@/components/manage/DataList.vue'
-import DetailInfo from '@/components/manage/DetailInfo.vue'
-import RequestDialog from '@/components/manage/RequestDialog.vue'
+import { getHeaderHeight } from "@/utils/utils"
+import ChatWindow from "@/components/manage/ChatWindow.vue"
+import DataList from "@/components/manage/DataList.vue"
+import DetailInfo from "@/components/manage/DetailInfo.vue"
+import RequestDialog from "@/components/manage/RequestDialog.vue"
 
 export default {
-  name: 'FriendGroupMana',
+  name: "FriendGroupMana",
   components: {
     DataList,
     ChatWindow,
@@ -164,7 +153,7 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
     this.fetchRequestCount()
     this.getRequestCount()
   },
@@ -227,7 +216,7 @@ export default {
       this.showDetail = false
     },
     getDetail(type, id) {
-      if (type == 'private') {
+      if (type == "private") {
         this.$refs.detailInfo.getFriend(id)
       } else {
         this.$refs.detailInfo.getGroup(id)
@@ -245,7 +234,7 @@ export default {
     },
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
@@ -284,20 +273,70 @@ export default {
   background: rgba(236, 72, 153, 0.7);
 }
 
-/* 响应式调整 */
-@media (max-width: 768px) {
+/* PC端样式 */
+@media (min-width: 769px) {
+  .friend-manager-container {
+    overflow: hidden;
+  }
+
   .data-list-container,
+  .chat-container,
   .detail-container {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .data-list-container {
+    overflow-y: auto;
   }
 
   .chat-container {
-    height: calc(100vh - 120px);
+    overflow: hidden;
+  }
+
+  .detail-container {
+    overflow-y: auto;
+  }
+}
+
+/* 移动端样式优化 */
+@media (max-width: 768px) {
+  .friend-manager-container {
+    overflow: hidden;
+  }
+
+  .data-list-container,
+  .detail-container {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    max-height: calc(100vh - 196px);
+    overflow-y: auto;
+  }
+
+  .chat-container {
+    height: calc(100vh - 196px);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 8px;
+    right: 8px;
+    bottom: 72px;
   }
 
   .header-bar {
-    height: 12;
-    padding: 0 2;
+    height: 56px;
+    padding: 0 16px;
+  }
+
+  /* 底部操作栏样式调整 */
+  .md\:hidden {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    z-index: 40;
   }
 }
 </style>

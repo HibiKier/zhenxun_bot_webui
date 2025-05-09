@@ -11,7 +11,7 @@
           @click.native="clickPath(i)"
           class="cursor-pointer hover:text-pink-500"
         >
-          {{ path || '首页' }}
+          {{ path || "首页" }}
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -80,7 +80,7 @@
 
         <el-table-column prop="size" label="大小" min-width="120">
           <template slot-scope="scope">
-            {{ scope.row.is_file ? formatSize(scope.row.size) : '-' }}
+            {{ scope.row.is_file ? formatSize(scope.row.size) : "-" }}
           </template>
         </el-table-column>
 
@@ -207,12 +207,12 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
-import EditFile from './EditFile.vue'
-import ImageView from './ImageView.vue'
-import NeonDialog from '@/components/ui/NeonDialog.vue'
-import NeonInput from '@/components/ui/NeonInput.vue'
-import CuteButton from '@/components/ui/CuteButton.vue'
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
+import EditFile from "./EditFile.vue"
+import ImageView from "./ImageView.vue"
+import NeonDialog from "@/components/ui/NeonDialog.vue"
+import NeonInput from "@/components/ui/NeonInput.vue"
+import CuteButton from "@/components/ui/CuteButton.vue"
 export default {
   components: {
     SvgIcon,
@@ -222,19 +222,19 @@ export default {
     CuteButton,
     ImageView,
   },
-  name: 'FileManager',
+  name: "FileManager",
   data() {
     return {
-      pathList: ['/'],
-      currentPath: '',
+      pathList: ["/"],
+      currentPath: "",
       fileList: [],
       vscodeIcons: [],
       showCreateDialog: false,
-      createType: 'file',
-      renameType: 'file',
-      newItemName: '',
+      createType: "file",
+      renameType: "file",
+      newItemName: "",
       showRenameDialogFlag: false,
-      renameValue: '',
+      renameValue: "",
       itemToRename: {},
       showDeleteDialogFlag: false,
       itemToDelete: {},
@@ -242,28 +242,28 @@ export default {
       viewVisible: false,
       currentFile: {},
       iconMap: {
-        folder: 'folder',
-        image: 'image',
-        pdf: 'pdf',
-        zip: 'zip',
-        txt: 'text',
-        md: 'markdown',
-        json: 'json',
-        yml: 'yaml',
-        yaml: 'yaml',
-        js: 'javascript',
-        ts: 'typescript',
-        py: 'python',
-        java: 'java',
-        c: 'c',
-        cpp: 'cpp',
-        h: 'h',
-        html: 'html',
-        css: 'css',
-        scss: 'scss',
-        vue: 'vue',
-        sh: 'shell',
-        default: 'file',
+        folder: "folder",
+        image: "image",
+        pdf: "pdf",
+        zip: "zip",
+        txt: "text",
+        md: "markdown",
+        json: "json",
+        yml: "yaml",
+        yaml: "yaml",
+        js: "javascript",
+        ts: "typescript",
+        py: "python",
+        java: "java",
+        c: "c",
+        cpp: "cpp",
+        h: "h",
+        html: "html",
+        css: "css",
+        scss: "scss",
+        vue: "vue",
+        sh: "shell",
+        default: "file",
       },
     }
   },
@@ -274,14 +274,14 @@ export default {
   methods: {
     getTableHeight() {
       if (this.$isMobile()) {
-        return 'calc(100vh - 500px)'
+        return "calc(100vh - 500px)"
       } else {
-        return 'calc(100vh - 300px)'
+        return "calc(100vh - 300px)"
       }
     },
-    async loadFiles(path = '') {
+    async loadFiles(path = "") {
       try {
-        var loading = this.getLoading('.file-table-container')
+        var loading = this.getLoading(".file-table-container")
         const resp = await this.getRequest(
           `${this.$root.prefix}/system/get_dir_list`,
           { path: path || this.currentPath }
@@ -299,7 +299,7 @@ export default {
                 : item.name,
             }))
 
-            if (path !== '') {
+            if (path !== "") {
               this.currentPath = path
               this.updateBreadcrumb(path)
             }
@@ -308,7 +308,7 @@ export default {
           this.$message.error(resp.info)
         }
       } catch (error) {
-        this.$message.error('加载文件列表失败')
+        this.$message.error("加载文件列表失败")
         console.error(error)
       }
       loading.close()
@@ -319,29 +319,29 @@ export default {
     },
 
     updateBreadcrumb(path) {
-      if (path === '') {
-        this.pathList = ['/']
+      if (path === "") {
+        this.pathList = ["/"]
         return
       }
-      this.pathList = ['/', ...path.split('/').filter((p) => p)]
+      this.pathList = ["/", ...path.split("/").filter((p) => p)]
     },
 
     clickPath(index) {
       if (index === 0) {
-        this.currentPath = ''
-        this.pathList = ['/']
+        this.currentPath = ""
+        this.pathList = ["/"]
         this.loadFiles()
       } else {
-        const path = this.pathList.slice(1, index + 1).join('/')
+        const path = this.pathList.slice(1, index + 1).join("/")
         this.loadFiles(path)
       }
     },
 
     navigateUp() {
-      if (this.currentPath === '') return
-      const parts = this.currentPath.split('/')
+      if (this.currentPath === "") return
+      const parts = this.currentPath.split("/")
       parts.pop()
-      this.loadFiles(parts.join('/'))
+      this.loadFiles(parts.join("/"))
     },
 
     handleDoubleClick(row) {
@@ -355,7 +355,6 @@ export default {
     editFile(item) {
       this.currentFile = item
       this.editVisible = true
-      console.log('Editing file:', this.editVisible, item)
     },
 
     viewImage(item) {
@@ -364,25 +363,25 @@ export default {
     },
 
     clickRootAddFile() {
-      this.createType = 'file'
-      this.newItemName = ''
+      this.createType = "file"
+      this.newItemName = ""
       this.showCreateDialog = true
     },
 
     clickRootAddFolder() {
-      this.createType = 'folder'
-      this.newItemName = ''
+      this.createType = "folder"
+      this.newItemName = ""
       this.showCreateDialog = true
     },
 
     async confirmCreate() {
       if (!this.newItemName.trim()) {
-        this.$message.warning('请输入名称')
+        this.$message.warning("请输入名称")
         return
       }
 
       try {
-        const endpoint = this.createType === 'file' ? 'add_file' : 'add_folder'
+        const endpoint = this.createType === "file" ? "add_file" : "add_folder"
         const resp = await this.postRequest(
           `${this.$root.prefix}/system/${endpoint}`,
           {
@@ -399,7 +398,7 @@ export default {
           this.$message.error(resp.info)
         }
       } catch (error) {
-        this.$message.error('操作失败')
+        this.$message.error("操作失败")
         console.error(error)
       }
     },
@@ -409,9 +408,9 @@ export default {
     },
 
     showRenameDialog(item) {
-      console.log('showRenameDialog', item)
+      console.log("showRenameDialog", item)
 
-      this.renameType = item.is_file ? 'file' : 'folder'
+      this.renameType = item.is_file ? "file" : "folder"
       this.itemToRename = item
       this.renameValue = item.name
       this.showRenameDialogFlag = true
@@ -419,14 +418,14 @@ export default {
 
     async confirmRename() {
       if (!this.renameValue.trim()) {
-        this.$message.warning('请输入新名称')
+        this.$message.warning("请输入新名称")
         return
       }
 
       try {
         const endpoint = this.itemToRename.is_file
-          ? 'rename_file'
-          : 'rename_folder'
+          ? "rename_file"
+          : "rename_folder"
         const resp = await this.postRequest(
           `${this.$root.prefix}/system/${endpoint}`,
           {
@@ -444,7 +443,7 @@ export default {
           this.$message.error(resp.info)
         }
       } catch (error) {
-        this.$message.error('重命名失败')
+        this.$message.error("重命名失败")
         console.error(error)
       }
     },
@@ -461,8 +460,8 @@ export default {
     async confirmDelete() {
       try {
         const endpoint = this.itemToDelete.is_file
-          ? 'delete_file'
-          : 'delete_folder'
+          ? "delete_file"
+          : "delete_folder"
         const resp = await this.postRequest(
           `${this.$root.prefix}/system/${endpoint}`,
           {
@@ -478,7 +477,7 @@ export default {
           this.$message.error(resp.info)
         }
       } catch (error) {
-        this.$message.error('删除失败')
+        this.$message.error("删除失败")
         console.error(error)
       }
     },
@@ -489,7 +488,7 @@ export default {
 
     loadIcons() {
       const req = require.context(
-        '@/assets/icons/svg/vscode-icons',
+        "@/assets/icons/svg/vscode-icons",
         false,
         /\.svg$/
       )
@@ -500,31 +499,31 @@ export default {
 
     getIconClass(item) {
       if (item.is_file) {
-        const ext = item.name.split('.').pop().toLowerCase()
+        const ext = item.name.split(".").pop().toLowerCase()
         const iconType = this.iconMap[ext] || this.iconMap.default
 
         return this.vscodeIcons.includes(`file_type_${iconType}`)
           ? `file_type_${iconType}`
-          : 'default_file'
+          : "default_file"
       } else {
         if (this.vscodeIcons.includes(`folder_type_${item.name}`)) {
           return `folder_type_${item.name}`
         }
-        return 'default_folder'
+        return "default_folder"
       }
     },
 
     formatDate(timestamp) {
-      if (!timestamp) return '-'
+      if (!timestamp) return "-"
       return new Date(timestamp * 1000).toLocaleString()
     },
 
     formatSize(bytes) {
-      if (bytes === 0) return '0 B'
+      if (bytes === 0) return "0 B"
       const k = 1024
-      const sizes = ['B', 'KB', 'MB', 'GB']
+      const sizes = ["B", "KB", "MB", "GB"]
       const i = Math.floor(Math.log(bytes) / Math.log(k))
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
     },
   },
 }

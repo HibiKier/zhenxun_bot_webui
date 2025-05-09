@@ -49,7 +49,6 @@
           :fontSize="12"
         />
       </div>
-
       <!-- 消息区域 -->
       <div class="message-container" :style="{ height: chatHeight + 'px' }">
         <div
@@ -67,35 +66,33 @@
               v-if="!data.isSelf"
               :src="data.ava_url"
               :size="45"
-              class="flex-shrink-0 border-2 border-pink-200 shadow-sm transform hover:scale-110 transition-transform"
+              :class="{ 'mt-5': data.name }"
+              class="avatar flex-shrink-0 border-2 border-pink-200 shadow-sm transform hover:scale-110 transition-transform"
             />
 
             <!-- 消息内容 -->
-            <div
-              class="flex flex-col max-w-[80%] mx-3"
-              :class="{ 'items-end': data.isSelf }"
-            >
-              <p class="text-sm text-gray-500 mb-1">{{ data.name }}</p>
+            <div class="message-wrapper" :class="{ 'items-end': data.isSelf }">
+              <p class="message-sender">{{ data.name }}</p>
               <div
-                class="px-4 py-2 rounded-2xl break-words transition-all duration-200"
-                :class="{
-                  'bg-pink-100 text-gray-800': !data.isSelf,
-                  'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-md':
-                    data.isSelf,
-                }"
+                v-for="(msg, msgIndex) in data.message"
+                :key="msgIndex"
+                class="message-item"
               >
-                <div v-for="(msg, msgIndex) in data.message" :key="msgIndex">
+                <div
+                  class="message-bubble"
+                  style="max-width: 320px"
+                  :class="{ 'message-bubble-self': data.isSelf }"
+                >
                   <img
                     v-if="msg.type == 'img'"
                     :src="msg.msg"
-                    class="max-w-full rounded-lg shadow-sm transform hover:scale-105 transition-transform"
-                    :style="{
-                      width: msg.width + 'px',
-                      height: msg.height + 'px',
-                    }"
+                    referrerpolicy="no-referrer"
+                    class="message-image"
+                    style="max-width: 280px; max-height: 280px"
                   />
-                  <span v-else class="whitespace-pre-wrap">{{ msg.msg }}</span>
+                  <span v-else class="message-text">{{ msg.msg }}</span>
                 </div>
+                <span class="message-time">{{ msg.time }}</span>
               </div>
             </div>
 
@@ -104,7 +101,7 @@
               v-if="data.isSelf"
               :src="data.ava_url"
               :size="45"
-              class="flex-shrink-0 border-2 border-blue-200 shadow-sm transform hover:scale-110 transition-transform"
+              class="avatar flex-shrink-0 border-2 border-blue-200 shadow-sm transform hover:scale-110 transition-transform"
             />
           </div>
         </div>
@@ -151,18 +148,18 @@
 </template>
 
 <script>
-import { debounce } from 'lodash'
-import MyButton from '../ui/MyButton.vue'
+import { debounce } from "lodash"
+import MyButton from "../ui/MyButton.vue"
 
 export default {
-  name: 'ChatWindow',
+  name: "ChatWindow",
   components: { MyButton },
   data() {
     return {
-      message: '',
+      message: "",
       isStartChat: false,
       chatInfo: {},
-      chatId: 'default',
+      chatId: "default",
       reloadKey: 0,
       chatHeight: 400,
       windowHeight: window.innerHeight,
@@ -172,22 +169,19 @@ export default {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    this.$store.dispatch('initChatSocket')
+    this.$store.dispatch("initChatSocket")
     this.calculateChatHeight()
     this.debouncedResize = debounce(this.handleResize, 100)
-    window.addEventListener('resize', this.debouncedResize)
+    window.addEventListener("resize", this.debouncedResize)
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.debouncedResize)
+    window.removeEventListener("resize", this.debouncedResize)
   },
   methods: {
     calculateChatHeight() {
       const chatWindow = this.$el
       const header = this.$refs.header
       const inputArea = this.$refs.inputArea
-
-      console.log('header', header)
-      console.log('inputArea', inputArea)
 
       if (!header || !inputArea) return
 
@@ -219,7 +213,7 @@ export default {
     async sendMessage() {
       if (!this.message.trim()) return
 
-      const loading = this.getLoading('.el-textarea')
+      const loading = this.getLoading(".el-textarea")
 
       try {
         await this.$chatWebSocket.sendMessage(
@@ -228,7 +222,7 @@ export default {
           this.chatInfo.user_id,
           this.message
         )
-        this.message = ''
+        this.message = ""
         this.reloadKey++
         this.$nextTick(() => {
           this.scrollToBottom()
@@ -239,7 +233,7 @@ export default {
     },
 
     scrollToBottom() {
-      const chatElement = document.getElementById('chat')
+      const chatElement = document.getElementById("chat")
       if (chatElement) {
         chatElement.scrollTop = chatElement.scrollHeight
       }
@@ -249,37 +243,28 @@ export default {
       this.chatInfo = data
       const chatId = data.group_id || data.user_id
       this.chatId = chatId
-      this.$store.commit('SET_CHAT_ID', chatId)
-      this.$store.commit('ADD_CHAT_MSG', { chatId })
+      this.$store.commit("SET_CHAT_ID", chatId)
+      this.$store.commit("ADD_CHAT_MSG", { chatId })
       this.isStartChat = true
       this.$nextTick(this.scrollToBottom)
       this.$nextTick(this.calculateChatHeight)
     },
 
-    clearMessage() {
-      this.$confirm('确认清空聊天记录?', '提示', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        customClass: 'confirm-box',
-        type: 'warning',
-        confirmButtonClass: 'el-button--danger',
-        iconClass: 'el-icon-warning text-red-500',
+    async clearMessage() {
+      const result = await this.$cuteConfirm({
+        title: "清空确认",
+        message: `确认清空聊天记录?`,
+        cancelButtonText: "我再想想",
+        confirmButtonText: "清空内容",
       })
-        .then(() => {
-          this.$store.commit('CLEAR_CHAT', this.chatId)
-          this.$message.success({
-            message: '清空记录成功!',
-            iconClass: 'el-icon-success',
-            customClass: 'cute-message',
-          })
+      if (result) {
+        this.$store.commit("CLEAR_CHAT", this.chatId)
+        this.$message.success({
+          message: "清空记录成功!",
+          iconClass: "el-icon-success",
+          customClass: "cute-message",
         })
-        .catch(() => {
-          this.$message.info({
-            message: '已取消操作',
-            iconClass: 'el-icon-info',
-            customClass: 'cute-message',
-          })
-        })
+      }
     },
   },
 }
@@ -362,6 +347,88 @@ export default {
   :deep(.el-textarea__inner) {
     font-size: 14px;
   }
+}
+
+/* 消息包装器 */
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+  margin: 0 12px;
+}
+
+.message-wrapper.items-end {
+  align-items: flex-end;
+}
+
+/* 发送者名称 */
+.message-sender {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+/* 消息气泡 */
+.message-bubble {
+  padding: 8px 16px;
+  border-radius: 16px;
+  word-break: break-word;
+  transition: all 0.2s;
+  background-color: #fce7f3;
+  color: #1f2937;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* 自己的消息气泡 */
+.message-bubble-self {
+  background: linear-gradient(to right, #a78bfa, #f472b6);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 消息图片 */
+.message-image {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.message-image:hover {
+  transform: scale(1.05);
+}
+
+/* 消息文本 */
+.message-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* 消息项容器 */
+.message-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.message-item:last-child {
+  margin-bottom: 0;
+}
+
+/* 消息时间 */
+.message-time {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+  display: block;
+}
+
+/* 头像样式 */
+.avatar {
+  align-self: flex-start;
 }
 </style>
 

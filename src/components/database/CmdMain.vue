@@ -62,7 +62,7 @@
           text="常用SQL"
           type="warning"
           :rounded="$isMobile() ? 'md' : 'lg'"
-          :width="$isMobile() ? 80 : 100"
+          :width="$isMobile() ? 120 : 100"
           :height="36"
         />
       </el-popover>
@@ -133,7 +133,7 @@
       <div
         class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 text-pink-500 font-bold"
       >
-        ✨ 执行结果 ✨
+        执行结果
       </div>
     </div>
 
@@ -184,10 +184,10 @@
 </template>
 
 <script>
-import MyButton from '../ui/MyButton.vue'
+import MyButton from "../ui/MyButton.vue"
 export default {
   components: { MyButton },
-  name: 'CmdMain',
+  name: "CmdMain",
   data() {
     return {
       sqlMessage: null,
@@ -208,14 +208,14 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
     this.getSqlLog()
     this.handleResize()
-    if (this.$store.state.botType == 'zhenxun') {
+    if (this.$store.state.botType == "zhenxun") {
       this.getCommonSql()
     }
     this.windowWidth = window.innerWidth
-    window.addEventListener('resize', this.updateWindowWidth)
+    window.addEventListener("resize", this.updateWindowWidth)
   },
   methods: {
     updateWindowWidth() {
@@ -235,20 +235,17 @@ export default {
         const desiredResultHeight = availableHeight - desiredMainHeight
 
         // 设置主内容区域高度（最小200px）
-        this.sizeMana.mainBoxHeight = Math.max(desiredMainHeight, 200)
+        this.sizeMana.mainBoxHeight = Math.max(desiredMainHeight, 280)
 
         // 计算实际可用的结果区域高度
         const remainingHeight =
           cmdMainHeight - btnGroupHeight - this.sizeMana.mainBoxHeight - spacing
 
-        console.log('remainingHeight', remainingHeight)
-
         // 设置结果区域高度（不超过剩余空间，最小400px）
         this.sizeMana.resultHeight = Math.max(
           Math.min(desiredResultHeight, remainingHeight),
-          200
+          100
         )
-        console.log('this.sizeMana.resultHeight', this.sizeMana.resultHeight)
 
         // 更新最大结果高度限制
         this.maxResultHeight = remainingHeight
@@ -277,23 +274,23 @@ export default {
     },
     copyHistory(n) {
       this.$message.success({
-        message: '复制成功 (●ˊωˋ●)',
-        customClass: 'anime-message',
+        message: "复制成功 (●ˊωˋ●)",
+        customClass: "anime-message",
       })
       this.sqlMessage = n
     },
     formatBoolean(row, i, cellValue) {
-      return cellValue + ''
+      return cellValue + ""
     },
     execSql() {
       if (!this.sqlMessage || !this.sqlMessage.trim()) {
         this.$message.warning({
-          message: '请输入SQL命令哦 (｡•́︿•̀｡)',
-          customClass: 'anime-message',
+          message: "请输入SQL命令哦 (｡•́︿•̀｡)",
+          customClass: "anime-message",
         })
         return
       }
-      const loading = this.getLoading('.result-box')
+      const loading = this.getLoading(".result-box")
       this.postRequest(`${this.$root.prefix}/database/exec_sql`, {
         sql: this.sqlMessage,
       }).then((resp) => {
@@ -301,37 +298,37 @@ export default {
           if (resp.warning) {
             this.$message.warning({
               message: resp.warning,
-              customClass: 'anime-message',
+              customClass: "anime-message",
             })
             this.info = resp.warning
           } else {
-            this.info = ''
+            this.info = ""
             this.resultData = []
             this.columns = []
             this.$message.success({
               message: resp.info,
-              customClass: 'anime-message',
+              customClass: "anime-message",
             })
             if (resp.data && resp.data.length) {
               this.columns = Object.keys(resp.data[0])
             }
             this.resultData = resp.data
-            if (!this.sqlMessage.toLowerCase().startsWith('select')) {
-              this.info = '执行成功! ✧*。٩(ˊωˋ*)و✧*。'
+            if (!this.sqlMessage.toLowerCase().startsWith("select")) {
+              this.info = "执行成功! ✧*。٩(ˊωˋ*)و✧*。"
             }
           }
           this.getSqlLog()
         } else {
           this.$message.error({
             message: resp.info,
-            customClass: 'anime-message',
+            customClass: "anime-message",
           })
         }
         loading.close()
       })
     },
     getSqlLog() {
-      const loading = this.getLoading('.history')
+      const loading = this.getLoading(".history")
       this.postRequest(`${this.$root.prefix}/database/get_sql_log`, {
         index: this.historyIndex,
         size: 7,
@@ -340,12 +337,12 @@ export default {
           if (resp.warning) {
             this.$message.warning({
               message: resp.warning,
-              customClass: 'anime-message',
+              customClass: "anime-message",
             })
           } else {
             this.$message.success({
               message: resp.info,
-              customClass: 'anime-message',
+              customClass: "anime-message",
             })
             this.historyTotal = resp.data.total
             this.historyList = resp.data.data
@@ -353,7 +350,7 @@ export default {
         } else {
           this.$message.error({
             message: resp.info,
-            customClass: 'anime-message',
+            customClass: "anime-message",
           })
         }
         loading.close()
@@ -361,8 +358,8 @@ export default {
     },
   },
   destroyed() {
-    window.removeEventListener('resize', this.handleResize)
-    window.removeEventListener('resize', this.updateWindowWidth)
+    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener("resize", this.updateWindowWidth)
   },
 }
 </script>
@@ -372,19 +369,39 @@ export default {
 @media (max-width: 768px) {
   .cmd-main {
     padding: 1rem !important;
+    height: auto !important;
+    overflow-y: auto;
   }
 
   .cmd-main-box {
     height: auto !important;
+    margin-bottom: 1rem;
   }
 
   .result-box {
     margin-top: 1rem !important;
+    height: auto !important;
+    max-height: 500px;
+    overflow-y: auto;
   }
 
   ::v-deep .anime-empty .el-empty__image {
     width: 200px !important;
     height: 200px !important;
+  }
+
+  ::v-deep .anime-table {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  ::v-deep .anime-table .el-table__body-wrapper {
+    overflow-x: auto;
+  }
+
+  .history-box {
+    max-height: 300px;
+    overflow-y: auto;
   }
 }
 

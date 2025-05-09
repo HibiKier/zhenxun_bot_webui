@@ -39,12 +39,12 @@
 </template>
 
 <script>
-import { getHeaderHeight } from '@/utils/utils'
-import TableList from '@/components/database/TableList.vue'
-import CmdMain from '@/components/database/CmdMain.vue'
+import { getHeaderHeight } from "@/utils/utils"
+import TableList from "@/components/database/TableList.vue"
+import CmdMain from "@/components/database/CmdMain.vue"
 export default {
   components: { TableList, CmdMain },
-  name: 'DatabaseMana',
+  name: "DatabaseMana",
   data() {
     return {
       windowHeight: window.innerHeight,
@@ -56,7 +56,7 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
   },
   methods: {
     handleResize() {
@@ -64,7 +64,7 @@ export default {
     },
   },
   destroyed() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
@@ -93,7 +93,7 @@ export default {
 }
 
 .cute-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -5px;
   left: 0;
@@ -117,7 +117,7 @@ export default {
 
 /* 左侧卡片装饰线 */
 .card-container:first-child::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -128,7 +128,7 @@ export default {
 
 /* 右侧卡片装饰线 */
 .card-container:last-child::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -141,15 +141,26 @@ export default {
 @media (max-width: 768px) {
   .main {
     padding: 1rem;
+    overflow-y: auto;
+    height: 100vh;
   }
 
   .card-container {
     padding: 1rem;
+    margin-bottom: 1rem;
   }
 
   .computedHeight {
     height: auto !important;
     min-height: 300px;
+  }
+
+  .el-row {
+    height: auto !important;
+  }
+
+  .el-col {
+    margin-bottom: 1rem;
   }
 }
 </style>

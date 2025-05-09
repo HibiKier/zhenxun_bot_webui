@@ -35,7 +35,7 @@
                 {{ table.name }}：
               </p>
               <p class="table-desc text-gray-500 text-sm md:ml-2">
-                {{ table.desc || '-' }}
+                {{ table.desc || "-" }}
               </p>
             </div>
           </template>
@@ -78,7 +78,7 @@
 
 <script>
 export default {
-  name: 'TableList',
+  name: "TableList",
   data() {
     return {
       activeName: null,
@@ -94,7 +94,7 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
     this.getTableList()
     this.handleResize()
   },
@@ -136,7 +136,7 @@ export default {
       })
     },
     getTableList() {
-      const loading = this.getLoading('.table-list-box')
+      const loading = this.getLoading(".table-list-box")
       this.getRequest(`${this.$root.prefix}/database/get_table_list`).then(
         (resp) => {
           if (resp.suc) {
@@ -155,7 +155,7 @@ export default {
     },
   },
   destroyed() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
@@ -177,7 +177,7 @@ export default {
 }
 
 .title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -201,7 +201,7 @@ export default {
 }
 
 .table-list-box::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -214,14 +214,27 @@ export default {
 @media (max-width: 768px) {
   .table-list {
     padding: 1rem;
+    height: auto !important;
   }
 
   .table-list-box {
     padding: 1rem;
+    height: auto !important;
+    max-height: 500px;
+    overflow-y: auto;
   }
 
   .title {
     font-size: 1.5rem;
+  }
+
+  ::v-deep .anime-table {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  ::v-deep .anime-table .el-table__body-wrapper {
+    overflow-x: auto;
   }
 }
 

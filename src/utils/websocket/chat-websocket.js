@@ -3,22 +3,6 @@
 import { getBaseUrl, getPort } from "@/utils/api"
 import vue from "@/main"
 
-async function getImageSize(imageUrl) {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    // 设置加载完成后的处理函数
-    img.onload = function () {
-      resolve({ width: this.width, height: this.height })
-    }
-    // 设置加载失败时的错误处理函数
-    img.onerror = function () {
-      reject("Failed to load image")
-    }
-    // 开始加载图像
-    img.src = imageUrl
-  })
-}
-
 var ws = null
 var heartbeatInterval = null
 
@@ -42,18 +26,6 @@ async function chatWebsocketOnmessage(event) {
 
   for (let i = 0; i < data.message.length; i++) {
     const e = data.message[i]
-    if (e.type == "img") {
-      const img = await getImageSize(e.msg)
-      if (img) {
-        if (img.width > 280) {
-          const n = img.width / 280 - 0.01
-          img.width = Math.floor(img.width / n)
-          img.height = Math.floor(img.height / n)
-        }
-        e.width = img.width
-        e.height = img.height
-      }
-    }
     e.msg = e.msg.replace("&#91;", "[").replace("&#93;", "]")
   }
   const bot_id = vue.$store.state.botInfo.self_id

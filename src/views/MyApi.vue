@@ -68,7 +68,7 @@
           <!-- IP:PORT 标签 - 添加可爱动画 -->
           <div
             class="text-lg font-medium text-pink-500 transition-all duration-500 ease-in-out relative inline-block"
-            :class="{ 'translate-x-4': rightshow }"
+            :class="{ 'translate-x-4': rightShow }"
           >
             <span class="relative z-10">IP:PORT</span>
             <span
@@ -77,17 +77,25 @@
           </div>
 
           <!-- 输入框组 - 添加可爱风格 -->
-          <div class="flex flex-col sm:flex-row gap-4">
+          <div class="flex items-center gap-4">
             <div class="flex-1 relative">
-              <input
-                v-model.trim="apiurl"
-                @focus="inpOnfocus"
-                @blur="inpOnBlur"
-                type="text"
-                placeholder="请输入IP地址"
-                spellcheck="false"
-                class="w-full px-4 py-3 rounded-lg border-2 border-pink-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all duration-300 bg-white text-pink-700 placeholder-pink-300 shadow-sm"
-              />
+              <div class="relative flex items-center">
+                <span
+                  v-if="!apiUrl.startsWith('http')"
+                  class="absolute left-4 text-pink-300 select-none"
+                  >http://</span
+                >
+                <input
+                  v-model.trim="apiUrl"
+                  @focus="inpOnfocus"
+                  @blur="inpOnBlur"
+                  type="text"
+                  placeholder="请输入IP地址"
+                  spellcheck="false"
+                  :class="{ 'with-http-prefix': !apiUrl.startsWith('http') }"
+                  class="w-full px-4 py-3 rounded-lg border-2 border-pink-200 focus:border-pink-400 focus:ring-2 focus:ring-pink-100 transition-all duration-300 bg-white text-pink-700 placeholder-pink-300 shadow-sm"
+                />
+              </div>
               <div
                 class="absolute -bottom-2 -right-2 w-4 h-4 bg-pink-400 rounded-full"
               ></div>
@@ -105,6 +113,25 @@
               <div
                 class="absolute -bottom-2 -right-2 w-4 h-4 bg-purple-400 rounded-full"
               ></div>
+            </div>
+            <!-- 连接状态图标 -->
+            <div class="flex items-center">
+              <div v-if="testing === 'loading'" class="w-5 h-5"></div>
+              <SvgIcon
+                v-else-if="testing === true"
+                icon-class="success"
+                class="w-5 h-5 text-pink-500"
+              />
+              <SvgIcon
+                v-else-if="testing === false"
+                icon-class="error"
+                class="w-5 h-5 text-red-400"
+              />
+              <SvgIcon
+                v-else
+                icon-class="loading"
+                class="w-5 h-5 text-pink-300 border-t-transparent animate-spin"
+              />
             </div>
           </div>
 
@@ -154,7 +181,7 @@
           <div class="flex flex-col sm:flex-row gap-4 pt-4">
             <CuteButton
               type="secondary"
-              icon="back"
+              icon="back2"
               @click="goBack"
               class="flex-1"
             >
@@ -179,19 +206,22 @@
 <script>
 import { getBaseApiUrl, setBaseApiUrl, getPort, setPort } from "@/utils/api"
 import CuteButton from "@/components/ui/CuteButton.vue"
+import SvgIcon from "@/components/SvgIcon/SvgIcon.vue"
 
 export default {
   name: "MyApi",
-  components: { CuteButton },
+  components: { CuteButton, SvgIcon },
   data() {
     return {
       port: getPort(),
-      rightshow: false,
-      apiurl: getBaseApiUrl(),
+      rightShow: false,
+      apiUrl: getBaseApiUrl(),
       fromPage: "/",
       fromPageName: "",
       clickEffect: false,
       clickEffectStyle: {},
+      testing: null,
+      lastTestTime: 0,
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -211,7 +241,10 @@ export default {
     changeUrl() {
       setTimeout(() => {
         this.clickEffect = false
-        setBaseApiUrl(this.apiurl)
+        if (!this.apiUrl.startsWith("http")) {
+          this.apiUrl = "http://" + this.apiUrl
+        }
+        setBaseApiUrl(this.apiUrl)
         setPort(this.port)
         this.$message.success("修改地址端口成功！")
         if (this.fromPageName == "Configure") {
@@ -222,10 +255,49 @@ export default {
       }, 600)
     },
     inpOnfocus() {
-      this.rightshow = true
+      this.rightShow = true
     },
-    inpOnBlur() {
-      this.rightshow = false
+    async inpOnBlur() {
+      this.rightShow = false
+      // 在失去焦点时测试连接
+      await this.testConnection()
+    },
+    async testConnection() {
+      // 防止频繁测试，设置最小间隔为 2 秒
+      const now = Date.now()
+      if (now - this.lastTestTime < 2000) {
+        return
+      }
+      if (!this.apiUrl || !this.port) {
+        return
+      }
+      this.lastTestTime = now
+
+      if (!this.apiUrl || !this.port) {
+        this.testing = null
+        return
+      }
+
+      this.testing = "loading"
+      try {
+        let testUrl = this.apiUrl
+        if (!testUrl.startsWith("http")) {
+          testUrl = "http://" + testUrl
+        }
+        testUrl = `${testUrl}:${this.port}${this.$root.prefix}/system/ping`
+        const resp = await this.getRequest(testUrl)
+
+        if (resp.suc) {
+          this.$message.success("连接成功！")
+          this.testing = true
+        } else {
+          this.$message.error("连接失败：服务器响应异常")
+          this.testing = false
+        }
+      } catch (error) {
+        this.$message.error(`连接失败：${error.message || "未知错误"}`)
+        this.testing = false
+      }
     },
   },
 }
@@ -247,5 +319,10 @@ button:active {
 /* 输入框聚焦动画 */
 input:focus {
   box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+}
+
+/* 带 http 前缀的输入框样式 */
+.with-http-prefix {
+  padding-left: 56px !important;
 }
 </style>

@@ -102,7 +102,6 @@
                       placeholder="选择等级"
                       class="mt-1 cute-select"
                       :options="levelOptions"
-                      clearable
                     />
                     <span class="emoji">🔒</span>
                   </div>
@@ -162,9 +161,9 @@
               >
                 <template slot-scope="{ row }">
                   {{
-                    row.default_value + '' != 'null'
-                      ? row.default_value + ''
-                      : ''
+                    row.default_value + "" != "null"
+                      ? row.default_value + ""
+                      : ""
                   }}
                 </template>
               </el-table-column>
@@ -216,37 +215,37 @@
 </template>
 
 <script>
-import AutoComponent from './AutoComponent.vue'
-import NeonInput from '@/components/ui/NeonInput.vue'
-import NekoSelect from '@/components/ui/NekoSelect.vue'
-import MySwitch from '@/components/ui/MySwitch.vue'
-import CuteButton from '@/components/ui/CuteButton.vue'
-import { checkConfig } from '@/utils/check'
+import AutoComponent from "./AutoComponent.vue"
+import NeonInput from "@/components/ui/NeonInput.vue"
+import NekoSelect from "@/components/ui/NekoSelect.vue"
+import MySwitch from "@/components/ui/MySwitch.vue"
+import CuteButton from "@/components/ui/CuteButton.vue"
+import { checkConfig } from "@/utils/check"
 
 export default {
-  name: 'NekoPluginDialog',
+  name: "NekoPluginDialog",
   props: {
     module: String,
   },
   components: {
     AutoComponent,
-    'neon-input': NeonInput,
-    'neko-select': NekoSelect,
+    "neon-input": NeonInput,
+    "neko-select": NekoSelect,
     MySwitch,
     CuteButton,
   },
   data() {
     var checkCostGold = (rule, value, callback) => {
-      if (!('1' + value)) {
-        return callback(new Error('请输入花费金币'))
+      if (!("1" + value)) {
+        return callback(new Error("请输入花费金币"))
       }
-      if (!checkConfig(value, 'int')) {
-        return callback(new Error('输入值必须为数字'))
+      if (!checkConfig(value, "int")) {
+        return callback(new Error("输入值必须为数字"))
       }
       callback()
     }
     return {
-      dialogWidth: '1300px',
+      dialogWidth: "1300px",
       visible: false,
       menuTypeList: [],
       menuTypeOptions: [],
@@ -255,26 +254,26 @@ export default {
         label: `等级 ${i + 1}`,
       })),
       blockTypeOptions: [
-        { value: 'ALL', label: '全部' },
-        { value: 'GROUP', label: '群聊' },
-        { value: 'PRIVATE', label: '私聊' },
+        { value: "ALL", label: "全部" },
+        { value: "GROUP", label: "群聊" },
+        { value: "PRIVATE", label: "私聊" },
       ],
       updateData: {
-        plugin_name: '',
+        plugin_name: "",
         version: 0,
-        module: '',
-        author: '',
+        module: "",
+        author: "",
         default_status: false,
         limit_superuser: false,
         cost_gold: 0,
         cmd: 0,
-        menu_type: 'normal',
+        menu_type: "normal",
         level: 0,
         block_type: null,
         config_list: [],
       },
       rules: {
-        cost_gold: [{ validator: checkCostGold, trigger: 'blur' }],
+        cost_gold: [{ validator: checkCostGold, trigger: "blur" }],
       },
     }
   },
@@ -284,10 +283,10 @@ export default {
   },
   methods: {
     close() {
-      this.$emit('close')
+      this.$emit("close")
     },
     getPluginDetail() {
-      const loading = this.getLoading('.el-dialog')
+      const loading = this.getLoading(".el-dialog")
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin`, {
         module: this.module,
       }).then((resp) => {
@@ -298,13 +297,13 @@ export default {
             this.$message.success(resp.info)
             this.updateData = resp.data
             if (!resp.data.config_list || !resp.data.config_list.length) {
-              this.dialogWidth = '700px'
+              this.dialogWidth = "700px"
             }
             this.visible = true
           }
         } else {
           this.$message.error(resp.info)
-          this.$emit('close')
+          this.$emit("close")
         }
         loading.close()
       })
@@ -331,26 +330,26 @@ export default {
     },
     getMenuTypeIcon(type) {
       const icons = {
-        normal: 'menu-normal',
-        group: 'menu-group',
-        private: 'menu-private',
-        admin: 'menu-admin',
+        normal: "menu-normal",
+        group: "menu-group",
+        private: "menu-private",
+        admin: "menu-admin",
       }
-      return icons[type] || 'menu-default'
+      return icons[type] || "menu-default"
     },
     commit() {
       if (this.updateData.config_list && this.updateData.config_list) {
         for (let i = 0; i < this.updateData.config_list.length; i++) {
-          const ref = this.$refs['autoComponent_' + i]
+          const ref = this.$refs["autoComponent_" + i]
           if (ref) {
             const flag = ref.validate()
             if (!flag) {
-              return this.$message.warning('配置项填写错误...')
+              return this.$message.warning("配置项填写错误...")
             }
           }
         }
       }
-      this.$refs['form'].validate((valid) => {
+      this.$refs["form"].validate((valid) => {
         if (valid) {
           const data = JSON.parse(JSON.stringify(this.updateData))
           if (data.config_list && data.config_list.length) {
@@ -363,7 +362,7 @@ export default {
           }
 
           data.block_type = data.block_type || null
-          const loading = this.getLoading('.el-dialog')
+          const loading = this.getLoading(".el-dialog")
 
           this.postRequest(
             `${this.$root.prefix}/plugin/update_plugin`,
@@ -374,7 +373,7 @@ export default {
                 this.$message.warning(resp.warning)
               } else {
                 this.$message.success(resp.info)
-                this.$emit('close', true)
+                this.$emit("close", true)
               }
             } else {
               this.$message.error(resp.info)
@@ -565,7 +564,7 @@ export default {
       position: relative;
 
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         top: -3px;
         right: 0;
@@ -658,7 +657,7 @@ export default {
 
       &::before,
       &::after {
-        content: '🌸';
+        content: "🌸";
         margin: 0 5px;
       }
     }
@@ -744,7 +743,7 @@ export default {
     overflow: hidden;
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -50%;
       left: -50%;

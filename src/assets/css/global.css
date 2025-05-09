@@ -1,6 +1,6 @@
-@import './typography.css';
-@import './message.css';
-@import './notify.css';
+@import "./typography.css";
+@import "./message.css";
+@import "./notify.css";
 
 .CodeMirror-hints {
   z-index: 100000 !important;
@@ -37,7 +37,7 @@
   border-radius: 12px !important;
   border: 2px solid rgba(167, 139, 250, 0.3) !important;
   background-color: rgba(255, 255, 255, 0.8) !important;
-  font-family: 'Courier New', monospace !important;
+  font-family: "Courier New", monospace !important;
   transition: all 0.3s ease !important;
   color: #4c1d95 !important;
   height: 100% !important;
@@ -148,7 +148,7 @@
 }
 
 .chart-tooltip {
-  font-family: 'Microsoft YaHei', sans-serif;
+  font-family: "Microsoft YaHei", sans-serif;
 }
 .tooltip-title {
   color: #7e22ce;
@@ -194,15 +194,24 @@
   border-color: #fbcfe8 !important;
   color: #ec4899 !important;
   font-size: var(--font-size-xs) !important;
+  transition: all 0.3s ease !important;
+}
+
+.el-select__tags .el-tag:hover {
+  background-color: #fdf2f8 !important;
+  border-color: #ec4899 !important;
 }
 
 .el-select__tags .el-tag .el-tag__close {
   color: #ec4899 !important;
+  background-color: transparent !important;
+  transition: all 0.3s ease !important;
 }
 
 .el-select__tags .el-tag .el-tag__close:hover {
   background-color: #ec4899 !important;
   color: white !important;
+  transform: scale(1.01) !important;
 }
 
 /* 调整输入框字体大小 */

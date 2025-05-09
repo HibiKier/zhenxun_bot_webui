@@ -352,7 +352,6 @@ export default {
     },
     checkScreenSize() {
       this.isMobile = window.innerWidth <= 768
-      console.log("this.isMobile", this.isMobile)
 
       // 如果是移动设备或从桌面切换到移动设备
       if (this.isMobile) {

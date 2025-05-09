@@ -35,7 +35,8 @@
 
     <!-- 列表内容 -->
     <div
-      class="data-list-container bg-white rounded-xl shadow-md p-2 h-[calc(100%-80px)] overflow-y-auto"
+      class="data-list-container bg-white rounded-xl shadow-md p-2 overflow-y-auto"
+      style="height: calc(100% - 65px)"
     >
       <div
         v-for="data in dataList"
@@ -94,7 +95,7 @@
               class="text-red-500 hover:bg-red-50"
             >
               <i class="el-icon-delete mr-2"></i>
-              {{ activeBtn == 'private' ? '删除好友' : '退出群组' }}
+              {{ activeBtn == "private" ? "删除好友" : "退出群组" }}
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -104,15 +105,15 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
 
 export default {
-  name: 'DataList',
+  name: "DataList",
   components: { SvgIcon },
   data() {
     return {
       dataList: [],
-      activeBtn: 'private',
+      activeBtn: "private",
       botInfo: {},
       requestCount: 0,
       detailId: null,
@@ -144,18 +145,18 @@ export default {
       if (chat) {
         const unreadCount = chat.unreadCount
         if (unreadCount > 99) {
-          return '99+'
+          return "99+"
         }
         return chat.unreadCount
       }
     },
     getDetail(data) {
       this.detailId = data.id
-      this.$emit('getDetail', this.activeBtn, data.id)
-      this.$store.commit('READ_CHAT', data.id)
+      this.$emit("getDetail", this.activeBtn, data.id)
+      this.$store.commit("READ_CHAT", data.id)
     },
     refresh() {
-      if (this.activeBtn == 'private') {
+      if (this.activeBtn == "private") {
         this.getFriendList()
       } else {
         this.getGroupList()
@@ -163,34 +164,34 @@ export default {
     },
     clickListType(type) {
       this.activeBtn = type
-      if (type == 'private') {
+      if (type == "private") {
         this.getFriendList()
       } else {
         this.getGroupList()
       }
     },
     handleCommand(command, id) {
-      if (command == 'delete') {
+      if (command == "delete") {
         this.deleteHandle(id)
       }
     },
     deleteHandle(id) {
-      this.$confirm('确认删除/退出?', '提示', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
+      this.$confirm("确认删除/退出?", "提示", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
         showClose: true,
-        type: 'warning',
-        customClass: 'confirm-box',
-        confirmButtonClass: 'el-button--danger',
-        iconClass: 'el-icon-warning text-red-500',
+        type: "warning",
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--danger",
+        iconClass: "el-icon-warning text-red-500",
       }).then(() => {
         let url = null
         let data = null
-        if (this.activeBtn == 'private') {
-          url = 'delete_friend'
+        if (this.activeBtn == "private") {
+          url = "delete_friend"
           data = { bot_id: this.botInfo.self_id, user_id: id }
         } else {
-          url = 'leave_group'
+          url = "leave_group"
           data = { bot_id: this.botInfo.self_id, group_id: id }
         }
         this.postRequest(`${this.$root.prefix}/manage/${url}`, data).then(
@@ -212,7 +213,7 @@ export default {
       })
     },
     getGroupList() {
-      const loading = this.getLoading('.data-list-container')
+      const loading = this.getLoading(".data-list-container")
       this.getRequest(`${this.$root.prefix}/manage/get_group_list`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
@@ -224,7 +225,7 @@ export default {
             this.dataList = resp.data.map((e) => {
               return { id: e.group_id, time: 0, ...e }
             })
-            this.sortFriendGroupList('group')
+            this.sortFriendGroupList("group")
           }
         } else {
           this.$message.error(resp.info)
@@ -233,7 +234,7 @@ export default {
       })
     },
     getFriendList() {
-      const loading = this.getLoading('.data-list-container')
+      const loading = this.getLoading(".data-list-container")
       this.getRequest(`${this.$root.prefix}/manage/get_friend_list`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
@@ -245,7 +246,7 @@ export default {
             this.dataList = resp.data.map((e) => {
               return { id: e.user_id, time: 0, ...e }
             })
-            this.sortFriendGroupList('private')
+            this.sortFriendGroupList("private")
           }
         } else {
           this.$message.error(resp.info)

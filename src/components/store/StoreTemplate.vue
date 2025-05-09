@@ -29,7 +29,7 @@
       </div>
 
       <!-- 作者筛选 -->
-      <div class="search-tag">
+      <!-- <div class="search-tag">
         <el-dropdown
           @command="handleCommand"
           trigger="click"
@@ -61,7 +61,7 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-      </div>
+      </div> -->
     </div>
 
     <!-- 表格部分 -->
@@ -292,17 +292,17 @@
 </template>
 
 <script>
-import MyButton from '../ui/MyButton.vue'
+import MyButton from "../ui/MyButton.vue"
 export default {
   components: { MyButton },
-  name: 'StoreTemplate',
+  name: "StoreTemplate",
   data() {
     return {
       handleType: null,
-      authorIcon: 'author-red',
+      authorIcon: "author-red",
       authorList: [],
       tableData: [],
-      search: '',
+      search: "",
       installModule: [],
       tableHeight: null,
       resizeObserver: null,
@@ -341,9 +341,9 @@ export default {
     calculateTableHeight() {
       this.$nextTick(() => {
         const headerHeight =
-          document.querySelector('.title')?.offsetHeight || 100
+          document.querySelector(".title")?.offsetHeight || 100
         const filterHeight =
-          document.querySelector('.filter')?.offsetHeight || 80
+          document.querySelector(".filter")?.offsetHeight || 80
         const padding = 32 // 上下边距
 
         // 计算可用高度
@@ -372,42 +372,42 @@ export default {
         this.resizeObserver.observe(this.$refs.tableWrapper)
       }
 
-      window.addEventListener('resize', this.calculateTableHeight)
+      window.addEventListener("resize", this.calculateTableHeight)
     },
     tableRowClassName({ row }) {
-      return this.installModule.includes(row.module) ? 'installed-row' : ''
+      return this.installModule.includes(row.module) ? "installed-row" : ""
     },
 
     getPluginTypeColor(type) {
       const typeMap = {
-        功能: 'success',
-        娱乐: 'warning',
-        工具: '',
-        管理: 'danger',
-        其他: 'info',
+        功能: "success",
+        娱乐: "warning",
+        工具: "",
+        管理: "danger",
+        其他: "info",
       }
-      return typeMap[type] || ''
+      return typeMap[type] || ""
     },
 
     handleReadme(i, data) {
-      this.$message.info('README功能开发中，敬请期待~')
+      this.$message.info("README功能开发中，敬请期待~")
     },
 
     handleUpdate(i, data) {
-      this.$confirm('确定要更新这个插件吗?', '更新确认', {
-        confirmButtonText: '确定更新',
-        cancelButtonText: '取消',
-        type: 'warning',
-        customClass: 'confirm-box',
-        confirmButtonClass: 'el-button--warning',
-        iconClass: 'el-icon-question text-yellow-500',
+      this.$confirm("确定要更新这个插件吗?", "更新确认", {
+        confirmButtonText: "确定更新",
+        cancelButtonText: "取消",
+        type: "warning",
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--warning",
+        iconClass: "el-icon-question text-yellow-500",
       })
         .then(() => {
           var loading = this.$loading({
-            target: '.table-border',
-            text: '正在更新插件...',
-            spinner: 'el-icon-loading',
-            background: 'rgba(255, 255, 255, 0.7)',
+            target: ".table-border",
+            text: "正在更新插件...",
+            spinner: "el-icon-loading",
+            background: "rgba(255, 255, 255, 0.7)",
           })
 
           this.postRequest(`${this.$root.prefix}/store/update_plugin`, {
@@ -419,54 +419,54 @@ export default {
                 if (resp.warning) {
                   this.$message.warning({
                     message: resp.warning,
-                    iconClass: 'el-icon-warning-outline',
+                    iconClass: "el-icon-warning-outline",
                   })
                 } else {
                   this.$message.success({
-                    message: resp.info || '插件更新成功!',
-                    iconClass: 'el-icon-success',
+                    message: resp.info || "插件更新成功!",
+                    iconClass: "el-icon-success",
                   })
                   this.getPluginList()
                 }
               } else {
                 this.$message.error({
-                  message: resp.info || '插件更新失败',
-                  iconClass: 'el-icon-error',
+                  message: resp.info || "插件更新失败",
+                  iconClass: "el-icon-error",
                 })
               }
             })
             .catch((error) => {
               loading.close()
               this.$message.error({
-                message: '更新过程中发生错误: ' + (error.message || error),
-                iconClass: 'el-icon-error',
+                message: "更新过程中发生错误: " + (error.message || error),
+                iconClass: "el-icon-error",
               })
-              console.error('[Plugin Store] Update error:', error)
+              console.error("[Plugin Store] Update error:", error)
             })
         })
         .catch(() => {
           this.$message.info({
-            message: '已取消更新',
-            iconClass: 'el-icon-info',
+            message: "已取消更新",
+            iconClass: "el-icon-info",
           })
         })
     },
 
     handleRemove(i, data) {
-      this.$confirm('确定要移除这个插件吗?', '移除确认', {
-        confirmButtonText: '确定移除',
-        cancelButtonText: '取消',
-        type: 'error',
-        customClass: 'confirm-box',
-        confirmButtonClass: 'el-button--danger',
-        iconClass: 'el-icon-warning text-red-500',
+      this.$confirm("确定要移除这个插件吗?", "移除确认", {
+        confirmButtonText: "确定移除",
+        cancelButtonText: "取消",
+        type: "error",
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--danger",
+        iconClass: "el-icon-warning text-red-500",
       })
         .then(() => {
           var loading = this.$loading({
-            target: '.table-border',
-            text: '正在移除插件...',
-            spinner: 'el-icon-loading',
-            background: 'rgba(255, 255, 255, 0.7)',
+            target: ".table-border",
+            text: "正在移除插件...",
+            spinner: "el-icon-loading",
+            background: "rgba(255, 255, 255, 0.7)",
           })
 
           this.postRequest(`${this.$root.prefix}/store/remove_plugin`, {
@@ -478,54 +478,54 @@ export default {
                 if (resp.warning) {
                   this.$message.warning({
                     message: resp.warning,
-                    iconClass: 'el-icon-warning-outline',
+                    iconClass: "el-icon-warning-outline",
                   })
                 } else {
                   this.$message.success({
-                    message: resp.info || '插件移除成功!',
-                    iconClass: 'el-icon-success',
+                    message: resp.info || "插件移除成功!",
+                    iconClass: "el-icon-success",
                   })
                   this.getPluginList()
                 }
               } else {
                 this.$message.error({
-                  message: resp.info || '插件移除失败',
-                  iconClass: 'el-icon-error',
+                  message: resp.info || "插件移除失败",
+                  iconClass: "el-icon-error",
                 })
               }
             })
             .catch((error) => {
               loading.close()
               this.$message.error({
-                message: '移除过程中发生错误: ' + (error.message || error),
-                iconClass: 'el-icon-error',
+                message: "移除过程中发生错误: " + (error.message || error),
+                iconClass: "el-icon-error",
               })
-              console.error('[Plugin Store] Remove error:', error)
+              console.error("[Plugin Store] Remove error:", error)
             })
         })
         .catch(() => {
           this.$message.info({
-            message: '已取消移除',
-            iconClass: 'el-icon-info',
+            message: "已取消移除",
+            iconClass: "el-icon-info",
           })
         })
     },
 
     handleInstall(i, data) {
-      this.$confirm('确定要安装这个插件吗?', '安装确认', {
-        confirmButtonText: '确定安装',
-        cancelButtonText: '取消',
-        type: 'success',
-        customClass: 'confirm-box',
-        confirmButtonClass: 'el-button--success',
-        iconClass: 'el-icon-question text-green-500',
+      this.$confirm("确定要安装这个插件吗?", "安装确认", {
+        confirmButtonText: "确定安装",
+        cancelButtonText: "取消",
+        type: "success",
+        customClass: "confirm-box",
+        confirmButtonClass: "el-button--success",
+        iconClass: "el-icon-question text-green-500",
       })
         .then(() => {
           var loading = this.$loading({
-            target: '.table-border',
-            text: '正在安装插件...',
-            spinner: 'el-icon-loading',
-            background: 'rgba(255, 255, 255, 0.7)',
+            target: ".table-border",
+            text: "正在安装插件...",
+            spinner: "el-icon-loading",
+            background: "rgba(255, 255, 255, 0.7)",
           })
 
           this.postRequest(`${this.$root.prefix}/store/install_plugin`, {
@@ -537,35 +537,35 @@ export default {
                 if (resp.warning) {
                   this.$message.warning({
                     message: resp.warning,
-                    iconClass: 'el-icon-warning-outline',
+                    iconClass: "el-icon-warning-outline",
                   })
                 } else {
                   this.$message.success({
-                    message: resp.info || '插件安装成功!',
-                    iconClass: 'el-icon-success',
+                    message: resp.info || "插件安装成功!",
+                    iconClass: "el-icon-success",
                   })
                   this.getPluginList()
                 }
               } else {
                 this.$message.error({
-                  message: resp.info || '插件安装失败',
-                  iconClass: 'el-icon-error',
+                  message: resp.info || "插件安装失败",
+                  iconClass: "el-icon-error",
                 })
               }
             })
             .catch((error) => {
               loading.close()
               this.$message.error({
-                message: '安装过程中发生错误: ' + (error.message || error),
-                iconClass: 'el-icon-error',
+                message: "安装过程中发生错误: " + (error.message || error),
+                iconClass: "el-icon-error",
               })
-              console.error('[Plugin Store] Install error:', error)
+              console.error("[Plugin Store] Install error:", error)
             })
         })
         .catch(() => {
           this.$message.info({
-            message: '已取消安装',
-            iconClass: 'el-icon-info',
+            message: "已取消安装",
+            iconClass: "el-icon-info",
           })
         })
     },
@@ -576,7 +576,7 @@ export default {
     },
 
     getPluginList() {
-      var loading = this.getLoading('.table-border')
+      var loading = this.getLoading(".table-border")
 
       this.getRequest(`${this.$root.prefix}/store/get_plugin_store`)
         .then((resp) => {
@@ -585,12 +585,12 @@ export default {
             if (resp.warning) {
               this.$message.warning({
                 message: resp.warning,
-                iconClass: 'el-icon-warning-outline',
+                iconClass: "el-icon-warning-outline",
               })
             } else {
               this.$message.success({
-                message: resp.info || '获取插件商店列表成功!',
-                iconClass: 'el-icon-success',
+                message: resp.info || "获取插件商店列表成功!",
+                iconClass: "el-icon-success",
               })
               this.tableData = Array.isArray(resp.data.plugin_list)
                 ? resp.data.plugin_list
@@ -609,10 +609,10 @@ export default {
           } else {
             const errorMsg = resp
               ? resp.info
-              : '无法获取插件商店列表，请检查网络连接或后端服务。'
+              : "无法获取插件商店列表，请检查网络连接或后端服务。"
             this.$message.error({
-              message: errorMsg || '获取插件商店列表失败',
-              iconClass: 'el-icon-error',
+              message: errorMsg || "获取插件商店列表失败",
+              iconClass: "el-icon-error",
             })
             this.tableData = []
             this.installModule = []
@@ -623,9 +623,9 @@ export default {
           loading.close()
           this.$message.error({
             message: `获取插件商店列表时出错: ${error.message || error}`,
-            iconClass: 'el-icon-error',
+            iconClass: "el-icon-error",
           })
-          console.error('[StoreTemplate Error] getPluginList catch:', error)
+          console.error("[StoreTemplate Error] getPluginList catch:", error)
           this.tableData = []
           this.installModule = []
           this.authorList = []
@@ -633,11 +633,11 @@ export default {
     },
 
     mouseover() {
-      this.authorIcon = 'author-white'
+      this.authorIcon = "author-white"
     },
 
     mouseout() {
-      this.authorIcon = 'author-red'
+      this.authorIcon = "author-red"
     },
   },
 }

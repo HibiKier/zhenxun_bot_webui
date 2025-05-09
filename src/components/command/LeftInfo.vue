@@ -134,10 +134,10 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
 
 export default {
-  name: 'LeftInfo',
+  name: "LeftInfo",
   components: { SvgIcon },
   data() {
     return {
@@ -159,10 +159,10 @@ export default {
   mounted() {
     this.getBotModuleData()
     this.calculateHeights()
-    window.addEventListener('resize', this.calculateHeights)
+    window.addEventListener("resize", this.calculateHeights)
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.calculateHeights)
+    window.removeEventListener("resize", this.calculateHeights)
   },
   methods: {
     calculateHeights() {
@@ -170,7 +170,7 @@ export default {
         const container = this.$refs.leftInfoContainer
         if (container) {
           const containerHeight = container.clientHeight
-          const avatarSection = container.querySelector('.avatar-section')
+          const avatarSection = container.querySelector(".avatar-section")
           const avatarHeight = avatarSection ? avatarSection.clientHeight : 0
           const padding = 16 // 根据实际padding调整
 
@@ -179,7 +179,7 @@ export default {
       })
     },
     handleBotStatus() {
-      var loading = this.getLoading('.left-info')
+      var loading = this.getLoading(".left-info")
 
       this.postRequest(`${this.$root.prefix}/main/change_bot_status`, {
         bot_id: this.botInfo.self_id,
@@ -199,9 +199,9 @@ export default {
       })
     },
     getBotModuleData() {
-      var loading = this.getLoading('.left-info')
+      var loading = this.getLoading(".left-info")
 
-      this.$getRequest(`${this.$root.prefix}/main/get_bot_block_module`, {
+      this.getRequest(`${this.$root.prefix}/main/get_bot_block_module`, {
         bot_id: this.botInfo.self_id,
       }).then((resp) => {
         if (resp.suc) {
@@ -221,9 +221,9 @@ export default {
       })
     },
     clickBotManage() {
-      var loading = this.getLoading('.left-info')
+      var loading = this.getLoading(".left-info")
 
-      this.$postRequest(`${this.$root.prefix}/main/update_bot_manage`, {
+      this.postRequest(`${this.$root.prefix}/main/update_bot_manage`, {
         bot_id: this.botInfo.self_id,
         block_plugins: this.postData.blockPlugins,
         block_tasks: this.postData.blockTasks,
@@ -246,7 +246,7 @@ export default {
 
 <style scoped>
 /* 自定义字体 */
-@import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&display=swap");
 
 .switch-border {
   display: flex;
@@ -273,7 +273,7 @@ export default {
 
 /* 使用全局字体变量 */
 .anime-font {
-  font-family: 'Mochiy Pop P One', sans-serif;
+  font-family: "Mochiy Pop P One", sans-serif;
   font-size: var(--font-size-xl);
   line-height: var(--line-height-dense);
 }

@@ -10,6 +10,7 @@
       @visible-change="handleVisibleChange"
       @focus="handleFocus"
       @blur="handleBlur"
+      :clearable="clearable"
     >
       <template #prefix>
         <i class="i-mdi-heart-outline text-pink-400 mr-1"></i>
@@ -44,7 +45,7 @@
 
 <script>
 export default {
-  name: 'MoeSelect',
+  name: "MoeSelect",
   props: {
     value: {
       type: [String, Number, Object],
@@ -57,11 +58,15 @@ export default {
     },
     placeholder: {
       type: String,
-      default: '请选择~',
+      default: "请选择~",
     },
     popperClass: {
       type: String,
-      default: '',
+      default: "",
+    },
+    clearable: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -79,17 +84,17 @@ export default {
   },
   methods: {
     handleChange(value) {
-      this.$emit('input', value)
-      this.$emit('change', value)
+      this.$emit("input", value)
+      this.$emit("change", value)
     },
     handleVisibleChange(visible) {
       this.isDropdownVisible = visible
     },
     handleFocus() {
-      this.$emit('focus')
+      this.$emit("focus")
     },
     handleBlur() {
-      this.$emit('blur')
+      this.$emit("blur")
     },
     isSelected(option) {
       return option.value === this.selectedValue
@@ -106,8 +111,8 @@ export default {
 <style lang="scss" scoped>
 .moe-select-container {
   @apply relative w-full;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
   .soft-pink-overlay {
     @apply absolute top-0 left-0 right-0 bottom-0 rounded-lg pointer-events-none;
