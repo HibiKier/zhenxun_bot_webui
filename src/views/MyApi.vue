@@ -285,9 +285,7 @@ export default {
           testUrl = "http://" + testUrl
         }
         testUrl = `${testUrl}:${this.port}${this.$root.prefix}/system/ping`
-        console.log(testUrl)
         const resp = await this.getRequest(testUrl)
-        console.log(resp)
         if (resp.suc) {
           this.$message.success("连接成功！")
           this.testing = true
