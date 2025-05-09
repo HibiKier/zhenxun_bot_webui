@@ -47,7 +47,7 @@
     <div class="chart-area" :style="{ height: computedChartAreaHeight + 'px' }">
       <!-- 活跃群聊图表 -->
       <div
-        class="chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
+        class="active-group chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
       >
         <div
           class="flex flex-col md:flex-row md:items-center md:justify-between mb-3"
@@ -88,7 +88,7 @@
 
       <!-- 热门插件图表 -->
       <div
-        class="chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
+        class="hot-plugin chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
       >
         <div
           class="flex flex-col md:flex-row md:items-center md:justify-between mb-3"
