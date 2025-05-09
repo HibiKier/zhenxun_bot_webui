@@ -42,9 +42,9 @@
                       <svg-icon icon-class="friend" class="blue-icon mr-2" />
                       <span class="text-gray-600">好友</span>
                     </div>
-                    <span class="gf-value text-blue-600 font-semibold"
-                      >{{ bot.friend_count }}1111</span
-                    >
+                    <span class="gf-value text-blue-600 font-semibold">{{
+                      bot.friend_count
+                    }}</span>
                   </div>
                   <div
                     class="gf-item flex-1 flex items-center justify-between bg-green-50 rounded-md p-2"
@@ -53,9 +53,9 @@
                       <svg-icon icon-class="group" class="green-icon mr-2" />
                       <span class="text-gray-600">群组</span>
                     </div>
-                    <span class="gf-value text-green-600 font-semibold"
-                      >{{ bot.group_count }}1111</span
-                    >
+                    <span class="gf-value text-green-600 font-semibold">{{
+                      bot.group_count
+                    }}</span>
                   </div>
                 </div>
               </div>

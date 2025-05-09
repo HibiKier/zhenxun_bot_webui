@@ -102,6 +102,9 @@ export const getBaseApiUrl = () => {
 
 //传送json格式的post请求
 export const postRequest = (url, params) => {
+  if (!url.startsWith("http")) {
+    url = `${getBaseUrl()}${url}`
+  }
   return axios({
     method: "post",
     url: `${getBaseUrl()}${url}`,
@@ -110,6 +113,9 @@ export const postRequest = (url, params) => {
 }
 //传递json的put请求
 export const putRequest = (url, params) => {
+  if (!url.startsWith("http")) {
+    url = `${getBaseUrl()}${url}`
+  }
   return axios({
     method: "put",
     url: `${getBaseUrl()}${url}`,
@@ -133,17 +139,23 @@ export const getRequest = (url, params) => {
     })
     url = url.substring(0, url.length - 1)
   }
+  if (!url.startsWith("http")) {
+    url = `${getBaseUrl()}${url}`
+  }
   return axios({
     method: "get",
-    url: `${getBaseUrl()}${url}`,
+    url: url,
     data: params,
   })
 }
 //传递json的delete请求
 export const deleteRequest = (url, params) => {
+  if (!url.startsWith("http")) {
+    url = `${getBaseUrl()}${url}`
+  }
   return axios({
     method: "delete",
-    url: `${getBaseUrl()}${url}`,
+    url: url,
     data: params,
   })
 }
