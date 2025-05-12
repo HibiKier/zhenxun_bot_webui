@@ -121,9 +121,9 @@
 </template>
 
 <script>
-import { default as AnsiUp } from 'ansi_up'
+import { default as AnsiUp } from "ansi_up"
 export default {
-  name: 'MidInfo',
+  name: "MidInfo",
   data() {
     return {
       progressWidth: 80,
@@ -136,18 +136,18 @@ export default {
       callCnt: { num: 0, day: 0, week: 0, month: 0, year: 0 },
       progressItems: {
         chat: {
-          num: { label: '总数', color: '#f97316' },
-          day: { label: '一日内', color: '#ec4899' },
-          week: { label: '一周内', color: '#a855f7' },
-          month: { label: '一月内', color: '#3b82f6' },
-          year: { label: '一年内', color: '#10b981' },
+          num: { label: "总数", color: "#f97316" },
+          day: { label: "一日内", color: "#ec4899" },
+          week: { label: "一周内", color: "#a855f7" },
+          month: { label: "一月内", color: "#3b82f6" },
+          year: { label: "一年内", color: "#10b981" },
         },
         call: {
-          num: { label: '总数', color: '#f97316' },
-          day: { label: '一日内', color: '#ec4899' },
-          week: { label: '一周内', color: '#a855f7' },
-          month: { label: '一月内', color: '#3b82f6' },
-          year: { label: '一年内', color: '#10b981' },
+          num: { label: "总数", color: "#f97316" },
+          day: { label: "一日内", color: "#ec4899" },
+          week: { label: "一周内", color: "#a855f7" },
+          month: { label: "一月内", color: "#3b82f6" },
+          year: { label: "一年内", color: "#10b981" },
         },
       },
       chatCntInterval: null,
@@ -156,117 +156,117 @@ export default {
       chatAndCallMonth: {},
       chartOpt: {
         title: {
-          text: '消息/调用统计',
+          text: "消息/调用统计",
           textStyle: {
-            color: '#7c3aed',
+            color: "#7c3aed",
             fontSize: 16,
           },
         },
         tooltip: {
-          trigger: 'axis',
-          backgroundColor: 'rgba(255,255,255,0.9)',
-          borderColor: '#e9d5ff',
+          trigger: "axis",
+          backgroundColor: "rgba(255,255,255,0.9)",
+          borderColor: "#e9d5ff",
           borderWidth: 1,
           textStyle: {
-            color: '#6b21a8',
+            color: "#6b21a8",
             fontSize: 14,
           },
         },
         legend: {
-          data: ['消息统计', '调用统计'],
+          data: ["消息统计", "调用统计"],
           textStyle: {
-            color: '#6b21a8',
+            color: "#6b21a8",
             fontSize: 14,
           },
         },
         grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
           containLabel: true,
-          backgroundColor: '#fdf4ff',
+          backgroundColor: "#fdf4ff",
         },
         toolbox: {
           feature: {
             saveAsImage: {
-              title: '保存图片',
+              title: "保存图片",
               pixelRatio: 2,
             },
           },
           iconStyle: {
-            borderColor: '#c084fc',
+            borderColor: "#c084fc",
           },
         },
         xAxis: {
-          type: 'category',
+          type: "category",
           boundaryGap: false,
           data: [],
           axisLine: {
             lineStyle: {
-              color: '#c084fc',
+              color: "#c084fc",
             },
           },
           axisLabel: {
-            color: '#9333ea',
+            color: "#9333ea",
             fontSize: 12,
           },
         },
         yAxis: [
           {
-            type: 'value',
-            name: '消息统计',
+            type: "value",
+            name: "消息统计",
             axisLine: {
               lineStyle: {
-                color: '#c084fc',
+                color: "#c084fc",
               },
             },
             axisLabel: {
-              color: '#9333ea',
+              color: "#9333ea",
               fontSize: 12,
             },
             splitLine: {
               lineStyle: {
-                color: '#f3e8ff',
+                color: "#f3e8ff",
               },
             },
           },
           {
-            type: 'value',
-            name: '调用统计',
-            position: 'right',
+            type: "value",
+            name: "调用统计",
+            position: "right",
             axisLine: {
               lineStyle: {
-                color: '#c084fc',
+                color: "#c084fc",
               },
             },
             axisLabel: {
-              color: '#9333ea',
+              color: "#9333ea",
               fontSize: 12,
             },
             splitLine: {
               lineStyle: {
-                color: '#f3e8ff',
+                color: "#f3e8ff",
               },
             },
           },
         ],
         series: [
           {
-            name: '消息统计',
-            type: 'line',
+            name: "消息统计",
+            type: "line",
             smooth: true,
             data: [],
             yAxisIndex: 0,
             lineStyle: {
               width: 3,
-              color: '#c084fc',
+              color: "#c084fc",
             },
             itemStyle: {
-              color: '#a855f7',
+              color: "#a855f7",
             },
             areaStyle: {
               color: {
-                type: 'linear',
+                type: "linear",
                 x: 0,
                 y: 0,
                 x2: 0,
@@ -274,32 +274,32 @@ export default {
                 colorStops: [
                   {
                     offset: 0,
-                    color: '#e9d5ff',
+                    color: "#e9d5ff",
                   },
                   {
                     offset: 1,
-                    color: '#f3e8ff',
+                    color: "#f3e8ff",
                   },
                 ],
               },
             },
           },
           {
-            name: '调用统计',
-            type: 'line',
+            name: "调用统计",
+            type: "line",
             smooth: true,
             data: [],
             yAxisIndex: 1,
             lineStyle: {
               width: 3,
-              color: '#f0abfc',
+              color: "#f0abfc",
             },
             itemStyle: {
-              color: '#d946ef',
+              color: "#d946ef",
             },
             areaStyle: {
               color: {
-                type: 'linear',
+                type: "linear",
                 x: 0,
                 y: 0,
                 x2: 0,
@@ -307,11 +307,11 @@ export default {
                 colorStops: [
                   {
                     offset: 0,
-                    color: '#f5d0fe',
+                    color: "#f5d0fe",
                   },
                   {
                     offset: 1,
-                    color: '#fae8ff',
+                    color: "#fae8ff",
                   },
                 ],
               },
@@ -325,7 +325,7 @@ export default {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
     this.getChCount(this.botInfo.self_id)
     this.getCallCount(this.botInfo.self_id)
     this.getMonthChatAndCallCount(this.botInfo.self_id)
@@ -354,7 +354,7 @@ export default {
     if (this.callInterval) {
       clearInterval(this.callInterval)
     }
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
   },
   methods: {
     updateAreaHeight() {
@@ -420,18 +420,18 @@ export default {
     },
     getPercentageChat(type) {
       if (this.chCnt.num == 0) return 0
-      if (type == 'num') return 100
+      if (type == "num") return 100
       if (this.chCnt[type] == this.chCnt.num) return 100
       return (this.chCnt[type] / this.chCnt.num) * 100
     },
     getPercentageCall(type) {
       if (this.callCnt.num == 0) return 0
-      if (type == 'num') return 100
+      if (type == "num") return 100
       if (this.callCnt[type] == this.callCnt.num) return 100
       return (this.callCnt[type] / this.callCnt.num) * 100
     },
     getMonthChatAndCallCount(bot_id) {
-      var loading = this.getLoading('.chart')
+      var loading = this.getLoading(".chart-area")
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_chat_and_call_month`,
         { bot_id: bot_id }
@@ -458,7 +458,7 @@ export default {
     getChCount(bot_id, no_loading) {
       if (bot_id) {
         if (!no_loading) {
-          var loading = this.getLoading('.ch-count')
+          var loading = this.getLoading(".message-area")
         }
 
         this.getRequest(`${this.$root.prefix}/main/get_all_chat_count`, {
@@ -489,7 +489,7 @@ export default {
     getCallCount(bot_id, no_loading) {
       if (bot_id) {
         if (!no_loading) {
-          var loading = this.getLoading('.ch-count')
+          var loading = this.getLoading(".ch-count")
         }
 
         this.getRequest(`${this.$root.prefix}/main/get_all_call_count`, {
