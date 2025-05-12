@@ -1,7 +1,8 @@
 <template>
-  <div class="main-container" style="overflow: hidden">
+  <div class="main-container" :class="{ 'mobile-container': isMobile }">
     <div
-      class="main bg-gradient-to-br from-pink-50 to-purple-50 overflow-hidden"
+      class="main bg-gradient-to-br from-pink-50 to-purple-50"
+      :class="{ 'mobile-main': isMobile }"
     >
       <!-- 添加可爱的标题 -->
       <div class="flex items-center mb-4">
@@ -14,14 +15,17 @@
       <el-row
         :gutter="16"
         class="flex flex-wrap"
-        :style="{ height: computedHeight + 55 + 'px' }"
+        :style="!isMobile ? { height: computedHeight + 55 + 'px' } : {}"
       >
         <!-- 左侧表格列表 - 宽度较小 -->
         <el-col :span="24" :md="6">
           <div
-            class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-pink-200 h-full"
+            class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-pink-200"
+            :class="{ 'mobile-card': isMobile }"
           >
-            <table-list :style="{ height: computedHeight + 'px' }" />
+            <table-list
+              :style="{ height: isMobile ? 'auto' : computedHeight + 'px' }"
+            />
           </div>
         </el-col>
 
@@ -29,8 +33,13 @@
         <el-col :span="24" :md="18">
           <div
             class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-blue-200"
+            :class="{ 'mobile-card': isMobile }"
           >
-            <cmd-main :style="{ height: computedHeight + 22 + 'px' }" />
+            <cmd-main
+              :style="{
+                height: isMobile ? 'auto' : computedHeight + 'px',
+              }"
+            />
           </div>
         </el-col>
       </el-row>
@@ -48,22 +57,39 @@ export default {
   data() {
     return {
       windowHeight: window.innerHeight,
+      isMobile: this.$isMobile(),
     }
   },
   computed: {
     computedHeight() {
-      return this.windowHeight - getHeaderHeight() - 150
+      return this.windowHeight - getHeaderHeight() - 135
     },
   },
   mounted() {
-    window.addEventListener("resize", this.handleResize)
+    this.$nextTick(() => {
+      this.handleResize()
+      window.addEventListener("resize", this.handleResize)
+    })
+  },
+  activated() {
+    if (this.isMobile) {
+      this.$nextTick(() => {
+        document.body.style.overflow = "auto"
+        document.documentElement.style.overflow = "auto"
+      })
+    }
   },
   methods: {
     handleResize() {
       this.windowHeight = window.innerHeight
+      this.isMobile = window.innerWidth <= 768
+      if (this.isMobile) {
+        document.body.style.overflow = "auto"
+        document.documentElement.style.overflow = "auto"
+      }
     },
   },
-  destroyed() {
+  beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
   },
 }
@@ -71,14 +97,14 @@ export default {
 
 <style scoped>
 .main-container {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: relative;
 }
 
 .main {
-  flex: 1;
-  overflow-y: auto;
+  min-height: 100%;
+  padding: 1rem;
   background-image: radial-gradient(
     circle at 10% 20%,
     rgba(255, 200, 239, 0.1) 0%,
@@ -137,22 +163,33 @@ export default {
   background: linear-gradient(90deg, #60a5fa, #a855f7);
 }
 
+/* 移动端特定样式 */
+.mobile-container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-main {
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-card {
+  height: auto !important;
+  min-height: 300px;
+}
+
 /* 响应式调整 */
 @media (max-width: 768px) {
   .main {
     padding: 1rem;
-    overflow-y: auto;
-    height: 100vh;
   }
 
   .card-container {
     padding: 1rem;
     margin-bottom: 1rem;
-  }
-
-  .computedHeight {
-    height: auto !important;
-    min-height: 300px;
   }
 
   .el-row {

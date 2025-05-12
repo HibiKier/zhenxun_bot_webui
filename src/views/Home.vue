@@ -244,10 +244,12 @@
         <main
           class="flex-1 h-full p-0 bg-gradient-to-br from-pink-50 to-purple-50"
           @click="handleMainClick"
+          :style="{ height: computedHeight + 'px' }"
         >
           <router-view
             class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 h-full"
             :key="rvKey"
+            :style="{ height: computedHeight + 'px' }"
           />
         </main>
       </div>
@@ -257,6 +259,7 @@
 
 <script>
 import EventBus from "@/utils/event-bus"
+import { getHeaderHeight } from "@/utils/utils"
 export default {
   name: "MainHome",
   data() {
@@ -309,7 +312,7 @@ export default {
   },
   computed: {
     computedHeight() {
-      return this.windowHeight - 1
+      return this.windowHeight - getHeaderHeight() + 7
     },
   },
   created() {

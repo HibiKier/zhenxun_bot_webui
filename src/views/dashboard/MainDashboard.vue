@@ -41,7 +41,7 @@ export default {
   components: { LeftInfo, MidInfo, RightInfo },
   computed: {
     computedHeight() {
-      return this.windowHeight - getHeaderHeight()
+      return this.windowHeight - getHeaderHeight() + 70
     },
   },
   created() {},
