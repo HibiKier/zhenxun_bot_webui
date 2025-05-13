@@ -1,16 +1,31 @@
 <template>
   <div
-    class="left-info-container bg-pink-50 p-4 h-full"
+    class="left-info-container p-4 h-full"
     ref="leftInfoContainer"
+    :style="{ backgroundColor: 'var(--el-fill-color-light)' }"
   >
     <el-row ref="firstRow">
       <el-col :span="24">
-        <div class="top-text text-purple-600">
+        <div
+          class="top-text flex items-center"
+          :style="{ color: 'var(--el-color-primary)' }"
+        >
           <svg-icon icon-class="bot" class="icon-bot" />
           在线小真寻（{{ botList.length }}）
         </div>
-        <div class="bot-list" :style="{ height: computedHeight + 'px' }">
-          <div v-for="bot in botList" :key="bot.id" class="bot-item">
+        <div
+          class="bot-list"
+          :style="{
+            height: computedHeight + 'px',
+            backgroundColor: 'var(--el-bg-color)',
+          }"
+        >
+          <div
+            v-for="bot in botList"
+            :key="bot.id"
+            class="bot-item"
+            :style="{ backgroundColor: 'var(--el-bg-color)' }"
+          >
             <div style="width: 100%">
               <div class="item-ava">
                 <el-image
@@ -24,38 +39,79 @@
                 </el-image>
                 <div class="item-info">
                   <div class="info-name">
-                    <span class="line-line pink-line"></span>
-                    <span class="bot-name">{{ bot.nickname }}</span>
+                    <span
+                      class="line-line"
+                      :style="{ backgroundColor: 'var(--el-color-primary)' }"
+                    ></span>
+                    <span
+                      class="bot-name"
+                      :style="{ color: 'var(--el-text-color-primary)' }"
+                      >{{ bot.nickname }}</span
+                    >
                   </div>
                   <div class="info-id">
-                    <span class="line-line purple-line"></span>
-                    <span class="purple-text">ID: {{ bot.self_id }}</span>
+                    <span
+                      class="line-line"
+                      :style="{
+                        backgroundColor: 'var(--el-color-primary-light-3)',
+                      }"
+                    ></span>
+                    <span
+                      class="purple-text"
+                      :style="{ color: 'var(--el-color-primary-light-3)' }"
+                      >ID: {{ bot.self_id }}</span
+                    >
                   </div>
                 </div>
               </div>
-              <div class="info-gf bg-white rounded-lg p-3 shadow-sm mt-3">
+              <div
+                class="info-gf rounded-lg p-3 shadow-sm mt-3"
+                :style="{ backgroundColor: 'var(--el-bg-color)' }"
+              >
                 <div class="flex space-x-3">
                   <div
-                    class="gf-item flex-1 flex items-center justify-between bg-blue-50 rounded-md p-2"
+                    class="gf-item flex-1 flex items-center justify-between rounded-md p-2"
+                    :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
                   >
                     <div class="flex items-center">
-                      <svg-icon icon-class="friend" class="blue-icon mr-2" />
-                      <span class="text-gray-600">好友</span>
+                      <svg-icon
+                        icon-class="friend"
+                        class="blue-icon mr-2"
+                        :style="{ color: 'var(--el-color-primary)' }"
+                      />
+                      <span
+                        class="text-gray-600"
+                        :style="{ color: 'var(--el-text-color-regular)' }"
+                        >好友</span
+                      >
                     </div>
-                    <span class="gf-value text-blue-600 font-semibold">{{
-                      bot.friend_count
-                    }}</span>
+                    <span
+                      class="gf-value font-semibold"
+                      :style="{ color: 'var(--el-color-primary)' }"
+                      >{{ bot.friend_count }}</span
+                    >
                   </div>
                   <div
-                    class="gf-item flex-1 flex items-center justify-between bg-green-50 rounded-md p-2"
+                    class="gf-item flex-1 flex items-center justify-between rounded-md p-2"
+                    :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
                   >
                     <div class="flex items-center">
-                      <svg-icon icon-class="group" class="green-icon mr-2" />
-                      <span class="text-gray-600">群组</span>
+                      <svg-icon
+                        icon-class="group"
+                        class="green-icon mr-2"
+                        :style="{ color: 'var(--el-color-success)' }"
+                      />
+                      <span
+                        class="text-gray-600"
+                        :style="{ color: 'var(--el-text-color-regular)' }"
+                        >群组</span
+                      >
                     </div>
-                    <span class="gf-value text-green-600 font-semibold">{{
-                      bot.group_count
-                    }}</span>
+                    <span
+                      class="gf-value font-semibold"
+                      :style="{ color: 'var(--el-color-success)' }"
+                      >{{ bot.group_count }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -63,42 +119,109 @@
             <el-divider class="custom-divider" />
             <div class="bot-detail-info">
               <div class="detail-row">
-                <div class="message">
-                  <svg-icon icon-class="call" class="pink-icon" />
+                <div
+                  class="message"
+                  :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
+                >
+                  <svg-icon
+                    icon-class="call"
+                    class="pink-icon"
+                    :style="{ color: 'var(--el-color-primary)' }"
+                  />
                   <div class="message-content">
-                    <span class="message-title">今日调用</span>
-                    <span class="message-value">{{ bot.day_call }}</span>
+                    <span
+                      class="message-title"
+                      :style="{ color: 'var(--el-text-color-secondary)' }"
+                      >今日调用</span
+                    >
+                    <span
+                      class="message-value"
+                      :style="{ color: 'var(--el-text-color-primary)' }"
+                      >{{ bot.day_call }}</span
+                    >
                   </div>
                 </div>
-                <div class="message">
-                  <svg-icon icon-class="message" class="blue-icon" />
+                <div
+                  class="message"
+                  :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
+                >
+                  <svg-icon
+                    icon-class="message"
+                    class="pink-icon"
+                    :style="{ color: 'var(--el-color-primary)' }"
+                  />
                   <div class="message-content">
-                    <span class="message-title">今日消息</span>
-                    <span class="message-value">{{
-                      bot.received_messages
-                    }}</span>
+                    <span
+                      class="message-title"
+                      :style="{ color: 'var(--el-text-color-secondary)' }"
+                      >今日消息</span
+                    >
+                    <span
+                      class="message-value"
+                      :style="{ color: 'var(--el-text-color-primary)' }"
+                      >{{ bot.received_messages }}</span
+                    >
                   </div>
                 </div>
               </div>
               <div class="detail-row">
-                <div class="message">
-                  <svg-icon icon-class="platform" class="purple-icon" />
+                <div
+                  class="message"
+                  :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
+                >
+                  <svg-icon
+                    icon-class="platform"
+                    class="pink-icon"
+                    :style="{ color: 'var(--el-color-primary)' }"
+                  />
                   <div class="message-content">
-                    <span class="message-title">平台</span>
-                    <span class="message-value">{{ bot.platform }}</span>
+                    <span
+                      class="message-title"
+                      :style="{ color: 'var(--el-text-color-secondary)' }"
+                      >平台</span
+                    >
+                    <span
+                      class="message-value"
+                      :style="{ color: 'var(--el-text-color-primary)' }"
+                      >{{ bot.platform }}</span
+                    >
                   </div>
                 </div>
-                <div class="message">
-                  <svg-icon icon-class="time" class="green-icon" />
+                <div
+                  class="message"
+                  :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
+                >
+                  <svg-icon
+                    icon-class="time"
+                    class="pink-icon"
+                    :style="{ color: 'var(--el-color-primary)' }"
+                  />
                   <div class="message-content">
-                    <span class="message-title">连接时长</span>
-                    <span class="message-value">{{ bot.connectTime }}</span>
+                    <span
+                      class="message-title"
+                      :style="{ color: 'var(--el-text-color-secondary)' }"
+                      >连接时长</span
+                    >
+                    <span
+                      class="message-value"
+                      :style="{ color: 'var(--el-text-color-primary)' }"
+                      >{{ bot.connectTime }}</span
+                    >
                   </div>
                 </div>
               </div>
-              <div class="connect-date">
-                <svg-icon icon-class="calendar" class="yellow-icon" />
-                <span>连接日期: {{ bot.connect_date }}</span>
+              <div
+                class="connect-date"
+                :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
+              >
+                <svg-icon
+                  icon-class="calendar"
+                  class="yellow-icon"
+                  :style="{ color: 'var(--el-color-warning)' }"
+                />
+                <span :style="{ color: 'var(--el-text-color-primary)' }"
+                  >连接日期: {{ bot.connect_date }}</span
+                >
               </div>
             </div>
           </div>
@@ -107,8 +230,16 @@
     </el-row>
     <el-row>
       <el-col :span="24">
-        <div class="connect-log" ref="connectLog">
-          <p class="base-title text-purple-600" ref="logTitle">
+        <div
+          class="connect-log"
+          ref="connectLog"
+          :style="{ backgroundColor: 'var(--el-bg-color)' }"
+        >
+          <p
+            class="base-title flex items-center"
+            ref="logTitle"
+            :style="{ color: 'var(--el-color-primary)' }"
+          >
             <svg-icon icon-class="log" class="icon-log" />
             连接日志
           </p>
@@ -126,12 +257,16 @@
               align="center"
             >
               <template slot-scope="scope">
-                <span class="purple-text">{{ scope.row.connect_time }}</span>
+                <span :style="{ color: 'var(--el-color-primary-light-3)' }">{{
+                  scope.row.connect_time
+                }}</span>
               </template>
             </el-table-column>
             <el-table-column prop="bot_id" label="账号" align="center">
               <template slot-scope="scope">
-                <span class="blue-text">{{ scope.row.bot_id }}</span>
+                <span :style="{ color: 'var(--el-color-primary)' }">{{
+                  scope.row.bot_id
+                }}</span>
               </template>
             </el-table-column>
             <el-table-column
@@ -338,7 +473,7 @@ export default {
 .left-info-container {
   height: 100%;
   font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
-  font-size: var(--font-size-md); /* 设置基础字体大小 */
+  font-size: var(--font-size-md);
 }
 
 .top-text {
@@ -348,38 +483,36 @@ export default {
   display: flex;
   align-items: center;
   padding: 8px 12px;
-  background: rgba(236, 72, 153, 0.1);
+  background: var(--el-fill-color-lighter);
   border-radius: 8px;
-  border-left: 4px solid #ec4899;
+  border-left: 4px solid var(--el-color-primary);
 }
 
 .icon-bot {
   width: 1em;
   height: 1em;
   margin-right: 0.5em;
-  color: #ec4899;
+  color: var(--el-color-primary);
 }
 
 .bot-list {
   overflow: auto;
-  background-color: #fff;
   padding: 1em;
   border-radius: 0.75em;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--el-box-shadow-light);
 }
 
 .bot-item {
   margin-bottom: 1.25em;
   padding: 1em;
-  background: #fff;
   border-radius: 0.625em;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--el-box-shadow-lighter);
   transition: all 0.3s ease;
 }
 
 .bot-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--el-box-shadow-light);
 }
 
 .item-ava {
@@ -392,14 +525,14 @@ export default {
   height: 6.25em;
   border-radius: 0.75em;
   margin-right: 1em;
-  border: 0.1875em solid rgba(236, 72, 153, 0.2);
+  border: 0.1875em solid var(--el-color-primary-light-8);
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
 .ava-img:hover {
   transform: scale(1.05);
-  border-color: #ec4899;
+  border-color: var(--el-color-primary);
 }
 
 .image-slot {
@@ -427,18 +560,9 @@ export default {
   margin-right: 0.625em;
 }
 
-.pink-line {
-  background-color: #ec4899;
-}
-
-.purple-line {
-  background-color: #a855f7;
-}
-
 .bot-name {
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: #333;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -449,10 +573,6 @@ export default {
   align-items: center;
   font-size: var(--font-size-sm);
   margin-bottom: 0.625em;
-}
-
-.purple-text {
-  color: #a855f7;
 }
 
 .info-gf {
@@ -467,7 +587,7 @@ export default {
 
 .gf-item:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--el-box-shadow-lighter);
 }
 
 .gf-value {
@@ -475,21 +595,9 @@ export default {
   font-size: var(--font-size-md);
 }
 
-.blue-icon {
-  color: #3b82f6;
-  width: 1.25em;
-  height: 1.25em;
-}
-
-.green-icon {
-  color: #10b981;
-  width: 1.25em;
-  height: 1.25em;
-}
-
 .custom-divider {
   margin: 0.75em 0;
-  background-color: #e5e7eb;
+  background-color: var(--el-border-color-light);
 }
 
 .bot-detail-info {
@@ -507,13 +615,12 @@ export default {
   display: flex;
   align-items: center;
   padding: 0.5em 0.75em;
-  background: rgba(236, 72, 153, 0.05);
   border-radius: 0.5em;
   transition: all 0.3s ease;
 }
 
 .message:hover {
-  background: rgba(236, 72, 153, 0.1);
+  background: var(--el-fill-color-light);
 }
 
 .pink-icon,
@@ -523,21 +630,6 @@ export default {
   margin-right: 0.625em;
 }
 
-.pink-icon {
-  color: #ec4899;
-}
-
-.purple-icon {
-  color: #a855f7;
-}
-
-.yellow-icon {
-  color: #f59e0b;
-  margin-right: 0.5em;
-  width: 1em;
-  height: 1em;
-}
-
 .message-content {
   display: flex;
   flex-direction: column;
@@ -545,33 +637,28 @@ export default {
 
 .message-title {
   font-size: var(--font-size-sm);
-  color: #6b7280;
   margin-bottom: 0.125em;
 }
 
 .message-value {
   font-size: var(--font-size-md);
   font-weight: 600;
-  color: #333;
 }
 
 .connect-date {
   display: flex;
   align-items: center;
   padding: 0.5em 0.75em;
-  background: rgba(245, 158, 11, 0.05);
   border-radius: 0.5em;
   font-size: var(--font-size-sm);
-  color: #333;
   margin-top: 0.625em;
 }
 
 .connect-log {
   margin-top: 1.1em;
-  background-color: #fff;
   padding: 1em;
   border-radius: 0.75em;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--el-box-shadow-light);
   box-sizing: border-box;
 }
 
@@ -582,12 +669,12 @@ export default {
   display: flex;
   align-items: center;
   padding-bottom: 0.5em;
-  border-bottom: 1px dashed #e5e7eb;
+  border-bottom: 1px dashed var(--el-border-color-light);
 }
 
 .icon-log {
   margin-right: 0.5em;
-  color: #ec4899;
+  color: var(--el-color-primary);
   width: 1em;
   height: 1em;
 }
@@ -595,10 +682,6 @@ export default {
 .log-table {
   border-radius: 0.5em;
   overflow: hidden;
-}
-
-.blue-text {
-  color: #3b82f6;
 }
 
 .custom-tag {
@@ -658,10 +741,9 @@ export default {
   }
 }
 
-/* 针对超小屏幕的额外调整 */
 @media (max-width: 480px) {
   .left-info-container {
-    padding: 0.75em 0.5em 1.5em; /* More bottom padding for very small screens */
+    padding: 0.75em 0.5em 1.5em;
   }
 
   .ava-img {

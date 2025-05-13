@@ -1,12 +1,13 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50">
+  <div class="min-h-screen" :style="{ background: 'var(--bg-color)' }">
     <div class="flex">
       <!-- 侧边栏 -->
       <aside
-        class="bg-white bg-opacity-90 backdrop-blur-sm shadow-xl fixed md:relative z-50 h-screen flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
+        class="backdrop-blur-sm shadow-xl fixed md:relative z-50 h-screen flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]"
         :style="{
           width: getMenuWidth(),
           transform: getTransform(),
+          backgroundColor: 'var(--bg-color-secondary)',
         }"
       >
         <div class="flex flex-col h-full overflow-hidden">
@@ -38,15 +39,22 @@
                   v-for="menu in menus"
                   :key="menu.module"
                   :index="menu.router"
-                  class="group hover:bg-pink-50 rounded-lg my-1 transition-all duration-300"
-                  style="display: flex"
+                  class="group rounded-lg my-1 transition-all duration-300 flex justify-center"
+                  :style="{
+                    backgroundColor:
+                      curSelectMenu === menu.router
+                        ? 'var(--bg-color-hover)'
+                        : 'transparent',
+                  }"
                 >
                   <div class="flex items-center w-full">
                     <span
                       class="h-8 w-1 rounded-full mr-4 transition-all duration-300"
-                      :class="{
-                        'bg-pink-400': curSelectMenu === menu.router,
-                        'bg-transparent': curSelectMenu !== menu.router,
+                      :style="{
+                        backgroundColor:
+                          curSelectMenu === menu.router
+                            ? 'var(--primary-color)'
+                            : 'transparent',
                       }"
                     ></span>
                     <svg-icon
@@ -56,18 +64,23 @@
                           : menu.icon
                       "
                       class="w-6 h-6 transition-all duration-300"
-                      :class="{
-                        'text-pink-500': curSelectMenu === menu.router,
-                        'text-gray-500': curSelectMenu !== menu.router,
+                      :style="{
+                        color:
+                          curSelectMenu === menu.router
+                            ? 'var(--primary-color)'
+                            : 'var(--text-color-secondary)',
                       }"
                     />
                     <span
                       v-if="!isCollapsed"
                       class="ml-3 text-lg font-medium transition-all duration-300"
-                      :class="{
-                        'text-pink-500 font-bold':
-                          curSelectMenu === menu.router,
-                        'text-gray-600': curSelectMenu !== menu.router,
+                      :style="{
+                        color:
+                          curSelectMenu === menu.router
+                            ? 'var(--primary-color)'
+                            : 'var(--text-color)',
+                        fontWeight:
+                          curSelectMenu === menu.router ? 'bold' : 'normal',
                       }"
                       >{{ menu.name }}</span
                     >
@@ -98,16 +111,19 @@
       >
         <!-- 顶部导航 -->
         <header
-          class="bg-white bg-opacity-90 backdrop-blur-sm shadow-sm p-4 flex items-center justify-between sticky top-0 z-30"
+          class="backdrop-blur-sm shadow-sm p-4 flex items-center justify-between sticky top-0 z-30"
+          :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
         >
           <!-- 移动端菜单按钮 -->
           <button
             @click="toggleMenu"
-            class="md:hidden p-2 rounded-full hover:bg-pink-100 transition-all duration-300"
+            class="md:hidden p-2 rounded-full transition-all duration-300"
+            :style="{ backgroundColor: 'var(--bg-color-hover)' }"
           >
             <svg-icon
               :icon-class="!asideShow ? 'arrow-right' : 'arrow-left'"
-              class="w-5 h-5 text-pink-500 transition-transform duration-300"
+              class="w-5 h-5 transition-transform duration-300"
+              :style="{ color: 'var(--primary-color)' }"
               :class="{ 'rotate-180': asideShow }"
             />
           </button>
@@ -118,11 +134,13 @@
             <button
               v-if="!isMobile"
               @click="toggleCollapse"
-              class="hidden md:flex items-center p-2 rounded-full hover:bg-pink-100 transition-all duration-300"
+              class="hidden md:flex items-center p-2 rounded-full transition-all duration-300"
+              :style="{ backgroundColor: 'var(--bg-color-hover)' }"
             >
               <svg-icon
                 :icon-class="isCollapsed ? 'arrow-right' : 'arrow-left'"
-                class="w-5 h-5 text-pink-500 transition-transform duration-300"
+                class="w-5 h-5 transition-transform duration-300"
+                :style="{ color: 'var(--primary-color)' }"
                 :class="{ 'rotate-180': isCollapsed }"
               />
             </button>
@@ -130,7 +148,11 @@
             <!-- API地址设置按钮 -->
             <router-link
               :to="{ name: 'MyApi' }"
-              class="hidden md:flex items-center px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full text-pink-600 hover:from-pink-200 hover:to-purple-200 transition-all duration-300 shadow-sm"
+              class="hidden md:flex items-center px-4 py-2 rounded-full transition-all duration-300 shadow-sm"
+              :style="{
+                background: `linear-gradient(to right, var(--primary-color-light-9), var(--primary-color-light-8))`,
+                color: 'var(--primary-color)',
+              }"
             >
               <svg-icon icon-class="server" class="w-5 h-5 mr-2" />
               <span>地址设置</span>
@@ -143,10 +165,14 @@
             <el-dropdown
               @command="handleThemeChange"
               trigger="click"
-              class="hover:bg-pink-100 rounded-full p-2 transition-all duration-300"
+              class="rounded-full p-2 transition-all duration-300"
+              :style="{ backgroundColor: 'var(--bg-color-hover)' }"
             >
               <span class="el-dropdown-link cursor-pointer">
-                <i class="el-icon-magic-stick text-xl text-pink-500"></i>
+                <i
+                  class="el-icon-magic-stick text-xl"
+                  :style="{ color: 'var(--primary-color)' }"
+                ></i>
               </span>
               <el-dropdown-menu
                 slot="dropdown"
@@ -156,14 +182,17 @@
                   v-for="theme in themes"
                   :key="theme.value"
                   :command="theme.value"
-                  class="flex items-center px-4 py-2 hover:bg-pink-50 transition-all duration-200"
+                  class="flex items-center px-4 py-2 transition-all duration-200"
+                  :style="{ backgroundColor: 'var(--bg-color-hover)' }"
                 >
                   <i
                     :class="theme.icon"
                     class="mr-2"
                     :style="{ color: theme.color }"
                   ></i>
-                  <span>{{ theme.label }}</span>
+                  <span :style="{ color: 'var(--text-color)' }">{{
+                    theme.label
+                  }}</span>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -180,16 +209,30 @@
                   v-for="bot in botList"
                   :key="bot.bot_id"
                   @click="getBotInfo(bot.self_id)"
-                  class="flex items-center p-3 hover:bg-pink-50 cursor-pointer transition-all duration-300"
-                  :class="{ 'bg-pink-100': bot.is_select }"
+                  class="flex items-center p-3 cursor-pointer transition-all duration-300"
+                  :style="{
+                    backgroundColor: bot.is_select
+                      ? 'var(--bg-color-hover)'
+                      : 'transparent',
+                  }"
                 >
                   <el-image
                     :src="bot.ava_url"
-                    class="w-10 h-10 rounded-full object-cover border-2 border-pink-200 transition-all duration-300"
+                    class="w-10 h-10 rounded-full object-cover border-2 transition-all duration-300"
+                    :style="{ borderColor: 'var(--primary-color-light)' }"
                   />
                   <div class="ml-3">
-                    <p class="font-medium text-gray-800">{{ bot.nickname }}</p>
-                    <span class="text-xs text-gray-500">{{ bot.self_id }}</span>
+                    <p
+                      :style="{ color: 'var(--text-color)' }"
+                      class="font-medium"
+                    >
+                      {{ bot.nickname }}
+                    </p>
+                    <span
+                      :style="{ color: 'var(--text-color-secondary)' }"
+                      class="text-xs"
+                      >{{ bot.self_id }}</span
+                    >
                   </div>
                 </div>
               </div>
@@ -197,13 +240,15 @@
               <template #reference>
                 <div class="flex items-center cursor-pointer group">
                   <span
-                    class="mr-2 text-gray-700 group-hover:text-pink-500 transition-all duration-300"
+                    class="mr-2 transition-all duration-300"
+                    :style="{ color: 'var(--text-color)' }"
                   >
                     切换账号
                   </span>
                   <el-image
                     :src="botInfo.ava_url"
-                    class="w-10 h-10 rounded-full object-cover border-2 border-pink-300 shadow-sm transition-all duration-300"
+                    class="w-10 h-10 rounded-full object-cover border-2 shadow-sm transition-all duration-300"
+                    :style="{ borderColor: 'var(--primary-color)' }"
                   />
                 </div>
               </template>
@@ -213,15 +258,18 @@
             <el-dropdown
               @command="dropdownClick"
               trigger="click"
-              class="hover:bg-pink-100 rounded-full p-2 transition-all duration-300"
+              class="rounded-full p-2 transition-all duration-300"
+              :style="{ backgroundColor: 'var(--bg-color-hover)' }"
             >
               <span class="el-dropdown-link cursor-pointer flex items-center">
                 <span
-                  class="font-medium text-gray-700 mx-2 transition-all duration-300"
+                  class="font-medium mx-2 transition-all duration-300"
+                  :style="{ color: 'var(--text-color)' }"
                   >{{ botInfo.nickname || "用户" }}</span
                 >
                 <i
-                  class="el-icon-arrow-down text-pink-500 transition-transform duration-300"
+                  class="el-icon-arrow-down transition-transform duration-300"
+                  :style="{ color: 'var(--primary-color)' }"
                 ></i>
               </span>
               <el-dropdown-menu
@@ -230,26 +278,38 @@
               >
                 <el-dropdown-item
                   command="logout"
-                  class="flex items-center px-4 py-2 hover:bg-pink-50 text-red-500 transition-all duration-200"
+                  class="flex items-center px-4 py-2 transition-all duration-200"
+                  :style="{ backgroundColor: 'var(--bg-color-hover)' }"
                 >
-                  <i class="el-icon-switch-button mr-2"></i>
-                  <span>退出登录</span>
+                  <i
+                    class="el-icon-switch-button mr-2"
+                    :style="{ color: 'var(--danger-color)' }"
+                  ></i>
+                  <span :style="{ color: 'var(--danger-color)' }"
+                    >退出登录</span
+                  >
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
         </header>
 
-        <!-- 主内容 - 添加平滑的边距过渡 -->
+        <!-- 主内容 -->
         <main
-          class="flex-1 h-full p-0 bg-gradient-to-br from-pink-50 to-purple-50"
+          class="flex-1 h-full p-0"
+          :style="{
+            backgroundColor: 'var(--bg-color)',
+            height: computedHeight + 'px',
+          }"
           @click="handleMainClick"
-          :style="{ height: computedHeight + 'px' }"
         >
           <router-view
-            class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl p-6 h-full"
+            class="backdrop-blur-sm rounded-xl p-6 h-full"
+            :style="{
+              backgroundColor: 'var(--bg-color-secondary)',
+              height: computedHeight + 'px',
+            }"
             :key="rvKey"
-            :style="{ height: computedHeight + 'px' }"
           />
         </main>
       </div>
@@ -276,9 +336,9 @@ export default {
       windowHeight: window.innerHeight,
       themes: [
         {
-          value: "light",
-          label: "亮色模式",
-          icon: "el-icon-sunny",
+          value: "pink",
+          label: "真寻可爱",
+          icon: "el-icon-present",
           color: "#F59E0B",
         },
         {
@@ -288,10 +348,10 @@ export default {
           color: "#6B7280",
         },
         {
-          value: "pink",
-          label: "少女粉",
-          icon: "el-icon-present",
-          color: "#EC4899",
+          value: "light",
+          label: "亮色模式",
+          icon: "el-icon-sunny",
+          color: "#F59E0B",
         },
         {
           value: "one-dark",
@@ -508,15 +568,15 @@ export default {
   height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(236, 72, 153, 0.1);
+  background: var(--primary-color-light-9);
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(236, 72, 153, 0.3);
+  background: var(--primary-color-light-7);
   border-radius: 10px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 72, 153, 0.5);
+  background: var(--primary-color-light-5);
 }
 
 /* 缓慢弹跳动画 */
@@ -534,11 +594,11 @@ export default {
 }
 
 /* 菜单项悬停效果 */
-.el-menu-item:hover {
-  background-color: rgba(249, 168, 212, 0.2) !important;
+::v-deep .el-menu-item:hover {
+  background-color: var(--bg-color-hover) !important;
 }
-.el-menu-item.is-active {
-  background-color: rgba(249, 168, 212, 0.1) !important;
+::v-deep .el-menu-item.is-active {
+  background-color: var(--bg-color-hover) !important;
 }
 
 /* 响应式调整 */
@@ -549,15 +609,15 @@ export default {
 }
 
 /* 折叠菜单样式 */
-.el-menu--collapse {
+::v-deep .el-menu--collapse {
   width: 80px;
 }
-.el-menu--collapse .el-menu-item {
+::v-deep .el-menu--collapse .el-menu-item {
   display: flex;
   justify-content: center;
   padding: 0 10px !important;
 }
-.el-menu--collapse .el-menu-item .svg-icon {
+::v-deep .el-menu--collapse .el-menu-item .svg-icon {
   margin-right: 0;
 }
 

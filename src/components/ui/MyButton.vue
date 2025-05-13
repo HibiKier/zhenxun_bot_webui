@@ -65,11 +65,11 @@
 </template>
 
 <script>
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
 
 export default {
   components: { SvgIcon },
-  name: 'MyButton',
+  name: "MyButton",
   props: {
     text: String,
     icon: String,
@@ -78,22 +78,11 @@ export default {
     iconHeight: { type: Number, default: 20 },
     type: {
       type: String,
-      default: 'default',
+      default: "default",
       validator: (value) =>
-        [
-          'default',
-          'primary',
-          'success',
-          'warning',
-          'danger',
-          'pink',
-          'purple',
-          'mint',
-          'peach',
-          'sky',
-          'lavender',
-          'coral',
-        ].includes(value),
+        ["default", "primary", "success", "warning", "danger", "info"].includes(
+          value
+        ),
     },
     width: { type: Number, default: 0 },
     height: { type: Number, default: 40 },
@@ -101,13 +90,13 @@ export default {
     fontSize: { type: Number, default: 14 },
     rounded: {
       type: String,
-      default: 'full',
-      validator: (value) => ['none', 'sm', 'md', 'lg', 'full'].includes(value),
+      default: "full",
+      validator: (value) => ["none", "sm", "md", "lg", "full"].includes(value),
     },
     shadow: {
       type: String,
-      default: 'md',
-      validator: (value) => ['none', 'sm', 'md', 'lg', 'xl'].includes(value),
+      default: "md",
+      validator: (value) => ["none", "sm", "md", "lg", "xl"].includes(value),
     },
     glow: {
       type: Boolean,
@@ -127,71 +116,55 @@ export default {
   },
   computed: {
     computedWidth() {
-      return this.sizeMana.width === 0 ? '100%' : `${this.sizeMana.width}px`
+      return this.sizeMana.width === 0 ? "100%" : `${this.sizeMana.width}px`
     },
     computedHeight() {
-      return this.sizeMana.height === 0 ? '100%' : `${this.sizeMana.height}px`
+      return this.sizeMana.height === 0 ? "100%" : `${this.sizeMana.height}px`
     },
     typeClass() {
       const classes = {
         default:
-          'bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50',
+          "bg-bg-color-secondary text-text-color border-2 border-border-color hover:bg-bg-color-hover",
         primary:
-          'bg-blue-400 text-white hover:bg-blue-500 border-2 border-blue-300',
+          "bg-primary-color text-white hover:bg-primary-color-light border-2 border-primary-color-light",
         success:
-          'bg-green-400 text-white hover:bg-green-500 border-2 border-green-300',
+          "bg-success-color text-white hover:bg-success-color-light border-2 border-success-color-light",
         warning:
-          'bg-yellow-400 text-white hover:bg-yellow-500 border-2 border-yellow-300',
+          "bg-warning-color text-white hover:bg-warning-color-light border-2 border-warning-color-light",
         danger:
-          'bg-red-400 text-white hover:bg-red-500 border-2 border-red-300',
-        pink: 'bg-pink-300 text-white hover:bg-pink-400 border-2 border-pink-200',
-        purple:
-          'bg-purple-400 text-white hover:bg-purple-500 border-2 border-purple-300',
-        mint: 'bg-teal-300 text-white hover:bg-teal-400 border-2 border-teal-200',
-        peach:
-          'bg-orange-300 text-white hover:bg-orange-400 border-2 border-orange-200',
-        sky: 'bg-cyan-300 text-white hover:bg-cyan-400 border-2 border-cyan-200',
-        lavender:
-          'bg-indigo-300 text-white hover:bg-indigo-400 border-2 border-indigo-200',
-        coral:
-          'bg-rose-300 text-white hover:bg-rose-400 border-2 border-rose-200',
+          "bg-danger-color text-white hover:bg-danger-color-light border-2 border-danger-color-light",
+        info: "bg-info-color text-white hover:bg-info-color-light border-2 border-info-color-light",
       }
       return classes[this.type] || classes.default
     },
     roundedClass() {
       return {
-        none: 'rounded-none',
-        sm: 'rounded-sm',
-        md: 'rounded-md',
-        lg: 'rounded-lg',
-        full: 'rounded-full',
+        none: "rounded-none",
+        sm: "rounded-sm",
+        md: "rounded-md",
+        lg: "rounded-lg",
+        full: "rounded-full",
       }[this.rounded]
     },
     shadowClass() {
       return {
-        none: 'shadow-none',
-        sm: 'shadow-sm',
-        md: 'shadow-md',
-        lg: 'shadow-lg',
-        xl: 'shadow-xl',
+        none: "shadow-none",
+        sm: "shadow-sm",
+        md: "shadow-md",
+        lg: "shadow-lg",
+        xl: "shadow-xl",
       }[this.shadow]
     },
     glowEffect() {
-      if (!this.glow || this.disabled) return ''
+      if (!this.glow || this.disabled) return ""
 
       const glowColors = {
-        default: 'hover:shadow-gray-300',
-        primary: 'hover:shadow-blue-300',
-        success: 'hover:shadow-green-300',
-        warning: 'hover:shadow-yellow-300',
-        danger: 'hover:shadow-red-300',
-        pink: 'hover:shadow-pink-200',
-        purple: 'hover:shadow-purple-300',
-        mint: 'hover:shadow-teal-200',
-        peach: 'hover:shadow-orange-200',
-        sky: 'hover:shadow-cyan-200',
-        lavender: 'hover:shadow-indigo-200',
-        coral: 'hover:shadow-rose-200',
+        default: "hover:shadow-border-color",
+        primary: "hover:shadow-primary-color-light",
+        success: "hover:shadow-success-color-light",
+        warning: "hover:shadow-warning-color-light",
+        danger: "hover:shadow-danger-color-light",
+        info: "hover:shadow-info-color-light",
       }
 
       return `transition-shadow duration-300 ${
@@ -200,7 +173,7 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
     this.handleResize()
   },
   methods: {
@@ -213,125 +186,107 @@ export default {
         height: this.height,
       }
     },
-    handleClick() {
+    handleClick(event) {
       if (!this.disabled) {
-        this.$emit('click')
+        this.$emit("click", event)
       }
     },
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .my-button-container {
-  position: relative;
-  transition: all 0.2s ease;
+  @apply relative inline-flex;
+  transition: all 0.3s ease;
 }
 
 .button-class {
-  @apply flex items-center justify-center relative overflow-hidden;
-  width: 100%;
-  height: 100%;
-  font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
-  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  @apply relative w-full h-full flex items-center justify-center;
+  transition: all 0.3s ease;
   font-size: v-bind('sizeMana.fontSize + "px"');
-  padding: 0 1.25em;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--el-box-shadow-lighter);
+
+  &:hover {
+    box-shadow: var(--el-box-shadow-light);
+  }
+
+  &:active {
+    box-shadow: none;
+  }
 }
 
 .button-content {
-  @apply flex items-center justify-center gap-2 z-10;
+  @apply flex items-center justify-center;
+  z-index: 1;
 }
 
 .button-icon {
   width: v-bind('sizeMana.iconWidth + "px"');
   height: v-bind('sizeMana.iconHeight + "px"');
-  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  margin-right: 8px;
+  color: currentColor;
+  transition: transform 0.3s ease;
 }
 
 .button-text {
-  white-space: nowrap;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.5px;
+  @apply whitespace-nowrap;
+  transition: transform 0.3s ease;
+}
+
+.decoration-star,
+.decoration-sparkle {
+  @apply absolute pointer-events-none;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: var(--primary-color);
 }
 
 .decoration-star {
-  position: absolute;
-  right: -5px;
-  top: -5px;
-  font-size: 0.8em;
-  opacity: 0;
-  transition: all 0.4s ease;
-  transform: rotate(0deg);
-  z-index: 5;
+  top: -8px;
+  right: -8px;
+  font-size: 12px;
 }
 
 .decoration-sparkle {
-  position: absolute;
-  left: -5px;
-  bottom: -5px;
-  font-size: 0.6em;
-  opacity: 0;
-  transition: all 0.4s ease 0.1s;
-  z-index: 5;
+  bottom: -8px;
+  left: -8px;
+  font-size: 10px;
 }
 
-.button-class:hover .decoration-star {
-  opacity: 1;
-  transform: translate(-5px, 5px) rotate(15deg);
-}
-
-.button-class:hover .decoration-sparkle {
-  opacity: 1;
-  transform: translate(5px, -5px) rotate(-15deg);
-}
-
-.button-class:hover .button-icon {
-  transform: scale(1.15) rotate(5deg);
-}
-
-.button-class:active {
-  transform: scale(0.95);
-}
-
-/* 工具提示样式 */
-:deep(.button-tooltip) {
-  background-color: #fff !important;
-  color: #7c3aed !important;
-  border: 1px solid #e9d5ff !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  font-family: 'Comic Sans MS', sans-serif !important;
-  border-radius: 12px !important;
-  padding: 8px 12px !important;
-}
-
-:deep(.button-tooltip .popper__arrow) {
-  border-bottom-color: #e9d5ff !important;
-}
-
-:deep(.button-tooltip .popper__arrow::after) {
-  border-bottom-color: #fff !important;
-}
-
-/* 添加可爱的脉冲动画 */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
+.button-class:hover {
+  .decoration-star {
+    opacity: 1;
+    transform: translate(4px, -4px) rotate(15deg);
   }
-  50% {
+
+  .decoration-sparkle {
+    opacity: 1;
+    transform: translate(-4px, 4px) rotate(-15deg);
+  }
+
+  .button-icon {
+    transform: scale(1.1);
+  }
+
+  .button-text {
     transform: scale(1.05);
   }
-  100% {
-    transform: scale(1);
-  }
 }
 
-.button-class:not(:disabled):hover {
-  animation: pulse 1.5s infinite;
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .button-class {
+    font-size: calc(v-bind("sizeMana.fontSize") * 0.9px);
+  }
+
+  .button-icon {
+    width: calc(v-bind("sizeMana.iconWidth") * 0.9px);
+    height: calc(v-bind("sizeMana.iconHeight") * 0.9px);
+    margin-right: 6px;
+  }
 }
 </style>

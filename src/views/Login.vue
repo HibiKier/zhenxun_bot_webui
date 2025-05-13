@@ -1,6 +1,7 @@
 <template>
   <div
-    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 p-4 relative overflow-hidden"
+    class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
+    :style="{ background: 'var(--bg-color)' }"
   >
     <!-- 樱花动画背景元素 - 优化了动画流畅度和随机性 -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
@@ -17,7 +18,11 @@
           opacity: pos.opacity,
         }"
       >
-        <svg viewBox="0 0 100 100" class="w-8 h-8 text-pink-300">
+        <svg
+          viewBox="0 0 100 100"
+          class="w-8 h-8"
+          :style="{ color: 'var(--primary-color-light)' }"
+        >
           <path
             fill="currentColor"
             d="M50 0C40 20 20 30 0 50c20 20 40 30 50 50 10-20 30-30 50-50C70 30 60 20 50 0z"
@@ -28,11 +33,16 @@
 
     <!-- 主登录框 - 添加了更平滑的悬停效果 -->
     <div
-      class="w-full max-w-md bg-white bg-opacity-90 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-1"
+      class="w-full max-w-md backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transition-all duration-500 transform hover:shadow-2xl hover:-translate-y-1"
+      :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
     >
       <!-- 装饰性顶部渐变条 - 添加了动画效果 -->
       <div
-        class="h-2 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 animate-gradient-x"
+        class="h-2"
+        :style="{
+          background:
+            'linear-gradient(to right, var(--primary-color), var(--primary-color-light))',
+        }"
       ></div>
 
       <div class="p-8 sm:p-10">
@@ -87,7 +97,16 @@
               type="default"
               @click="changeApi"
               plain
-              class="flex-1 border-purple-400 text-purple-600 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-500 transition-colors duration-300 active:scale-95"
+              class="flex-1 transition-colors duration-300 active:scale-95"
+              :style="{
+                borderColor: 'var(--primary-color)',
+                color: 'var(--primary-color)',
+                '&:hover': {
+                  backgroundColor: 'var(--bg-color-hover)',
+                  color: 'var(--primary-color-light)',
+                  borderColor: 'var(--primary-color-light)',
+                },
+              }"
             >
               <span class="flex items-center justify-center">
                 <svg-icon icon-class="server-purple" class="w-4 h-4 mr-2" />
@@ -100,7 +119,15 @@
               native-type="submit"
               @click="submitLogin"
               :disabled="loading"
-              class="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 border-0 text-white hover:from-pink-600 hover:to-purple-600 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg active:scale-95"
+              class="flex-1 border-0 text-white transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg active:scale-95"
+              :style="{
+                background:
+                  'linear-gradient(to right, var(--primary-color), var(--primary-color-light))',
+                '&:hover': {
+                  background:
+                    'linear-gradient(to right, var(--primary-color-light), var(--primary-color))',
+                },
+              }"
             >
               <span class="flex items-center justify-center">
                 <i class="el-icon-unlock mr-2"></i>
@@ -124,7 +151,12 @@
               'cursor-not-allowed': isButtonMoving,
               'cursor-pointer': !isButtonMoving,
             }"
-            :style="buttonPosition"
+            :style="{
+              ...buttonPosition,
+              color: isButtonMoving
+                ? 'var(--danger-color)'
+                : 'var(--primary-color)',
+            }"
             @click="handleForgetPassword"
           >
             忘记密码
@@ -132,9 +164,10 @@
               <p
                 v-if="showTaunt"
                 class="ml-2 text-xs"
-                :class="{
-                  'text-pink-400': !isButtonMoving,
-                  'text-red-400': isButtonMoving,
+                :style="{
+                  color: isButtonMoving
+                    ? 'var(--danger-color)'
+                    : 'var(--primary-color-light)',
                 }"
               >
                 {{ currentTaunt }}
@@ -160,9 +193,17 @@
     <transition name="el-fade-in">
       <div
         v-if="showKeyboardHint"
-        class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white bg-opacity-80 px-4 py-2 rounded-full shadow-md text-sm text-gray-600 flex items-center"
+        class="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full shadow-md text-sm flex items-center"
+        :style="{
+          backgroundColor: 'var(--bg-color-secondary)',
+          color: 'var(--text-color)',
+        }"
       >
-        <kbd class="bg-gray-100 px-2 py-1 rounded mr-2">Enter</kbd>
+        <kbd
+          class="px-2 py-1 rounded mr-2"
+          :style="{ backgroundColor: 'var(--bg-color-hover)' }"
+          >Enter</kbd
+        >
         <span>快速登录</span>
       </div>
     </transition>
@@ -170,70 +211,70 @@
 </template>
 
 <script>
-import qs from 'qs'
-import { setCookie, clearCookie, getCookie } from '@/utils/api'
-import CuteConfirm from '@/components/ui/CuteConfirm'
-import InteractiveInput from '@/components/ui/NeonInput.vue'
+import qs from "qs"
+import { setCookie, clearCookie, getCookie } from "@/utils/api"
+import CuteConfirm from "@/components/ui/CuteConfirm"
+import InteractiveInput from "@/components/ui/NeonInput.vue"
 
 export default {
-  name: 'MainLogin',
+  name: "MainLogin",
   components: { CuteConfirm, InteractiveInput },
   data() {
     const validateName = (rules, value, callback) => {
       if (!value) {
-        callback(new Error('账号不能为空哦~'))
+        callback(new Error("账号不能为空哦~"))
       } else {
         callback()
       }
     }
     const validatePwd = (rules, value, callback) => {
       if (!value) {
-        callback(new Error('密码不能为空哦~'))
+        callback(new Error("密码不能为空哦~"))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
       },
       rules: {
-        username: [{ validator: validateName, trigger: 'blur' }],
-        password: [{ validator: validatePwd, trigger: 'blur' }],
+        username: [{ validator: validateName, trigger: "blur" }],
+        password: [{ validator: validatePwd, trigger: "blur" }],
       },
       loading: false,
       dialogVisible: false,
-      dialogMessage: '请等待小真寻重启成功后登录！',
+      dialogMessage: "请等待小真寻重启成功后登录！",
       showKeyboardHint: false,
 
       // 密码强度检测
       passwordStrength: {
         show: false,
-        text: '',
-        color: '',
+        text: "",
+        color: "",
       },
 
       // 忘记密码按钮相关状态
       isButtonMoving: false,
       showTaunt: false,
-      currentTaunt: '',
+      currentTaunt: "",
       buttonPosition: {
-        left: '50%',
-        top: '0',
-        transform: 'translateX(-50%)',
+        left: "50%",
+        top: "0",
+        transform: "translateX(-50%)",
       },
       taunts: [
-        '哈哈，抓不到我吧！',
-        '别试了，你点不到的~',
-        '这么容易忘记密码？',
-        '管理员联系方式？想得美！',
-        '再试一次？再试也点不到！',
-        '你的鼠标速度太慢啦！',
-        '这就是你忘记密码的惩罚！',
-        '点不到点不到~',
-        '密码都记不住，还想点我？',
-        '放弃吧，你抓不到我的！',
+        "哈哈，抓不到我吧！",
+        "别试了，你点不到的~",
+        "这么容易忘记密码？",
+        "管理员联系方式？想得美！",
+        "再试一次？再试也点不到！",
+        "你的鼠标速度太慢啦！",
+        "这就是你忘记密码的惩罚！",
+        "点不到点不到~",
+        "密码都记不住，还想点我？",
+        "放弃吧，你抓不到我的！",
       ],
       danceInterval: null,
 
@@ -264,14 +305,14 @@ export default {
             username: this.loginForm.username,
             password: this.loginForm.password,
           }),
-          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
         )
 
         if (response.suc) {
           if (response.warning) {
             this.$message.warning(response.warning)
           } else {
-            window.sessionStorage.setItem('isAuthenticated', true)
+            window.sessionStorage.setItem("isAuthenticated", true)
             this.$message.success({
               message: response.info,
               duration: 1500,
@@ -279,15 +320,15 @@ export default {
             })
 
             const tokenStr =
-              response.data.token_type + ' ' + response.data.access_token
+              response.data.token_type + " " + response.data.access_token
             if (getCookie) {
-              clearCookie('tokenStr')
+              clearCookie("tokenStr")
             }
-            setCookie('tokenStr', tokenStr)
+            setCookie("tokenStr", tokenStr)
 
             let path = this.$route.query.redirect
             this.$router.replace(
-              path == '/' || path == undefined ? '/home' : path
+              path == "/" || path == undefined ? "/home" : path
             )
           }
         } else {
@@ -298,15 +339,15 @@ export default {
           })
         }
       } catch (error) {
-        console.error('登录错误:', error)
-        this.$message.error('登录过程中发生错误')
+        console.error("登录错误:", error)
+        this.$message.error("登录过程中发生错误")
       } finally {
         this.loading = false
       }
     },
 
     changeApi() {
-      this.$router.replace('/myapi')
+      this.$router.replace("/myapi")
     },
 
     handleInputFocus(field) {
@@ -314,7 +355,7 @@ export default {
       // 添加输入框聚焦动画
       const input = document.querySelector(`[prop="${field}"] input`)
       if (input) {
-        input.parentElement.classList.add('ring-2', 'ring-purple-200')
+        input.parentElement.classList.add("ring-2", "ring-purple-200")
       }
     },
 
@@ -323,7 +364,7 @@ export default {
       // 移除输入框聚焦动画
       const input = document.querySelector(`[prop="${field}"] input`)
       if (input) {
-        input.parentElement.classList.remove('ring-2', 'ring-purple-200')
+        input.parentElement.classList.remove("ring-2", "ring-purple-200")
       }
     },
 
@@ -355,7 +396,7 @@ export default {
 
       // 随机移动按钮
       this.danceInterval = setInterval(() => {
-        const container = document.querySelector('#forgetPwd')
+        const container = document.querySelector("#forgetPwd")
         if (!container) {
           clearInterval(this.danceInterval)
           return
@@ -371,7 +412,7 @@ export default {
         this.buttonPosition = {
           left: `${newLeft}px`,
           top: `${newTop}px`,
-          transform: 'none',
+          transform: "none",
         }
       }, 800)
 
@@ -380,9 +421,9 @@ export default {
         clearInterval(this.danceInterval)
         this.isButtonMoving = false
         this.buttonPosition = {
-          left: '50%',
-          top: '0',
-          transform: 'translateX(-50%)',
+          left: "50%",
+          top: "0",
+          transform: "translateX(-50%)",
         }
 
         // 3秒后隐藏嘲讽文字
@@ -395,11 +436,11 @@ export default {
     handleForgetPassword() {
       if (!this.isButtonMoving) {
         this.$message.warning({
-          message: '忘记密码请联系管理员查看配置文件！',
+          message: "忘记密码请联系管理员查看配置文件！",
           duration: 2000,
         })
       } else {
-        this.$message.error('抓不到我吧！')
+        this.$message.error("抓不到我吧！")
       }
     },
   },
@@ -411,17 +452,17 @@ export default {
 
     // 添加键盘事件监听
     const handleKeyDown = (event) => {
-      if (event.code === 'Enter') {
+      if (event.code === "Enter") {
         event.preventDefault()
         this.submitLogin()
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener("keydown", handleKeyDown)
 
     // 组件销毁时移除事件监听
-    this.$once('hook:beforeDestroy', () => {
-      document.removeEventListener('keydown', handleKeyDown)
+    this.$once("hook:beforeDestroy", () => {
+      document.removeEventListener("keydown", handleKeyDown)
       if (this.danceInterval) {
         clearInterval(this.danceInterval)
       }
@@ -473,33 +514,48 @@ export default {
 
 /* 覆盖 Element UI 样式 */
 .el-form-item__label {
-  @apply text-gray-600 font-medium transition-colors duration-300;
+  color: var(--el-text-color-primary);
+  font-weight: 500;
+  transition: color 0.3s;
 }
 
 .el-form-item.is-error .el-form-item__label {
-  @apply text-red-500;
+  color: var(--el-color-danger);
 }
 
 .el-input__inner {
-  @apply border-gray-200 hover:border-purple-300 focus:border-purple-400 focus:ring-2 focus:ring-purple-100 rounded-lg transition-all duration-300;
+  border-color: var(--el-border-color);
+  transition: all 0.3s;
+}
+
+.el-input__inner:hover {
+  border-color: var(--el-color-primary-light-3);
+}
+
+.el-input__inner:focus {
+  border-color: var(--el-color-primary);
+  box-shadow: 0 0 0 2px var(--el-color-primary-light-9);
 }
 
 .el-button--primary {
-  @apply shadow-md;
+  box-shadow: var(--el-box-shadow-light);
 }
 
 .el-button--default {
-  @apply transition-all duration-300;
+  transition: all 0.3s;
 }
 
 .el-loading-mask {
-  @apply bg-opacity-80 rounded-xl;
+  background-color: var(--el-mask-color);
+  border-radius: 0.5rem;
 }
 
 /* 键盘提示样式 */
 kbd {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
-  @apply border border-gray-300 border-b-2 border-opacity-20;
+    "Liberation Mono", "Courier New", monospace;
+  border: 1px solid var(--el-border-color);
+  border-bottom-width: 2px;
+  border-opacity: 0.2;
 }
 </style>
