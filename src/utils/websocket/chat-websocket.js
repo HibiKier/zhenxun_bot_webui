@@ -34,12 +34,15 @@ async function chatWebsocketOnmessage(event) {
     const type = data.group_id ? "group" : "private"
 
     window.sortFriendGroupList(type)
-    vue.$nextTick(() => {
-      var divElement = document.getElementById("chat")
-      if (divElement) {
-        divElement.scrollTop = divElement.scrollHeight
-      }
-    })
+    console.log("data.object_id", data.object_id, vue.$store.state._chatId)
+    if (data.object_id == vue.$store.state._chatId) {
+      vue.$nextTick(() => {
+        var divElement = document.getElementById("chat")
+        if (divElement) {
+          divElement.scrollTop = divElement.scrollHeight
+        }
+      })
+    }
   }
 }
 

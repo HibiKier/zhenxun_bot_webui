@@ -197,13 +197,14 @@
 </template>
 
 <script>
-import MyButton from '../ui/MyButton.vue'
-import MySwitch from '../ui/MySwitch.vue'
+import MyButton from "../ui/MyButton.vue"
+import MySwitch from "../ui/MySwitch.vue"
 
-import { cloneDeep } from 'lodash'
+import { getChartOption } from "@/utils/template"
+
 export default {
   components: { MySwitch, MyButton },
-  name: 'DetailInfo',
+  name: "DetailInfo",
   data() {
     return {
       sizeMana: {
@@ -215,98 +216,13 @@ export default {
       allPluginList: [],
       tmpAllPluginList: [],
       likePluginChart: null,
-      chartOpt: {
-        tooltip: {
-          trigger: 'item',
-          formatter: '{b}: {c}',
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          borderColor: '#e9d5ff',
-          borderWidth: 1,
-          textStyle: {
-            color: '#7c3aed',
-            fontFamily: '"Comic Sans MS", cursive',
-          },
-        },
-        xAxis: {
-          type: 'category',
-          name: '插件',
-          data: null,
-          axisLabel: {
-            interval: 0,
-            color: '#7c3aed',
-            fontFamily: '"Comic Sans MS", cursive',
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#e9d5ff',
-            },
-          },
-        },
-        yAxis: {
-          type: 'value',
-          name: '次数',
-          axisLabel: {
-            color: '#7c3aed',
-            fontFamily: '"Comic Sans MS", cursive',
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#e9d5ff',
-            },
-          },
-          splitLine: {
-            lineStyle: {
-              color: '#f3e8ff',
-            },
-          },
-        },
-        series: [
-          {
-            type: 'bar',
-            barWidth: '40%',
-            label: {
-              show: true,
-              position: 'top',
-              color: '#7c3aed',
-              fontFamily: '"Comic Sans MS", cursive',
-            },
-            itemStyle: {
-              normal: {
-                color: (params) => {
-                  const colorList = [
-                    '#C4B5FD',
-                    '#A5B4FC',
-                    '#86EFAC',
-                    '#FDE047',
-                    '#7DD3FC',
-                    '#FCA5A5',
-                    '#B9F3D0',
-                    '#F9A8D4',
-                  ]
-                  return colorList[params.dataIndex % colorList.length]
-                },
-                barBorderRadius: [6, 6, 0, 0],
-              },
-            },
-            emphasis: {
-              focus: 'series',
-              itemStyle: {
-                shadowBlur: 10,
-                shadowColor: 'rgba(167, 139, 250, 0.5)',
-              },
-            },
-            data: {},
-          },
-        ],
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
-      },
     }
   },
   created() {
     this.botId = this.$store.state.botInfo.self_id
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
     this.handleResize()
   },
   methods: {
@@ -315,7 +231,7 @@ export default {
     },
     getAllPluginList() {
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
-        plugin_type: ['NORMAL', 'ADMIN'],
+        plugin_type: ["NORMAL", "ADMIN"],
       }).then((resp) => {
         if (resp.suc) {
           this.allPluginList = resp.data
@@ -333,7 +249,7 @@ export default {
         task: this.data.task_status,
         close_plugins: this.data.plugin_status,
       }
-      const loading = this.getLoading('.detail-info')
+      const loading = this.getLoading(".detail-info")
 
       this.postRequest(`${this.$root.prefix}/manage/update_group`, data)
         .then((resp) => {
@@ -347,7 +263,7 @@ export default {
         .finally(() => loading.close())
     },
     getFriend(user_id) {
-      const loading = this.getLoading('.detail-info')
+      const loading = this.getLoading(".detail-info")
 
       this.getRequest(`${this.$root.prefix}/manage/get_friend_detail`, {
         bot_id: this.botId,
@@ -366,7 +282,7 @@ export default {
         await this.getAllPluginList()
       }
 
-      const loading = this.getLoading('.detail-info')
+      const loading = this.getLoading(".detail-info")
 
       this.getRequest(`${this.$root.prefix}/manage/get_group_detail`, {
         bot_id: this.botId,
@@ -383,9 +299,9 @@ export default {
     processFriendData(data) {
       data.name = data.remark || data.nickname
       this.data = data
-      this.detailType = 'private'
+      this.detailType = "private"
       this.initChart(data.like_plugin)
-      this.$emit('startChat', this.data)
+      this.$emit("startChat", this.data)
     },
     processGroupData(data) {
       this.tmpAllPluginList = [...this.allPluginList]
@@ -398,15 +314,15 @@ export default {
           .map((e) => e.module)
         this.tmpAllPluginList.forEach((e) => {
           if (sbList.includes(e.module)) {
-            e.plugin_name += '(超级用户禁用)'
+            e.plugin_name += "(超级用户禁用)"
           }
         })
       }
 
       this.data = data
-      this.detailType = 'group'
+      this.detailType = "group"
       this.initChart(data.like_plugin)
-      this.$emit('startChat', this.data)
+      this.$emit("startChat", this.data)
     },
     initChart(likePluginObj) {
       this.$nextTick(() => {
@@ -415,7 +331,7 @@ export default {
         }
 
         const likePluginList = Object.keys(likePluginObj)
-        const chartOpt = cloneDeep(this.chartOpt)
+        const chartOpt = getChartOption()
 
         chartOpt.xAxis.data = likePluginList
         chartOpt.series[0].data = likePluginList.map((e) => ({
@@ -424,7 +340,7 @@ export default {
         }))
 
         this.likePluginChart.setOption(chartOpt)
-        window.addEventListener('resize', this.resizeChart)
+        window.addEventListener("resize", this.resizeChart)
       })
     },
     resizeChart() {
@@ -434,8 +350,8 @@ export default {
     },
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize)
-    window.removeEventListener('resize', this.resizeChart)
+    window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener("resize", this.resizeChart)
     if (this.likePluginChart) {
       this.likePluginChart.dispose()
     }

@@ -59,7 +59,7 @@
           <!-- 聊天统计 -->
           <div
             ref="chatCards"
-            class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"
+            class="char-cards grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"
           >
             <div
               v-for="(item, index) in chatCards"
@@ -80,7 +80,9 @@
           </div>
 
           <!-- 折叠区域 -->
-          <div class="bg-white rounded-xl overflow-hidden shadow-lg mb-4">
+          <div
+            class="detail-more bg-white rounded-xl overflow-hidden shadow-lg mb-4"
+          >
             <el-collapse @change="handleChange" style="border: none">
               <el-collapse-item>
                 <template slot="title">
@@ -159,48 +161,48 @@
 </template>
 
 <script>
-import { default as AnsiUp } from 'ansi_up'
-import { mapGetters } from 'vuex'
+import { default as AnsiUp } from "ansi_up"
+import { mapGetters } from "vuex"
 export default {
-  name: 'MidInfo',
+  name: "MidInfo",
   data() {
     return {
       systemCards: [
         {
-          icon: 'cpu',
-          title: 'CPU',
-          key: 'cpu',
-          iconColor: 'text-blue-500',
-          textColor: 'text-blue-600',
+          icon: "cpu",
+          title: "CPU",
+          key: "cpu",
+          iconColor: "text-blue-500",
+          textColor: "text-blue-600",
         },
         {
-          icon: 'memory',
-          title: 'MEMORY',
-          key: 'memory',
-          iconColor: 'text-green-500',
-          textColor: 'text-green-600',
+          icon: "memory",
+          title: "MEMORY",
+          key: "memory",
+          iconColor: "text-green-500",
+          textColor: "text-green-600",
         },
         {
-          icon: 'disk',
-          title: 'DISK',
-          key: 'disk',
-          iconColor: 'text-yellow-500',
-          textColor: 'text-yellow-600',
+          icon: "disk",
+          title: "DISK",
+          key: "disk",
+          iconColor: "text-yellow-500",
+          textColor: "text-yellow-600",
         },
       ],
       chatCards: [
-        { title: '消息总数', key: 'chat_num' },
-        { title: '今日消息', key: 'chat_day' },
-        { title: '调用总数', key: 'call_num' },
-        { title: '今日调用', key: 'call_day' },
+        { title: "消息总数", key: "chat_num" },
+        { title: "今日消息", key: "chat_day" },
+        { title: "调用总数", key: "call_num" },
+        { title: "今日调用", key: "call_day" },
       ],
       detailCards: [
-        { title: '一周内消息', key: 'chat_week' },
-        { title: '一月内消息', key: 'chat_month' },
-        { title: '一年内消息', key: 'chat_year' },
-        { title: '一周内调用', key: 'call_week' },
-        { title: '一月内调用', key: 'call_month' },
-        { title: '一年内调用', key: 'call_year' },
+        { title: "一周内消息", key: "chat_week" },
+        { title: "一月内消息", key: "chat_month" },
+        { title: "一年内消息", key: "chat_year" },
+        { title: "一周内调用", key: "call_week" },
+        { title: "一月内调用", key: "call_month" },
+        { title: "一年内调用", key: "call_year" },
       ],
       windowHeight: window.innerHeight,
       botInfo: null,
@@ -224,23 +226,23 @@ export default {
       callChart: null,
       chartOpt: {
         title: {
-          text: '30天内记录次数',
-          left: 'center',
-          textStyle: { color: '#7c3aed' },
-          subtextStyle: { color: '#9ca3af' },
+          text: "30天内记录次数",
+          left: "center",
+          textStyle: { color: "#7c3aed" },
+          subtextStyle: { color: "#9ca3af" },
         },
-        xAxis: { type: 'category', name: '日期', data: [] },
-        yAxis: { type: 'value', name: '次数' },
-        tooltip: { trigger: 'axis' },
+        xAxis: { type: "category", name: "日期", data: [] },
+        yAxis: { type: "value", name: "次数" },
+        tooltip: { trigger: "axis" },
         series: [
           {
             data: [],
-            type: 'line',
+            type: "line",
             smooth: true,
-            lineStyle: { color: '#a78bfa' },
+            lineStyle: { color: "#a78bfa" },
           },
         ],
-        backgroundColor: '#fdf2f8',
+        backgroundColor: "#fdf2f8",
       },
       mainHeight: 0,
       logHeight: 0,
@@ -249,15 +251,15 @@ export default {
   },
   computed: {
     ...mapGetters({
-      systemStatus: 'getWsStatusData',
+      systemStatus: "getWsStatusData",
     }),
   },
   created() {
     this.botInfo = this.$store.state.botInfo || {}
   },
   mounted() {
-    window.addEventListener('resize', this.handleResize)
-    this.clgDiv = document.getElementById('clg')
+    window.addEventListener("resize", this.handleResize)
+    this.clgDiv = document.getElementById("clg")
     this.ansi_up = new AnsiUp()
     this.getChatAndCallCount()
     this.chatCntInterval = setInterval(() => {
@@ -265,10 +267,10 @@ export default {
     }, 30000)
     this.chatChart = this.$echarts.init(this.$refs.chatChart)
     this.callChart = this.$echarts.init(this.$refs.callChart)
-    this.$store.dispatch('initLogSocket', this.logCallable)
+    this.$store.dispatch("initLogSocket", this.logCallable)
     this.calculateMainHeight()
     this.setupResizeObserver()
-    window.addEventListener('resize', this.calculateMainHeight)
+    window.addEventListener("resize", this.calculateMainHeight)
   },
   beforeDestroy() {
     this.destroyWebsocket()
@@ -278,7 +280,7 @@ export default {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect()
     }
-    window.removeEventListener('resize', this.calculateMainHeight)
+    window.removeEventListener("resize", this.calculateMainHeight)
   },
   methods: {
     calculateMainHeight() {
@@ -348,7 +350,7 @@ export default {
       }
     },
     getAllChatAndCallCount() {
-      var loading = this.getLoading('.detail-count')
+      var loading = this.getLoading(".char-cards")
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_all_chat_and_call_count`
       ).then((resp) => {
@@ -366,7 +368,7 @@ export default {
       })
     },
     getMonthChatAndCallCount() {
-      var loading = this.getLoading('.chart')
+      var loading = this.getLoading(".detail-more")
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_chat_and_call_month`
       ).then((resp) => {
@@ -380,8 +382,8 @@ export default {
             const callOpt = JSON.parse(JSON.stringify(this.chartOpt))
             chatOpt.xAxis.data = this.chatAndCallMonth.date
             callOpt.xAxis.data = this.chatAndCallMonth.date
-            chatOpt.title.text = '聊天记录'
-            callOpt.title.text = '调用记录'
+            chatOpt.title.text = "聊天记录"
+            callOpt.title.text = "调用记录"
             chatOpt.series[0].data = this.chatAndCallMonth.chat
             callOpt.series[0].data = this.chatAndCallMonth.call
             this.chatChart.setOption(chatOpt)
@@ -397,7 +399,7 @@ export default {
     },
     getChatAndCallCount(no_loading) {
       if (!no_loading) {
-        var loading = this.getLoading('.ch-count')
+        var loading = this.getLoading(".ch-count")
       }
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_chat_and_call_count`
@@ -420,8 +422,8 @@ export default {
     },
     logCallable(data) {
       let log = this.ansi_up.ansi_to_html(data)
-      log = log.replace('color:rgb(0,0,187)', 'color:rgb(55,186,255)')
-      let childDom = document.createElement('div')
+      log = log.replace("color:rgb(0,0,187)", "color:rgb(55,186,255)")
+      let childDom = document.createElement("div")
       childDom.innerHTML = log
 
       this.clgDiv.appendChild(childDom)
@@ -432,14 +434,14 @@ export default {
       }
 
       this.$nextTick(() => {
-        if (this.$refs['dashBoardScrollbar']) {
-          const div = this.$refs['dashBoardScrollbar'].$refs['wrap']
+        if (this.$refs["dashBoardScrollbar"]) {
+          const div = this.$refs["dashBoardScrollbar"].$refs["wrap"]
           div.scrollTop = div.scrollHeight
         }
       })
     },
     destroyWebsocket() {
-      window.removeEventListener('resize', this.handleResize)
+      window.removeEventListener("resize", this.handleResize)
     },
   },
 }
