@@ -1,7 +1,8 @@
 <template>
   <div
     ref="midInfo"
-    class="mid-info text-gray-800 p-4 flex flex-col bg-pink-50"
+    class="mid-info text-gray-800 p-4 flex flex-col"
+    :style="{ backgroundColor: 'var(--bg-color)' }"
   >
     <!-- 顶部区域 -->
     <div class="top-area" ref="topArea">
@@ -9,15 +10,24 @@
       <div
         v-if="!$isMobile()"
         ref="welcomeBox"
-        class="welcome-box bg-white rounded-xl z-10 p-5 shadow-lg mb-5 transform hover:scale-105 transition-transform"
+        class="welcome-box rounded-xl z-10 p-5 shadow-lg mb-5 transform hover:scale-105 transition-transform"
+        :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
       >
-        <p class="text-2xl md:text-3xl font-bold text-pink-600 mb-2">
-          <span class="text-purple-500">(≧∇≦)ﾉ</span> Hello
-          欢迎来到真寻的小房间！
+        <p
+          class="text-2xl md:text-3xl font-bold mb-2"
+          :style="{ color: 'var(--primary-color)' }"
+        >
+          <span :style="{ color: 'var(--primary-color-light)' }">(≧∇≦)ﾉ</span>
+          Hello 欢迎来到真寻的小房间！
         </p>
-        <p class="text-sm md:text-base text-gray-500">
+        <p
+          class="text-sm md:text-base"
+          :style="{ color: 'var(--text-color-secondary)' }"
+        >
           这是一场传奇的冒险旅途...
-          <span class="text-pink-400">☆⌒(*^-゜)v</span>
+          <span :style="{ color: 'var(--primary-color-light)' }"
+            >☆⌒(*^-゜)v</span
+          >
         </p>
       </div>
 
@@ -33,7 +43,8 @@
             <div
               v-for="(item, index) in systemCards"
               :key="index"
-              class="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow"
+              class="rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow"
+              :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
             >
               <div class="flex items-center justify-center mb-2">
                 <svg-icon
@@ -41,9 +52,11 @@
                   class="w-6 h-6 mr-2"
                   :class="item.iconColor"
                 />
-                <span class="text-sm md:text-base font-medium text-gray-600">{{
-                  item.title
-                }}</span>
+                <span
+                  class="text-sm md:text-base font-medium"
+                  :style="{ color: 'var(--text-color-secondary)' }"
+                  >{{ item.title }}</span
+                >
               </div>
               <div class="text-center">
                 <p
@@ -64,15 +77,21 @@
             <div
               v-for="(item, index) in chatCards"
               :key="index"
-              class="bg-white rounded-xl p-3 shadow-md hover:shadow-lg transition-shadow"
+              class="rounded-xl p-3 shadow-md hover:shadow-lg transition-shadow"
+              :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
             >
               <div class="text-center mb-1">
-                <span class="text-xs md:text-sm font-medium text-gray-600">{{
-                  item.title
-                }}</span>
+                <span
+                  class="text-xs md:text-sm font-medium"
+                  :style="{ color: 'var(--text-color-secondary)' }"
+                  >{{ item.title }}</span
+                >
               </div>
               <div class="text-center">
-                <p class="text-xl md:text-2xl font-bold text-purple-600">
+                <p
+                  class="text-xl md:text-2xl font-bold"
+                  :style="{ color: 'var(--primary-color)' }"
+                >
                   {{ chatAndCall[item.key] }}
                 </p>
               </div>
@@ -81,13 +100,18 @@
 
           <!-- 折叠区域 -->
           <div
-            class="detail-more bg-white rounded-xl overflow-hidden shadow-lg mb-4"
+            class="detail-more rounded-xl overflow-hidden shadow-lg mb-4"
+            :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
           >
             <el-collapse @change="handleChange" style="border: none">
               <el-collapse-item>
                 <template slot="title">
                   <div
-                    class="w-full text-center py-2 text-pink-600 font-medium"
+                    class="w-full text-center py-2 font-medium"
+                    :style="{
+                      color: 'var(--primary-color)',
+                      backgroundColor: 'var(--bg-color-secondary)',
+                    }"
                   >
                     <span class="mr-2">(๑•̀ㅂ•́)و✧</span>查看更多...
                   </div>
@@ -96,20 +120,27 @@
                 <!-- 详细统计 -->
                 <div
                   class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 p-4"
+                  :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
                   ref="collapseContent"
                 >
                   <div
                     v-for="(item, index) in detailCards"
                     :key="index"
-                    class="bg-pink-50 rounded-lg p-2 shadow-inner"
+                    class="rounded-lg p-2 shadow-inner"
+                    :style="{ backgroundColor: 'var(--bg-color)' }"
                   >
                     <div class="text-center mb-1">
-                      <span class="text-xs font-medium text-gray-600">{{
-                        item.title
-                      }}</span>
+                      <span
+                        class="text-xs font-medium"
+                        :style="{ color: 'var(--text-color-secondary)' }"
+                        >{{ item.title }}</span
+                      >
                     </div>
                     <div class="text-center">
-                      <p class="text-lg font-bold text-pink-600">
+                      <p
+                        class="text-lg font-bold"
+                        :style="{ color: 'var(--primary-color)' }"
+                      >
                         {{ allChatAndCall[item.key] }}
                       </p>
                     </div>
@@ -118,10 +149,16 @@
 
                 <!-- 图表区域 -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-                  <div class="bg-pink-50 rounded-xl p-4 h-64">
+                  <div
+                    class="rounded-xl p-4 h-64"
+                    :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
+                  >
                     <div ref="chatChart" class="w-full h-full"></div>
                   </div>
-                  <div class="bg-pink-50 rounded-xl p-4 h-64">
+                  <div
+                    class="rounded-xl p-4 h-64"
+                    :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
+                  >
                     <div ref="callChart" class="w-full h-full"></div>
                   </div>
                 </div>
@@ -133,25 +170,40 @@
         <!-- 日志区域 -->
         <div
           ref="logArea"
-          class="log-area bg-white rounded-xl shadow-lg p-4 flex flex-col"
-          :style="{ height: logHeight + 'px' }"
+          class="log-area rounded-xl shadow-lg p-4 flex flex-col"
+          :style="{
+            height: logHeight + 'px',
+            backgroundColor: 'var(--bg-color-secondary)',
+          }"
         >
           <div
             class="title-box flex items-center justify-between mb-3 flex-shrink-0"
           >
-            <p class="text-lg font-bold text-purple-600 flex items-center">
+            <p
+              class="text-lg font-bold flex items-center"
+              :style="{ color: 'var(--primary-color)' }"
+            >
               <span class="mr-2">(◕‿◕✿)</span>后台日志
             </p>
-            <span class="text-xs text-gray-500"
+            <span
+              :style="{ color: 'var(--text-color-secondary)' }"
+              class="text-xs"
               >虽然不知道为什么，但是视力+1</span
             >
           </div>
           <div
-            class="log-content bg-gray-50 rounded-lg p-3 flex-1 min-h-0 overflow-hidden"
-            :style="{ height: logHeight + 'px' }"
+            class="log-content rounded-lg p-3 flex-1 min-h-0 overflow-hidden"
+            :style="{
+              height: logHeight + 'px',
+              backgroundColor: 'var(--bg-color-secondary)',
+            }"
           >
             <el-scrollbar class="h-full" ref="dashBoardScrollbar">
-              <div id="clg" class="font-mono text-sm"></div>
+              <div
+                id="clg"
+                class="font-mono text-sm"
+                :style="{ color: 'var(--text-color)' }"
+              ></div>
             </el-scrollbar>
           </div>
         </div>
@@ -228,21 +280,38 @@ export default {
         title: {
           text: "30天内记录次数",
           left: "center",
-          textStyle: { color: "#7c3aed" },
-          subtextStyle: { color: "#9ca3af" },
+          textStyle: { color: "var(--primary-color)" },
+          subtextStyle: { color: "var(--text-color-secondary)" },
         },
-        xAxis: { type: "category", name: "日期", data: [] },
-        yAxis: { type: "value", name: "次数" },
-        tooltip: { trigger: "axis" },
+        xAxis: {
+          type: "category",
+          name: "日期",
+          data: [],
+          axisLine: { lineStyle: { color: "var(--text-color-secondary)" } },
+          axisLabel: { color: "var(--text-color-secondary)" },
+        },
+        yAxis: {
+          type: "value",
+          name: "次数",
+          axisLine: { lineStyle: { color: "var(--text-color-secondary)" } },
+          axisLabel: { color: "var(--text-color-secondary)" },
+        },
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: "var(--bg-color-secondary)",
+          borderColor: "var(--border-color)",
+          textStyle: { color: "var(--text-color)" },
+        },
         series: [
           {
             data: [],
             type: "line",
             smooth: true,
-            lineStyle: { color: "#a78bfa" },
+            lineStyle: { color: "var(--primary-color-light)" },
+            itemStyle: { color: "var(--primary-color)" },
           },
         ],
-        backgroundColor: "#fdf2f8",
+        backgroundColor: "var(--bg-color)",
       },
       mainHeight: 0,
       logHeight: 0,
@@ -271,6 +340,16 @@ export default {
     this.calculateMainHeight()
     this.setupResizeObserver()
     window.addEventListener("resize", this.calculateMainHeight)
+
+    // 监听主题变化
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "data-theme") {
+          this.getMonthChatAndCallCount()
+        }
+      })
+    })
+    observer.observe(document.documentElement, { attributes: true })
   },
   beforeDestroy() {
     this.destroyWebsocket()
@@ -386,6 +465,48 @@ export default {
             callOpt.title.text = "调用记录"
             chatOpt.series[0].data = this.chatAndCallMonth.chat
             callOpt.series[0].data = this.chatAndCallMonth.call
+
+            // 获取当前主题的实际颜色值
+            const computedStyle = getComputedStyle(document.documentElement)
+            const primaryColor = computedStyle
+              .getPropertyValue("--primary-color")
+              .trim()
+            const primaryColorLight = computedStyle
+              .getPropertyValue("--primary-color-light")
+              .trim()
+            const textColor = computedStyle
+              .getPropertyValue("--text-color")
+              .trim()
+            const textColorSecondary = computedStyle
+              .getPropertyValue("--text-color-secondary")
+              .trim()
+            const bgColor = computedStyle.getPropertyValue("--bg-color").trim()
+            const bgColorSecondary = computedStyle
+              .getPropertyValue("--bg-color-secondary")
+              .trim()
+            const borderColor = computedStyle
+              .getPropertyValue("--border-color")
+              .trim()
+
+            // 更新图表配置中的颜色
+            const updateChartColors = (opt) => {
+              opt.title.textStyle.color = primaryColor
+              opt.title.subtextStyle.color = textColorSecondary
+              opt.xAxis.axisLine.lineStyle.color = textColorSecondary
+              opt.xAxis.axisLabel.color = textColorSecondary
+              opt.yAxis.axisLine.lineStyle.color = textColorSecondary
+              opt.yAxis.axisLabel.color = textColorSecondary
+              opt.tooltip.backgroundColor = bgColorSecondary
+              opt.tooltip.borderColor = borderColor
+              opt.tooltip.textStyle.color = textColor
+              opt.series[0].lineStyle.color = primaryColorLight
+              opt.series[0].itemStyle.color = primaryColor
+              opt.backgroundColor = bgColor
+            }
+
+            updateChartColors(chatOpt)
+            updateChartColors(callOpt)
+
             this.chatChart.setOption(chatOpt)
             this.callChart.setOption(callOpt)
             this.chatChart.resize()
@@ -507,8 +628,13 @@ export default {
 }
 
 /* 折叠面板标题 */
-.el-collapse-item__header {
+::v-deep .el-collapse-item__header {
   font-size: var(--font-size-sm);
+  background-color: var(--bg-color-secondary) !important;
+}
+
+::v-deep .el-collapse-item__content {
+  background-color: var(--bg-color-secondary) !important;
 }
 
 /* 响应式微调 */

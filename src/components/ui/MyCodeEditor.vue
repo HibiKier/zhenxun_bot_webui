@@ -87,23 +87,22 @@ export default {
       return {
         readOnly: this.onlyRead ? "nocursor" : "",
         line: true,
-        mode: "application/json", // json数据高亮
-        theme: "shadowfox", //设置主题 记得引入对应主题才有显示   import 'codemirror/theme/blackboard.css'
-        tabSize: 1,
-        spellcheck: true, // 拼写检查
-        autocorrect: true, // 自动更正
-        lineNumbers: true, // 显示行号
-        cursorHeight: 0.8, //光标高度，默认是1
-        autoCloseBrackets: true, // 在键入时将自动关闭括号和引号
-        styleActiveLine: true, //line选择是是否高亮
-        // keyMap: "sublime", // sublime编辑器效果
-        matchBrackets: true, // 括号匹配
-        lineWrapping: "wrap", // 文字过长时，是换行(wrap)还是滚动(scroll),默认是滚动
-        showCursorWhenSelecting: true, // 文本选中时显示光标
-        smartIndent: true, // 智能缩进
-        completeSingle: false, // 当匹配只有一项的时候是否自动补全
-        matchTags: { bothTags: true }, // 将突出显示光标周围的标签
-        foldGutter: true, // 可将对象折叠，与下面的gutters一起使用
+        mode: "application/json",
+        theme: "shadowfox",
+        tabSize: 2,
+        spellcheck: true,
+        autocorrect: true,
+        lineNumbers: true,
+        cursorHeight: 0.8,
+        autoCloseBrackets: true,
+        styleActiveLine: true,
+        matchBrackets: true,
+        lineWrapping: "wrap",
+        showCursorWhenSelecting: true,
+        smartIndent: true,
+        completeSingle: false,
+        matchTags: { bothTags: true },
+        foldGutter: true,
         gutters: [
           "CodeMirror-lint-markers",
           "CodeMirror-linenumbers",
@@ -202,25 +201,82 @@ export default {
 </script>
 <style lang="scss" scoped>
 .common-editor {
-  width: 100%;
-  height: 100%;
-  ::v-deep .CodeMirror {
-    // color: #ccc;
-    direction: ltr;
-    line-height: 20px;
-    width: 100%;
-    height: calc(100% - 40px);
-    // background-color: #000;
-  }
-  // ::v-deep .CodeMirror-hints {
-  //   z-index: 100000 !important;
-  // }
+  @apply relative w-full h-full;
+  background-color: var(--bg-color-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-base);
+  transition: all 0.3s ease;
 
-  ::v-deep .custom-class .CodeMirror {
-    width: 100%;
+  &:hover {
+    border-color: var(--primary-color-light);
+    box-shadow: var(--el-box-shadow-light);
+  }
+
+  &:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: var(--el-box-shadow);
+  }
+
+  :deep(.CodeMirror) {
+    height: 100%;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--text-color);
+    background-color: var(--bg-color-secondary);
+    border-radius: var(--border-radius-base);
+
+    .CodeMirror-gutters {
+      background-color: var(--bg-color);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .CodeMirror-linenumber {
+      color: var(--text-color-secondary);
+    }
+
+    .CodeMirror-cursor {
+      border-left: 2px solid var(--primary-color);
+    }
+
+    .CodeMirror-selected {
+      background-color: var(--primary-color-light-9);
+    }
+
+    .CodeMirror-focused .CodeMirror-selected {
+      background-color: var(--primary-color-light-8);
+    }
+
+    .CodeMirror-matchingbracket {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .CodeMirror-nonmatchingbracket {
+      color: var(--danger-color);
+    }
+
+    .CodeMirror-hint {
+      background-color: var(--bg-color-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-base);
+      color: var(--text-color);
+      box-shadow: var(--el-box-shadow-light);
+
+      .CodeMirror-hint-active {
+        background-color: var(--primary-color-light-9);
+        color: var(--primary-color);
+      }
+    }
   }
 }
-.CodeMirror-hints {
-  z-index: 1000;
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .common-editor {
+    :deep(.CodeMirror) {
+      font-size: calc(var(--font-size-base) * 0.9);
+    }
+  }
 }
 </style>

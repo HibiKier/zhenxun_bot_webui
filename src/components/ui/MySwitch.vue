@@ -87,21 +87,23 @@ export default {
     position: relative;
     width: 60px;
     height: 32px;
-    border: 2px solid #ffb6c1;
+    border: 2px solid var(--border-color);
     outline: none;
     border-radius: 16px;
     box-sizing: border-box;
-    background: #fff5f7;
+    background: var(--bg-color-secondary);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--el-box-shadow-lighter);
 
     .my-switch.is-checked & {
-      border-color: #c4b5fd;
-      background: #f5f3ff;
+      border-color: var(--primary-color);
+      background: var(--primary-color-light-9);
     }
 
     .my-switch.is-disabled & {
       opacity: 0.6;
+      background: var(--el-fill-color-light);
+      border-color: var(--border-color-light);
     }
   }
 
@@ -112,17 +114,30 @@ export default {
     border-radius: 50%;
     width: 24px;
     height: 24px;
-    background: linear-gradient(145deg, #ffb6c1, #ff8fab);
+    background: linear-gradient(
+      145deg,
+      var(--primary-color-light),
+      var(--primary-color)
+    );
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--el-box-shadow-lighter);
 
     .my-switch.is-checked & {
       left: calc(100% - 26px);
-      background: linear-gradient(145deg, #c4b5fd, #a78bfa);
+      background: linear-gradient(
+        145deg,
+        var(--primary-color),
+        var(--primary-color-light)
+      );
       transform: scale(1.1);
+    }
+
+    .my-switch.is-disabled & {
+      background: var(--el-fill-color);
+      box-shadow: none;
     }
   }
 
@@ -130,9 +145,15 @@ export default {
     font-size: 14px;
     transition: all 0.3s;
     transform: scale(1);
+    color: var(--text-color);
 
     .my-switch.is-checked & {
       transform: scale(1.2);
+      color: var(--primary-color);
+    }
+
+    .my-switch.is-disabled & {
+      color: var(--text-color-disabled);
     }
   }
 
@@ -143,6 +164,27 @@ export default {
       .my-switch.is-checked & {
         left: calc(100% - 30px);
       }
+    }
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .my-switch {
+    height: 28px;
+
+    &__core {
+      width: 52px;
+      height: 28px;
+    }
+
+    &__button {
+      width: 20px;
+      height: 20px;
+    }
+
+    &__emoji {
+      font-size: 12px;
     }
   }
 }

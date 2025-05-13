@@ -33,7 +33,7 @@ export default {
     suffixIcon: String,
     type: {
       type: String,
-      default: 'text',
+      default: "text",
     },
   },
   data() {
@@ -44,15 +44,15 @@ export default {
   },
   methods: {
     handleInput(value) {
-      this.$emit('input', value)
+      this.$emit("input", value)
     },
     handleFocus(e) {
       this.isFocused = true
-      this.$emit('focus', e)
+      this.$emit("focus", e)
     },
     handleBlur(e) {
       this.isFocused = false
-      this.$emit('blur', e)
+      this.$emit("blur", e)
     },
   },
   watch: {
@@ -66,8 +66,8 @@ export default {
 <style lang="scss" scoped>
 .moe-input-container {
   @apply relative w-full;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 
   .input-wrapper {
     @apply relative;
@@ -77,8 +77,8 @@ export default {
     @apply absolute top-0 left-0 right-0 bottom-0 rounded-lg pointer-events-none;
     background: linear-gradient(
       120deg,
-      rgba(255, 220, 240, 0.2),
-      rgba(255, 200, 220, 0.2)
+      var(--primary-color-light-9),
+      var(--primary-color-light-8)
     );
     opacity: 0.3;
     z-index: 0;
@@ -86,7 +86,7 @@ export default {
 
   .border-highlight {
     @apply absolute top-0 left-0 right-0 bottom-0 rounded-lg pointer-events-none;
-    background: rgba(255, 182, 193, 0.3);
+    background: var(--primary-color-light-7);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: -1;
@@ -99,43 +99,65 @@ export default {
 
 .moe-el-input {
   /deep/ .el-input__inner {
-    @apply pr-8 h-10 bg-white bg-opacity-95 rounded-lg border border-pink-200 text-gray-700;
+    @apply pr-8 h-10 rounded-lg;
+    background-color: var(--bg-color-secondary);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
     transition: all 0.3s ease;
-    box-shadow: 0 1px 2px rgba(255, 182, 193, 0.1);
+    box-shadow: var(--el-box-shadow-lighter);
     padding: 0px 30px !important;
 
     &:hover {
-      @apply border-pink-300;
+      border-color: var(--primary-color-light);
+      box-shadow: var(--el-box-shadow-light);
     }
 
     &:focus {
-      box-shadow: 0 0 0 2px rgba(255, 182, 193, 0.2);
-      border-color: #ec4899 !important;
+      box-shadow: 0 0 0 2px var(--primary-color-light-9);
+      border-color: var(--primary-color) !important;
     }
 
     &::placeholder {
-      @apply text-pink-300;
+      color: var(--text-color-placeholder);
     }
   }
 
   .el-input__prefix {
     @apply left-2 flex items-center;
+    color: var(--primary-color);
   }
 
   .el-input__suffix {
     @apply right-2 flex items-center;
+    color: var(--text-color-secondary);
   }
 
   &.is-focused {
     .el-input__inner {
-      @apply border-pink-400 bg-opacity-95;
-      box-shadow: 0 0 10px rgba(255, 182, 193, 0.15);
-      border-color: #ec4899 !important;
+      background-color: var(--bg-color-secondary);
+      box-shadow: var(--el-box-shadow-light);
+      border-color: var(--primary-color) !important;
     }
   }
 }
 
 .input-icon {
-  @apply text-base text-pink-400;
+  color: var(--primary-color);
+  transition: color 0.3s ease;
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .moe-el-input {
+    /deep/ .el-input__inner {
+      @apply h-9 text-sm;
+      padding: 0px 24px !important;
+    }
+
+    .el-input__prefix,
+    .el-input__suffix {
+      @apply text-sm;
+    }
+  }
 }
 </style>

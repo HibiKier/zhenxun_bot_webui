@@ -1,23 +1,35 @@
 <template>
   <div
-    class="base bg-gradient-to-br from-pink-100 to-purple-100"
-    :style="{ height: computedHeight + 'px' }"
+    class="base"
+    :style="{
+      height: computedHeight + 'px',
+      background: 'var(--el-bg-color-page)',
+    }"
   >
     <el-row :gutter="1" class="h-full">
       <el-col :xs="24" :sm="24" :md="8" :lg="6" class="h-full">
-        <div class="base-info h-full pr-0 md:pr-0">
+        <div
+          class="base-info h-full pr-0 md:pr-0"
+          :style="{ backgroundColor: 'var(--el-bg-color)' }"
+        >
           <LeftInfo class="h-full" />
         </div>
       </el-col>
 
       <el-col :xs="24" :sm="24" :md="16" :lg="12" class="h-full">
-        <div class="main-info h-full px-0 md:px-0">
+        <div
+          class="main-info h-full px-0 md:px-0"
+          :style="{ backgroundColor: 'var(--el-bg-color)' }"
+        >
           <MidInfo class="h-full" />
         </div>
       </el-col>
 
       <el-col :xs="24" :sm="24" :md="24" :lg="6" class="h-full">
-        <div class="config-info h-full pl-0 md:pl-0">
+        <div
+          class="config-info h-full pl-0 md:pl-0"
+          :style="{ backgroundColor: 'var(--el-bg-color)' }"
+        >
           <RightInfo class="h-full" />
         </div>
       </el-col>
@@ -64,17 +76,17 @@ export default {
 
 .base-info {
   @apply bg-opacity-80 backdrop-blur-sm;
-  border: 1px solid rgba(255, 192, 203, 0.3);
+  border: 1px solid var(--el-border-color-light);
 }
 
 .main-info {
   @apply bg-opacity-80 backdrop-blur-sm;
-  border: 1px solid rgba(255, 192, 203, 0.3);
+  border: 1px solid var(--el-border-color-light);
 }
 
 .config-info {
   @apply bg-opacity-80 backdrop-blur-sm;
-  border: 1px solid rgba(255, 192, 203, 0.3);
+  border: 1px solid var(--el-border-color-light);
 }
 
 /* 响应式设计 */

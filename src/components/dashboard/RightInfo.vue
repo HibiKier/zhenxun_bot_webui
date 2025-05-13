@@ -1,18 +1,30 @@
 <template>
-  <div class="right-info bg-pink-50 p-4 md:p-4 h-full" ref="rightInfo">
+  <div
+    class="right-info p-4 md:p-4 h-full"
+    ref="rightInfo"
+    :style="{ backgroundColor: 'var(--el-fill-color-light)' }"
+  >
     <!-- NoneBot配置卡片 - 更紧凑的版本 -->
     <div
-      class="base-border bg-white rounded-lg p-4 shadow-sm mb-2 h-auto min-h-[120px]"
+      class="base-border rounded-lg p-4 shadow-sm mb-2 h-auto min-h-[120px]"
       ref="baseBorder"
+      :style="{ backgroundColor: 'var(--el-bg-color)' }"
     >
-      <p class="base-title mb-1 text-purple-600 flex items-center">
+      <p
+        class="base-title mb-1 flex items-center"
+        :style="{ color: 'var(--el-color-primary)' }"
+      >
         <i class="fas fa-cog mr-1 text-xs"></i> NoneBot配置
       </p>
       <div class="nb-config grid grid-cols-2 gap-1 px-0.5">
         <div
           v-for="(item, key) in configItems"
           :key="key"
-          class="bg-gradient-to-br from-pink-50 to-purple-50 rounded-sm p-1 border border-pink-100"
+          class="rounded-sm p-1"
+          :style="{
+            background: 'var(--el-fill-color-lighter)',
+            border: '1px solid var(--el-border-color-light)',
+          }"
         >
           <el-tooltip
             effect="light"
@@ -22,12 +34,14 @@
           >
             <p
               class="config-info-item-text truncate leading-tight cursor-default"
+              :style="{ color: 'var(--el-text-color-regular)' }"
             >
               {{ item.value }}
             </p>
           </el-tooltip>
           <p
-            class="config-small-title text-pink-500 font-bold uppercase tracking-tighter mt-0"
+            class="config-small-title font-bold uppercase tracking-tighter mt-0"
+            :style="{ color: 'var(--el-color-primary)' }"
           >
             {{ item.label }}
           </p>
@@ -39,15 +53,24 @@
     <div class="space-y-4 min-h-[300px]">
       <!-- 活跃群聊图表 -->
       <div
-        class="active-group base-border bg-white rounded-xl p-4 shadow-lg h-full min-h-[300px]"
-        :style="{ height: computedChartDivHeight + 'px' }"
+        class="active-group base-border rounded-xl p-4 shadow-lg h-full min-h-[300px]"
+        :style="{
+          height: computedChartDivHeight + 'px',
+          backgroundColor: 'var(--el-bg-color)',
+        }"
       >
         <div
           ref="activeGroupBorder"
           class="flex justify-between items-center mb-2"
         >
-          <p class="text-purple-600 mb-1 md:mb-0 flex items-center">
-            <i class="fas fa-users mr-1 text-pink-500 animate-bounce"></i>
+          <p
+            class="mb-1 md:mb-0 flex items-center"
+            :style="{ color: 'var(--el-color-primary)' }"
+          >
+            <i
+              class="fas fa-users mr-1 animate-bounce"
+              :style="{ color: 'var(--el-color-primary)' }"
+            ></i>
             活跃群组
           </p>
           <div class="flex flex-wrap gap-1">
@@ -57,10 +80,18 @@
               @click="clickGroupType(type.value)"
               class="px-2 py-0.5 rounded-full transition-all duration-200"
               :class="{
-                'bg-purple-500 text-white shadow-sm':
-                  selectGroupType === type.value,
-                'bg-pink-100 text-pink-600 hover:bg-pink-200':
-                  selectGroupType !== type.value,
+                'text-white shadow-sm': selectGroupType === type.value,
+                'hover:bg-opacity-80': selectGroupType !== type.value,
+              }"
+              :style="{
+                backgroundColor:
+                  selectGroupType === type.value
+                    ? 'var(--el-color-primary)'
+                    : 'var(--el-fill-color-light)',
+                color:
+                  selectGroupType === type.value
+                    ? 'var(--el-color-white)'
+                    : 'var(--el-color-primary)',
               }"
             >
               {{ type.label }}
@@ -76,15 +107,24 @@
 
       <!-- 热门插件图表 -->
       <div
-        class="hot-plugin base-border bg-white rounded-xl p-4 shadow-lg h-full min-h-[300px]"
-        :style="{ height: computedChartDivHeight + 'px' }"
+        class="hot-plugin base-border rounded-xl p-4 shadow-lg h-full min-h-[300px]"
+        :style="{
+          height: computedChartDivHeight + 'px',
+          backgroundColor: 'var(--el-bg-color)',
+        }"
       >
         <div
           ref="hotPluginBorder"
           class="flex justify-between items-center mb-2"
         >
-          <p class="text-purple-600 mb-1 md:mb-0 flex items-center">
-            <i class="fas fa-users mr-1 text-pink-500 animate-bounce"></i>
+          <p
+            class="mb-1 md:mb-0 flex items-center"
+            :style="{ color: 'var(--el-color-primary)' }"
+          >
+            <i
+              class="fas fa-users mr-1 animate-bounce"
+              :style="{ color: 'var(--el-color-primary)' }"
+            ></i>
             热门插件
           </p>
           <div class="flex flex-wrap gap-1">
@@ -94,10 +134,18 @@
               @click="clickHotPluginType(type.value)"
               class="px-2 py-0.5 rounded-full transition-all duration-200"
               :class="{
-                'bg-purple-500 text-white shadow-sm':
-                  selectGroupType === type.value,
-                'bg-pink-100 text-pink-600 hover:bg-pink-200':
-                  selectGroupType !== type.value,
+                'text-white shadow-sm': selectGroupType === type.value,
+                'hover:bg-opacity-80': selectGroupType !== type.value,
+              }"
+              :style="{
+                backgroundColor:
+                  selectGroupType === type.value
+                    ? 'var(--el-color-primary)'
+                    : 'var(--el-fill-color-light)',
+                color:
+                  selectGroupType === type.value
+                    ? 'var(--el-color-white)'
+                    : 'var(--el-color-primary)',
               }"
             >
               {{ type.label }}
@@ -497,7 +545,7 @@ export default {
 /* 其他样式保持不变 */
 .right-info {
   scrollbar-width: thin;
-  scrollbar-color: #d8b4fe #f5f3ff;
+  scrollbar-color: var(--el-border-color) var(--el-fill-color-lighter);
 }
 
 .right-info::-webkit-scrollbar {
@@ -505,23 +553,22 @@ export default {
 }
 
 .right-info::-webkit-scrollbar-track {
-  background: #f5f3ff;
+  background: var(--el-fill-color-lighter);
   border-radius: 10px;
 }
 
 .right-info::-webkit-scrollbar-thumb {
-  background-color: #d8b4fe;
+  background-color: var(--el-border-color);
   border-radius: 10px;
 }
 
 .base-border {
   transition: all 0.3s ease;
-  border: 1px solid rgba(216, 180, 254, 0.3);
+  border: 1px solid var(--el-border-color-light);
 }
 
 .base-border:hover {
-  box-shadow: 0 10px 15px -3px rgba(167, 139, 250, 0.2),
-    0 4px 6px -2px rgba(167, 139, 250, 0.1);
+  box-shadow: var(--el-box-shadow-light);
 }
 
 .nb-config {
@@ -529,7 +576,7 @@ export default {
 }
 
 .base-title {
-  text-shadow: 1px 1px 2px rgba(216, 180, 254, 0.5);
+  text-shadow: 1px 1px 2px var(--el-color-primary-light-8);
 }
 
 .base-border::before {
@@ -540,7 +587,12 @@ export default {
   right: -5px;
   bottom: -5px;
   z-index: -1;
-  background: linear-gradient(45deg, #f472b6, #a78bfa, #7dd3fc);
+  background: linear-gradient(
+    45deg,
+    var(--el-color-primary),
+    var(--el-color-primary-light-3),
+    var(--el-color-primary-light-5)
+  );
   background-size: 300% 300%;
   border-radius: 12px;
   opacity: 0.1;
@@ -562,19 +614,19 @@ export default {
 /* 工具提示样式 */
 ::v-deep .el-tooltip__popper {
   max-width: 80vw;
-  border: 1px solid #f472b6 !important;
-  background-color: rgba(255, 255, 255, 0.95) !important;
-  color: #6b46c1 !important;
+  border: 1px solid var(--el-color-primary) !important;
+  background-color: var(--el-bg-color-overlay) !important;
+  color: var(--el-text-color-primary) !important;
   font-size: var(--font-size-xs);
   border-radius: 12px !important;
-  box-shadow: 0 4px 12px rgba(244, 114, 182, 0.2) !important;
+  box-shadow: var(--el-box-shadow-light) !important;
 }
 
 ::v-deep .el-tooltip__popper[x-placement^="top"] .popper__arrow {
-  border-top-color: #f472b6 !important;
+  border-top-color: var(--el-color-primary) !important;
 }
 
 ::v-deep .el-tooltip__popper[x-placement^="bottom"] .popper__arrow {
-  border-bottom-color: #f472b6 !important;
+  border-bottom-color: var(--el-color-primary) !important;
 }
 </style>
