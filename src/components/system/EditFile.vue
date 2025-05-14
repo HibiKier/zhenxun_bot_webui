@@ -84,14 +84,14 @@
 </template>
 
 <script>
-import CodeMirror from './CodeMirror.vue'
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
-import MyButton from '../ui/MyButton.vue'
-import 'codemirror/addon/scroll/simplescrollbars'
-import 'codemirror/addon/scroll/simplescrollbars.css'
+import CodeMirror from "./CodeMirror.vue"
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
+import MyButton from "../ui/MyButton.vue"
+import "codemirror/addon/scroll/simplescrollbars"
+import "codemirror/addon/scroll/simplescrollbars.css"
 
 export default {
-  name: 'CodeEditor',
+  name: "CodeEditor",
   components: {
     CodeMirror,
     MyButton,
@@ -100,15 +100,15 @@ export default {
   props: {
     title: {
       type: String,
-      default: '代码编辑器',
+      default: "代码编辑器",
     },
     filePath: {
       type: String,
-      default: '',
+      default: "",
     },
     language: {
       type: String,
-      default: 'text',
+      default: "text",
     },
     readOnly: {
       type: Boolean,
@@ -120,30 +120,30 @@ export default {
     },
     icon: {
       type: String,
-      default: '',
+      default: "",
     },
   },
   data() {
     return {
-      scrollbarStyle: 'simple', // 使用简单滚动条
+      scrollbarStyle: "simple", // 使用简单滚动条
       lineWrapping: true,
-      editorContent: '',
+      editorContent: "",
       innerVisible: true,
       cursorLine: 1,
       cursorCol: 1,
-      dialogWidth: '70%',
+      dialogWidth: "70%",
       editorOptions: {
         mode: this.getModeFromLanguage(this.language),
-        theme: 'kawaii',
+        theme: "kawaii",
         lineNumbers: true,
         lineWrapping: true,
         indentUnit: 2,
         tabSize: 2,
         extraKeys: {
-          'Ctrl-S': this.handleSave,
-          'Cmd-S': this.handleSave,
-          'Ctrl-Enter': this.handleExecute,
-          'Cmd-Enter': this.handleExecute,
+          "Ctrl-S": this.handleSave,
+          "Cmd-S": this.handleSave,
+          "Ctrl-Enter": this.handleExecute,
+          "Cmd-Enter": this.handleExecute,
         },
       },
     }
@@ -151,16 +151,16 @@ export default {
   computed: {
     languageDisplay() {
       const langMap = {
-        text: '纯文本',
-        json: 'JSON',
-        javascript: 'JavaScript',
-        python: 'Python',
-        html: 'HTML',
-        css: 'CSS',
-        markdown: 'Markdown',
-        sql: 'SQL',
-        yaml: 'YAML',
-        shell: 'Shell',
+        text: "纯文本",
+        json: "JSON",
+        javascript: "JavaScript",
+        python: "Python",
+        html: "HTML",
+        css: "CSS",
+        markdown: "Markdown",
+        sql: "SQL",
+        yaml: "YAML",
+        shell: "Shell",
       }
       return langMap[this.language.toLowerCase()] || this.language
     },
@@ -176,14 +176,14 @@ export default {
   mounted() {
     this.loadFileContent()
     this.setupResponsive()
-    window.addEventListener('resize', this.setupResponsive)
+    window.addEventListener("resize", this.setupResponsive)
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.setupResponsive)
+    window.removeEventListener("resize", this.setupResponsive)
   },
   methods: {
     handleSave() {
-      const loading = this.getLoading('.kawaii-dialog')
+      const loading = this.getLoading(".kawaii-dialog")
       this.postRequest(`${this.$root.prefix}/system/save_file`, {
         full_path: this.filePath,
         content: this.editorContent,
@@ -201,7 +201,7 @@ export default {
       })
     },
     loadFileContent() {
-      const loading = this.getLoading('.kawaii-dialog')
+      const loading = this.getLoading(".kawaii-dialog")
 
       this.getRequest(`${this.$root.prefix}/system/read_file`, {
         full_path: this.filePath,
@@ -221,70 +221,70 @@ export default {
     },
     getModeFromLanguage(lang) {
       const modeMap = {
-        json: 'application/json',
-        javascript: 'javascript',
-        python: 'python',
-        html: 'htmlmixed',
-        css: 'css',
-        markdown: 'markdown',
-        sql: 'sql',
-        yaml: 'yaml',
-        shell: 'shell',
+        json: "application/json",
+        javascript: "javascript",
+        python: "python",
+        html: "htmlmixed",
+        css: "css",
+        markdown: "markdown",
+        sql: "sql",
+        yaml: "yaml",
+        shell: "shell",
       }
-      return modeMap[lang.toLowerCase()] || 'text'
+      return modeMap[lang.toLowerCase()] || "text"
     },
 
     setupResponsive() {
-      this.dialogWidth = window.innerWidth < 768 ? '90%' : '70%'
+      this.dialogWidth = window.innerWidth < 768 ? "90%" : "70%"
     },
 
     onEditorReady(editor) {
-      editor.on('cursorActivity', () => {
+      editor.on("cursorActivity", () => {
         const cursor = editor.getCursor()
         this.cursorLine = cursor.line + 1
         this.cursorCol = cursor.ch + 1
       })
 
-      editor.setOption('extraKeys', {
-        ...editor.getOption('extraKeys'),
-        'Ctrl-Alt-L': this.handleFormat,
-        'Cmd-Alt-L': this.handleFormat,
+      editor.setOption("extraKeys", {
+        ...editor.getOption("extraKeys"),
+        "Ctrl-Alt-L": this.handleFormat,
+        "Cmd-Alt-L": this.handleFormat,
       })
     },
 
     async handleClear() {
       const result = await this.$cuteConfirm({
-        title: '清空确认',
+        title: "清空确认",
         message: `确定要清空文件内容吗?`,
-        cancelButtonText: '我再想想',
-        confirmButtonText: '清空内容',
+        cancelButtonText: "我再想想",
+        confirmButtonText: "清空内容",
       })
       if (result) {
-        this.editorContent = ''
+        this.editorContent = ""
         this.$nextTick(() => {
           this.$refs.editor.focus()
         })
-        this.$message.success('内容已清空！')
+        this.$message.success("内容已清空！")
       }
     },
 
     handleFormat() {
-      if (this.language === 'json') {
+      if (this.language === "json") {
         this.$refs.editor.formatJson()
-        this.$message.success('JSON格式化完成！')
+        this.$message.success("JSON格式化完成！")
       } else {
-        this.$message.info('当前文件类型不支持格式化')
+        this.$message.info("当前文件类型不支持格式化")
       }
     },
 
     handleExecute() {
-      this.$emit('execute', this.editorContent)
+      this.$emit("execute", this.editorContent)
     },
 
     handleClose() {
       this.innerVisible = false
-      this.$emit('update:visible', false)
-      this.$emit('close')
+      this.$emit("update:visible", false)
+      this.$emit("close")
     },
 
     focus() {
@@ -301,9 +301,9 @@ export default {
 .kawaii-dialog {
   border-radius: 18px !important;
   overflow: hidden;
-  background: linear-gradient(145deg, #fff5f9, #fdf5ff) !important;
-  border: 2px solid #ffb6c1 !important;
-  box-shadow: 0 12px 35px rgba(255, 182, 193, 0.4) !important;
+  background: var(--bg-color-secondary) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 12px 35px var(--el-box-shadow-light) !important;
   transform-origin: center;
   animation: dialog-pop 0.3s ease-out;
 }
@@ -321,14 +321,14 @@ export default {
 
 /* 对话框头部 */
 .kawaii-dialog >>> .el-dialog__header {
-  background: linear-gradient(to right, #ffb6c1, #d8b5ff);
+  background: var(--primary-color);
   padding: 16px 24px;
-  border-bottom: 2px dashed rgba(255, 255, 255, 0.5);
+  border-bottom: 2px dashed var(--el-color-white);
   position: relative;
 }
 
 .kawaii-dialog >>> .el-dialog__header::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -6px;
   left: 0;
@@ -338,17 +338,17 @@ export default {
     45deg,
     transparent,
     transparent 10px,
-    rgba(255, 255, 255, 0.5) 10px,
-    rgba(255, 255, 255, 0.5) 20px
+    var(--el-color-white) 10px,
+    var(--el-color-white) 20px
   );
 }
 
 .kawaii-dialog >>> .el-dialog__title {
-  color: white !important;
+  color: var(--el-color-white) !important;
   font-weight: bold;
   font-size: 18px;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-  font-family: 'Comic Neue', 'M PLUS Rounded 1c', cursive;
+  font-family: "Comic Neue", "M PLUS Rounded 1c", cursive;
   letter-spacing: 1px;
 }
 
@@ -358,38 +358,34 @@ export default {
 }
 
 .kawaii-dialog >>> .el-dialog__headerbtn .el-dialog__close {
-  color: white !important;
+  color: var(--el-color-white) !important;
   font-size: 20px;
   transition: all 0.3s ease;
 }
 
 .kawaii-dialog >>> .el-dialog__headerbtn:hover .el-dialog__close {
-  color: #ff6b88 !important;
+  color: var(--primary-color-light) !important;
   transform: rotate(90deg) scale(1.2);
-  text-shadow: 0 0 5px white;
+  text-shadow: 0 0 5px var(--el-color-white);
 }
 
 /* 对话框内容区 */
 .kawaii-dialog >>> .el-dialog__body {
   padding: 0 !important;
-  background: linear-gradient(135deg, #fff5f9, #f8f0ff);
+  background: var(--bg-color);
   position: relative;
 }
 
 /* ================= 文件信息展示区 ================= */
 .file-info-banner {
   padding: 12px 20px;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.7),
-    rgba(255, 245, 250, 0.7)
-  );
-  border-bottom: 1px dashed #ffb6c1;
+  background: var(--bg-color-secondary);
+  border-bottom: 1px dashed var(--border-color);
   position: relative;
 }
 
 .file-info-banner::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -398,8 +394,8 @@ export default {
   background: linear-gradient(
     to right,
     transparent,
-    #ff8e8e,
-    #d8b5ff,
+    var(--primary-color),
+    var(--primary-color-light),
     transparent
   );
   opacity: 0.5;
@@ -407,12 +403,12 @@ export default {
 
 .file-path-display {
   font-size: 14px;
-  color: #8a2be2;
+  color: var(--text-color);
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-family: 'Comic Neue', 'M PLUS Rounded 1c', cursive;
+  font-family: "Comic Neue", "M PLUS Rounded 1c", cursive;
   padding-left: 24px;
   position: relative;
 }
@@ -423,12 +419,8 @@ export default {
   flex-wrap: wrap;
   gap: 8px;
   padding: 12px 20px;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.8),
-    rgba(255, 245, 250, 0.8)
-  );
-  border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+  background: var(--bg-color-secondary);
+  border-bottom: 1px solid var(--border-color-light);
 }
 
 .kawaii-toolbar-btn {
@@ -443,11 +435,11 @@ export default {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-  font-family: 'Comic Neue', 'M PLUS Rounded 1c', cursive;
+  font-family: "Comic Neue", "M PLUS Rounded 1c", cursive;
 }
 
 .kawaii-toolbar-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
@@ -479,24 +471,84 @@ export default {
   margin: 0 10px 10px;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: inset 0 0 10px rgba(255, 182, 193, 0.3),
-    0 4px 15px rgba(168, 85, 247, 0.1);
-  border: 1px solid rgba(236, 72, 153, 0.2);
-  background: linear-gradient(145deg, #fff9fb, #fdf5ff);
+  box-shadow: inset 0 0 10px var(--el-box-shadow-lighter),
+    0 4px 15px var(--el-box-shadow-light);
+  border: 1px solid var(--border-color);
+  background: var(--bg-color-secondary);
 }
 
 /* 编辑器滚动区域 */
 .code-editor-wrapper >>> .CodeMirror {
   height: 100%;
-  font-family: 'Comic Neue', 'M PLUS Rounded 1c', cursive, monospace;
+  font-family: "Comic Neue", "M PLUS Rounded 1c", cursive, monospace;
   background: transparent !important;
   font-size: 14px;
+  color: var(--text-color) !important;
 }
 
-.code-editor-wrapper >>> .CodeMirror-scroll {
-  overflow-y: auto;
-  overflow-x: auto;
-  padding-right: 4px;
+/* 编辑器内容样式 */
+.code-editor-wrapper >>> .CodeMirror-lines {
+  color: var(--text-color) !important;
+}
+
+.code-editor-wrapper >>> .CodeMirror pre.CodeMirror-line {
+  color: var(--text-color) !important;
+}
+
+/* 行号区域 */
+.code-editor-wrapper >>> .CodeMirror-gutters {
+  background: var(--bg-color-hover) !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+.code-editor-wrapper >>> .CodeMirror-linenumber {
+  color: var(--text-color-secondary) !important;
+  padding: 0 5px !important;
+  min-width: 24px;
+}
+
+/* 选中文本样式 */
+.code-editor-wrapper >>> .CodeMirror-selected {
+  background: var(--primary-color-light) !important;
+}
+
+/* 光标样式 */
+.code-editor-wrapper >>> .CodeMirror-cursor {
+  border-left: 2px solid var(--primary-color) !important;
+}
+
+/* 匹配括号样式 */
+.code-editor-wrapper >>> .CodeMirror-matchingbracket {
+  color: var(--primary-color) !important;
+  font-weight: bold;
+}
+
+/* 搜索高亮样式 */
+.code-editor-wrapper >>> .CodeMirror-searching {
+  background: var(--primary-color-light) !important;
+  color: var(--text-color) !important;
+}
+
+/* 暗色主题特定样式 */
+[data-theme="dark"] .code-editor-wrapper >>> .CodeMirror,
+[data-theme="one-dark"] .code-editor-wrapper >>> .CodeMirror {
+  background: var(--bg-color) !important;
+}
+
+[data-theme="dark"] .code-editor-wrapper >>> .CodeMirror-gutters,
+[data-theme="one-dark"] .code-editor-wrapper >>> .CodeMirror-gutters {
+  background: var(--bg-color-secondary) !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .code-editor-wrapper >>> .CodeMirror-linenumber,
+[data-theme="one-dark"] .code-editor-wrapper >>> .CodeMirror-linenumber {
+  color: var(--text-color-secondary) !important;
+}
+
+[data-theme="dark"] .code-editor-wrapper >>> .CodeMirror-selected,
+[data-theme="one-dark"] .code-editor-wrapper >>> .CodeMirror-selected {
+  background: var(--primary-color-light) !important;
 }
 
 /* 滚动条样式 */
@@ -506,9 +558,9 @@ export default {
 }
 
 .code-editor-wrapper >>> .CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #ff8e8e, #ff6b88);
+  background: var(--primary-color);
   border-radius: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border-color-light);
 }
 
 .code-editor-wrapper >>> .CodeMirror-hscrollbar {
@@ -517,20 +569,8 @@ export default {
 }
 
 .code-editor-wrapper >>> .CodeMirror-hscrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(to right, #b399ff, #8a6bff);
+  background: var(--primary-color-light);
   border-radius: 5px;
-}
-
-/* 行号区域 */
-.code-editor-wrapper >>> .CodeMirror-gutters {
-  background: linear-gradient(to right, #fff0f5, #ffebf7) !important;
-  border-right: 1px solid #ffd6e7 !important;
-}
-
-.code-editor-wrapper >>> .CodeMirror-linenumber {
-  color: #ff85a2 !important;
-  padding: 0 5px !important;
-  min-width: 24px;
 }
 
 /* ================= 状态栏 ================= */
@@ -539,13 +579,9 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
-  background: linear-gradient(
-    to right,
-    rgba(255, 182, 193, 0.2),
-    rgba(216, 181, 255, 0.2)
-  );
-  border-top: 1px dashed rgba(236, 72, 153, 0.3);
-  font-family: 'Comic Neue', 'M PLUS Rounded 1c', cursive;
+  background: var(--bg-color-hover);
+  border-top: 1px dashed var(--border-color);
+  font-family: "Comic Neue", "M PLUS Rounded 1c", cursive;
   font-size: 13px;
 }
 
@@ -560,7 +596,19 @@ export default {
 }
 
 .status-text {
-  color: #8a2be2;
+  color: var(--text-color);
+}
+
+/* 暗色主题下的状态栏 */
+[data-theme="dark"] .editor-status-bar,
+[data-theme="one-dark"] .editor-status-bar {
+  background: var(--bg-color-secondary);
+  border-top: 1px dashed var(--border-color);
+}
+
+[data-theme="dark"] .status-text,
+[data-theme="one-dark"] .status-text {
+  color: var(--text-color);
 }
 
 /* ================= 动画效果 ================= */
@@ -591,7 +639,7 @@ export default {
 
 /* 装饰元素 */
 .kawaii-dialog::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -10px;
   right: -10px;
@@ -639,5 +687,5 @@ export default {
 
 <style>
 /* 全局字体 */
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap");
 </style>

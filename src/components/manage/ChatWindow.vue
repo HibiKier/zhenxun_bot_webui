@@ -1,6 +1,10 @@
 <template>
   <div
-    class="chat-window bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg overflow-hidden h-full flex flex-col"
+    class="chat-window rounded-2xl shadow-lg overflow-hidden h-full flex flex-col"
+    :style="{
+      background: 'var(--el-bg-color-page)',
+      boxShadow: 'var(--el-box-shadow-light)',
+    }"
   >
     <!-- 空状态 -->
     <div
@@ -12,7 +16,10 @@
         class="w-64 h-64 object-contain mb-4"
         alt="等待聊天开始"
       />
-      <p class="text-pink-500 text-lg font-medium">
+      <p
+        class="text-lg font-medium"
+        :style="{ color: 'var(--el-color-primary)' }"
+      >
         选择一个好友或群组开始聊天吧~
       </p>
     </div>
@@ -21,17 +28,23 @@
     <div v-else class="flex-1 flex flex-col h-full p-4">
       <!-- 顶部标题栏 -->
       <div
-        class="flex items-center justify-between mb-4 p-3 bg-white rounded-t-xl shadow-sm"
+        class="flex items-center justify-between mb-4 p-3 rounded-t-xl"
         ref="header"
+        :style="{
+          background: 'var(--el-bg-color)',
+          boxShadow: 'var(--el-box-shadow-lighter)',
+        }"
       >
         <div class="flex items-center min-w-0">
           <el-avatar
             :src="chatInfo.ava_url"
             :size="40"
-            class="flex-shrink-0 border-2 border-pink-200 transform hover:scale-110 transition-transform"
+            class="flex-shrink-0 transform hover:scale-110 transition-transform"
+            :style="{ border: '2px solid var(--el-border-color-light)' }"
           ></el-avatar>
           <h2
-            class="ml-3 text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 truncate min-w-0"
+            class="ml-3 text-xl font-bold truncate min-w-0"
+            :style="{ color: 'var(--el-color-primary)' }"
             :title="chatInfo.name"
           >
             {{ chatInfo.name }}
@@ -52,8 +65,12 @@
       <!-- 消息区域 -->
       <div class="message-container" :style="{ height: chatHeight + 'px' }">
         <div
-          class="flex-1 overflow-y-auto p-3 bg-white rounded-lg shadow-inner mb-3"
+          class="flex-1 overflow-y-auto p-3 rounded-lg mb-3"
           id="chat"
+          :style="{
+            background: 'var(--el-bg-color)',
+            boxShadow: 'var(--el-box-shadow-light) inset',
+          }"
         >
           <div
             v-for="(data, index) in $store.state.chatObj[chatId].msgList || []"
@@ -67,12 +84,18 @@
               :src="data.ava_url"
               :size="45"
               :class="{ 'mt-5': data.name }"
-              class="avatar flex-shrink-0 border-2 border-pink-200 shadow-sm transform hover:scale-110 transition-transform"
+              class="avatar flex-shrink-0 transform hover:scale-110 transition-transform"
+              :style="{ border: '2px solid var(--el-border-color-light)' }"
             />
 
             <!-- 消息内容 -->
             <div class="message-wrapper" :class="{ 'items-end': data.isSelf }">
-              <p class="message-sender">{{ data.name }}</p>
+              <p
+                class="message-sender"
+                :style="{ color: 'var(--el-text-color-secondary)' }"
+              >
+                {{ data.name }}
+              </p>
               <div
                 v-for="(msg, msgIndex) in data.message"
                 :key="msgIndex"
@@ -82,6 +105,14 @@
                   class="message-bubble"
                   style="max-width: 320px"
                   :class="{ 'message-bubble-self': data.isSelf }"
+                  :style="{
+                    background: data.isSelf
+                      ? 'var(--el-color-primary)'
+                      : 'var(--el-color-primary-light-9)',
+                    color: data.isSelf
+                      ? 'var(--el-color-white)'
+                      : 'var(--el-text-color-primary)',
+                  }"
                 >
                   <img
                     v-if="msg.type == 'img'"
@@ -92,7 +123,12 @@
                   />
                   <span v-else class="message-text">{{ msg.msg }}</span>
                 </div>
-                <span class="message-time">{{ msg.time }}</span>
+                <span
+                  class="message-time"
+                  :style="{ color: 'var(--el-text-color-secondary)' }"
+                >
+                  {{ msg.time }}
+                </span>
               </div>
             </div>
 
@@ -101,21 +137,29 @@
               v-if="data.isSelf"
               :src="data.ava_url"
               :size="45"
-              class="avatar flex-shrink-0 border-2 border-blue-200 shadow-sm transform hover:scale-110 transition-transform"
+              class="avatar flex-shrink-0 transform hover:scale-110 transition-transform"
+              :style="{ border: '2px solid var(--el-border-color-light)' }"
             />
           </div>
         </div>
       </div>
 
       <!-- 输入区域 -->
-      <div ref="inputArea" class="bg-white rounded-b-xl p-3 shadow-sm">
+      <div
+        ref="inputArea"
+        class="rounded-b-xl p-3"
+        :style="{
+          background: 'var(--el-bg-color)',
+          boxShadow: 'var(--el-box-shadow-lighter)',
+        }"
+      >
         <el-input
           v-model="message"
           :rows="3"
           type="textarea"
           resize="none"
           placeholder="输入消息..."
-          class="mb-3"
+          class="mb-3 chat-input"
           @keyup.enter.native="sendMessage"
         ></el-input>
 
@@ -274,21 +318,19 @@ export default {
 .message-container {
   display: flex;
   flex-direction: column;
-  min-height: 200px; /* 最小高度保证 */
+  min-height: 200px;
 }
 
 #chat {
   flex: 1;
   overflow-y: auto;
-  /* 移除之前的高度设置 */
 }
 
 /* 二次元风格弹窗 */
 .confirm-box {
   border-radius: 16px !important;
-  border: 2px solid #f9a8d4 !important;
-  background-color: #fdf2f8 !important;
-  font-family: '"Comic Sans MS", cursive' !important;
+  border: 2px solid var(--el-border-color) !important;
+  background-color: var(--el-bg-color) !important;
 }
 
 /* 美化滚动条 */
@@ -297,31 +339,35 @@ export default {
 }
 
 #chat::-webkit-scrollbar-track {
-  background: rgba(251, 207, 232, 0.3);
+  background: var(--el-color-primary-light-9);
   border-radius: 3px;
 }
 
 #chat::-webkit-scrollbar-thumb {
-  background: rgba(236, 72, 153, 0.5);
+  background: var(--el-color-primary-light-5);
   border-radius: 3px;
 }
 
 #chat::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 72, 153, 0.7);
+  background: var(--el-color-primary-light-3);
 }
 
 /* 输入框样式 */
 :deep(.el-textarea__inner) {
   border-radius: 12px !important;
-  border: 1px solid #f3a3c3 !important;
-  background-color: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid var(--el-border-color) !important;
+  background-color: var(--el-bg-color) !important;
   transition: all 0.3s;
-  font-family: '"Comic Sans MS", cursive' !important;
+  color: var(--el-text-color-primary) !important;
 }
 
 :deep(.el-textarea__inner:focus) {
-  border-color: #ec4899 !important;
-  box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2) !important;
+  border-color: var(--el-color-primary) !important;
+  box-shadow: 0 0 0 2px var(--el-color-primary-light-8) !important;
+}
+
+:deep(.el-textarea__inner::placeholder) {
+  color: var(--el-text-color-placeholder) !important;
 }
 
 /* 消息气泡动画 */
@@ -331,7 +377,7 @@ export default {
 
 .message-bubble:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--el-box-shadow-light);
 }
 
 /* 响应式调整 */
@@ -364,7 +410,6 @@ export default {
 /* 发送者名称 */
 .message-sender {
   font-size: 14px;
-  color: #6b7280;
   margin-bottom: 4px;
 }
 
@@ -374,25 +419,16 @@ export default {
   border-radius: 16px;
   word-break: break-word;
   transition: all 0.2s;
-  background-color: #fce7f3;
-  color: #1f2937;
   overflow-wrap: break-word;
   word-wrap: break-word;
   white-space: normal;
-}
-
-/* 自己的消息气泡 */
-.message-bubble-self {
-  background: linear-gradient(to right, #a78bfa, #f472b6);
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 消息图片 */
 .message-image {
   max-width: 100%;
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--el-box-shadow-lighter);
   transition: transform 0.2s;
 }
 
@@ -418,14 +454,6 @@ export default {
   margin-bottom: 0;
 }
 
-/* 消息时间 */
-.message-time {
-  font-size: 12px;
-  color: #9ca3af;
-  margin-top: 4px;
-  display: block;
-}
-
 /* 头像样式 */
 .avatar {
   align-self: flex-start;
@@ -436,30 +464,28 @@ export default {
 /* 可爱的消息提示框 */
 .cute-message {
   border-radius: 12px !important;
-  border: 1px solid #e9d5ff !important;
-  background-color: #fff !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  font-family: '"Comic Sans MS", cursive' !important;
+  background-color: var(--el-bg-color) !important;
+  box-shadow: var(--el-box-shadow-light) !important;
+  border: 1px solid var(--el-border-color-light) !important;
 }
 
 .cute-message .el-message__content {
-  color: #7c3aed !important;
+  color: var(--el-color-primary) !important;
 }
 
 .cute-message.el-message--success {
-  border-color: #a7f3d0 !important;
+  border-color: var(--el-color-success-light-5) !important;
 }
 
 .cute-message.el-message--info {
-  border-color: #bfdbfe !important;
+  border-color: var(--el-color-info-light-5) !important;
 }
 
 .cute-message.el-message--warning {
-  border-color: #fde68a !important;
+  border-color: var(--el-color-warning-light-5) !important;
 }
 
 .cute-message.el-message--error {
-  border-color: #fecaca !important;
+  border-color: var(--el-color-danger-light-5) !important;
 }
 </style>

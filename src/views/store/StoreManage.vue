@@ -5,8 +5,16 @@
       class="decoration-top absolute top-0 left-0 right-0 h-6 flex justify-center"
     >
       <div class="w-full max-w-4xl flex justify-between px-4">
-        <span class="text-pink-300 text-xl">✧･ﾟ: *✧･ﾟ:*</span>
-        <span class="text-pink-300 text-xl">*:･ﾟ✧*:･ﾟ✧</span>
+        <span
+          :style="{ color: 'var(--el-color-primary-light-5)' }"
+          class="text-xl"
+          >✧･ﾟ: *✧･ﾟ:*</span
+        >
+        <span
+          :style="{ color: 'var(--el-color-primary-light-5)' }"
+          class="text-xl"
+          >*:･ﾟ✧*:･ﾟ✧</span
+        >
       </div>
     </div>
 
@@ -20,8 +28,16 @@
       class="decoration-bottom absolute bottom-0 left-0 right-0 h-6 flex justify-center"
     >
       <div class="w-full max-w-4xl flex justify-between px-4">
-        <span class="text-pink-300 text-xl">⋆.˚✮⋆.˚</span>
-        <span class="text-pink-300 text-xl">˚.⋆✮˚.⋆</span>
+        <span
+          :style="{ color: 'var(--el-color-primary-light-5)' }"
+          class="text-xl"
+          >⋆.˚✮⋆.˚</span
+        >
+        <span
+          :style="{ color: 'var(--el-color-primary-light-5)' }"
+          class="text-xl"
+          >˚.⋆✮˚.⋆</span
+        >
       </div>
     </div>
   </div>
@@ -44,14 +60,22 @@ export default {
 <style lang="scss" scoped>
 .plugin-list-container {
   @apply relative w-full;
-  background: linear-gradient(135deg, #fff9fb 0%, #fff0f5 50%, #fce8f3 100%);
+  background: linear-gradient(
+    135deg,
+    var(--el-bg-color) 0%,
+    var(--el-fill-color-light) 50%,
+    var(--el-fill-color) 100%
+  );
 
   // 添加可爱的背景图案
   &::before {
     content: "";
     @apply absolute inset-0 opacity-10 pointer-events-none;
-    background-image: radial-gradient(#f9a8d4 1px, transparent 1px),
-      radial-gradient(#f9a8d4 1px, transparent 1px);
+    background-image: radial-gradient(
+        var(--el-color-primary-light-5) 1px,
+        transparent 1px
+      ),
+      radial-gradient(var(--el-color-primary-light-5) 1px, transparent 1px);
     background-size: 40px 40px;
     background-position: 0 0, 20px 20px;
   }
@@ -63,7 +87,7 @@ export default {
     &::after {
       content: "";
       @apply absolute inset-0 pointer-events-none;
-      border: 2px dashed rgba(251, 146, 206, 0.3);
+      border: 2px dashed var(--el-border-color);
       border-radius: 16px;
     }
   }

@@ -1,12 +1,16 @@
 <template>
   <div
-    class="system-container bg-gradient-to-br from-pink-50 to-purple-50 p-2 sm:p-4 h-full overflow-y-auto cute-scrollbar"
+    class="system-container p-2 sm:p-4 h-full overflow-y-auto cute-scrollbar"
+    :style="{
+      background:
+        'linear-gradient(145deg, var(--bg-color), var(--bg-color-secondary))',
+    }"
   >
     <!-- 主容器 - 垂直排列 -->
     <div class="flex flex-col gap-3 sm:gap-4">
       <div
         ref="treeContainer"
-        class="tree bg-white rounded-xl sm:rounded-2xl shadow-md p-3 sm:p-4 cute-card"
+        class="tree rounded-xl sm:rounded-2xl shadow-md p-3 sm:p-4 cute-card"
       >
         <FileTable class="h-full" />
       </div>
@@ -15,7 +19,7 @@
 </template>
 
 <script>
-import FileTable from '@/components/system/FileTable.vue'
+import FileTable from "@/components/system/FileTable.vue"
 
 export default {
   components: {
@@ -30,10 +34,10 @@ export default {
   },
   mounted() {
     this.handleResize()
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
   },
   methods: {
     handleResize() {
@@ -55,22 +59,26 @@ export default {
 /* 二次元风格卡片效果 */
 .cute-card {
   border-radius: 16px;
-  border: 1px solid rgba(236, 72, 153, 0.2);
+  border: 1px solid var(--el-border-color);
   transition: all 0.3s ease;
-  background: linear-gradient(145deg, #ffffff, #faf5ff);
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.1);
+  background: linear-gradient(
+    145deg,
+    var(--el-bg-color),
+    var(--el-bg-color-overlay)
+  );
+  box-shadow: var(--el-box-shadow-light);
   position: relative;
   overflow: hidden;
 }
 
 .cute-card:hover {
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.15);
-  border-color: rgba(236, 72, 153, 0.3);
+  box-shadow: var(--el-box-shadow);
+  border-color: var(--el-border-color-darker);
 }
 
 /* 添加可爱装饰元素 */
 .cute-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -10px;
   right: -10px;
@@ -88,13 +96,17 @@ export default {
 }
 
 .cute-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(236, 72, 153, 0.5);
+  background-color: var(--el-border-color);
   border-radius: 4px;
-  background-image: linear-gradient(to bottom, #ec4899, #a855f7);
+  background-image: linear-gradient(
+    to bottom,
+    var(--el-color-primary),
+    var(--el-color-primary-light-3)
+  );
 }
 
 .cute-scrollbar::-webkit-scrollbar-track {
-  background-color: rgba(236, 72, 153, 0.1);
+  background-color: var(--el-fill-color-light);
   border-radius: 4px;
 }
 
@@ -115,7 +127,7 @@ export default {
 }
 
 /* 动画效果 */
-/* @keyframes cute-bounce {
+@keyframes cute-bounce {
   0%,
   100% {
     transform: translateY(0);
@@ -137,17 +149,17 @@ export default {
     opacity: 0;
     transform: scale(1.2);
   }
-} */
-
-.cute-card:hover {
-  animation: cute-bounce 0.5s ease;
 }
+
+/* .cute-card:hover {
+  animation: cute-bounce 0.5s ease;
+} */
 
 /* 添加悬浮时的星光效果 */
 .cute-card:hover::after {
-  content: '✦';
+  content: "✦";
   position: absolute;
-  color: #ec4899;
+  color: var(--el-color-primary);
   font-size: 16px;
   animation: cute-sparkle 1s ease-out;
   pointer-events: none;

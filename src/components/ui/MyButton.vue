@@ -2,9 +2,11 @@
   <div
     :class="[
       'my-button-container',
-      disabled
+      customClass,
+      disabled || loading
         ? 'opacity-70 cursor-not-allowed'
-        : 'transform hover:scale-105 active:scale-95',
+        : 'transform hover:scale-102 active:scale-98',
+      `button-size-${size}`,
     ]"
     :style="{
       width: computedWidth,
@@ -19,47 +21,95 @@
       popper-class="button-tooltip"
     >
       <button
+        :type="nativeType"
         class="button-class"
         :class="[
           typeClass,
           roundedClass,
           shadowClass,
-          disabled ? 'pointer-events-none' : '',
+          disabled || loading ? 'pointer-events-none' : '',
           glowEffect,
         ]"
         @click="handleClick"
-        :disabled="disabled"
+        :disabled="disabled || loading"
+        :style="{
+          '--button-bg-color': getButtonColor(),
+          '--button-hover-color': getButtonHoverColor(),
+          '--button-border-color': getButtonBorderColor(),
+        }"
       >
         <span class="button-content">
-          <svg-icon v-if="icon" :icon-class="icon" class="button-icon" />
-          <span class="button-text">{{ text }}</span>
+          <el-icon v-if="loading" class="is-loading">
+            <svg-icon
+              icon-class="loading"
+              class="animate-spin"
+              :color="getIconColor()"
+            />
+          </el-icon>
+          <svg-icon
+            v-else-if="icon"
+            :icon-class="icon"
+            class="button-icon"
+            :color="getIconColor()"
+            :width="getIconSize()"
+            :height="getIconSize()"
+          />
+          <span
+            class="button-text"
+            :style="{
+              fontSize: `${getFontSize()}px`,
+            }"
+            >{{ text }}</span
+          >
         </span>
-        <!-- 二次元装饰元素 -->
-        <span v-if="!disabled" class="decoration-star">✦</span>
-        <span v-if="!disabled" class="decoration-sparkle">✧</span>
+        <div class="button-background"></div>
       </button>
     </el-tooltip>
 
     <button
       v-else
+      :type="nativeType"
       class="button-class"
       :class="[
         typeClass,
         roundedClass,
         shadowClass,
-        disabled ? 'pointer-events-none' : '',
+        disabled || loading ? 'pointer-events-none' : '',
         glowEffect,
       ]"
       @click="handleClick"
-      :disabled="disabled"
+      :disabled="disabled || loading"
+      :style="{
+        '--button-bg-color': getButtonColor(),
+        '--button-hover-color': getButtonHoverColor(),
+        '--button-border-color': getButtonBorderColor(),
+      }"
     >
       <span class="button-content">
-        <svg-icon v-if="icon" :icon-class="icon" class="button-icon" />
-        <span class="button-text">{{ text }}</span>
+        <el-icon v-if="loading" class="is-loading">
+          <svg-icon
+            icon-class="loading"
+            class="animate-spin"
+            :color="getIconColor()"
+          />
+        </el-icon>
+        <svg-icon
+          v-else-if="icon"
+          :icon-class="icon"
+          class="button-icon"
+          :color="getIconColor()"
+          :width="getIconSize()"
+          :height="getIconSize()"
+        />
+        <span
+          class="button-text"
+          :style="{
+            fontSize: `${getFontSize()}px`,
+          }"
+          >{{ text }}</span
+        >
       </span>
-      <!-- 二次元装饰元素 -->
-      <span v-if="!disabled" class="decoration-star">✦</span>
-      <span v-if="!disabled" class="decoration-sparkle">✧</span>
+      <div class="button-background"></div>
     </button>
   </div>
 </template>
@@ -71,11 +121,25 @@ export default {
   components: { SvgIcon },
   name: "MyButton",
   props: {
-    text: String,
-    icon: String,
-    content: String,
-    iconWidth: { type: Number, default: 20 },
-    iconHeight: { type: Number, default: 20 },
+    text: {
+      type: String,
+      default: "",
+      required: true,
+      validator: (value) => value.length <= 20,
+    },
+    icon: {
+      type: String,
+      default: "",
+    },
+    content: {
+      type: String,
+      default: "",
+    },
+    iconSize: {
+      type: [Number, String],
+      default: 20,
+      validator: (value) => !isNaN(Number(value)) && Number(value) > 0,
+    },
     type: {
       type: String,
       default: "default",
@@ -84,10 +148,30 @@ export default {
           value
         ),
     },
-    width: { type: Number, default: 0 },
-    height: { type: Number, default: 40 },
-    disabled: { type: Boolean, default: false },
-    fontSize: { type: Number, default: 14 },
+    size: {
+      type: String,
+      default: "default",
+      validator: (value) => ["small", "default", "large"].includes(value),
+    },
+    width: {
+      type: [Number, String],
+      default: 0,
+      validator: (value) => !isNaN(Number(value)) && Number(value) >= 0,
+    },
+    height: {
+      type: [Number, String],
+      default: 40,
+      validator: (value) => !isNaN(Number(value)) && Number(value) > 0,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    fontSize: {
+      type: [Number, String],
+      default: 14,
+      validator: (value) => !isNaN(Number(value)) && Number(value) > 0,
+    },
     rounded: {
       type: String,
       default: "full",
@@ -102,19 +186,56 @@ export default {
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    nativeType: {
+      type: String,
+      default: "button",
+      validator: (value) => ["button", "submit", "reset"].includes(value),
+    },
+    customClass: {
+      type: String,
+      default: "",
+    },
+    iconColor: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
       sizeMana: {
-        iconWidth: this.iconWidth,
-        iconHeight: this.iconHeight,
-        fontSize: this.fontSize,
+        iconWidth: this.getIconSize(),
+        iconHeight: this.getIconSize(),
+        fontSize: this.getFontSize(),
         width: this.width,
         height: this.height,
       },
     }
   },
   computed: {
+    buttonSize() {
+      const sizes = {
+        small: {
+          height: 32,
+          fontSize: 12,
+          iconSize: 16,
+        },
+        default: {
+          height: 40,
+          fontSize: 14,
+          iconSize: 20,
+        },
+        large: {
+          height: 48,
+          fontSize: 16,
+          iconSize: 24,
+        },
+      }
+      return sizes[this.size] || sizes.default
+    },
     computedWidth() {
       return this.sizeMana.width === 0 ? "100%" : `${this.sizeMana.width}px`
     },
@@ -124,16 +245,16 @@ export default {
     typeClass() {
       const classes = {
         default:
-          "bg-bg-color-secondary text-text-color border-2 border-border-color hover:bg-bg-color-hover",
+          "bg-fill-color text-text-color border border-border-color hover:bg-fill-color-light",
         primary:
-          "bg-primary-color text-white hover:bg-primary-color-light border-2 border-primary-color-light",
+          "bg-primary-color text-white hover:bg-primary-color-light border border-primary-color-light",
         success:
-          "bg-success-color text-white hover:bg-success-color-light border-2 border-success-color-light",
+          "bg-success-color text-white hover:bg-success-color-light border border-success-color-light",
         warning:
-          "bg-warning-color text-white hover:bg-warning-color-light border-2 border-warning-color-light",
+          "bg-warning-color text-white hover:bg-warning-color-light border border-warning-color-light",
         danger:
-          "bg-danger-color text-white hover:bg-danger-color-light border-2 border-danger-color-light",
-        info: "bg-info-color text-white hover:bg-info-color-light border-2 border-info-color-light",
+          "bg-danger-color text-white hover:bg-danger-color-light border border-danger-color-light",
+        info: "bg-info-color text-white hover:bg-info-color-light border border-info-color-light",
       }
       return classes[this.type] || classes.default
     },
@@ -179,9 +300,9 @@ export default {
   methods: {
     handleResize() {
       this.sizeMana = {
-        iconWidth: this.iconWidth,
-        iconHeight: this.iconHeight,
-        fontSize: this.fontSize,
+        iconWidth: this.getIconSize(),
+        iconHeight: this.getIconSize(),
+        fontSize: this.getFontSize(),
         width: this.width,
         height: this.height,
       }
@@ -190,6 +311,66 @@ export default {
       if (!this.disabled) {
         this.$emit("click", event)
       }
+    },
+    getButtonColor() {
+      const colors = {
+        default: "var(--el-bg-color)",
+        primary: "var(--el-color-primary)",
+        success: "var(--el-color-success)",
+        warning: "var(--el-color-warning)",
+        danger: "var(--el-color-danger)",
+        info: "var(--el-color-info)",
+      }
+      return colors[this.type] || colors.default
+    },
+    getButtonHoverColor() {
+      const colors = {
+        default: "var(--el-bg-color-page)",
+        primary: "var(--el-color-primary-light-3)",
+        success: "var(--el-color-success-light-3)",
+        warning: "var(--el-color-warning-light-3)",
+        danger: "var(--el-color-danger-light-3)",
+        info: "var(--el-color-info-light-3)",
+      }
+      return colors[this.type] || colors.default
+    },
+    getButtonBorderColor() {
+      const colors = {
+        default: "var(--el-border-color)",
+        primary: "var(--el-color-primary-light-5)",
+        success: "var(--el-color-success-light-5)",
+        warning: "var(--el-color-warning-light-5)",
+        danger: "var(--el-color-danger-light-5)",
+        info: "var(--el-color-info-light-5)",
+      }
+      return colors[this.type] || colors.default
+    },
+    getIconColor() {
+      if (this.iconColor) {
+        return this.iconColor
+      }
+      if (this.disabled) {
+        return "var(--el-text-color-disabled)"
+      }
+      if (this.type === "default") {
+        return "var(--el-text-color-primary)"
+      }
+      if (this.loading) {
+        return "var(--el-color-primary)"
+      }
+      return "#ffffff"
+    },
+    getIconSize() {
+      if (this.iconSize) {
+        return Number(this.iconSize)
+      }
+      return this.buttonSize.iconSize
+    },
+    getFontSize() {
+      if (this.fontSize) {
+        return Number(this.fontSize)
+      }
+      return this.buttonSize.fontSize
     },
   },
   beforeDestroy() {
@@ -201,92 +382,191 @@ export default {
 <style lang="scss" scoped>
 .my-button-container {
   @apply relative inline-flex;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .button-class {
-  @apply relative w-full h-full flex items-center justify-center;
-  transition: all 0.3s ease;
+  @apply relative w-full h-full flex items-center justify-center overflow-hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   font-size: v-bind('sizeMana.fontSize + "px"');
-  box-shadow: var(--el-box-shadow-lighter);
+  position: relative;
 
-  &:hover {
-    box-shadow: var(--el-box-shadow-light);
+  &:not(.bg-bg-color-secondary) {
+    color: #ffffff;
+    background-color: var(--el-color-primary);
+    border-color: var(--el-color-primary-light-3);
+
+    &:hover {
+      background-color: var(--el-color-primary-light-3);
+      border-color: var(--el-color-primary-light-5);
+    }
+
+    &:active {
+      background-color: var(--el-color-primary-light-5);
+      border-color: var(--el-color-primary-light-7);
+    }
   }
 
-  &:active {
-    box-shadow: none;
+  &.bg-bg-color-secondary {
+    color: var(--el-text-color-primary);
+    background-color: var(--el-fill-color);
+    border-color: var(--el-border-color);
+
+    &:hover {
+      background-color: var(--el-fill-color-light);
+      border-color: var(--el-border-color-darker);
+    }
+
+    &:active {
+      background-color: var(--el-fill-color-dark);
+      border-color: var(--el-border-color-darker);
+    }
+  }
+
+  &:not(:disabled) {
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--el-box-shadow);
+    }
+
+    &:active {
+      transform: translateY(1px);
+      box-shadow: var(--el-box-shadow-lighter);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    background-color: var(--el-fill-color-light);
+    border-color: var(--el-border-color-light);
+    color: var(--el-text-color-disabled);
   }
 }
 
 .button-content {
-  @apply flex items-center justify-center;
-  z-index: 1;
+  @apply flex items-center justify-center relative z-10;
+  gap: 0.5rem;
 }
 
 .button-icon {
   width: v-bind('sizeMana.iconWidth + "px"');
   height: v-bind('sizeMana.iconHeight + "px"');
-  margin-right: 8px;
-  color: currentColor;
   transition: transform 0.3s ease;
 }
 
 .button-text {
-  @apply whitespace-nowrap;
-  transition: transform 0.3s ease;
+  @apply whitespace-nowrap font-medium;
+  letter-spacing: 0.025em;
 }
 
-.decoration-star,
-.decoration-sparkle {
-  @apply absolute pointer-events-none;
-  opacity: 0;
+.button-background {
+  @apply absolute inset-0 z-0;
+  background: linear-gradient(
+    45deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 75%
+  );
+  background-size: 200% 200%;
   transition: all 0.3s ease;
-  color: var(--primary-color);
+  opacity: 0;
 }
 
-.decoration-star {
-  top: -8px;
-  right: -8px;
-  font-size: 12px;
-}
-
-.decoration-sparkle {
-  bottom: -8px;
-  left: -8px;
-  font-size: 10px;
-}
-
-.button-class:hover {
-  .decoration-star {
+.button-class:not(:disabled):hover {
+  .button-background {
     opacity: 1;
-    transform: translate(4px, -4px) rotate(15deg);
-  }
-
-  .decoration-sparkle {
-    opacity: 1;
-    transform: translate(-4px, 4px) rotate(-15deg);
+    animation: shimmer 2s infinite;
   }
 
   .button-icon {
-    transform: scale(1.1);
+    transform: scale(1.1) rotate(5deg);
   }
+}
 
-  .button-text {
-    transform: scale(1.05);
+@keyframes shimmer {
+  0% {
+    background-position: 200% 200%;
+  }
+  100% {
+    background-position: -200% -200%;
+  }
+}
+
+/* 按钮尺寸样式 */
+.button-size-small {
+  .button-class {
+    padding: 0.375rem 0.75rem;
+  }
+  .button-content {
+    gap: 0.375rem;
+  }
+}
+
+.button-size-default {
+  .button-class {
+    padding: 0.5rem 1rem;
+  }
+  .button-content {
+    gap: 0.5rem;
+  }
+}
+
+.button-size-large {
+  .button-class {
+    padding: 0.625rem 1.25rem;
+  }
+  .button-content {
+    gap: 0.625rem;
+  }
+}
+
+/* 加载状态样式 */
+.is-loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
 /* 响应式调整 */
 @media (max-width: 640px) {
-  .button-class {
-    font-size: calc(v-bind("sizeMana.fontSize") * 0.9px);
+  .button-size-small {
+    .button-class {
+      padding: 0.25rem 0.5rem;
+    }
+    .button-content {
+      gap: 0.25rem;
+    }
   }
 
-  .button-icon {
-    width: calc(v-bind("sizeMana.iconWidth") * 0.9px);
-    height: calc(v-bind("sizeMana.iconHeight") * 0.9px);
-    margin-right: 6px;
+  .button-size-default {
+    .button-class {
+      padding: 0.375rem 0.75rem;
+    }
+    .button-content {
+      gap: 0.375rem;
+    }
+  }
+
+  .button-size-large {
+    .button-class {
+      padding: 0.5rem 1rem;
+    }
+    .button-content {
+      gap: 0.5rem;
+    }
   }
 }
 </style>

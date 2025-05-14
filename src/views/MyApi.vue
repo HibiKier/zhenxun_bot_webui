@@ -62,7 +62,7 @@
         <!-- 标题 -->
         <div class="relative mb-8">
           <h1
-            class="text-3xl sm:text-4xl font-bold text-center font-[Comic-Sans] tracking-wide"
+            class="text-3xl sm:text-4xl font-bold text-center tracking-wide"
             :style="{
               color: 'var(--el-color-primary)',
               textShadow: '2px 2px 4px var(--el-color-primary-light-9)',
@@ -245,6 +245,7 @@
               icon="back2"
               @click="goBack"
               class="flex-1"
+              iconColor="var(--button-icon-color-default)"
             >
               返回
             </CuteButton>
@@ -254,6 +255,7 @@
               @click="changeUrl"
               class="flex-1"
               ref="myapi"
+              iconColor="var(--button-icon-color-primary)"
             >
               修改
             </CuteButton>

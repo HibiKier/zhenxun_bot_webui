@@ -51,7 +51,7 @@
 
 <script>
 export default {
-  name: 'ImageView',
+  name: "ImageView",
   props: {
     name: {
       type: String,
@@ -67,7 +67,7 @@ export default {
       dialogVisible: true,
       imageData: null,
       loading: false,
-      dialogWidth: 'auto',
+      dialogWidth: "auto",
       imageStyle: {},
       imageAspectRatio: 1,
     }
@@ -75,25 +75,25 @@ export default {
 
   mounted() {
     this.getImage()
-    window.addEventListener('resize', this.calculateImageSize)
+    window.addEventListener("resize", this.calculateImageSize)
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.calculateImageSize)
+    window.removeEventListener("resize", this.calculateImageSize)
   },
   methods: {
     getImage() {
       this.loading = true
-      const loadingInstance = this.getLoading('.kawaii-image-dialog')
+      const loadingInstance = this.getLoading(".kawaii-image-dialog")
 
       this.getRequest(`${this.$root.prefix}/system/get_image`, {
         full_path: this.fullPath,
       })
         .then((resp) => {
           if (resp.suc) {
-            resp.data = resp.data.replace('base64://', '')
-            this.imageData = 'data:image/png;base64,' + resp.data
+            resp.data = resp.data.replace("base64://", "")
+            this.imageData = "data:image/png;base64," + resp.data
           } else {
-            this.$message.error(resp.info || '图片加载失败')
+            this.$message.error(resp.info || "图片加载失败")
           }
           loadingInstance.close()
           this.loading = false
@@ -125,8 +125,8 @@ export default {
       this.imageStyle = {
         width: `${width}px`,
         height: `${height}px`,
-        maxWidth: '100%',
-        maxHeight: '100%',
+        maxWidth: "100%",
+        maxHeight: "100%",
       }
 
       // 调整对话框宽度以适应图片
@@ -135,7 +135,7 @@ export default {
 
     close() {
       this.dialogVisible = false
-      this.$emit('close')
+      this.$emit("close")
     },
   },
 }
@@ -153,7 +153,7 @@ export default {
 .file-name {
   font-size: 18px;
   font-weight: bold;
-  color: #ff6b88;
+  color: var(--primary-color);
   margin-bottom: 8px;
   display: flex;
   justify-content: center;
@@ -162,7 +162,7 @@ export default {
 
 .file-path {
   font-size: 14px;
-  color: #a37acc;
+  color: var(--text-color-secondary);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -186,9 +186,9 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 200px;
-  background-color: #fff9fb;
+  background-color: var(--bg-color-secondary);
   border-radius: 12px;
-  border: 2px dashed #ffb6c1;
+  border: 2px dashed var(--border-color);
   padding: 10px;
   box-sizing: border-box;
 }
@@ -204,7 +204,7 @@ export default {
 .displayed-image {
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+  box-shadow: 0 4px 15px var(--el-box-shadow-light);
   transition: transform 0.3s ease;
 }
 
@@ -232,7 +232,7 @@ export default {
 
 .loading-text,
 .error-text {
-  color: #a37acc;
+  color: var(--text-color-secondary);
   font-size: 16px;
 }
 
@@ -252,16 +252,16 @@ export default {
   background: linear-gradient(
     90deg,
     transparent,
-    #ffb6c1,
-    #d8b5ff,
-    #ffb6c1,
+    var(--primary-color),
+    var(--primary-color-light),
+    var(--primary-color),
     transparent
   );
   margin: 5px 0;
 }
 
 .decoration-icons {
-  color: #ff8e8e;
+  color: var(--primary-color);
   font-size: 14px;
   letter-spacing: 3px;
 }
@@ -320,49 +320,70 @@ export default {
 
 <style>
 /* 全局字体 */
-@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap");
 
 /* 自定义对话框样式 */
 .kawaii-image-dialog {
   border-radius: 18px !important;
   overflow: hidden !important;
-  background: linear-gradient(145deg, #fff5f9, #fdf5ff) !important;
-  border: 2px solid #ffb6c1 !important;
-  box-shadow: 0 12px 35px rgba(255, 182, 193, 0.4) !important;
+  background: var(--bg-color-secondary) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 12px 35px var(--el-box-shadow-light) !important;
   max-width: 95vw !important;
 }
 
 .kawaii-image-dialog .el-dialog__header {
-  background: linear-gradient(to right, #ffb6c1, #d8b5ff) !important;
+  background: var(--primary-color) !important;
   padding: 12px 20px !important;
   border-bottom: none !important;
 }
 
 .kawaii-image-dialog .el-dialog__title {
-  color: white !important;
+  color: var(--el-color-white) !important;
   font-weight: bold !important;
-  font-family: 'Comic Neue', 'M PLUS Rounded 1c', cursive !important;
+  font-family: "Comic Neue", "M PLUS Rounded 1c", cursive !important;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .kawaii-image-dialog .el-dialog__headerbtn {
   top: 15px !important;
+  right: 20px !important;
+  background: var(--primary-color) !important;
+  border-radius: 50% !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s ease !important;
+  border: 2px solid var(--el-color-white) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+.kawaii-image-dialog .el-dialog__headerbtn:hover {
+  background: var(--primary-color-light) !important;
+  transform: rotate(90deg) !important;
+  border-color: var(--el-color-white) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
 .kawaii-image-dialog .el-dialog__headerbtn .el-dialog__close {
-  color: white !important;
+  color: var(--el-color-white) !important;
   font-size: 20px !important;
+  font-weight: bold !important;
   transition: all 0.3s ease !important;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.2) !important;
 }
 
 .kawaii-image-dialog .el-dialog__headerbtn:hover .el-dialog__close {
-  color: #ff6b88 !important;
-  transform: rotate(90deg) scale(1.2) !important;
+  color: var(--el-color-white) !important;
+  transform: scale(1.2) !important;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3) !important;
 }
 
 .kawaii-image-dialog .el-dialog__body {
   padding: 15px 20px !important;
-  background: linear-gradient(135deg, #fff5f9, #f8f0ff) !important;
+  background: var(--bg-color) !important;
   display: flex;
   flex-direction: column;
 }

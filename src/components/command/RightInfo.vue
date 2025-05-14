@@ -1,18 +1,30 @@
 <template>
-  <div class="right-info bg-pink-50 p-2 md:p-4 h-full" ref="rightInfo">
+  <div
+    class="right-info p-2 md:p-4 h-full"
+    ref="rightInfo"
+    :style="{ backgroundColor: 'var(--bg-color)' }"
+  >
     <!-- 机器人信息卡片 - 三行垂直布局 -->
     <div
-      class="base-info bg-white rounded-xl p-3 shadow-md mb-4 border-2 border-pink-200"
+      class="base-info rounded-xl p-3 shadow-md mb-4"
+      :style="{
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '2px solid var(--border-color-light)',
+      }"
     >
       <div class="space-y-2">
         <!-- 累计登录 -->
         <div class="flex items-center justify-between">
           <p
-            class="text-xs font-semibold text-pink-500 uppercase tracking-wider"
+            class="text-xs font-semibold uppercase tracking-wider"
+            :style="{ color: 'var(--primary-color)' }"
           >
             累计登录
           </p>
-          <p class="text-base font-bold text-purple-700">
+          <p
+            class="text-base font-bold"
+            :style="{ color: 'var(--primary-color)' }"
+          >
             {{ botInfo.connect_count }}
           </p>
         </div>
@@ -20,11 +32,15 @@
         <!-- 连接时长 -->
         <div class="flex items-center justify-between">
           <p
-            class="text-xs font-semibold text-pink-500 uppercase tracking-wider"
+            class="text-xs font-semibold uppercase tracking-wider"
+            :style="{ color: 'var(--primary-color)' }"
           >
             连接时长
           </p>
-          <p class="text-base font-bold text-purple-700">
+          <p
+            class="text-base font-bold"
+            :style="{ color: 'var(--primary-color)' }"
+          >
             {{ botInfo.connectTime }}
           </p>
         </div>
@@ -32,11 +48,15 @@
         <!-- 连接日期 -->
         <div class="flex items-center justify-between">
           <p
-            class="text-xs font-semibold text-pink-500 uppercase tracking-wider"
+            class="text-xs font-semibold uppercase tracking-wider"
+            :style="{ color: 'var(--primary-color)' }"
           >
             连接日期
           </p>
-          <p class="text-base font-bold text-purple-700">
+          <p
+            class="text-base font-bold"
+            :style="{ color: 'var(--primary-color)' }"
+          >
             {{ botInfo.connect_date }}
           </p>
         </div>
@@ -47,16 +67,22 @@
     <div class="chart-area" :style="{ height: computedChartAreaHeight + 'px' }">
       <!-- 活跃群聊图表 -->
       <div
-        class="active-group chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
+        class="active-group chart-container rounded-xl p-4 shadow-md"
+        :style="{
+          backgroundColor: 'var(--bg-color-secondary)',
+          border: '2px solid var(--border-color-light)',
+        }"
       >
         <div
           class="flex flex-col md:flex-row md:items-center md:justify-between mb-3"
         >
           <p
-            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
+            class="text-base font-bold mb-1 md:mb-0 flex items-center"
+            :style="{ color: 'var(--primary-color)' }"
           >
             <i
-              class="fas fa-users mr-1 text-pink-500 animate-bounce text-sm"
+              class="fas fa-users mr-1 animate-bounce text-sm"
+              :style="{ color: 'var(--primary-color-light)' }"
             ></i>
             活跃群组
           </p>
@@ -67,11 +93,15 @@
               :key="'group' + type.value"
               @click="clickGroupType(type.value)"
               class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
-              :class="{
-                'bg-purple-500 text-white shadow-sm':
-                  selectGroupType === type.value,
-                'bg-pink-100 text-pink-600 hover:bg-pink-200':
-                  selectGroupType !== type.value,
+              :style="{
+                backgroundColor:
+                  selectGroupType === type.value
+                    ? 'var(--primary-color)'
+                    : 'var(--bg-color-hover)',
+                color:
+                  selectGroupType === type.value
+                    ? 'var(--bg-color)'
+                    : 'var(--primary-color)',
               }"
             >
               {{ type.label }}
@@ -88,15 +118,23 @@
 
       <!-- 热门插件图表 -->
       <div
-        class="hot-plugin chart-container bg-white rounded-xl p-4 shadow-md border-2 border-pink-200"
+        class="hot-plugin chart-container rounded-xl p-4 shadow-md"
+        :style="{
+          backgroundColor: 'var(--bg-color-secondary)',
+          border: '2px solid var(--border-color-light)',
+        }"
       >
         <div
           class="flex flex-col md:flex-row md:items-center md:justify-between mb-3"
         >
           <p
-            class="text-base font-bold text-purple-600 mb-1 md:mb-0 flex items-center"
+            class="text-base font-bold mb-1 md:mb-0 flex items-center"
+            :style="{ color: 'var(--primary-color)' }"
           >
-            <i class="fas fa-plug mr-1 text-pink-500 animate-pulse text-sm"></i>
+            <i
+              class="fas fa-plug mr-1 animate-pulse text-sm"
+              :style="{ color: 'var(--primary-color-light)' }"
+            ></i>
             热门插件
           </p>
 
@@ -106,11 +144,15 @@
               :key="'plugin' + type.value"
               @click="clickHotPluginType(type.value)"
               class="px-2 py-0.5 text-[10px] rounded-full transition-all duration-200"
-              :class="{
-                'bg-purple-500 text-white shadow-sm':
-                  selectHotPluginType === type.value,
-                'bg-pink-100 text-pink-600 hover:bg-pink-200':
-                  selectHotPluginType !== type.value,
+              :style="{
+                backgroundColor:
+                  selectHotPluginType === type.value
+                    ? 'var(--primary-color)'
+                    : 'var(--bg-color-hover)',
+                color:
+                  selectHotPluginType === type.value
+                    ? 'var(--bg-color)'
+                    : 'var(--primary-color)',
               }"
             >
               {{ type.label }}
@@ -183,9 +225,20 @@ export default {
     this.initCharts()
     this.setupResizeListener()
     this.startTimers()
+    this.updateChartTheme()
   },
   beforeDestroy() {
     this.cleanup()
+  },
+  watch: {
+    "$store.state.theme": {
+      handler() {
+        this.$nextTick(() => {
+          this.updateChartTheme()
+        })
+      },
+      immediate: true,
+    },
   },
   methods: {
     initCharts() {
@@ -355,6 +408,79 @@ export default {
         loading.close()
       })
     },
+
+    updateChartTheme() {
+      const style = getComputedStyle(document.documentElement)
+      const getThemeColor = (name) => style.getPropertyValue(name).trim()
+
+      const chartOption = {
+        title: {
+          textStyle: {
+            color: getThemeColor("--primary-color"),
+            fontSize: 16,
+          },
+        },
+        tooltip: {
+          backgroundColor: getThemeColor("--el-bg-color-overlay"),
+          borderColor: getThemeColor("--border-color-light"),
+          borderWidth: 1,
+          textStyle: {
+            color: getThemeColor("--text-color"),
+            fontSize: 14,
+          },
+        },
+        legend: {
+          textStyle: {
+            color: getThemeColor("--text-color"),
+            fontSize: 14,
+          },
+        },
+        grid: {
+          backgroundColor: getThemeColor("--bg-color-secondary"),
+        },
+        xAxis: {
+          axisLine: {
+            lineStyle: {
+              color: getThemeColor("--border-color"),
+            },
+          },
+          axisLabel: {
+            color: getThemeColor("--text-color-secondary"),
+            fontSize: 12,
+          },
+        },
+        yAxis: {
+          axisLine: {
+            lineStyle: {
+              color: getThemeColor("--border-color"),
+            },
+          },
+          axisLabel: {
+            color: getThemeColor("--text-color-secondary"),
+            fontSize: 12,
+          },
+          splitLine: {
+            lineStyle: {
+              color: getThemeColor("--border-color-light"),
+            },
+          },
+        },
+        series: [
+          {
+            itemStyle: {
+              color: getThemeColor("--primary-color"),
+            },
+          },
+        ],
+      }
+
+      if (this.groupChart) {
+        this.groupChart.setOption(chartOption, true)
+      }
+      if (this.hotPluginChart) {
+        this.hotPluginChart.setOption(chartOption, true)
+      }
+    },
   },
 }
 </script>
@@ -362,7 +488,7 @@ export default {
 <style scoped>
 .right-info {
   scrollbar-width: thin;
-  scrollbar-color: #d8b4fe #f5f3ff;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--bg-color);
 }
 
 .right-info::-webkit-scrollbar {
@@ -370,12 +496,12 @@ export default {
 }
 
 .right-info::-webkit-scrollbar-track {
-  background: #f5f3ff;
+  background: var(--bg-color);
   border-radius: 10px;
 }
 
 .right-info::-webkit-scrollbar-thumb {
-  background-color: #d8b4fe;
+  background-color: var(--scrollbar-thumb-color);
   border-radius: 10px;
 }
 
@@ -398,13 +524,13 @@ export default {
 }
 
 .base-info div:not(:last-child) {
-  border-bottom: 1px dashed #f3e8ff;
+  border-bottom: 1px dashed var(--border-color-light);
   padding-bottom: 8px;
 }
 
 .base-info:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15);
+  box-shadow: 0 4px 12px var(--primary-shadow);
 }
 
 button {

@@ -1,13 +1,25 @@
 <template>
   <div class="main-container" :class="{ 'mobile-container': isMobile }">
     <div
-      class="main bg-gradient-to-br from-pink-50 to-purple-50"
+      class="main"
       :class="{ 'mobile-main': isMobile }"
+      :style="{
+        background: 'var(--el-bg-color)',
+        minHeight: '100%',
+        padding: '1rem',
+      }"
     >
       <!-- 添加可爱的标题 -->
       <div class="flex items-center mb-4">
-        <svg-icon icon-class="database" class="text-purple-500 text-3xl mr-2" />
-        <h1 class="text-2xl md:text-3xl font-bold text-purple-600 cute-title">
+        <svg-icon
+          icon-class="database"
+          class="text-3xl mr-2"
+          :style="{ color: 'var(--el-color-primary)' }"
+        />
+        <h1
+          class="text-2xl md:text-3xl font-bold cute-title"
+          :style="{ color: 'var(--el-color-primary)' }"
+        >
           数据库管理
         </h1>
       </div>
@@ -20,8 +32,13 @@
         <!-- 左侧表格列表 - 宽度较小 -->
         <el-col :span="24" :md="6">
           <div
-            class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-pink-200"
+            class="card-container rounded-xl p-4"
             :class="{ 'mobile-card': isMobile }"
+            :style="{
+              background: 'var(--el-bg-color-overlay)',
+              boxShadow: 'var(--el-box-shadow-light)',
+              border: '2px solid var(--el-color-primary-light-7)',
+            }"
           >
             <table-list
               :style="{ height: isMobile ? 'auto' : computedHeight + 'px' }"
@@ -32,8 +49,13 @@
         <!-- 右侧命令区域 - 占据更多空间 -->
         <el-col :span="24" :md="18">
           <div
-            class="card-container bg-white rounded-xl shadow-lg p-4 border-2 border-blue-200"
+            class="card-container rounded-xl p-4"
             :class="{ 'mobile-card': isMobile }"
+            :style="{
+              background: 'var(--el-bg-color-overlay)',
+              boxShadow: 'var(--el-box-shadow-light)',
+              border: '2px solid var(--el-color-primary-light-7)',
+            }"
           >
             <cmd-main
               :style="{
@@ -102,18 +124,7 @@ export default {
   position: relative;
 }
 
-.main {
-  min-height: 100%;
-  padding: 1rem;
-  background-image: radial-gradient(
-    circle at 10% 20%,
-    rgba(255, 200, 239, 0.1) 0%,
-    rgba(255, 255, 255, 0.9) 90%
-  );
-}
-
 .cute-title {
-  text-shadow: 2px 2px 4px rgba(236, 72, 153, 0.2);
   position: relative;
   display: inline-block;
 }
@@ -125,8 +136,9 @@ export default {
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #ec4899, #a855f7);
+  background: var(--el-color-primary);
   border-radius: 3px;
+  opacity: 0.7;
 }
 
 /* 卡片容器样式 */
@@ -138,7 +150,6 @@ export default {
 
 .card-container:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.15);
 }
 
 /* 左侧卡片装饰线 */
@@ -149,7 +160,8 @@ export default {
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, #ec4899, #a855f7);
+  background: var(--el-color-primary);
+  opacity: 0.8;
 }
 
 /* 右侧卡片装饰线 */
@@ -160,7 +172,8 @@ export default {
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, #60a5fa, #a855f7);
+  background: var(--el-color-primary);
+  opacity: 0.8;
 }
 
 /* 移动端特定样式 */

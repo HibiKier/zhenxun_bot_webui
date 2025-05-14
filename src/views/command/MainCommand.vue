@@ -1,7 +1,11 @@
 <template>
   <div
-    class="base bg-gradient-to-br from-pink-100 to-purple-100"
-    :style="{ height: computedHeight + 'px' }"
+    class="base"
+    :style="{
+      height: computedHeight + 'px',
+      background:
+        'linear-gradient(to bottom right, var(--bg-color), var(--bg-color-hover))',
+    }"
   >
     <el-row :gutter="1" class="h-full">
       <el-col :xs="24" :sm="24" :md="8" :lg="6" class="h-full">
@@ -66,24 +70,27 @@ export default {
 }
 
 .base-info {
-  @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
-  border: 1px solid rgba(255, 192, 203, 0.3);
+  @apply bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
+  background-color: var(--bg-color-secondary);
+  border: 1px solid var(--border-color-light);
 }
 
 .main-info {
-  @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
-  border: 1px solid rgba(216, 180, 254, 0.3);
+  @apply bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
+  background-color: var(--bg-color-secondary);
+  border: 1px solid var(--border-color-light);
 }
 
 .config-info {
-  @apply bg-white bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
-  border: 1px solid rgba(255, 192, 203, 0.3);
+  @apply bg-opacity-70 backdrop-blur-sm rounded-lg shadow-cute;
+  background-color: var(--bg-color-secondary);
+  border: 1px solid var(--border-color-light);
 }
 
 /* 自定义二次元风格阴影 */
 .shadow-cute {
-  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.1),
-    0 2px 5px rgba(192, 132, 252, 0.1);
+  box-shadow: 0 4px 15px var(--el-box-shadow-light),
+    0 2px 5px var(--el-box-shadow-lighter);
 }
 
 /* 响应式设计 */

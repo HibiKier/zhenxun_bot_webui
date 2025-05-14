@@ -1,18 +1,27 @@
 <template>
   <div
     ref="main"
-    class="friend-manager-container w-full flex flex-col bg-gradient-to-br from-pink-50 to-purple-100"
-    :style="{ height: 'calc(100vh - 77px)' }"
+    class="friend-manager-container w-full flex flex-col"
+    :style="{
+      height: 'calc(100vh - 77px)',
+      background: 'var(--el-bg-color-page)',
+    }"
   >
     <!-- 顶部导航栏 -->
     <div
       ref="topHeader"
-      class="header-bar h-14 flex-shrink-0 flex items-center justify-between px-4 bg-white bg-opacity-80 backdrop-blur-sm border-b border-pink-200"
+      class="header-bar h-14 flex-shrink-0 flex items-center justify-between px-4"
+      :style="{
+        background: 'var(--el-bg-color-overlay)',
+        borderBottom: '1px solid var(--el-border-color-light)',
+        backdropFilter: 'blur(8px)',
+      }"
     >
       <!-- 标题 -->
       <div class="flex items-center">
         <h1
-          class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600"
+          class="text-xl font-bold"
+          :style="{ color: 'var(--el-color-primary)' }"
         >
           <span class="inline-block transform rotate-3">🌸</span>
           好友与群组
@@ -29,7 +38,11 @@
         >
           <button
             @click="openRequest"
-            class="flex items-center px-4 py-2 rounded-full bg-pink-100 hover:bg-pink-200 text-pink-600 transition-colors shadow-sm"
+            class="flex items-center px-4 py-2 rounded-full transition-colors shadow-sm"
+            :style="{
+              background: 'var(--el-color-primary-light-9)',
+              color: 'var(--el-color-primary)',
+            }"
           >
             <svg-icon icon-class="request" class="w-5 h-5 mr-2" />
             <span class="text-sm font-medium hidden md:block">请求管理</span>
@@ -42,7 +55,11 @@
     <div class="flex-1 flex flex-col md:flex-row p-2 gap-2 min-h-0">
       <!-- 左侧好友列表 -->
       <div
-        class="data-list-container w-full md:w-1/4 lg:w-1/5 bg-white rounded-xl shadow-md transition-all duration-300 flex-shrink-0"
+        class="data-list-container w-full md:w-1/4 lg:w-1/5 rounded-xl transition-all duration-300 flex-shrink-0"
+        :style="{
+          background: 'var(--el-bg-color)',
+          boxShadow: 'var(--el-box-shadow-light)',
+        }"
         :class="{
           'hidden md:block': !showList,
           'absolute z-20 top-16 left-2 right-2 h-2/3 md:relative md:top-0 md:left-0 md:right-0 md:h-full':
@@ -54,14 +71,22 @@
 
       <!-- 中间聊天窗口 -->
       <div
-        class="chat-container flex-1 bg-white rounded-xl shadow-md flex-shrink-0"
+        class="chat-container flex-1 rounded-xl flex-shrink-0"
+        :style="{
+          background: 'var(--el-bg-color)',
+          boxShadow: 'var(--el-box-shadow-light)',
+        }"
       >
         <ChatWindow ref="chatWindow" class="h-full" />
       </div>
 
       <!-- 右侧详情信息 -->
       <div
-        class="detail-container w-full md:w-1/3 lg:w-1/4 bg-white rounded-xl shadow-md transition-all duration-300 flex-shrink-0"
+        class="detail-container w-full md:w-1/3 lg:w-1/4 rounded-xl transition-all duration-300 flex-shrink-0"
+        :style="{
+          background: 'var(--el-bg-color)',
+          boxShadow: 'var(--el-box-shadow-light)',
+        }"
         :class="{
           'hidden md:block': !showDetail,
           'absolute z-20 top-16 left-2 right-2 h-2/3 md:relative md:top-0 md:left-0 md:right-0 md:h-full':
@@ -74,13 +99,22 @@
 
     <!-- 移动端底部操作栏 -->
     <div
-      class="md:hidden h-16 flex-shrink-0 bg-white bg-opacity-90 backdrop-blur-sm border-t border-pink-200 flex items-center justify-around px-4"
+      class="md:hidden h-16 flex-shrink-0 flex items-center justify-around px-4"
+      :style="{
+        background: 'var(--el-bg-color-overlay)',
+        borderTop: '1px solid var(--el-border-color-light)',
+        backdropFilter: 'blur(8px)',
+      }"
     >
       <!-- 列表切换按钮 -->
       <button
         @click="toggleList"
         class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors w-20"
-        :class="{ 'text-pink-600': showList, 'text-gray-500': !showList }"
+        :style="{
+          color: showList
+            ? 'var(--el-color-primary)'
+            : 'var(--el-text-color-secondary)',
+        }"
       >
         <span class="text-xs">好友列表</span>
       </button>
@@ -95,7 +129,8 @@
         >
           <button
             @click="openRequest"
-            class="flex flex-col items-center justify-center p-2 rounded-lg text-purple-600 transition-colors w-full"
+            class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors w-full"
+            :style="{ color: 'var(--el-color-primary)' }"
           >
             <svg-icon icon-class="request" class="w-6 h-6 mb-1" />
           </button>
@@ -106,7 +141,11 @@
       <button
         @click="toggleDetail"
         class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors w-20"
-        :class="{ 'text-purple-600': showDetail, 'text-gray-500': !showDetail }"
+        :style="{
+          color: showDetail
+            ? 'var(--el-color-primary)'
+            : 'var(--el-text-color-secondary)',
+        }"
       >
         <span class="text-xs">详细信息</span>
       </button>
@@ -244,12 +283,12 @@ export default {
   position: relative;
   background-image: radial-gradient(
       circle at 10% 20%,
-      rgba(251, 207, 232, 0.2) 0%,
+      var(--el-color-primary-light-8) 0%,
       transparent 20%
     ),
     radial-gradient(
       circle at 90% 80%,
-      rgba(216, 180, 254, 0.2) 0%,
+      var(--el-color-primary-light-7) 0%,
       transparent 20%
     );
 }
@@ -260,17 +299,17 @@ export default {
 }
 
 .detail-container::-webkit-scrollbar-track {
-  background: rgba(251, 207, 232, 0.3);
+  background: var(--el-color-primary-light-9);
   border-radius: 3px;
 }
 
 .detail-container::-webkit-scrollbar-thumb {
-  background: rgba(236, 72, 153, 0.5);
+  background: var(--el-color-primary-light-5);
   border-radius: 3px;
 }
 
 .detail-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 72, 153, 0.7);
+  background: var(--el-color-primary-light-3);
 }
 
 /* PC端样式 */
@@ -306,7 +345,7 @@ export default {
 
   .data-list-container,
   .detail-container {
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--el-box-shadow-light);
     max-height: calc(100vh - 196px);
     overflow-y: auto;
   }
@@ -334,7 +373,7 @@ export default {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: var(--el-bg-color-overlay);
     backdrop-filter: blur(8px);
     z-index: 40;
   }

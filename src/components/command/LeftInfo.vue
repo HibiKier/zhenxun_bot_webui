@@ -1,47 +1,72 @@
 <template>
   <div
-    class="left-info-container bg-pink-50 p-4 h-full overflow-y-auto"
+    class="left-info-container p-4 h-full overflow-y-auto"
+    :style="{ backgroundColor: 'var(--bg-color)' }"
     ref="leftInfoContainer"
   >
     <!-- 头像和信息区域 -->
     <div
-      class="avatar-section bg-white rounded-xl p-6 shadow-lg transform transition-all hover:scale-[1.01]"
+      class="avatar-section rounded-xl p-6 shadow-lg transform transition-all hover:scale-[1.01]"
+      :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
     >
       <div class="flex flex-col items-center">
         <!-- 头像 -->
         <el-image
           :src="botInfo.ava_url"
-          class="w-24 h-24 rounded-full border-4 border-pink-200 shadow-md hover:border-pink-300 transition-all"
+          class="w-24 h-24 rounded-full border-4 shadow-md transition-all"
+          :style="{ borderColor: 'var(--border-color)' }"
           fit="cover"
         >
           <div
             slot="error"
-            class="w-full h-full flex items-center justify-center bg-pink-100 rounded-full"
+            class="w-full h-full flex items-center justify-center rounded-full"
+            :style="{ backgroundColor: 'var(--el-fill-color)' }"
           >
-            <i class="el-icon-picture-outline text-3xl text-pink-400"></i>
+            <i
+              class="el-icon-picture-outline text-3xl"
+              :style="{ color: 'var(--primary-color)' }"
+            ></i>
           </div>
         </el-image>
 
         <!-- 昵称 -->
-        <h2 class="mt-4 text-xl font-bold text-pink-600 anime-font">
+        <h2
+          class="mt-4 text-xl font-bold anime-font"
+          :style="{ color: 'var(--primary-color)' }"
+        >
           {{ botInfo.nickname }}
         </h2>
 
         <!-- ID -->
         <div
-          class="mt-2 px-3 py-1 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-full text-xs font-medium shadow-md"
+          class="mt-2 px-3 py-1 text-white rounded-full text-xs font-medium shadow-md"
+          :style="{
+            background:
+              'linear-gradient(to right, var(--primary-color), var(--primary-color-light))',
+          }"
         >
           ID: {{ botInfo.self_id }}
         </div>
 
         <!-- 统计信息 -->
-        <div class="w-full mt-6 grid grid-cols-3 divide-x divide-pink-100">
+        <div
+          class="w-full mt-6 grid grid-cols-3 divide-x"
+          :style="{ borderColor: 'var(--border-color-light)' }"
+        >
           <!-- 好友数量 -->
           <div class="text-center">
-            <p class="text-xl font-bold text-blue-500">
+            <p
+              class="text-xl font-bold"
+              :style="{ color: 'var(--info-color)' }"
+            >
               {{ botInfo.friend_count }}
             </p>
-            <p class="text-xxs text-gray-500 mt-1">好友数量</p>
+            <p
+              class="text-xxs mt-1"
+              :style="{ color: 'var(--text-color-secondary)' }"
+            >
+              好友数量
+            </p>
           </div>
 
           <!-- 开关 -->
@@ -50,28 +75,56 @@
             @click="handleBotStatus"
           >
             <svg-icon
-              :icon-class="botInfo.status ? 'power-open' : 'power-close'"
+              icon-class="switch"
               class="text-lg"
-              :class="botInfo.status ? 'text-green-400' : 'text-red-400'"
+              :color="
+                botInfo.status ? 'var(--success-color)' : 'var(--danger-color)'
+              "
             />
-            <p class="text-xxs text-gray-500 mt-2">全局开关</p>
+            <p
+              class="text-xxs mt-2"
+              :style="{ color: 'var(--text-color-secondary)' }"
+            >
+              全局开关
+            </p>
           </div>
 
           <!-- 群组数量 -->
           <div class="text-center">
-            <p class="text-xl font-bold text-green-500">
+            <p
+              class="text-xl font-bold"
+              :style="{ color: 'var(--success-color)' }"
+            >
               {{ botInfo.group_count }}
             </p>
-            <p class="text-xxs text-gray-500 mt-1">群组数量</p>
+            <p
+              class="text-xxs mt-1"
+              :style="{ color: 'var(--text-color-secondary)' }"
+            >
+              群组数量
+            </p>
           </div>
         </div>
       </div>
     </div>
 
     <!-- 插件管理区域 -->
-    <div class="plugin-section" :style="{ height: pluginSectionHeight + 'px' }">
-      <h3 class="text-md font-bold text-purple-600 mb-4 flex items-center">
-        <svg-icon icon-class="plugin" class="mr-2 text-purple-400" />
+    <div
+      class="plugin-section"
+      :style="{
+        height: pluginSectionHeight + 'px',
+        backgroundColor: 'var(--bg-color-secondary)',
+      }"
+    >
+      <h3
+        class="text-md font-bold mb-4 flex items-center"
+        :style="{ color: 'var(--primary-color)' }"
+      >
+        <svg-icon
+          icon-class="plugin"
+          class="mr-2"
+          color="var(--primary-color-light)"
+        />
         Bot插件管理
       </h3>
 
@@ -81,7 +134,11 @@
           v-if="$store.state.botType == 'zhenxun'"
           class="grid grid-cols-12 gap-4 items-center"
         >
-          <label class="col-span-3 text-xs text-gray-600">全局禁用被动</label>
+          <label
+            class="col-span-3 text-xs"
+            :style="{ color: 'var(--text-color-secondary)' }"
+            >全局禁用被动</label
+          >
           <div class="col-span-9">
             <el-select
               v-model="postData.blockTasks"
@@ -102,7 +159,11 @@
 
         <!-- 全局禁用插件 -->
         <div class="grid grid-cols-12 gap-4 items-center">
-          <label class="col-span-3 text-xs text-gray-600">全局禁用插件</label>
+          <label
+            class="col-span-3 text-xs"
+            :style="{ color: 'var(--text-color-secondary)' }"
+            >全局禁用插件</label
+          >
           <div class="col-span-9">
             <el-select
               v-model="postData.blockPlugins"
@@ -124,7 +185,11 @@
         <!-- 应用按钮 -->
         <button
           @click="clickBotManage"
-          class="w-full py-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 text-sm"
+          class="w-full py-2 text-white rounded-lg shadow-md hover:shadow-lg transition-all transform hover:scale-[1.02] active:scale-95 text-sm"
+          :style="{
+            background:
+              'linear-gradient(to right, var(--primary-color), var(--primary-color-light))',
+          }"
         >
           应用设置
         </button>
@@ -252,21 +317,20 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 5px;
 }
 
 .left-info-container {
-  @apply flex flex-col h-full p-4 bg-pink-50 overflow-hidden;
+  @apply flex flex-col h-full p-4 overflow-hidden;
   gap: 16px; /* 设置两个部分之间的间距 */
 }
 
 .avatar-section {
-  @apply bg-white rounded-xl p-6 shadow-lg;
+  @apply rounded-xl p-6 shadow-lg;
   flex-shrink: 0; /* 防止压缩 */
 }
 
 .plugin-section {
-  @apply bg-white rounded-xl p-6 shadow-lg overflow-y-auto;
+  @apply rounded-xl p-6 shadow-lg overflow-y-auto;
   flex-grow: 1; /* 填充剩余空间 */
   min-height: 300px; /* 设置最小高度 */
 }
