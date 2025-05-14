@@ -11,6 +11,7 @@
         backgroundColor: 'var(--bg-color-secondary)',
         border: '1px solid var(--border-color-light)',
       }"
+      ref="typeSelectorRef"
     >
       <button
         v-for="type in pluginTypes"
@@ -49,6 +50,7 @@
         backgroundColor: 'var(--bg-color-secondary)',
         border: '1px solid var(--border-color-light)',
       }"
+      ref="filterAreaRef"
     >
       <div class="flex flex-wrap items-center gap-2">
         <span
@@ -70,27 +72,26 @@
           {{ tag }}
         </span>
 
-        <button
+        <CuteButton
           @click="showAddDialogFlag = true"
+          type="primary"
+          icon="add"
+          :iconColor="'var(--button-icon-color-info)'"
           class="ml-auto px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
-          :style="{
-            backgroundColor: 'var(--bg-color-hover)',
-            color: 'var(--primary-color)',
-          }"
+          size="sm"
         >
-          <i class="fas fa-plus mr-1"></i>新增类型
-        </button>
-
-        <button
-          @click="openManageTypesDialog"
+          新增类型
+        </CuteButton>
+        <CuteButton
+          @click="manageTypesDialogVisible = true"
+          type="primary"
+          icon="setting1"
+          :iconColor="'var(--button-icon-color-info)'"
           class="px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
-          :style="{
-            backgroundColor: 'var(--bg-color-hover)',
-            color: 'var(--primary-color)',
-          }"
+          size="sm"
         >
-          <i class="fas fa-cog mr-1"></i>管理类型
-        </button>
+          管理类型
+        </CuteButton>
       </div>
     </div>
 
@@ -290,6 +291,7 @@
 
 <script>
 import PluginListTemplate from "@/components/plugin/PluginListTemplate.vue"
+import CuteButton from "@/components/ui/CuteButton.vue"
 import NeonDialog from "@/components/ui/NeonDialog.vue"
 import NeonInput from "@/components/ui/NeonInput.vue"
 
@@ -299,6 +301,7 @@ export default {
     PluginListTemplate,
     NeonDialog,
     NeonInput,
+    CuteButton,
   },
   data() {
     return {
@@ -341,7 +344,11 @@ export default {
   methods: {
     handleResize() {
       if (this.$isMobile()) {
-        this.pluginListHeight = this.$refs.pluginManager.offsetHeight
+        this.pluginListHeight =
+          this.$refs.pluginManager.offsetHeight -
+          this.$refs.typeSelectorRef.offsetHeight -
+          this.$refs.filterAreaRef.offsetHeight -
+          160
       } else {
         this.pluginListHeight = this.$refs.pluginManager.offsetHeight - 235
       }
@@ -570,11 +577,10 @@ export default {
         this.$message.success(
           `菜单类型 "${newType}" 已添加，您可以现在将其应用到插件`
         )
+        this.newMenuTypeName = ""
+        this.handleResize()
       }
       this.showAddDialogFlag = false
-    },
-    openManageTypesDialog() {
-      this.manageTypesDialogVisible = true
     },
     startRenameType(type) {
       this.showRenameDialogFlag = true

@@ -196,6 +196,24 @@
   --button-icon-color-danger: #ffffff;
   --button-icon-color-info: #ffffff;
   --button-icon-color-disabled: var(--text-color-disabled);
+
+    // ECharts 专用颜色
+  --echarts-primary: #3182ce;
+  --echarts-primary-light: #4299e1;
+  --echarts-secondary: #2b6cb0;
+  --echarts-tertiary: #2c5282;
+  --echarts-quaternary: #2a4365;
+  --echarts-quinary: #1a365d;
+  --echarts-success: #38a169;
+  --echarts-warning: #dd6b20;
+  --echarts-danger: #e53e3e;
+  --echarts-info: #3182ce;
+  --echarts-border: #e2e8f0;
+  --echarts-text: #2d3748;
+  --echarts-text-secondary: #4a5568;
+  --echarts-bg: #ffffff;
+  --echarts-bg-overlay: rgba(255, 255, 255, 0.95);
+  --echarts-shadow: rgba(49, 130, 206, 0.3);
 }
 
 [data-theme="light"] {

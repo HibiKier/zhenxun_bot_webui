@@ -244,10 +244,12 @@ export default {
     }, 25000)
     this.handleResize()
     EventBus.$on("sidebar-aside", debounce(this.handleResize, 200))
+    EventBus.$on("change-theme", debounce(this.handleResize, 200))
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResize)
     EventBus.$off("sidebar-aside", this.handleResize)
+    EventBus.$off("change-theme", this.handleResize, 200)
     if (this.groupCntInterval) {
       clearInterval(this.groupCntInterval)
     }
@@ -257,7 +259,7 @@ export default {
       this.$nextTick(() => {
         setTimeout(() => {
           // 移动端适配
-          if (window.innerWidth < 768) {
+          if (this.$isMobile()) {
             this.chartHeight = window.innerHeight * 0.3
             this.chartDivHeight = this.chartHeight + 80
           } else {

@@ -559,6 +559,9 @@ export default {
     handleThemeChange(command) {
       if (typeof this.setAppTheme === "function") {
         this.setAppTheme(command)
+        EventBus.$emit("change-theme", {
+          timestamp: Date.now(),
+        })
       } else {
         console.error("setAppTheme function not provided/injected correctly.")
       }
