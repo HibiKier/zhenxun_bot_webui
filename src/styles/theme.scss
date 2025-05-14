@@ -211,8 +211,8 @@
   --echarts-border: #e2e8f0;
   --echarts-text: #2d3748;
   --echarts-text-secondary: #4a5568;
-  --echarts-bg: #ffffff;
-  --echarts-bg-overlay: rgba(255, 255, 255, 0.95);
+  --echarts-text: #ffffff;  // 主文本改为白色
+  --echarts-text-secondary: #e2e8f0;  // 次要文本改为浅色
   --echarts-shadow: rgba(49, 130, 206, 0.3);
 }
 
@@ -359,8 +359,8 @@
   --echarts-danger: #e06c75;
   --echarts-info: #61afef;
   --echarts-border: #3b4048;
-  --echarts-text: #abb2bf;
-  --echarts-text-secondary: #8b929e;
+  --echarts-text: #ffffff;  // 主文本改为白色
+  --echarts-text-secondary: #d7dae0;  // 次要文本改为浅灰色
   --echarts-bg: #282c34;
   --echarts-bg-overlay: rgba(40, 44, 52, 0.95);
   --echarts-shadow: rgba(97, 175, 239, 0.3);
