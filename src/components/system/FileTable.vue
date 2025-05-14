@@ -1,15 +1,23 @@
 <template>
-  <div class="kawaii-file-manager bg-pink-50 p-4 font-sans">
+  <div
+    class="kawaii-file-manager"
+    :style="{ backgroundColor: 'var(--bg-color)' }"
+  >
     <!-- 面包屑导航 -->
     <div
-      class="breadcrumb bg-white rounded-xl p-3 mb-4 shadow border border-pink-200"
+      class="breadcrumb rounded-xl p-3 mb-4 shadow"
+      :style="{
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color)',
+      }"
     >
       <el-breadcrumb separator="/">
         <el-breadcrumb-item
           v-for="(path, i) in pathList"
           :key="i"
           @click.native="clickPath(i)"
-          class="cursor-pointer hover:text-pink-500"
+          class="cursor-pointer"
+          :style="{ color: 'var(--text-color)' }"
         >
           {{ path || "首页" }}
         </el-breadcrumb-item>
@@ -24,6 +32,7 @@
         solid
         @click="clickRootAddFile"
         icon="add-file"
+        :iconColor="'var(--button-icon-color-primary)'"
       >
         新建文件
       </CuteButton>
@@ -33,6 +42,7 @@
         solid
         @click="clickRootAddFolder"
         icon="add-folder"
+        :iconColor="'var(--button-icon-color-primary)'"
       >
         新建文件夹
       </CuteButton>
@@ -42,6 +52,7 @@
         solid
         @click="refreshFiles"
         icon="refresh"
+        :iconColor="'var(--button-icon-color-info)'"
       >
         刷新
       </CuteButton>
@@ -49,7 +60,11 @@
 
     <!-- 文件表格 -->
     <div
-      class="file-table-container bg-white rounded-xl shadow border border-pink-200"
+      class="file-table-container rounded-xl shadow"
+      :style="{
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color)',
+      }"
     >
       <el-table
         :data="fileList"
@@ -66,21 +81,28 @@
               <svg-icon
                 :iconClass="getIconClass(scope.row)"
                 class="mr-2 text-xl"
+                :style="{ color: 'var(--text-color)' }"
               ></svg-icon>
-              <span>{{ scope.row.name }}</span>
+              <span :style="{ color: 'var(--text-color)' }">{{
+                scope.row.name
+              }}</span>
             </div>
           </template>
         </el-table-column>
 
         <el-table-column prop="mtime" label="修改时间" min-width="180">
           <template slot-scope="scope">
-            {{ formatDate(scope.row.mtime) }}
+            <span :style="{ color: 'var(--text-color)' }">{{
+              formatDate(scope.row.mtime)
+            }}</span>
           </template>
         </el-table-column>
 
         <el-table-column prop="size" label="大小" min-width="120">
           <template slot-scope="scope">
-            {{ scope.row.is_file ? formatSize(scope.row.size) : "-" }}
+            <span :style="{ color: 'var(--text-color)' }">{{
+              scope.row.is_file ? formatSize(scope.row.size) : "-"
+            }}</span>
           </template>
         </el-table-column>
 
@@ -91,7 +113,7 @@
               @click.stop="editFile(scope.row)"
               type="text"
               icon="el-icon-edit"
-              class="text-blue-500 hover:text-blue-700"
+              :style="{ color: 'var(--primary-color)' }"
               title="编辑"
             ></el-button>
             <el-button
@@ -99,21 +121,21 @@
               @click.stop="viewImage(scope.row)"
               type="text"
               icon="el-icon-view"
-              class="text-green-500 hover:text-green-700"
+              :style="{ color: 'var(--success-color)' }"
               title="查看"
             ></el-button>
             <el-button
               @click.stop="showRenameDialog(scope.row)"
               type="text"
               icon="el-icon-edit-outline"
-              class="text-purple-500 hover:text-purple-700"
+              :style="{ color: 'var(--info-color)' }"
               title="重命名"
             ></el-button>
             <el-button
               @click.stop="showDeleteDialog(scope.row)"
               type="text"
               icon="el-icon-delete"
-              class="text-red-500 hover:text-red-700"
+              :style="{ color: 'var(--danger-color)' }"
               title="删除"
             ></el-button>
           </template>
@@ -121,8 +143,11 @@
 
         <!-- 空状态 -->
         <div slot="empty" class="empty-state">
-          <i class="icon-empty-folder text-5xl text-gray-300 mb-4"></i>
-          <p class="text-gray-500">
+          <i
+            class="icon-empty-folder text-5xl mb-4"
+            :style="{ color: 'var(--text-color-disabled)' }"
+          ></i>
+          <p :style="{ color: 'var(--text-color-secondary)' }">
             当前目录为空，点击上方按钮添加文件或文件夹吧~
           </p>
         </div>
@@ -133,7 +158,11 @@
     <div
       v-if="currentPath !== ''"
       @click="navigateUp"
-      class="fixed bottom-4 right-4 bg-purple-500 text-white p-3 rounded-full shadow-lg cursor-pointer hover:bg-purple-600 transition-colors"
+      class="fixed bottom-4 right-4 p-3 rounded-full shadow-lg cursor-pointer transition-colors"
+      :style="{
+        backgroundColor: 'var(--primary-color)',
+        color: 'var(--button-icon-color-primary)',
+      }"
     >
       <i class="el-icon-upload2 text-xl"></i>
     </div>
@@ -176,7 +205,7 @@
       :visible.sync="showDeleteDialogFlag"
       title="确认删除"
       type="danger"
-      icon-class="icon-warning"
+      icon-class="warning"
       confirm-text="删除"
       @confirm="confirmDelete"
     >
@@ -532,47 +561,27 @@ export default {
 <style scoped>
 /* 可爱风格样式 */
 .kawaii-file-manager {
-  --el-color-primary: #ec4899;
-  --el-color-danger: #ff6b6b;
+  padding: 1rem;
+  font-family: sans-serif;
 }
 
 /* 表格样式 */
 .kawaii-table {
-  --el-table-header-background-color: #fdf2f8;
-  --el-table-border-color: rgba(236, 72, 153, 0.2);
+  --el-table-header-background-color: var(--bg-color-hover);
+  --el-table-border-color: var(--border-color);
 }
 
 .kawaii-table::before {
-  background-color: rgba(236, 72, 153, 0.1);
-}
-
-/* 按钮样式 */
-.el-button--primary {
-  background-color: #ec4899;
-  border-color: #ec4899;
-}
-
-.el-button--primary:hover {
-  background-color: #db2777;
-  border-color: #db2777;
+  background-color: var(--border-color-light);
 }
 
 /* 面包屑导航样式 */
 .el-breadcrumb__item:last-child .el-breadcrumb__inner {
-  color: #a855f7;
+  color: var(--primary-color);
 }
 
 .el-breadcrumb__item:hover .el-breadcrumb__inner {
-  color: #ec4899;
-}
-
-/* 对话框样式 */
-.el-dialog__header {
-  border-bottom: 1px solid rgba(236, 72, 153, 0.1);
-}
-
-.el-dialog__title {
-  color: #ec4899;
+  color: var(--primary-color-light);
 }
 
 /* 滚动条样式 */
@@ -582,12 +591,12 @@ export default {
 }
 
 .el-table__body-wrapper::-webkit-scrollbar-thumb {
-  background-color: rgba(236, 72, 153, 0.6);
+  background-color: var(--border-color);
   border-radius: 4px;
 }
 
 .el-table__body-wrapper::-webkit-scrollbar-track {
-  background-color: rgba(236, 72, 153, 0.1);
+  background-color: var(--bg-color-hover);
   border-radius: 4px;
 }
 

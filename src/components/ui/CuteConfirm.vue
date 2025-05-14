@@ -6,33 +6,81 @@
   >
     <div class="cute-dialog">
       <div class="cute-dialog-header">
-        <span class="cute-dialog-title">{{ title }}</span>
+        <span class="cute-dialog-title">
+          <svg-icon
+            :icon-class="
+              type === 'warning'
+                ? 'warning'
+                : type === 'error'
+                ? 'error'
+                : 'info'
+            "
+            class="title-icon"
+            :color="
+              type === 'warning'
+                ? 'var(--el-color-warning)'
+                : type === 'error'
+                ? 'var(--el-color-danger)'
+                : 'var(--el-color-primary)'
+            "
+          />
+          {{ title }}
+        </span>
       </div>
       <div class="cute-dialog-body">
         <pre class="cute-dialog-message">{{ message }}</pre>
       </div>
       <div class="cute-dialog-footer">
-        <button
+        <cute-button
           v-if="showCancelButton"
-          class="cute-dialog-button cute-dialog-cancel"
+          type="secondary"
+          :plain="false"
+          :solid="true"
           @click="handleCancel"
+          class="w-full md:w-auto cancel-button"
+          :style="{
+            backgroundColor: 'var(--el-fill-color-light)',
+            color: 'var(--el-text-color-regular)',
+            borderColor: 'var(--el-border-color)',
+          }"
+          icon="close"
+          :iconColor="'var(--el-text-color-regular)'"
+          size="small"
+          :fontSize="12"
+          :iconSize="14"
         >
           {{ cancelButtonText }}
-        </button>
-        <button
-          class="cute-dialog-button cute-dialog-confirm"
+        </cute-button>
+        <cute-button
+          type="primary"
           @click="handleConfirm"
+          class="w-full md:w-auto confirm-button"
+          :icon="
+            type === 'warning'
+              ? 'warning'
+              : type === 'error'
+              ? 'error'
+              : 'confirm'
+          "
+          :iconColor="'#ffffff'"
+          size="small"
+          :fontSize="12"
+          :iconSize="14"
         >
           {{ confirmButtonText }}
-        </button>
+        </cute-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import CuteButton from "./CuteButton.vue"
+import SvgIcon from "../SvgIcon/SvgIcon.vue"
+
 export default {
   name: "CuteConfirm",
+  components: { CuteButton, SvgIcon },
   props: {
     title: String,
     message: String,
@@ -53,6 +101,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    type: {
+      type: String,
+      default: "info",
+      validator: (value) => ["info", "warning", "error"].includes(value),
+    },
   },
   methods: {
     handleConfirm() {
@@ -70,31 +123,33 @@ export default {
   },
 }
 </script>
-<style scoped>
-/* 基础蒙层 */
+
+<style lang="scss" scoped>
 .cute-dialog-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--el-overlay-color-lighter);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
 }
 
-/* 弹框主体 */
 .cute-dialog {
-  background-color: var(--bg-color-secondary);
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-color);
+  background-color: var(--el-bg-color);
+  border-radius: 1rem;
+  border: 2px solid var(--el-border-color-light);
   box-shadow: var(--el-box-shadow-light);
   width: 90%;
   max-width: 28rem;
   overflow: hidden;
   position: relative;
+  animation: popIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cute-dialog::before {
@@ -106,119 +161,93 @@ export default {
   bottom: -10px;
   background: linear-gradient(
     45deg,
-    var(--primary-color-light-9),
-    var(--bg-color-secondary),
-    var(--primary-color-light-9)
+    var(--el-color-primary-light-9),
+    var(--el-bg-color),
+    var(--el-color-primary-light-9)
   );
   z-index: -1;
   border-radius: 20px;
   opacity: 0.8;
 }
 
-/* 头部样式 */
 .cute-dialog-header {
-  padding: 1rem;
-  border-bottom: 1px solid var(--border-color-light);
+  padding: 1.25rem;
+  border-bottom: 2px solid var(--el-border-color-light);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
 }
 
 .cute-dialog-header::after {
   content: "✧･ﾟ: *✧･ﾟ:*";
   position: absolute;
-  bottom: -8px;
+  bottom: -10px;
   left: 0;
   right: 0;
   text-align: center;
-  color: var(--primary-color);
+  color: var(--el-color-primary);
   font-size: 12px;
   letter-spacing: 2px;
+  background: var(--el-bg-color);
+  padding: 0 10px;
+  width: fit-content;
+  margin: 0 auto;
 }
 
 .cute-dialog-title {
-  color: var(--text-color);
+  color: var(--el-text-color-primary);
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .cute-dialog-title::before,
 .cute-dialog-title::after {
   content: "♥";
-  color: var(--primary-color);
-  margin: 0 8px;
+  color: var(--el-color-primary);
   font-size: 16px;
+  animation: heartBeat 1.3s ease-in-out infinite;
 }
 
-/* 内容区域 */
+.cute-dialog-title::before {
+  animation-delay: 0s;
+}
+
+.cute-dialog-title::after {
+  animation-delay: 0.3s;
+}
+
 .cute-dialog-body {
   padding: 1.5rem;
-  color: var(--text-color);
+  color: var(--el-text-color-regular);
+  background: var(--el-bg-color);
 }
 
 .cute-dialog-message {
   margin: 0;
   white-space: pre-wrap;
   font-size: 15px;
-  color: var(--text-color-secondary);
   line-height: 1.6;
   font-family: "Comic Sans MS", "Marker Felt", "Segoe Print", cursive;
 }
 
-/* 底部按钮区域 */
 .cute-dialog-footer {
   padding: 1rem;
-  border-top: 1px solid var(--border-color-light);
+  border-top: 2px solid var(--el-border-color-light);
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  background: var(--el-bg-color);
 }
 
-/* 基础按钮样式 */
-.cute-dialog-button {
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.cute-dialog-button.cute-dialog-cancel {
-  background-color: var(--bg-color-secondary);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-}
-
-.cute-dialog-button.cute-dialog-cancel:hover {
-  background-color: var(--bg-color-hover);
-  border-color: var(--primary-color-light);
-}
-
-.cute-dialog-button.cute-dialog-confirm {
-  background-color: var(--primary-color);
-  color: var(--bg-color-secondary);
-  border: none;
-}
-
-.cute-dialog-button.cute-dialog-confirm:hover {
-  background-color: var(--primary-color-light);
-}
-
-.close-button {
-  color: var(--text-color-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.close-button:hover {
-  color: var(--primary-color);
-}
-
-/* 动画效果 */
 @keyframes popIn {
   0% {
-    transform: scale(0.8);
+    transform: scale(0.9);
     opacity: 0;
   }
   50% {
@@ -257,20 +286,115 @@ export default {
   }
 }
 
-/* 响应式调整 */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .cute-dialog {
-    width: 90%;
-    margin: 0 auto;
+    width: 95%;
+    margin: 1rem;
   }
 
   .cute-dialog-footer {
-    flex-direction: column;
-    gap: 12px;
+    padding: 0.625rem;
+    gap: 0.25rem;
   }
 
-  .cute-dialog-button {
-    width: 100%;
+  .cancel-button,
+  .confirm-button {
+    :deep(.button-content) {
+      font-size: 12px;
+    }
+  }
+}
+
+// 暗色主题适配
+:root[data-theme="dark"] {
+  .cute-dialog {
+    background-color: var(--el-bg-color-overlay);
+    border-color: var(--el-border-color-darker);
+  }
+
+  .cute-dialog::before {
+    background: linear-gradient(
+      45deg,
+      var(--el-color-primary-light-8),
+      var(--el-bg-color-overlay),
+      var(--el-color-primary-light-8)
+    );
+    opacity: 0.15;
+  }
+
+  .cute-dialog-header {
+    border-color: var(--el-border-color-darker);
+
+    &::after {
+      background-color: var(--el-bg-color-overlay);
+      color: var(--el-color-primary-light-3);
+    }
+  }
+
+  .cute-dialog-title {
+    color: var(--el-text-color-primary);
+
+    &::before,
+    &::after {
+      color: var(--el-color-primary-light-3);
+    }
+  }
+
+  .cute-dialog-body {
+    background-color: var(--el-bg-color-overlay);
+  }
+
+  .cute-dialog-message {
+    color: var(--el-text-color-regular);
+  }
+
+  .cute-dialog-footer {
+    background-color: var(--el-bg-color-overlay);
+    border-color: var(--el-border-color-darker);
+  }
+}
+
+.title-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cancel-button,
+.confirm-button {
+  :deep(.button-icon) {
+    margin-right: 4px;
+  }
+}
+
+.cancel-button {
+  :deep(.button-icon) {
+    color: var(--el-text-color-regular) !important;
+  }
+
+  &:hover {
+    :deep(.button-icon) {
+      color: var(--el-color-primary) !important;
+    }
+  }
+}
+
+.confirm-button {
+  :deep(.button-icon) {
+    color: #ffffff !important;
   }
 }
 </style>

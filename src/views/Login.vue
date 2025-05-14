@@ -93,47 +93,25 @@
 
           <!-- 按钮组 - 优化了按钮交互 -->
           <div class="flex flex-col sm:flex-row justify-between gap-4">
-            <el-button
-              type="default"
+            <CuteButton
+              type="secondary"
+              icon="server"
               @click="changeApi"
-              plain
-              class="flex-1 transition-colors duration-300 active:scale-95"
-              :style="{
-                borderColor: 'var(--primary-color)',
-                color: 'var(--primary-color)',
-                '&:hover': {
-                  backgroundColor: 'var(--bg-color-hover)',
-                  color: 'var(--primary-color-light)',
-                  borderColor: 'var(--primary-color-light)',
-                },
-              }"
+              class="flex-1"
+              iconColor="var(--button-icon-color-default)"
             >
-              <span class="flex items-center justify-center">
-                <svg-icon icon-class="server-purple" class="w-4 h-4 mr-2" />
-                地址设置
-              </span>
-            </el-button>
-            <el-button
-              style="margin-left: 0px"
+              地址设置
+            </CuteButton>
+            <CuteButton
               type="primary"
-              native-type="submit"
+              icon="login"
               @click="submitLogin"
-              :disabled="loading"
-              class="flex-1 border-0 text-white transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg active:scale-95"
-              :style="{
-                background:
-                  'linear-gradient(to right, var(--primary-color), var(--primary-color-light))',
-                '&:hover': {
-                  background:
-                    'linear-gradient(to right, var(--primary-color-light), var(--primary-color))',
-                },
-              }"
+              :loading="loading"
+              class="flex-1"
+              iconColor="var(--button-icon-color-primary)"
             >
-              <span class="flex items-center justify-center">
-                <i class="el-icon-unlock mr-2"></i>
-                登录
-              </span>
-            </el-button>
+              登录
+            </CuteButton>
           </div>
         </el-form>
 
@@ -215,10 +193,11 @@ import qs from "qs"
 import { setCookie, clearCookie, getCookie } from "@/utils/api"
 import CuteConfirm from "@/components/ui/CuteConfirm"
 import InteractiveInput from "@/components/ui/NeonInput.vue"
+import CuteButton from "@/components/ui/CuteButton.vue"
 
 export default {
   name: "MainLogin",
-  components: { CuteConfirm, InteractiveInput },
+  components: { CuteConfirm, InteractiveInput, CuteButton },
   data() {
     const validateName = (rules, value, callback) => {
       if (!value) {

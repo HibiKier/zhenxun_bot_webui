@@ -35,17 +35,32 @@
 /* 自定义Element UI组件样式 */
 .anime-textarea .el-textarea__inner {
   border-radius: 12px !important;
-  border: 2px solid var(--border-color) !important;
-  background-color: var(--bg-color) !important;
+  border: 2px solid var(--el-border-color) !important;
+  background-color: var(--el-bg-color) !important;
   font-family: "Courier New", monospace !important;
   transition: all 0.3s ease !important;
-  color: var(--text-color) !important;
+  color: var(--el-text-color-primary) !important;
   height: 100% !important;
-}
 
-.anime-textarea .el-textarea__inner:focus {
-  border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px var(--primary-color-light) !important;
+  &::placeholder {
+    color: var(--el-text-color-placeholder) !important;
+  }
+
+  &:hover {
+    border-color: var(--el-border-color-darker) !important;
+  }
+
+  &:focus {
+    border-color: var(--el-color-primary) !important;
+    box-shadow: 0 0 0 2px var(--el-color-primary-light-8) !important;
+  }
+
+  &:disabled {
+    background-color: var(--el-fill-color-light) !important;
+    border-color: var(--el-border-color-light) !important;
+    color: var(--el-text-color-placeholder) !important;
+    cursor: not-allowed;
+  }
 }
 
 /* Element UI 表格样式 */
@@ -56,6 +71,10 @@
   --el-table-row-hover-bg-color: var(--table-row-hover-bg) !important;
   border-radius: 12px !important;
   overflow: hidden !important;
+}
+
+.el-table .el-table__body-wrapper {
+  background: var(--el-fill-color-light);
 }
 
 .el-table th {
@@ -100,11 +119,58 @@
 }
 
 /* 输入框样式 */
-.el-input__inner {
+.el-input__inner,
+.el-textarea__inner {
   transition: all 0.3s ease;
+  background-color: var(--el-bg-color) !important;
+  border: 1px solid var(--el-border-color) !important;
+  color: var(--el-text-color-primary) !important;
+
+  &::placeholder {
+    color: var(--el-text-color-placeholder) !important;
+  }
+
+  &:hover {
+    border-color: var(--el-border-color-darker) !important;
+  }
+
   &:focus {
-    border-color: var(--primary-color) !important;
-    box-shadow: 0 0 0 2px var(--primary-color-light);
+    border-color: var(--el-color-primary) !important;
+    box-shadow: 0 0 0 2px var(--el-color-primary-light-8) !important;
+    background-color: var(--el-bg-color) !important;
+  }
+
+  &:disabled {
+    background-color: var(--el-fill-color-light) !important;
+    border-color: var(--el-border-color-light) !important;
+    color: var(--el-text-color-placeholder) !important;
+    cursor: not-allowed;
+  }
+}
+
+/* 输入框组合样式 */
+.el-input-group__append,
+.el-input-group__prepend {
+  background-color: var(--el-fill-color-light) !important;
+  border-color: var(--el-border-color) !important;
+  color: var(--el-text-color-regular) !important;
+}
+
+/* 输入框图标颜色 */
+.el-input__prefix,
+.el-input__suffix {
+  color: var(--el-text-color-placeholder) !important;
+
+  &:hover {
+    color: var(--el-text-color-regular) !important;
+  }
+}
+
+/* 输入框清除按钮 */
+.el-input__clear {
+  color: var(--el-text-color-placeholder) !important;
+  &:hover {
+    color: var(--el-text-color-secondary) !important;
   }
 }
 
@@ -253,4 +319,63 @@
   background-color: var(--bg-color-hover) !important;
   color: var(--primary-color) !important;
   font-weight: bold !important;
+}
+
+/* el-collapse 样式 */
+.el-collapse {
+  border: none;
+  background-color: transparent;
+}
+
+.el-collapse-item {
+  background-color: var(--el-collapse-item-bg);
+  border: 1px solid var(--el-collapse-item-border-color);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.el-collapse-item:hover {
+  background-color: var(--el-collapse-item-hover-bg);
+}
+
+.el-collapse-item.is-active {
+  background-color: var(--el-collapse-item-active-bg);
+}
+
+.el-collapse-item__header {
+  background-color: transparent;
+  border-bottom: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--el-text-color-primary);
+  transition: all 0.3s ease;
+}
+
+.el-collapse-item__header:hover {
+  color: var(--el-color-primary);
+}
+
+.el-collapse-item__wrap {
+  background-color: transparent;
+  border-top: 1px solid var(--el-collapse-item-border-color);
+}
+
+.el-collapse-item__content {
+  padding: 16px;
+  color: var(--el-text-color-regular);
+}
+
+/* 确保样式优先级 */
+.el-collapse-item.anime-collapse-item {
+  background-color: var(--el-collapse-item-bg) !important;
+  border-color: var(--el-collapse-item-border-color) !important;
+}
+
+.el-collapse-item.anime-collapse-item:hover {
+  background-color: var(--el-collapse-item-hover-bg) !important;
+}
+
+.el-collapse-item.anime-collapse-item.is-active {
+  background-color: var(--el-collapse-item-active-bg) !important;
 }

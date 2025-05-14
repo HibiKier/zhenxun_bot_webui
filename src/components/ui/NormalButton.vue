@@ -14,6 +14,7 @@
       :icon-class="iconClass"
       v-if="iconClass"
       class="button-icon"
+      :color="disabled ? 'var(--el-text-color-disabled)' : iconColor"
     ></svg-icon>
     <span
       v-if="showText"
@@ -63,6 +64,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    iconColor: {
+      type: String,
+      default: "var(--primary-color)",
+    },
   },
   methods: {
     handleClick() {
@@ -103,7 +108,7 @@ export default {
 
 .normal-button.disabled {
   background-color: var(--el-fill-color-light);
-  color: var(--text-color-disabled);
+  color: var(--el-text-color-disabled);
   border-color: var(--border-color-light);
   cursor: not-allowed;
   transform: none;
@@ -118,13 +123,7 @@ export default {
 }
 
 .button-icon {
-  margin-right: 0.5rem;
-  color: var(--primary-color);
   transition: color 0.3s ease;
-}
-
-.disabled .button-icon {
-  color: var(--text-color-disabled);
 }
 
 /* 响应式调整 */

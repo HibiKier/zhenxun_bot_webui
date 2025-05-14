@@ -8,19 +8,27 @@
         :key="data.module"
         class="plugin-card relative rounded-xl p-4 transition-all duration-300 cursor-pointer"
         :class="{
-          'border-2 border-pink-500 shadow-lg shadow-pink-200/50 transform -translate-y-1':
-            isSelected(data.module),
-          'border-2 border-transparent hover:border-pink-300': !isSelected(
+          'border-2 shadow-lg transform -translate-y-1': isSelected(
             data.module
           ),
-          'bg-gradient-to-br from-pink-50 to-purple-50': true,
+          'border-2 border-transparent hover:border-opacity-50': !isSelected(
+            data.module
+          ),
+        }"
+        :style="{
+          borderColor: isSelected(data.module)
+            ? 'var(--primary-color)'
+            : 'var(--border-color-light)',
+          boxShadow: isSelected(data.module) ? 'var(--primary-shadow)' : 'none',
+          background: 'var(--bg-color-secondary)',
         }"
         @click="toggleSelection(data)"
       >
         <!-- 选中标记 -->
         <div
           v-if="isSelected(data.module)"
-          class="absolute -top-2 -right-2 w-6 h-6 bg-pink-500 rounded-full flex items-center justify-center text-white text-xs z-10 animate-bounce"
+          class="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs z-10 animate-bounce"
+          :style="{ backgroundColor: 'var(--primary-color)' }"
         >
           <i class="fas fa-check"></i>
         </div>
@@ -29,19 +37,32 @@
         <div class="flex flex-col h-full">
           <!-- 插件名称和版本 -->
           <div class="flex items-baseline mb-1">
-            <h3 class="text-lg font-bold text-purple-800 truncate">
+            <h3
+              class="text-lg font-bold truncate"
+              :style="{ color: 'var(--primary-color)' }"
+            >
               {{ data.plugin_name }}
             </h3>
             <span
-              class="ml-2 text-xs text-pink-600 bg-pink-100 px-1.5 py-0.5 rounded-full"
+              class="ml-2 text-xs px-1.5 py-0.5 rounded-full"
+              :style="{
+                color: 'var(--primary-color)',
+                backgroundColor: 'var(--bg-color-hover)',
+              }"
               >v{{ data.version }}</span
             >
           </div>
 
           <!-- 模块和作者 -->
-          <p class="text-sm text-purple-700 mb-2 truncate">
+          <p
+            class="text-sm mb-2 truncate"
+            :style="{ color: 'var(--text-color-secondary)' }"
+          >
             <span class="font-mono">{{ data.module }}</span>
-            <span v-if="data.author" class="text-pink-600 ml-2"
+            <span
+              v-if="data.author"
+              class="ml-2"
+              :style="{ color: 'var(--primary-color-light)' }"
               >@{{ data.author }}</span
             >
           </p>
@@ -49,7 +70,11 @@
           <!-- 菜单类型标签 -->
           <div v-if="data.menu_type" class="mt-auto">
             <span
-              class="inline-block px-2 py-1 text-xs rounded-full bg-pink-200 text-pink-800"
+              class="inline-block px-2 py-1 text-xs rounded-full"
+              :style="{
+                backgroundColor: 'var(--bg-color-hover)',
+                color: 'var(--primary-color)',
+              }"
             >
               {{ data.menu_type }}
             </span>
@@ -57,25 +82,31 @@
 
           <!-- 底部按钮区域 - 右侧横向排列 -->
           <div
-            class="flex justify-end items-center mt-3 pt-2 border-t border-pink-100"
+            class="flex justify-end items-center mt-3 pt-2"
+            :style="{ borderTop: '1px solid var(--border-color-light)' }"
           >
             <!-- 开关按钮 -->
             <NormalButton
-              :text="data.status ? '开启' : '关闭'"
-              :iconClass="
-                !data.allow_switch
-                  ? 'switch-disabled'
-                  : data.status
-                  ? 'switch-green'
-                  : 'switch-red'
+              :text="
+                !data.allow_switch ? '禁用' : data.status ? '开启' : '关闭'
               "
+              iconClass="switch"
               title="切换插件状态"
               :disabled="!data.allow_switch"
               :base-class="'hover:scale-110'"
               :active-class="
-                data.status
+                !data.allow_switch
+                  ? 'bg-gray-100 text-gray-400'
+                  : data.status
                   ? 'bg-green-100 text-green-600 hover:bg-green-200'
                   : 'bg-red-100 text-red-500 hover:bg-red-200'
+              "
+              :icon-color="
+                !data.allow_switch
+                  ? 'var(--el-text-color-disabled)'
+                  : data.status
+                  ? 'var(--el-color-success)'
+                  : 'var(--el-color-danger)'
               "
               @click="changeSwitch(data)"
             />
@@ -83,9 +114,7 @@
             <!-- 配置按钮 -->
             <NormalButton
               icon-class="fas fa-cog text-lg"
-              :iconClass="
-                data.allow_switch ? 'setting-blue' : 'setting-disabled'
-              "
+              iconClass="setting"
               :disabled="!data.allow_setting"
               text="配置"
               title="插件配置"
@@ -120,11 +149,11 @@
 </template>
 
 <script>
-import UpdateDialog from './UpdateDialog'
-import NormalButton from '@/components/ui/NormalButton.vue'
+import UpdateDialog from "./UpdateDialog"
+import NormalButton from "@/components/ui/NormalButton.vue"
 
 export default {
-  name: 'PluginListTemplate',
+  name: "PluginListTemplate",
   props: { pluginType: String, menuType: String },
   components: { UpdateDialog, NormalButton },
   data() {
@@ -141,7 +170,7 @@ export default {
   methods: {
     getPluginList() {
       this.clearSelection()
-      const loading = this.getLoading('.plugin-list-container')
+      const loading = this.getLoading(".plugin-list-container")
 
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
         plugin_type: [this.pluginType],
@@ -154,12 +183,12 @@ export default {
               this.$message.warning(resp.warning)
             }
           } else {
-            this.$message.error(resp?.info || '获取插件列表失败')
+            this.$message.error(resp?.info || "获取插件列表失败")
             this.dataList = []
           }
         })
         .catch((error) => {
-          this.$message.error('请求插件列表失败: ' + error)
+          this.$message.error("请求插件列表失败: " + error)
           this.dataList = []
         })
         .finally(() => loading.close())
@@ -187,10 +216,10 @@ export default {
     },
     async uninstallPlugin(data) {
       const result = await this.$cuteConfirm({
-        title: '卸载确认',
+        title: "卸载确认",
         message: `确定要卸载插件 "${data.plugin_name}" 吗?`,
-        cancelButtonText: '我再想想',
-        confirmButtonText: '狠心卸载',
+        cancelButtonText: "我再想想",
+        confirmButtonText: "狠心卸载",
       })
 
       if (result) {
@@ -206,14 +235,14 @@ export default {
                 this.getPluginList()
               }
             } else {
-              this.$message.error(resp.info || '卸载失败')
+              this.$message.error(resp.info || "卸载失败")
             }
           })
         } catch (error) {
-          this.$message.error('卸载失败: ' + error.message)
+          this.$message.error("卸载失败: " + error.message)
         }
       } else {
-        console.log('取消卸载')
+        console.log("取消卸载")
       }
     },
     isSelected(module) {
@@ -222,7 +251,7 @@ export default {
     toggleSelection(data) {
       const module = data.module
       if (!data.allow_switch || !data.allow_setting) {
-        this.$message.warning('该插件不支持切换或配置')
+        this.$message.warning("该插件不支持切换或配置")
         return
       }
 
@@ -232,12 +261,12 @@ export default {
       } else {
         this.selectedPlugins.push(module)
       }
-      this.$emit('update:selection', [...this.selectedPlugins])
+      this.$emit("update:selection", [...this.selectedPlugins])
     },
     clearSelection() {
       if (this.selectedPlugins.length > 0) {
         this.selectedPlugins = []
-        this.$emit('update:selection', [])
+        this.$emit("update:selection", [])
       }
     },
   },
@@ -246,53 +275,49 @@ export default {
 
 <style scoped>
 .plugin-card {
-  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.1);
+  box-shadow: var(--card-shadow);
   background-image: radial-gradient(
       circle at 10% 20%,
-      rgba(255, 200, 240, 0.2) 0%,
-      rgba(230, 230, 255, 0.3) 90%
+      var(--primary-color-light) 0%,
+      var(--bg-color-hover) 90%
     ),
-    linear-gradient(
-      to bottom right,
-      rgba(255, 255, 255, 0.8),
-      rgba(255, 255, 255, 0.6)
-    );
+    linear-gradient(to bottom right, var(--bg-color), var(--bg-color-secondary));
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   min-height: 140px;
 }
 
 .plugin-card .button-row {
-  border-top: 1px dashed rgba(236, 72, 153, 0.3);
+  border-top: 1px dashed var(--border-color-light);
   padding-top: 8px;
   margin-top: 8px;
 }
 
 .plugin-card:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.15);
+  box-shadow: var(--primary-shadow);
 }
 
 /* 选中状态动画 */
 .plugin-card.is-selected {
   animation: pulse 2s infinite;
-  border-color: rgba(236, 72, 153, 0.5);
+  border-color: var(--primary-color);
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4);
+    box-shadow: 0 0 0 0 var(--primary-shadow);
   }
   70% {
-    box-shadow: 0 0 0 12px rgba(236, 72, 153, 0);
+    box-shadow: 0 0 0 12px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
 /* 按钮区域 */
 .plugin-card .button-area {
-  border-left: 1px dashed rgba(236, 72, 153, 0.3);
+  border-left: 1px dashed var(--border-color-light);
 }
 
 /* 移动端适配 */
@@ -310,23 +335,23 @@ export default {
 /* 二次元风格确认对话框 */
 :deep(.anime-confirm-dialog) {
   border-radius: 16px;
-  background: linear-gradient(to bottom right, #fff5f7, #f8f0ff);
-  border: 2px solid #f8bbd0;
+  background: var(--bg-color-secondary);
+  border: 2px solid var(--border-color-light);
 
   .el-message-box__header {
-    background: linear-gradient(to right, #ff9a9e, #fad0c4);
+    background: var(--primary-color);
     border-radius: 14px 14px 0 0;
     padding: 10px 20px;
 
     .el-message-box__title {
-      color: white;
+      color: var(--bg-color);
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
   }
 
   .el-message-box__content {
     padding: 20px;
-    color: #6b46c1;
+    color: var(--primary-color);
   }
 
   .el-message-box__btns {
@@ -337,15 +362,15 @@ export default {
       padding: 8px 16px;
 
       &.el-button--primary {
-        background: linear-gradient(to right, #ff9a9e, #fad0c4);
-        border-color: #ff9a9e;
-        color: white;
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: var(--bg-color);
       }
 
       &.el-button--default {
-        background: linear-gradient(to right, #f8f0ff, #e0f7fa);
-        border-color: #b2ebf2;
-        color: #6b46c1;
+        background: var(--bg-color-hover);
+        border-color: var(--border-color-light);
+        color: var(--primary-color);
       }
     }
   }

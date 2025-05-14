@@ -77,7 +77,7 @@
                       <svg-icon
                         icon-class="friend"
                         class="blue-icon mr-2"
-                        :style="{ color: 'var(--el-color-primary)' }"
+                        color="var(--el-color-primary)"
                       />
                       <span
                         class="text-gray-600"
@@ -99,7 +99,7 @@
                       <svg-icon
                         icon-class="group"
                         class="green-icon mr-2"
-                        :style="{ color: 'var(--el-color-success)' }"
+                        color="var(--el-color-success)"
                       />
                       <span
                         class="text-gray-600"
@@ -126,7 +126,7 @@
                   <svg-icon
                     icon-class="call"
                     class="pink-icon"
-                    :style="{ color: 'var(--el-color-primary)' }"
+                    color="var(--el-color-primary)"
                   />
                   <div class="message-content">
                     <span
@@ -146,9 +146,9 @@
                   :style="{ backgroundColor: 'var(--el-fill-color-lighter)' }"
                 >
                   <svg-icon
-                    icon-class="message"
+                    icon-class="message1"
                     class="pink-icon"
-                    :style="{ color: 'var(--el-color-primary)' }"
+                    color="var(--el-color-primary)"
                   />
                   <div class="message-content">
                     <span
@@ -172,13 +172,13 @@
                   <svg-icon
                     icon-class="platform"
                     class="pink-icon"
-                    :style="{ color: 'var(--el-color-primary)' }"
+                    color="var(--el-color-primary)"
                   />
                   <div class="message-content">
                     <span
                       class="message-title"
                       :style="{ color: 'var(--el-text-color-secondary)' }"
-                      >平台</span
+                      >所属平台</span
                     >
                     <span
                       class="message-value"
@@ -194,7 +194,7 @@
                   <svg-icon
                     icon-class="time"
                     class="pink-icon"
-                    :style="{ color: 'var(--el-color-primary)' }"
+                    color="var(--el-color-primary)"
                   />
                   <div class="message-content">
                     <span

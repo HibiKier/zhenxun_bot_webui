@@ -2,14 +2,24 @@
   <div ref="midInfo" class="mid-info text-gray-800 p-4 flex flex-col h-full">
     <!-- 消息接收区域 -->
     <div
-      class="message-area bg-white rounded-xl shadow-md p-4 mb-4"
-      :style="{ height: areaHeight + 'px' }"
+      class="message-area rounded-xl shadow-md p-4 mb-4"
+      :style="{
+        height: areaHeight + 'px',
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color-light)',
+      }"
     >
       <div class="title-box flex items-center mb-3">
-        <p class="text-md font-bold text-purple-600 flex items-center">
+        <p
+          class="text-md font-bold flex items-center"
+          :style="{ color: 'var(--primary-color)' }"
+        >
           <span class="mr-2">(◕‿◕✿)</span>消息接收
         </p>
-        <span class="text-xs text-gray-500 ml-3">
+        <span
+          class="text-xs ml-3"
+          :style="{ color: 'var(--text-color-secondary)' }"
+        >
           勇者结识伙伴，收到的问候，口才+1
         </span>
       </div>
@@ -43,7 +53,8 @@
               />
             </div>
             <p
-              class="text-sm font-medium mt-2 text-gray-700 text-center truncate w-full"
+              class="text-sm font-medium mt-2 text-center truncate w-full"
+              :style="{ color: 'var(--text-color-secondary)' }"
             >
               {{ item.label }}
             </p>
@@ -54,14 +65,24 @@
 
     <!-- 功能调用区域 -->
     <div
-      class="function-area bg-white rounded-xl shadow-md p-4 mb-4"
-      :style="{ height: areaHeight + 'px' }"
+      class="function-area rounded-xl shadow-md p-4 mb-4"
+      :style="{
+        height: areaHeight + 'px',
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color-light)',
+      }"
     >
       <div class="title-box flex items-center mb-3">
-        <p class="text-md font-bold text-blue-600 flex items-center">
+        <p
+          class="text-md font-bold flex items-center"
+          :style="{ color: 'var(--primary-color)' }"
+        >
           <span class="mr-2">(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧</span>功能调用
         </p>
-        <span class="text-xs text-gray-500 ml-3">
+        <span
+          class="text-xs ml-3"
+          :style="{ color: 'var(--text-color-secondary)' }"
+        >
           勇者磨砺自身，辛勤的汗水，力量+1
         </span>
       </div>
@@ -81,7 +102,6 @@
             <div
               class="progress-container w-full flex justify-center items-center"
             >
-              <!-- 添加 items-center 和 flex-grow -->
               <el-progress
                 type="circle"
                 :percentage="getPercentageCall(key)"
@@ -96,7 +116,8 @@
               />
             </div>
             <p
-              class="text-sm font-medium mt-2 text-gray-700 text-center truncate w-full"
+              class="text-sm font-medium mt-2 text-center truncate w-full"
+              :style="{ color: 'var(--text-color-secondary)' }"
             >
               {{ item.label }}
             </p>
@@ -107,9 +128,15 @@
 
     <!-- 图表区域 -->
     <div
-      class="chart-area bg-white rounded-xl shadow-md p-4 flex-1 min-h-[100px]"
+      class="chart-area rounded-xl shadow-md p-4 flex-1 min-h-[100px]"
       ref="chartArea"
-      :style="{ height: computedChartHeight + 'px' }"
+      :style="{
+        height: computedChartHeight + 'px',
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color-light)',
+        background:
+          'linear-gradient(to bottom right, var(--bg-color), var(--bg-color-hover))',
+      }"
     >
       <div
         ref="chart"
@@ -158,24 +185,24 @@ export default {
         title: {
           text: "消息/调用统计",
           textStyle: {
-            color: "#7c3aed",
+            color: "var(--primary-color)",
             fontSize: 16,
           },
         },
         tooltip: {
           trigger: "axis",
-          backgroundColor: "rgba(255,255,255,0.9)",
-          borderColor: "#e9d5ff",
+          backgroundColor: "var(--el-bg-color-overlay)",
+          borderColor: "var(--border-color-light)",
           borderWidth: 1,
           textStyle: {
-            color: "#6b21a8",
+            color: "var(--text-color)",
             fontSize: 14,
           },
         },
         legend: {
           data: ["消息统计", "调用统计"],
           textStyle: {
-            color: "#6b21a8",
+            color: "var(--text-color)",
             fontSize: 14,
           },
         },
@@ -184,7 +211,7 @@ export default {
           right: "4%",
           bottom: "3%",
           containLabel: true,
-          backgroundColor: "#fdf4ff",
+          backgroundColor: "var(--bg-color-secondary)",
         },
         toolbox: {
           feature: {
@@ -194,7 +221,7 @@ export default {
             },
           },
           iconStyle: {
-            borderColor: "#c084fc",
+            borderColor: "var(--primary-color-light)",
           },
         },
         xAxis: {
@@ -203,11 +230,11 @@ export default {
           data: [],
           axisLine: {
             lineStyle: {
-              color: "#c084fc",
+              color: "var(--border-color)",
             },
           },
           axisLabel: {
-            color: "#9333ea",
+            color: "var(--text-color-secondary)",
             fontSize: 12,
           },
         },
@@ -217,16 +244,16 @@ export default {
             name: "消息统计",
             axisLine: {
               lineStyle: {
-                color: "#c084fc",
+                color: "var(--border-color)",
               },
             },
             axisLabel: {
-              color: "#9333ea",
+              color: "var(--text-color-secondary)",
               fontSize: 12,
             },
             splitLine: {
               lineStyle: {
-                color: "#f3e8ff",
+                color: "var(--border-color-light)",
               },
             },
           },
@@ -236,16 +263,16 @@ export default {
             position: "right",
             axisLine: {
               lineStyle: {
-                color: "#c084fc",
+                color: "var(--border-color)",
               },
             },
             axisLabel: {
-              color: "#9333ea",
+              color: "var(--text-color-secondary)",
               fontSize: 12,
             },
             splitLine: {
               lineStyle: {
-                color: "#f3e8ff",
+                color: "var(--border-color-light)",
               },
             },
           },
@@ -259,10 +286,10 @@ export default {
             yAxisIndex: 0,
             lineStyle: {
               width: 3,
-              color: "#c084fc",
+              color: "var(--primary-color)",
             },
             itemStyle: {
-              color: "#a855f7",
+              color: "var(--primary-color)",
             },
             areaStyle: {
               color: {
@@ -274,11 +301,11 @@ export default {
                 colorStops: [
                   {
                     offset: 0,
-                    color: "#e9d5ff",
+                    color: "var(--primary-color-light)",
                   },
                   {
                     offset: 1,
-                    color: "#f3e8ff",
+                    color: "var(--el-fill-color-light)",
                   },
                 ],
               },
@@ -292,10 +319,10 @@ export default {
             yAxisIndex: 1,
             lineStyle: {
               width: 3,
-              color: "#f0abfc",
+              color: "var(--primary-color-light)",
             },
             itemStyle: {
-              color: "#d946ef",
+              color: "var(--primary-color-light)",
             },
             areaStyle: {
               color: {
@@ -307,11 +334,11 @@ export default {
                 colorStops: [
                   {
                     offset: 0,
-                    color: "#f5d0fe",
+                    color: "var(--el-fill-color)",
                   },
                   {
                     offset: 1,
-                    color: "#fae8ff",
+                    color: "var(--el-fill-color-lighter)",
                   },
                 ],
               },
@@ -326,6 +353,7 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.handleResize)
+    window.addEventListener("theme-change", this.updateChartTheme)
     this.getChCount(this.botInfo.self_id)
     this.getCallCount(this.botInfo.self_id)
     this.getMonthChatAndCallCount(this.botInfo.self_id)
@@ -338,6 +366,7 @@ export default {
     }, 30000)
     this.chart = this.$echarts.init(this.$refs.chart)
     this.handleResize()
+    this.updateChartTheme()
   },
   computed: {
     computedChartHeight() {
@@ -355,6 +384,17 @@ export default {
       clearInterval(this.callInterval)
     }
     window.removeEventListener("resize", this.handleResize)
+    window.removeEventListener("theme-change", this.updateChartTheme)
+  },
+  watch: {
+    "$store.state.theme": {
+      handler(newTheme) {
+        this.$nextTick(() => {
+          this.updateChartTheme()
+        })
+      },
+      immediate: true,
+    },
   },
   methods: {
     updateAreaHeight() {
@@ -518,24 +558,194 @@ export default {
         })
       }
     },
+    updateChartTheme() {
+      const style = getComputedStyle(document.documentElement)
+      const getThemeColor = (name) => style.getPropertyValue(name).trim()
+
+      const chartOpt = {
+        title: {
+          text: "消息/调用统计",
+          textStyle: {
+            color: getThemeColor("--primary-color"),
+            fontSize: 16,
+          },
+        },
+        tooltip: {
+          trigger: "axis",
+          backgroundColor: getThemeColor("--el-bg-color-overlay"),
+          borderColor: getThemeColor("--border-color-light"),
+          borderWidth: 1,
+          textStyle: {
+            color: getThemeColor("--text-color"),
+            fontSize: 14,
+          },
+        },
+        legend: {
+          data: ["消息统计", "调用统计"],
+          textStyle: {
+            color: getThemeColor("--text-color"),
+            fontSize: 14,
+          },
+        },
+        grid: {
+          left: "3%",
+          right: "4%",
+          bottom: "3%",
+          containLabel: true,
+          backgroundColor: getThemeColor("--bg-color-secondary"),
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {
+              title: "保存图片",
+              pixelRatio: 2,
+            },
+          },
+          iconStyle: {
+            borderColor: getThemeColor("--primary-color-light"),
+          },
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: this.chartOpt?.xAxis?.data || [],
+          axisLine: {
+            lineStyle: {
+              color: getThemeColor("--border-color"),
+            },
+          },
+          axisLabel: {
+            color: getThemeColor("--text-color-secondary"),
+            fontSize: 12,
+          },
+        },
+        yAxis: [
+          {
+            type: "value",
+            name: "消息统计",
+            axisLine: {
+              lineStyle: {
+                color: getThemeColor("--border-color"),
+              },
+            },
+            axisLabel: {
+              color: getThemeColor("--text-color-secondary"),
+              fontSize: 12,
+            },
+            splitLine: {
+              lineStyle: {
+                color: getThemeColor("--border-color-light"),
+              },
+            },
+          },
+          {
+            type: "value",
+            name: "调用统计",
+            position: "right",
+            axisLine: {
+              lineStyle: {
+                color: getThemeColor("--border-color"),
+              },
+            },
+            axisLabel: {
+              color: getThemeColor("--text-color-secondary"),
+              fontSize: 12,
+            },
+            splitLine: {
+              lineStyle: {
+                color: getThemeColor("--border-color-light"),
+              },
+            },
+          },
+        ],
+        series: [
+          {
+            name: "消息统计",
+            type: "line",
+            smooth: true,
+            data: this.chartOpt?.series?.[0]?.data || [],
+            yAxisIndex: 0,
+            lineStyle: {
+              width: 3,
+              color: getThemeColor("--primary-color"),
+            },
+            itemStyle: {
+              color: getThemeColor("--primary-color"),
+            },
+            areaStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: getThemeColor("--primary-color-light"),
+                  },
+                  {
+                    offset: 1,
+                    color: getThemeColor("--el-fill-color-light"),
+                  },
+                ],
+              },
+            },
+          },
+          {
+            name: "调用统计",
+            type: "line",
+            smooth: true,
+            data: this.chartOpt?.series?.[1]?.data || [],
+            yAxisIndex: 1,
+            lineStyle: {
+              width: 3,
+              color: getThemeColor("--primary-color-light"),
+            },
+            itemStyle: {
+              color: getThemeColor("--primary-color-light"),
+            },
+            areaStyle: {
+              color: {
+                type: "linear",
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: getThemeColor("--el-fill-color"),
+                  },
+                  {
+                    offset: 1,
+                    color: getThemeColor("--el-fill-color-lighter"),
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      }
+
+      this.chartOpt = chartOpt
+      if (this.chart) {
+        this.chart.setOption(chartOpt, true)
+      }
+    },
   },
 }
 </script>
 
 <style scoped>
 .mid-info {
-  background-color: #fdf2f8;
+  background-color: var(--bg-color);
 }
 
 .message-area,
 .function-area,
 .chart-area {
-  border: 1px solid #f3e8ff;
   transition: height 0.3s ease, font-size 0.3s ease;
-}
-
-.chart-area {
-  background: linear-gradient(to bottom right, #fdf2ff, #f5f3ff);
 }
 
 .title-box {
@@ -608,12 +818,12 @@ export default {
 }
 
 .mid-info::-webkit-scrollbar-thumb {
-  background-color: #f9a8d4;
+  background-color: var(--scrollbar-thumb-color);
   border-radius: 9999px;
 }
 
 .mid-info::-webkit-scrollbar-track {
-  background-color: #fce7f3;
+  background-color: var(--bg-color);
 }
 
 /* 打印样式 */
@@ -625,7 +835,7 @@ export default {
   .message-area,
   .function-area,
   .chart-area {
-    border: 1px solid #ddd !important;
+    border: 1px solid var(--border-color) !important;
     box-shadow: none !important;
   }
 }

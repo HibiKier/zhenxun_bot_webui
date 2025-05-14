@@ -8,7 +8,12 @@
   >
     <!-- 图标插槽 -->
     <slot name="icon">
-      <svg-icon v-if="icon" class="w-5 h-5 mr-2" :icon-class="icon">
+      <svg-icon
+        v-if="icon"
+        class="w-5 h-5 mr-2"
+        :icon-class="icon"
+        :color="iconColor"
+      >
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -105,6 +110,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -117,6 +127,12 @@ export default {
         delete:
           "M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16",
         confirm: "M5 13l4 4L19 7",
+        "add-file":
+          "M9 13h6m-3-3v6m5-13H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z",
+        "add-folder":
+          "M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2zm8 4h-2v2H7v2h2v2h2v-2h2v-2h-2v-2z",
+        refresh:
+          "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15",
       },
     }
   },
@@ -287,39 +303,39 @@ export default {
         switch (this.type) {
           case "primary":
             styles.backgroundColor = "var(--primary-color)"
-            styles.color = "#ffffff"
+            styles.color = "var(--button-icon-color-primary)"
             break
           case "secondary":
             styles.backgroundColor = "var(--bg-color-hover)"
-            styles.color = "var(--text-color)"
+            styles.color = "var(--button-icon-color-default)"
             break
           case "danger":
             styles.backgroundColor = "var(--danger-color)"
-            styles.color = "#ffffff"
+            styles.color = "var(--button-icon-color-danger)"
             break
           case "success":
             styles.backgroundColor = "var(--success-color)"
-            styles.color = "#ffffff"
+            styles.color = "var(--button-icon-color-success)"
             break
           case "warning":
             styles.backgroundColor = "var(--warning-color)"
-            styles.color = "#ffffff"
+            styles.color = "var(--button-icon-color-warning)"
             break
           case "info":
             styles.backgroundColor = "var(--info-color)"
-            styles.color = "#ffffff"
+            styles.color = "var(--button-icon-color-info)"
             break
           case "light":
             styles.backgroundColor = "var(--bg-color-secondary)"
-            styles.color = "var(--text-color)"
+            styles.color = "var(--button-icon-color-default)"
             break
           case "dark":
             styles.backgroundColor = "var(--bg-color)"
-            styles.color = "var(--text-color)"
+            styles.color = "var(--button-icon-color-default)"
             break
           case "normal":
             styles.backgroundColor = "var(--bg-color-secondary)"
-            styles.color = "var(--text-color)"
+            styles.color = "var(--button-icon-color-default)"
             break
         }
       }

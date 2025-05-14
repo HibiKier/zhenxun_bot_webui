@@ -1,6 +1,10 @@
 <template>
   <div
-    class="detail-info bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl shadow-lg p-6 h-full overflow-y-auto"
+    class="detail-info rounded-2xl shadow-lg p-6 h-full overflow-y-auto"
+    :style="{
+      background: 'var(--el-bg-color)',
+      boxShadow: 'var(--el-box-shadow-light)',
+    }"
   >
     <!-- 空状态 -->
     <div
@@ -12,7 +16,12 @@
         class="w-64 h-64 object-contain mb-4"
         alt="空空如也"
       />
-      <p class="text-pink-500 text-lg font-medium">空空如也 ┐(ﾟ～ﾟ)┌</p>
+      <p
+        :style="{ color: 'var(--el-color-primary)' }"
+        class="text-lg font-medium"
+      >
+        空空如也 ┐(ﾟ～ﾟ)┌
+      </p>
     </div>
 
     <!-- 详细信息 -->
@@ -21,21 +30,27 @@
       <div class="flex flex-col items-center mb-6">
         <el-avatar
           :src="data.ava_url"
-          class="border-4 border-pink-300 shadow-lg mb-4 transform hover:scale-105 transition-transform"
+          class="shadow-lg mb-4 transform hover:scale-105 transition-transform"
           :style="{
             height: sizeMana.avaSize + 'px',
             width: sizeMana.avaSize + 'px',
+            border: '4px solid var(--el-color-primary-light-5)',
           }"
         ></el-avatar>
 
         <h2
-          class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-2"
+          class="text-2xl font-bold mb-2"
+          :style="{ color: 'var(--el-color-primary)' }"
         >
           {{ data.name }}
         </h2>
 
         <div
-          class="px-4 py-2 bg-purple-500 text-white rounded-full text-sm shadow-md"
+          class="px-4 py-2 rounded-full text-sm shadow-md"
+          :style="{
+            background: 'var(--el-color-primary)',
+            color: 'var(--el-color-white)',
+          }"
         >
           {{ data.user_id || data.group_id }}
         </div>
@@ -43,29 +58,43 @@
 
       <!-- 基本信息区域 -->
       <div
-        class="bg-white rounded-xl p-4 shadow-md mb-6 transform hover:shadow-lg transition-shadow"
+        class="rounded-xl p-4 mb-6 transform hover:shadow-lg transition-shadow"
+        :style="{
+          background: 'var(--el-bg-color-overlay)',
+          boxShadow: 'var(--el-box-shadow-light)',
+        }"
       >
         <template v-if="detailType == 'private'">
           <!-- 好友信息 -->
           <div class="grid grid-cols-1 gap-4">
             <div class="flex items-center justify-between">
-              <span class="text-gray-600">封禁状态:</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >封禁状态:</span
+              >
               <MySwitch v-model="data.is_ban" :disabled="true" />
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div class="flex items-center justify-between">
-                <span class="text-gray-600">聊天记录:</span>
-                <span class="font-medium text-purple-600">{{
-                  data.chat_count
-                }}</span>
+                <span :style="{ color: 'var(--el-text-color-regular)' }"
+                  >聊天记录:</span
+                >
+                <span
+                  :style="{ color: 'var(--el-color-primary)' }"
+                  class="font-medium"
+                  >{{ data.chat_count }}</span
+                >
               </div>
 
               <div class="flex items-center justify-between">
-                <span class="text-gray-600">调用次数:</span>
-                <span class="font-medium text-pink-600">{{
-                  data.call_count
-                }}</span>
+                <span :style="{ color: 'var(--el-text-color-regular)' }"
+                  >调用次数:</span
+                >
+                <span
+                  :style="{ color: 'var(--el-color-success)' }"
+                  class="font-medium"
+                  >{{ data.call_count }}</span
+                >
               </div>
             </div>
           </div>
@@ -75,17 +104,21 @@
           <!-- 群组信息 -->
           <div class="grid grid-cols-2 gap-4 mb-4">
             <div class="flex items-center justify-between">
-              <span class="text-gray-600">状态:</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >状态:</span
+              >
               <MySwitch v-model="data.status" />
             </div>
 
             <div class="flex items-center justify-between">
-              <span class="text-gray-600">群权限:</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >群权限:</span
+              >
               <el-select
                 v-model="data.level"
                 placeholder=""
                 class="w-24"
-                popper-class="cute-select"
+                popper-class="theme-select"
               >
                 <el-option :label="-1" :value="-1"></el-option>
                 <el-option
@@ -98,31 +131,47 @@
             </div>
 
             <div class="flex items-center justify-between">
-              <span class="text-gray-600">当前人数:</span>
-              <span class="font-medium text-purple-600">{{
-                data.member_count
-              }}</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >当前人数:</span
+              >
+              <span
+                :style="{ color: 'var(--el-color-primary)' }"
+                class="font-medium"
+                >{{ data.member_count }}</span
+              >
             </div>
 
             <div class="flex items-center justify-between">
-              <span class="text-gray-600">最大人数:</span>
-              <span class="font-medium text-pink-600">{{
-                data.max_member_count
-              }}</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >最大人数:</span
+              >
+              <span
+                :style="{ color: 'var(--el-color-success)' }"
+                class="font-medium"
+                >{{ data.max_member_count }}</span
+              >
             </div>
 
             <div class="flex items-center justify-between">
-              <span class="text-gray-600">聊天记录:</span>
-              <span class="font-medium text-purple-600">{{
-                data.chat_count
-              }}</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >聊天记录:</span
+              >
+              <span
+                :style="{ color: 'var(--el-color-primary)' }"
+                class="font-medium"
+                >{{ data.chat_count }}</span
+              >
             </div>
 
             <div class="flex items-center justify-between">
-              <span class="text-gray-600">调用次数:</span>
-              <span class="font-medium text-pink-600">{{
-                data.call_count
-              }}</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >调用次数:</span
+              >
+              <span
+                :style="{ color: 'var(--el-color-success)' }"
+                class="font-medium"
+                >{{ data.call_count }}</span
+              >
             </div>
           </div>
 
@@ -130,13 +179,15 @@
           <template v-if="this.$store.state.botType == 'zhenxun'">
             <div class="mb-4">
               <div class="flex items-center justify-between mb-2">
-                <span class="text-gray-600">被动状态:</span>
+                <span :style="{ color: 'var(--el-text-color-regular)' }"
+                  >被动状态:</span
+                >
               </div>
               <el-select
                 v-model="data.task_status"
                 class="w-full"
                 multiple
-                popper-class="cute-select"
+                popper-class="theme-select"
               >
                 <el-option
                   v-for="n in data.task"
@@ -152,13 +203,15 @@
           <!-- 插件设置 -->
           <div class="mb-6">
             <div class="flex items-center justify-between mb-2">
-              <span class="text-gray-600">禁用插件:</span>
+              <span :style="{ color: 'var(--el-text-color-regular)' }"
+                >禁用插件:</span
+              >
             </div>
             <el-select
               v-model="data.plugin_status"
               multiple
               class="w-full"
-              popper-class="cute-select"
+              popper-class="theme-select"
             >
               <el-option
                 v-for="n in tmpAllPluginList"
@@ -174,7 +227,7 @@
           <div class="flex justify-end">
             <MyButton
               text="应用设置"
-              type="purple"
+              type="primary"
               :rounded="'lg'"
               :shadow="'lg'"
               :glow="true"
@@ -187,9 +240,18 @@
 
       <!-- 最喜爱的插件图表 -->
       <div
-        class="bg-white rounded-xl p-4 shadow-md transform hover:shadow-lg transition-shadow"
+        class="rounded-xl p-4 transform hover:shadow-lg transition-shadow"
+        :style="{
+          background: 'var(--el-bg-color-overlay)',
+          boxShadow: 'var(--el-box-shadow-light)',
+        }"
       >
-        <h3 class="text-lg font-bold text-pink-600 mb-4">最喜爱的插件</h3>
+        <h3
+          class="text-lg font-bold mb-4"
+          :style="{ color: 'var(--el-color-primary)' }"
+        >
+          最喜爱的插件
+        </h3>
         <div ref="likePluginChart" class="h-80 w-full"></div>
       </div>
     </template>
@@ -366,17 +428,17 @@ export default {
 }
 
 .detail-info::-webkit-scrollbar-track {
-  background: rgba(251, 207, 232, 0.3);
+  background: var(--el-color-primary-light-9);
   border-radius: 3px;
 }
 
 .detail-info::-webkit-scrollbar-thumb {
-  background: rgba(236, 72, 153, 0.5);
+  background: var(--el-color-primary-light-5);
   border-radius: 3px;
 }
 
 .detail-info::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 72, 153, 0.7);
+  background: var(--el-color-primary-light-3);
 }
 
 /* 响应式调整 */
@@ -392,28 +454,26 @@ export default {
 </style>
 
 <style>
-/* 可爱的下拉选择框样式 */
-.cute-select {
-  background-color: #fff !important;
-  border: 1px solid #e9d5ff !important;
+/* 主题化下拉选择框样式 */
+.theme-select {
+  background-color: var(--el-bg-color-overlay) !important;
+  border: 1px solid var(--el-border-color-light) !important;
   border-radius: 12px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: var(--el-box-shadow-light) !important;
 }
 
-.cute-select .el-select-dropdown__item {
-  color: #7c3aed !important;
-  font-family: '"Comic Sans MS", cursive' !important;
+.theme-select .el-select-dropdown__item {
+  color: var(--el-text-color-primary) !important;
 }
 
-.cute-select .el-select-dropdown__item.hover,
-.cute-select .el-select-dropdown__item:hover {
-  background-color: #f3e8ff !important;
+.theme-select .el-select-dropdown__item.hover,
+.theme-select .el-select-dropdown__item:hover {
+  background-color: var(--el-color-primary-light-9) !important;
 }
 
-.cute-select .el-select-dropdown__item.selected {
-  background-color: #e9d5ff !important;
-  color: #7c3aed !important;
+.theme-select .el-select-dropdown__item.selected {
+  background-color: var(--el-color-primary-light-7) !important;
+  color: var(--el-color-primary) !important;
   font-weight: bold;
 }
 </style>

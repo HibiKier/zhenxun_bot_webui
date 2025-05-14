@@ -1,17 +1,30 @@
 <template>
-  <div class="table-list h-full w-full p-4" ref="tableList">
+  <div
+    class="table-list h-full w-full p-4"
+    ref="tableList"
+    :style="{
+      background: 'var(--el-bg-color)',
+    }"
+  >
     <div class="title-container mb-4">
       <p
-        class="title text-2xl md:text-3xl font-bold text-purple-600"
+        class="title text-2xl md:text-3xl font-bold"
         ref="title"
+        :style="{ color: 'var(--el-color-primary)' }"
       >
         数据表
       </p>
     </div>
 
     <div
-      class="table-list-box bg-white rounded-xl shadow-lg md:p-6"
-      :style="{ height: computedHeight + 'px', overflow: 'auto' }"
+      class="table-list-box rounded-xl"
+      :style="{
+        height: computedHeight + 'px',
+        overflow: 'auto',
+        background: 'var(--el-bg-color-overlay)',
+        boxShadow: 'var(--el-box-shadow-light)',
+        border: '1px solid var(--el-border-color-light)',
+      }"
     >
       <el-collapse
         v-model="activeName"
@@ -28,13 +41,26 @@
         >
           <template slot="title">
             <div
-              class="name-color bg-gradient-to-b from-pink-400 to-purple-500"
+              class="name-color"
+              :style="{
+                width: '3px',
+                height: '24px',
+                marginRight: '10px',
+                borderRadius: '3px',
+                background: 'var(--el-color-primary)',
+              }"
             ></div>
             <div class="flex flex-col md:flex-row md:items-center">
-              <p class="table-name text-purple-600 font-bold">
+              <p
+                class="table-name font-bold"
+                :style="{ color: 'var(--el-color-primary)' }"
+              >
                 {{ table.name }}：
               </p>
-              <p class="table-desc text-gray-500 text-sm md:ml-2">
+              <p
+                class="table-desc text-sm md:ml-2"
+                :style="{ color: 'var(--el-text-color-secondary)' }"
+              >
                 {{ table.desc || "-" }}
               </p>
             </div>
@@ -161,15 +187,6 @@ export default {
 </script>
 
 <style scoped>
-/* 二次元可爱风格样式 */
-.table-list {
-  background-image: radial-gradient(
-    circle at 10% 20%,
-    rgba(255, 200, 239, 0.1) 0%,
-    rgba(255, 255, 255, 0.9) 90%
-  );
-}
-
 .title {
   position: relative;
   display: inline-block;
@@ -183,19 +200,12 @@ export default {
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #ec4899, #a855f7);
-  border-radius: 3px;
-}
-
-.name-color {
-  width: 3px;
-  height: 24px;
-  margin-right: 10px;
+  background: var(--el-color-primary);
+  opacity: 0.7;
   border-radius: 3px;
 }
 
 .table-list-box {
-  border: 1px solid rgba(236, 72, 153, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -207,7 +217,8 @@ export default {
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, #ec4899, #a855f7, #60a5fa);
+  background: var(--el-color-primary);
+  opacity: 0.8;
 }
 
 /* 响应式调整 */
@@ -244,19 +255,19 @@ export default {
 }
 
 ::v-deep .anime-collapse-item {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: var(--el-bg-color-overlay);
   border-radius: 8px !important;
   margin-bottom: 12px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(236, 72, 153, 0.1) !important;
+  box-shadow: var(--el-box-shadow-lighter);
+  border: 1px solid var(--el-border-color-light) !important;
 }
 
 ::v-deep .anime-collapse-item__header {
-  background-color: rgba(248, 231, 239, 0.5) !important;
+  background-color: var(--el-fill-color-light) !important;
   border-radius: 8px !important;
   padding: 12px 16px !important;
   font-size: 16px !important;
-  color: #6b21a8 !important;
+  color: var(--el-text-color-primary) !important;
   border-bottom: none !important;
 }
 
@@ -269,25 +280,25 @@ export default {
 
 ::v-deep .anime-collapse-item__content {
   padding: 16px !important;
-  color: #4c1d95 !important;
+  color: var(--el-text-color-primary) !important;
 }
 
 ::v-deep .anime-table {
-  --el-table-border-color: rgba(236, 72, 153, 0.2) !important;
-  --el-table-header-bg-color: rgba(248, 231, 239, 0.5) !important;
-  --el-table-tr-bg-color: rgba(255, 255, 255, 0.8) !important;
-  --el-table-row-hover-bg-color: rgba(236, 72, 153, 0.1) !important;
+  --el-table-border-color: var(--el-border-color-light) !important;
+  --el-table-header-bg-color: var(--el-fill-color-light) !important;
+  --el-table-tr-bg-color: var(--el-bg-color-overlay) !important;
+  --el-table-row-hover-bg-color: var(--el-color-primary-light-9) !important;
   border-radius: 8px !important;
   overflow: hidden !important;
 }
 
 ::v-deep .anime-table th {
-  color: #6b21a8 !important;
+  color: var(--el-text-color-primary) !important;
   font-weight: bold !important;
 }
 
 ::v-deep .anime-table td {
-  color: #4c1d95 !important;
+  color: var(--el-text-color-regular) !important;
 }
 
 ::v-deep .cute-column .cell {

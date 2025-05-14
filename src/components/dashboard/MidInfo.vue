@@ -50,7 +50,7 @@
                 <svg-icon
                   :icon-class="item.icon"
                   class="w-6 h-6 mr-2"
-                  :class="item.iconColor"
+                  :style="{ color: 'var(--text-color-secondary)' }"
                 />
                 <span
                   class="text-sm md:text-base font-medium"
@@ -61,7 +61,7 @@
               <div class="text-center">
                 <p
                   class="text-2xl md:text-3xl font-bold"
-                  :class="item.textColor"
+                  :style="{ color: 'var(--text-color-secondary)' }"
                 >
                   {{ systemStatus[item.key] }}%
                 </p>
@@ -192,7 +192,7 @@
             >
           </div>
           <div
-            class="log-content rounded-lg p-3 flex-1 min-h-0 overflow-hidden"
+            class="log-content rounded-lg flex-1 min-h-0 overflow-hidden"
             :style="{
               height: logHeight + 'px',
               backgroundColor: 'var(--bg-color-secondary)',
@@ -224,22 +224,16 @@ export default {
           icon: "cpu",
           title: "CPU",
           key: "cpu",
-          iconColor: "text-blue-500",
-          textColor: "text-blue-600",
         },
         {
           icon: "memory",
           title: "MEMORY",
           key: "memory",
-          iconColor: "text-green-500",
-          textColor: "text-green-600",
         },
         {
           icon: "disk",
           title: "DISK",
           key: "disk",
-          iconColor: "text-yellow-500",
-          textColor: "text-yellow-600",
         },
       ],
       chatCards: [
@@ -390,7 +384,7 @@ export default {
         )
 
         // 设置日志区高度（减去标题和padding）
-        this.logHeight = Math.max(this.mainHeight - 280, 100)
+        this.logHeight = Math.max(this.mainHeight - 283, 100)
 
         // 如果是移动设备，使用更紧凑的布局
         if (this.$isMobile()) {

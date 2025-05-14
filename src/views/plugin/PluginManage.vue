@@ -1,11 +1,16 @@
 <template>
   <div
     ref="pluginManager"
-    class="plugin-manager bg-pink-50 p-4 md:p-6 rounded-2xl"
+    class="plugin-manager p-4 md:p-6 rounded-2xl"
+    :style="{ backgroundColor: 'var(--bg-color)' }"
   >
     <!-- 顶部插件类型选择 -->
     <div
-      class="type-selector bg-white rounded-xl shadow-md p-1 mb-6 inline-flex border border-pink-200"
+      class="type-selector rounded-xl shadow-md p-1 mb-6 inline-flex"
+      :style="{
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color-light)',
+      }"
     >
       <button
         v-for="type in pluginTypes"
@@ -13,10 +18,24 @@
         @click="clickPluginType(type.value)"
         class="px-4 py-2 text-sm font-medium transition-all duration-300"
         :class="{
-          'bg-pink-500 text-white shadow-inner': activeBtn === type.value,
-          'text-pink-600 hover:bg-pink-100': activeBtn !== type.value,
+          'text-white shadow-inner': activeBtn === type.value,
+          'hover:bg-opacity-10': activeBtn !== type.value,
           'rounded-l-lg': type.first,
           'rounded-r-lg': type.last,
+        }"
+        :style="{
+          backgroundColor:
+            activeBtn === type.value ? 'var(--primary-color)' : 'transparent',
+          color:
+            activeBtn === type.value
+              ? 'var(--bg-color)'
+              : 'var(--primary-color)',
+          '&:hover': {
+            backgroundColor:
+              activeBtn !== type.value
+                ? 'var(--bg-color-hover)'
+                : 'var(--primary-color)',
+          },
         }"
       >
         {{ type.label }}({{ pluginCount[type.countKey] }})
@@ -25,7 +44,11 @@
 
     <!-- 过滤标签区域 -->
     <div
-      class="filter-area bg-white rounded-xl shadow-md p-4 mb-6 border border-pink-200"
+      class="filter-area rounded-xl shadow-md p-4 mb-6"
+      :style="{
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color-light)',
+      }"
     >
       <div class="flex flex-wrap items-center gap-2">
         <span
@@ -33,10 +56,15 @@
           :key="tag"
           @click="selectMenuType(tag)"
           class="px-3 py-1 text-xs rounded-full transition-all duration-200 cursor-pointer"
-          :class="{
-            'bg-pink-500 text-white': searchMenuType === tag,
-            'bg-pink-100 text-pink-600 hover:bg-pink-200':
-              searchMenuType !== tag,
+          :style="{
+            backgroundColor:
+              searchMenuType === tag
+                ? 'var(--primary-color)'
+                : 'var(--bg-color-hover)',
+            color:
+              searchMenuType === tag
+                ? 'var(--bg-color)'
+                : 'var(--primary-color)',
           }"
         >
           {{ tag }}
@@ -44,14 +72,22 @@
 
         <button
           @click="showAddDialogFlag = true"
-          class="ml-auto px-3 py-1 text-xs rounded-full bg-purple-100 text-purple-600 hover:bg-purple-200 transition-colors duration-200 flex items-center"
+          class="ml-auto px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
+          :style="{
+            backgroundColor: 'var(--bg-color-hover)',
+            color: 'var(--primary-color)',
+          }"
         >
           <i class="fas fa-plus mr-1"></i>新增类型
         </button>
 
         <button
           @click="openManageTypesDialog"
-          class="px-3 py-1 text-xs rounded-full bg-pink-100 text-pink-600 hover:bg-pink-200 transition-colors duration-200 flex items-center"
+          class="px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
+          :style="{
+            backgroundColor: 'var(--bg-color-hover)',
+            color: 'var(--primary-color)',
+          }"
         >
           <i class="fas fa-cog mr-1"></i>管理类型
         </button>
@@ -61,31 +97,51 @@
     <!-- 批量操作栏 -->
     <div
       v-if="selectedPluginModules.length > 0"
-      class="bulk-actions bg-white rounded-xl shadow-md p-3 mb-6 border-2 border-pink-300 animate-pulse"
+      class="bulk-actions rounded-xl shadow-md p-3 mb-6 border-2 animate-pulse"
+      :style="{
+        backgroundColor: 'var(--bg-color-secondary)',
+        borderColor: 'var(--primary-color)',
+      }"
     >
       <div class="flex flex-wrap items-center gap-3">
-        <span class="text-sm font-medium text-pink-600">
+        <span
+          class="text-sm font-medium"
+          :style="{ color: 'var(--primary-color)' }"
+        >
           <i class="fas fa-check-circle mr-1"></i>已选择
           {{ selectedPluginModules.length }} 个插件
         </span>
 
         <button
           @click="bulkToggleSwitch(true)"
-          class="px-3 py-1 text-xs rounded-full bg-green-100 text-green-600 hover:bg-green-200 transition-colors duration-200 flex items-center"
+          class="px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
+          :style="{
+            backgroundColor: 'var(--success-color-light)',
+            color: 'var(--success-color)',
+          }"
         >
           <i class="fas fa-power-off mr-1"></i>启用
         </button>
 
         <button
           @click="bulkToggleSwitch(false)"
-          class="px-3 py-1 text-xs rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition-colors duration-200 flex items-center"
+          class="px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
+          :style="{
+            backgroundColor: 'var(--danger-color-light)',
+            color: 'var(--danger-color)',
+          }"
         >
           <i class="fas fa-ban mr-1"></i>禁用
         </button>
 
         <select
           v-model="targetMenuTypeBulk"
-          class="px-3 py-1 text-xs rounded-full bg-white border border-pink-200 focus:border-pink-300 focus:ring-1 focus:ring-pink-200 transition-all duration-200"
+          class="px-3 py-1 text-xs rounded-full transition-all duration-200"
+          :style="{
+            backgroundColor: 'var(--bg-color)',
+            border: '1px solid var(--border-color-light)',
+            color: 'var(--text-color)',
+          }"
         >
           <option value="" disabled selected>选择新菜单类型</option>
           <option v-for="item in sortedMenuTypeList" :key="item" :value="item">
@@ -95,15 +151,23 @@
 
         <button
           @click="bulkUpdateMenuType"
-          class="px-3 py-1 text-xs rounded-full bg-pink-500 text-white hover:bg-pink-600 transition-colors duration-200 flex items-center"
+          class="px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
           :disabled="!targetMenuTypeBulk"
+          :style="{
+            backgroundColor: 'var(--primary-color)',
+            color: 'var(--bg-color)',
+          }"
         >
           <i class="fas fa-check mr-1"></i>应用类型
         </button>
 
         <button
           @click="cancelSelection"
-          class="ml-auto px-3 py-1 text-xs rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors duration-200 flex items-center"
+          class="ml-auto px-3 py-1 text-xs rounded-full transition-colors duration-200 flex items-center"
+          :style="{
+            backgroundColor: 'var(--bg-color-hover)',
+            color: 'var(--text-color-secondary)',
+          }"
         >
           <i class="fas fa-times mr-1"></i>取消选择
         </button>
@@ -112,7 +176,11 @@
 
     <!-- 插件列表 -->
     <div
-      class="plugin-list-container bg-white rounded-xl shadow-md p-4 border border-pink-200"
+      class="plugin-list-container rounded-xl shadow-md p-4"
+      :style="{
+        backgroundColor: 'var(--bg-color-secondary)',
+        border: '1px solid var(--border-color-light)',
+      }"
     >
       <PluginListTemplate
         ref="pluginListRef"
@@ -127,18 +195,23 @@
     <!-- 管理菜单类型对话框 -->
     <div
       v-if="manageTypesDialogVisible"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      class="fixed inset-0 flex items-center justify-center z-50"
+      :style="{ backgroundColor: 'var(--mask-color)' }"
     >
       <div
-        class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 animate-bounce-in"
+        class="rounded-xl shadow-xl w-full max-w-md p-6 animate-bounce-in"
+        :style="{ backgroundColor: 'var(--bg-color-secondary)' }"
       >
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-bold text-pink-600">
+          <h3
+            class="text-lg font-bold"
+            :style="{ color: 'var(--primary-color)' }"
+          >
             <i class="fas fa-list-ul mr-2"></i>管理菜单类型
           </h3>
           <button
             @click="manageTypesDialogVisible = false"
-            class="text-pink-400 hover:text-pink-600"
+            :style="{ color: 'var(--primary-color-light)' }"
           >
             <i class="fas fa-times"></i>
           </button>
@@ -147,7 +220,8 @@
         <div class="max-h-96 overflow-y-auto">
           <div
             v-if="sortedMenuTypeList.length === 0"
-            class="text-center py-4 text-gray-500"
+            class="text-center py-4"
+            :style="{ color: 'var(--text-color-secondary)' }"
           >
             <i class="fas fa-inbox text-3xl mb-2"></i>
             <p>暂无自定义菜单类型</p>
@@ -156,12 +230,17 @@
           <div
             v-for="type in sortedMenuTypeList"
             :key="type"
-            class="flex justify-between items-center py-2 border-b border-pink-100 last:border-0"
+            class="flex justify-between items-center py-2"
+            :style="{ borderBottom: '1px solid var(--border-color-light)' }"
           >
-            <span class="text-pink-700">{{ type }}</span>
+            <span :style="{ color: 'var(--primary-color)' }">{{ type }}</span>
             <button
               @click="startRenameType(type)"
-              class="px-2 py-1 text-xs rounded-full bg-pink-100 text-pink-600 hover:bg-pink-200 transition-colors duration-200"
+              class="px-2 py-1 text-xs rounded-full transition-colors duration-200"
+              :style="{
+                backgroundColor: 'var(--bg-color-hover)',
+                color: 'var(--primary-color)',
+              }"
             >
               <i class="fas fa-edit mr-1"></i>重命名
             </button>
@@ -171,7 +250,11 @@
         <div class="mt-6 flex justify-end">
           <button
             @click="manageTypesDialogVisible = false"
-            class="px-4 py-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition-colors duration-200"
+            class="px-4 py-2 rounded-full transition-colors duration-200"
+            :style="{
+              backgroundColor: 'var(--primary-color)',
+              color: 'var(--bg-color)',
+            }"
           >
             关闭
           </button>
@@ -580,7 +663,7 @@ export default {
 }
 
 .plugin-list-container:hover {
-  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.15);
+  box-shadow: var(--primary-shadow);
 }
 
 /* 响应式调整 */
@@ -611,16 +694,16 @@ export default {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(244, 114, 182, 0.1);
+  background: var(--bg-color-hover);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(236, 72, 153, 0.3);
+  background: var(--primary-color-light);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(236, 72, 153, 0.5);
+  background: var(--primary-color);
 }
 </style>

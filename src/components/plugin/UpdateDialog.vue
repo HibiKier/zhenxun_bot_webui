@@ -196,8 +196,8 @@
         icon="cancel"
         @click="close"
         :rounded="true"
-        color="#A0A0A0"
-        text-color="#fff"
+        :color="'var(--el-text-color-disabled)'"
+        :text-color="'var(--el-color-white)'"
       >
         取消
       </CuteButton>
@@ -208,6 +208,8 @@
         type="primary"
         :rounded="true"
         icon="true"
+        :color="'var(--el-color-primary)'"
+        :text-color="'var(--el-color-white)'"
         >确定
       </CuteButton>
     </div>
@@ -428,33 +430,29 @@ export default {
 .neko-dialog {
   ::v-deep .el-dialog {
     border-radius: 20px;
-    background: linear-gradient(
-      145deg,
-      rgba(255, 240, 250, 0.98) 0%,
-      rgba(240, 240, 255, 0.98) 100%
-    );
+    background: var(--el-bg-color-overlay);
     backdrop-filter: blur(12px);
-    box-shadow: 0 10px 30px rgba(255, 150, 200, 0.3);
-    border: 2px solid rgba(255, 220, 240, 0.8);
+    box-shadow: var(--el-box-shadow-light);
+    border: 2px solid var(--el-border-color-light);
     overflow: hidden;
     position: relative;
   }
 
   ::v-deep .el-dialog__header {
-    border-bottom: 1px solid rgba(255, 200, 220, 0.5);
+    border-bottom: 1px solid var(--el-border-color-light);
     padding: 15px 20px;
-    background: rgba(255, 240, 250, 0.5);
+    background: var(--el-fill-color-light);
   }
 
   ::v-deep .el-dialog__title {
-    color: #ff6b9e;
+    color: var(--el-color-primary);
     font-weight: bold;
     font-size: 18px;
-    text-shadow: 0 2px 4px rgba(255, 150, 200, 0.2);
+    text-shadow: 0 2px 4px var(--el-color-primary-light-7);
   }
 
   ::v-deep .el-dialog__body {
-    color: #758ea1;
+    color: var(--el-text-color-regular);
     padding: 20px;
     position: relative;
   }
@@ -508,11 +506,15 @@ export default {
     .plugin-name-class {
       font-size: 2rem;
       font-weight: bold;
-      color: #ff6b9e;
-      text-shadow: 0 2px 4px rgba(255, 150, 200, 0.3);
+      color: var(--el-color-primary);
+      text-shadow: 0 2px 4px var(--el-color-primary-light-7);
       margin: 0;
       display: inline-block;
-      background: linear-gradient(45deg, #ff6b9e, #9d65ff);
+      background: linear-gradient(
+        45deg,
+        var(--el-color-primary),
+        var(--el-color-primary-light-3)
+      );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -520,17 +522,17 @@ export default {
     .version-class {
       font-size: 1rem;
       font-weight: normal;
-      color: #9d65ff;
+      color: var(--el-color-primary-light-3);
       margin-left: 0.5rem;
     }
 
     .module-info {
-      color: #888;
+      color: var(--el-text-color-secondary);
       font-size: 0.9rem;
       margin-top: 5px;
 
       .author-class {
-        color: #9d65ff;
+        color: var(--el-color-primary-light-3);
         font-weight: 500;
       }
     }
@@ -545,8 +547,12 @@ export default {
     .title-text {
       font-size: 1.25rem;
       font-weight: bold;
-      color: #ff6b9e;
-      background: linear-gradient(45deg, #ff6b9e, #9d65ff);
+      color: var(--el-color-primary);
+      background: linear-gradient(
+        45deg,
+        var(--el-color-primary),
+        var(--el-color-primary-light-3)
+      );
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       padding-right: 10px;
@@ -558,8 +564,8 @@ export default {
       height: 2px;
       background: linear-gradient(
         90deg,
-        rgba(255, 107, 158, 0.3),
-        rgba(157, 101, 255, 0.3)
+        var(--el-color-primary-light-7),
+        var(--el-color-primary-light-5)
       );
       position: relative;
 
@@ -571,7 +577,7 @@ export default {
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background: #9d65ff;
+        background: var(--el-color-primary-light-3);
       }
     }
   }
@@ -580,21 +586,21 @@ export default {
     display: flex;
     align-items: center;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--el-bg-color);
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(255, 150, 200, 0.1);
+    box-shadow: var(--el-box-shadow-lighter);
     transition: all 0.3s ease;
     position: relative;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 150, 200, 0.2);
-      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--el-box-shadow-light);
+      background: var(--el-bg-color-overlay);
     }
 
     .label-text {
       font-size: 14px;
-      color: #666;
+      color: var(--el-text-color-regular);
       min-width: 80px;
       margin-right: 10px;
     }
@@ -608,14 +614,14 @@ export default {
   .cute-input {
     ::v-deep .el-input__inner {
       border-radius: 12px;
-      border: 1px solid rgba(255, 150, 200, 0.5);
-      background: rgba(255, 255, 255, 0.8);
-      color: #ff6b9e;
+      border: 1px solid var(--el-border-color-light);
+      background: var(--el-bg-color);
+      color: var(--el-text-color-regular);
       padding-left: 10px;
 
       &:focus {
-        border-color: #ff6b9e;
-        box-shadow: 0 0 0 2px rgba(255, 107, 158, 0.2);
+        border-color: var(--el-color-primary);
+        box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
       }
     }
   }
@@ -624,29 +630,25 @@ export default {
     ::v-deep .el-select {
       .el-input__inner {
         border-radius: 12px;
-        border: 1px solid rgba(255, 150, 200, 0.5);
-        background: rgba(255, 255, 255, 0.8);
-        color: #ff6b9e;
+        border: 1px solid var(--el-border-color-light);
+        background: var(--el-bg-color);
+        color: var(--el-text-color-regular);
 
         &:hover {
-          border-color: #ff6b9e;
+          border-color: var(--el-color-primary);
         }
       }
 
       .el-select__caret {
-        color: #ff6b9e;
+        color: var(--el-color-primary);
       }
     }
   }
 
   .neko-divider {
     ::v-deep .el-divider__text {
-      background: linear-gradient(
-        145deg,
-        rgba(255, 240, 245, 0.95) 0%,
-        rgba(240, 240, 255, 0.95) 100%
-      );
-      color: #ff6b9e;
+      background: var(--el-bg-color);
+      color: var(--el-color-primary);
       font-size: 14px;
       padding: 0 15px;
     }
@@ -665,10 +667,10 @@ export default {
 
   .neko-table {
     ::v-deep .el-table {
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: var(--el-bg-color);
       border-radius: 15px !important;
       overflow: hidden;
-      border: 1px solid rgba(255, 200, 220, 0.5);
+      border: 1px solid var(--el-border-color-light);
 
       &::before {
         display: none;
@@ -684,30 +686,30 @@ export default {
     }
 
     .neko-table-header {
-      background: linear-gradient(45deg, #ffebf2 0%, #ebf2ff 100%);
-      color: #ff6b9e;
+      background: var(--el-fill-color-light);
+      color: var(--el-color-primary);
       font-weight: bold;
 
       th {
-        border-bottom: 1px solid rgba(255, 200, 220, 0.5);
+        border-bottom: 1px solid var(--el-border-color-light);
       }
     }
 
     ::v-deep .el-table__row {
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: var(--el-bg-color);
       transition: all 0.3s;
 
       td {
-        border-bottom: 1px solid rgba(255, 200, 220, 0.3);
+        border-bottom: 1px solid var(--el-border-color-light);
       }
 
       &:hover {
-        background-color: rgba(255, 240, 245, 0.7);
+        background-color: var(--el-fill-color-light);
         transform: translateX(2px);
       }
 
       &:nth-child(even) {
-        background-color: rgba(255, 250, 252, 0.5);
+        background-color: var(--el-fill-color-lighter);
       }
     }
   }
@@ -719,16 +721,16 @@ export default {
     }
 
     ::v-deep ::-webkit-scrollbar-track {
-      background: rgba(255, 220, 240, 0.3);
+      background: var(--el-fill-color-light);
       border-radius: 3px;
     }
 
     ::v-deep ::-webkit-scrollbar-thumb {
-      background: rgba(255, 150, 200, 0.5);
+      background: var(--el-color-primary-light-5);
       border-radius: 3px;
 
       &:hover {
-        background: rgba(255, 150, 200, 0.7);
+        background: var(--el-color-primary-light-3);
       }
     }
   }
@@ -773,21 +775,21 @@ export default {
   }
 
   .cancel-btn {
-    background: linear-gradient(45deg, #f0f0f0 0%, #e0e0e0 100%);
-    color: #888;
+    background: var(--el-fill-color-light);
+    color: var(--el-text-color-disabled);
 
     &:hover {
-      background: linear-gradient(45deg, #f8f8f8 0%, #e8e8e8 100%);
+      background: var(--el-fill-color);
     }
   }
 
   .confirm-btn {
-    background: linear-gradient(45deg, #ff76d0 0%, #a966ff 100%);
-    color: white;
+    background: var(--el-color-primary);
+    color: var(--el-color-white);
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 
     &:hover {
-      background: linear-gradient(45deg, #ff8cd9 0%, #b57aff 100%);
+      background: var(--el-color-primary-light-3);
     }
   }
 }

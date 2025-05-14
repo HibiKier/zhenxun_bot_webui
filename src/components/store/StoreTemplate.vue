@@ -1,13 +1,18 @@
 <template>
-  <div class="main p-4 md:p-6 bg-pink-50">
+  <div class="main p-4 md:p-6" :style="{ background: 'var(--el-bg-color)' }">
     <!-- 标题部分 -->
     <div class="title text-center mb-6">
-      <h1 class="text-3xl md:text-4xl font-bold text-purple-600 animate-bounce">
+      <h1
+        class="text-3xl md:text-4xl font-bold animate-bounce"
+        :style="{ color: 'var(--el-color-primary)' }"
+      >
         <span class="inline-block transform rotate-3">✨</span>
         插件商店
         <span class="inline-block transform -rotate-3">✨</span>
       </h1>
-      <div class="text-sm text-pink-400 mt-2">发现更多有趣的功能吧~</div>
+      <div class="mt-2" :style="{ color: 'var(--el-color-primary-light-3)' }">
+        发现更多有趣的功能吧~
+      </div>
     </div>
 
     <!-- 筛选部分 -->
@@ -20,48 +25,83 @@
           v-model="search"
           placeholder="搜索插件..."
           class="rounded-full"
-          :class="{ 'focus:ring-2 focus:ring-pink-300': true }"
         >
           <template #prefix>
-            <svg-icon icon-class="search" class="text-pink-400" />
+            <svg-icon
+              icon-class="search"
+              :style="{ color: 'var(--el-color-primary-light-3)' }"
+            />
           </template>
         </el-input>
       </div>
 
       <!-- 作者筛选 -->
-      <!-- <div class="search-tag">
+      <div class="search-tag">
         <el-dropdown
           @command="handleCommand"
           trigger="click"
           class="cursor-pointer"
         >
           <div
-            class="flex items-center px-4 py-2 rounded-full bg-white shadow-md hover:bg-pink-100 transition-colors duration-200 border border-pink-200"
-            @mouseover="mouseover"
-            @mouseout="mouseout"
+            class="filter-button flex items-center px-4 py-2 rounded-full transition-all duration-300"
+            :style="{
+              backgroundColor: 'var(--el-fill-color-blank)',
+              border: '1px solid var(--el-border-color-darker)',
+              boxShadow: 'var(--el-box-shadow)',
+            }"
           >
-            <svg-icon :icon-class="authorIcon" class="mr-2 text-pink-500" />
-            <span class="text-pink-600 font-medium">作者</span>
+            <svg-icon
+              :icon-class="authorIcon"
+              class="mr-2"
+              :color="'var(--el-color-primary)'"
+            />
+            <span
+              :style="{
+                color: 'var(--el-text-color-primary)',
+                fontWeight: 500,
+              }"
+              >作者筛选</span
+            >
+            <svg-icon
+              icon-class="arrow-down"
+              class="ml-2 transform transition-transform duration-300"
+              :color="'var(--el-color-primary)'"
+            />
           </div>
 
-          <el-dropdown-menu
-            slot="dropdown"
-            class="rounded-lg shadow-lg border border-pink-100 overflow-hidden"
-          >
-            <el-dropdown-item
-              v-for="(v, i) in authorList"
-              :key="i"
-              :command="v"
-              class="hover:bg-pink-50 text-pink-600 font-medium"
+          <template #dropdown>
+            <el-dropdown-menu
+              class="author-dropdown"
+              :style="{
+                backgroundColor: 'var(--el-bg-color-overlay)',
+                border: '1px solid var(--el-border-color-darker)',
+                borderRadius: '8px',
+                boxShadow: 'var(--el-box-shadow)',
+                padding: '4px',
+              }"
             >
-              <div class="flex items-center">
-                <svg-icon icon-class="user" class="mr-2 text-pink-400" />
-                {{ v }}
-              </div>
-            </el-dropdown-item>
-          </el-dropdown-menu>
+              <el-dropdown-item
+                v-for="(v, i) in authorList"
+                :key="i"
+                :command="v"
+                class="author-item"
+              >
+                <div
+                  class="flex items-center py-2 px-3 rounded-md"
+                  :style="{ color: 'var(--el-text-color-primary)' }"
+                >
+                  <svg-icon
+                    icon-class="user"
+                    class="mr-2"
+                    :color="'var(--el-color-primary)'"
+                  />
+                  {{ v }}
+                </div>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
         </el-dropdown>
-      </div> -->
+      </div>
     </div>
 
     <!-- 表格部分 -->
@@ -71,7 +111,14 @@
     >
       <div
         ref="tableWrapper"
-        class="table-border bg-white rounded-xl p-4 shadow-lg border border-pink-100 flex-1 flex flex-col"
+        class="table-border flex-1 flex flex-col"
+        :style="{
+          background: 'var(--el-bg-color)',
+          borderRadius: '12px',
+          padding: '1rem',
+          boxShadow: 'var(--el-box-shadow-light)',
+          border: '1px solid var(--el-border-color-light)',
+        }"
       >
         <el-table
           :data="filterTableData"
@@ -91,7 +138,13 @@
             header-align="center"
           >
             <template #header>
-              <span class="text-pink-500 font-bold">ID</span>
+              <span
+                :style="{
+                  color: 'var(--el-color-primary)',
+                  fontWeight: 'bold',
+                }"
+                >ID</span
+              >
             </template>
           </el-table-column>
 
@@ -102,7 +155,13 @@
             header-align="center"
           >
             <template #header>
-              <span class="text-pink-500 font-bold">名称</span>
+              <span
+                :style="{
+                  color: 'var(--el-color-primary)',
+                  fontWeight: 'bold',
+                }"
+                >名称</span
+              >
             </template>
             <template slot-scope="scope">
               <div class="name-border flex items-center">
@@ -112,7 +171,8 @@
                   effect="light"
                 >
                   <span
-                    class="truncate max-w-[120px] md:max-w-[160px] ml-2 font-medium text-gray-700"
+                    class="truncate max-w-[120px] md:max-w-[160px] ml-2 font-medium"
+                    :style="{ color: 'var(--el-text-color-primary)' }"
                   >
                     {{ scope.row.name }}
                   </span>
@@ -125,14 +185,19 @@
                   class="ml-2 hover:scale-110 transform transition-transform"
                 >
                   <svg-icon
-                    class="github-icon w-6 h-6 text-gray-600 hover:text-purple-600"
+                    class="github-icon w-6 h-6"
+                    :style="{ color: 'var(--el-text-color-regular)' }"
                     icon-class="github"
                   />
                 </a>
 
                 <span
                   v-if="installModule.includes(scope.row.module)"
-                  class="is-install ml-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full flex items-center"
+                  class="is-install ml-2 px-2 py-1 rounded-full flex items-center text-xs"
+                  :style="{
+                    background: 'var(--el-color-success-light-9)',
+                    color: 'var(--el-color-success)',
+                  }"
                 >
                   <svg-icon icon-class="check" class="mr-1 w-3 h-3" />
                   已安装
@@ -148,15 +213,24 @@
             header-align="center"
           >
             <template #header>
-              <span class="text-pink-500 font-bold">作者</span>
+              <span
+                :style="{
+                  color: 'var(--el-color-primary)',
+                  fontWeight: 'bold',
+                }"
+                >作者</span
+              >
             </template>
             <template slot-scope="scope">
               <div class="flex items-center">
                 <svg-icon
                   icon-class="user"
-                  class="mr-2 text-pink-400 w-4 h-4"
+                  class="mr-2 w-4 h-4"
+                  :style="{ color: 'var(--el-color-primary-light-3)' }"
                 />
-                <span class="text-gray-700">{{ scope.row.author }}</span>
+                <span :style="{ color: 'var(--el-text-color-primary)' }">{{
+                  scope.row.author
+                }}</span>
               </div>
             </template>
           </el-table-column>
@@ -169,13 +243,23 @@
             header-align="center"
           >
             <template #header>
-              <span class="text-pink-500 font-bold">版本</span>
+              <span
+                :style="{
+                  color: 'var(--el-color-primary)',
+                  fontWeight: 'bold',
+                }"
+                >版本</span
+              >
             </template>
             <template slot-scope="scope">
               <el-tag
                 size="small"
                 effect="plain"
-                class="border border-pink-200 bg-pink-50 text-pink-600"
+                :style="{
+                  border: '1px solid var(--el-color-primary-light-5)',
+                  background: 'var(--el-color-primary-light-9)',
+                  color: 'var(--el-color-primary)',
+                }"
               >
                 v{{ scope.row.version }}
               </el-tag>
@@ -190,7 +274,13 @@
             header-align="center"
           >
             <template #header>
-              <span class="text-pink-500 font-bold">类型</span>
+              <span
+                :style="{
+                  color: 'var(--el-color-primary)',
+                  fontWeight: 'bold',
+                }"
+                >类型</span
+              >
             </template>
             <template slot-scope="scope">
               <el-tag
@@ -209,7 +299,13 @@
             header-align="center"
           >
             <template #header>
-              <span class="text-pink-500 font-bold">简介</span>
+              <span
+                :style="{
+                  color: 'var(--el-color-primary)',
+                  fontWeight: 'bold',
+                }"
+                >简介</span
+              >
             </template>
             <template slot-scope="scope">
               <el-tooltip
@@ -217,7 +313,10 @@
                 placement="top"
                 effect="light"
               >
-                <span class="line-clamp-2 text-gray-600">
+                <span
+                  class="line-clamp-2"
+                  :style="{ color: 'var(--el-text-color-secondary)' }"
+                >
                   {{ scope.row.description }}
                 </span>
               </el-tooltip>
@@ -231,56 +330,71 @@
             header-align="center"
           >
             <template #header>
-              <span class="text-pink-500 font-bold">操作</span>
+              <span
+                :style="{
+                  color: 'var(--el-color-primary)',
+                  fontWeight: 'bold',
+                }"
+                >操作</span
+              >
             </template>
             <template slot-scope="scope">
               <div class="flex flex-wrap justify-center gap-1 md:gap-2">
                 <my-button
-                  text="README"
                   icon="readme"
-                  :iconWidth="20"
+                  text="说明"
                   :iconHeight="20"
                   :height="28"
                   :width="80"
                   @click="handleReadme(scope.$index, scope.row)"
-                  class="handle-btn bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-200"
+                  type="info"
                   :disabled="true"
+                  rounded="full"
+                  :style="{
+                    borderColor: 'var(--el-border-color)',
+                  }"
                 />
-
                 <my-button
-                  text="安装"
                   icon="download"
-                  :iconWidth="20"
+                  text="安装"
                   :iconHeight="20"
                   :height="28"
                   :width="80"
                   @click="handleInstall(scope.$index, scope.row)"
-                  class="handle-btn bg-green-50 hover:bg-green-100 text-green-600 border-green-200"
+                  type="primary"
                   :disabled="installModule.includes(scope.row.module)"
+                  rounded="full"
+                  :style="{
+                    borderColor: 'var(--el-border-color)',
+                  }"
                 />
-
                 <my-button
-                  text="更新"
                   icon="update"
-                  :iconWidth="20"
+                  text="更新"
                   :iconHeight="20"
                   :height="28"
                   :width="80"
                   @click="handleUpdate(scope.$index, scope.row)"
-                  class="handle-btn bg-yellow-50 hover:bg-yellow-100 text-yellow-600 border-yellow-200"
+                  type="warning"
                   :disabled="!installModule.includes(scope.row.module)"
+                  rounded="full"
+                  :style="{
+                    borderColor: 'var(--el-border-color)',
+                  }"
                 />
-
                 <my-button
-                  text="移除"
                   icon="remove"
-                  :iconWidth="20"
+                  text="删除"
                   :iconHeight="20"
                   :height="28"
                   :width="80"
                   @click="handleRemove(scope.$index, scope.row)"
-                  class="handle-btn bg-red-50 hover:bg-red-100 text-red-600 border-red-200"
+                  type="danger"
                   :disabled="!installModule.includes(scope.row.module)"
+                  rounded="full"
+                  :style="{
+                    borderColor: 'var(--el-border-color)',
+                  }"
                 />
               </div>
             </template>
@@ -393,181 +507,160 @@ export default {
       this.$message.info("README功能开发中，敬请期待~")
     },
 
-    handleUpdate(i, data) {
-      this.$confirm("确定要更新这个插件吗?", "更新确认", {
-        confirmButtonText: "确定更新",
-        cancelButtonText: "取消",
+    async handleUpdate(i, data) {
+      const result = await this.$cuteConfirm({
+        title: "更新确认",
+        message: `确定要更新这个插件吗`,
+        cancelButtonText: "我再想想",
+        confirmButtonText: "无视风险强制更新",
         type: "warning",
-        customClass: "confirm-box",
-        confirmButtonClass: "el-button--warning",
-        iconClass: "el-icon-question text-yellow-500",
       })
-        .then(() => {
-          var loading = this.$loading({
-            target: ".table-border",
-            text: "正在更新插件...",
-            spinner: "el-icon-loading",
-            background: "rgba(255, 255, 255, 0.7)",
-          })
 
-          this.postRequest(`${this.$root.prefix}/store/update_plugin`, {
-            id: data.id,
-          })
-            .then((resp) => {
-              loading.close()
-              if (resp.suc) {
-                if (resp.warning) {
-                  this.$message.warning({
-                    message: resp.warning,
-                    iconClass: "el-icon-warning-outline",
-                  })
-                } else {
-                  this.$message.success({
-                    message: resp.info || "插件更新成功!",
-                    iconClass: "el-icon-success",
-                  })
-                  this.getPluginList()
-                }
-              } else {
-                this.$message.error({
-                  message: resp.info || "插件更新失败",
-                  iconClass: "el-icon-error",
+      if (result) {
+        var loading = this.$loading(".table-border")
+
+        this.postRequest(`${this.$root.prefix}/store/update_plugin`, {
+          id: data.id,
+        })
+          .then((resp) => {
+            loading.close()
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning({
+                  message: resp.warning,
+                  iconClass: "el-icon-warning-outline",
                 })
+              } else {
+                this.$message.success({
+                  message: resp.info || "插件更新成功!",
+                  iconClass: "el-icon-success",
+                })
+                this.getPluginList()
               }
-            })
-            .catch((error) => {
-              loading.close()
+            } else {
               this.$message.error({
-                message: "更新过程中发生错误: " + (error.message || error),
+                message: resp.info || "插件更新失败",
                 iconClass: "el-icon-error",
               })
-              console.error("[Plugin Store] Update error:", error)
-            })
-        })
-        .catch(() => {
-          this.$message.info({
-            message: "已取消更新",
-            iconClass: "el-icon-info",
+            }
           })
+          .catch((error) => {
+            loading.close()
+            this.$message.error({
+              message: "更新过程中发生错误: " + (error.message || error),
+              iconClass: "el-icon-error",
+            })
+            console.error("[Plugin Store] Update error:", error)
+          })
+      } else {
+        this.$message.info({
+          message: "已取消更新",
+          iconClass: "el-icon-info",
         })
+      }
     },
 
-    handleRemove(i, data) {
-      this.$confirm("确定要移除这个插件吗?", "移除确认", {
-        confirmButtonText: "确定移除",
-        cancelButtonText: "取消",
-        type: "error",
-        customClass: "confirm-box",
-        confirmButtonClass: "el-button--danger",
-        iconClass: "el-icon-warning text-red-500",
+    async handleRemove(i, data) {
+      const result = await this.$cuteConfirm({
+        title: "移除确认",
+        message: `确定要移除这个插件吗`,
+        cancelButtonText: "我再想想",
+        confirmButtonText: "坚定不移必须移除",
+        type: "warning",
       })
-        .then(() => {
-          var loading = this.$loading({
-            target: ".table-border",
-            text: "正在移除插件...",
-            spinner: "el-icon-loading",
-            background: "rgba(255, 255, 255, 0.7)",
-          })
+      if (result) {
+        var loading = this.$loading(".table-border")
 
-          this.postRequest(`${this.$root.prefix}/store/remove_plugin`, {
-            id: data.id,
-          })
-            .then((resp) => {
-              loading.close()
-              if (resp.suc) {
-                if (resp.warning) {
-                  this.$message.warning({
-                    message: resp.warning,
-                    iconClass: "el-icon-warning-outline",
-                  })
-                } else {
-                  this.$message.success({
-                    message: resp.info || "插件移除成功!",
-                    iconClass: "el-icon-success",
-                  })
-                  this.getPluginList()
-                }
-              } else {
-                this.$message.error({
-                  message: resp.info || "插件移除失败",
-                  iconClass: "el-icon-error",
+        this.postRequest(`${this.$root.prefix}/store/remove_plugin`, {
+          id: data.id,
+        })
+          .then((resp) => {
+            loading.close()
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning({
+                  message: resp.warning,
+                  iconClass: "el-icon-warning-outline",
                 })
+              } else {
+                this.$message.success({
+                  message: resp.info || "插件移除成功!",
+                  iconClass: "el-icon-success",
+                })
+                this.getPluginList()
               }
-            })
-            .catch((error) => {
-              loading.close()
+            } else {
               this.$message.error({
-                message: "移除过程中发生错误: " + (error.message || error),
+                message: resp.info || "插件移除失败",
                 iconClass: "el-icon-error",
               })
-              console.error("[Plugin Store] Remove error:", error)
-            })
-        })
-        .catch(() => {
-          this.$message.info({
-            message: "已取消移除",
-            iconClass: "el-icon-info",
+            }
           })
+          .catch((error) => {
+            loading.close()
+            this.$message.error({
+              message: "移除过程中发生错误: " + (error.message || error),
+              iconClass: "el-icon-error",
+            })
+            console.error("[Plugin Store] Remove error:", error)
+          })
+      } else {
+        this.$message.info({
+          message: "已取消移除",
+          iconClass: "el-icon-info",
         })
+      }
     },
 
-    handleInstall(i, data) {
-      this.$confirm("确定要安装这个插件吗?", "安装确认", {
-        confirmButtonText: "确定安装",
-        cancelButtonText: "取消",
-        type: "success",
-        customClass: "confirm-box",
-        confirmButtonClass: "el-button--success",
-        iconClass: "el-icon-question text-green-500",
+    async handleInstall(i, data) {
+      const result = await this.$cuteConfirm({
+        title: "安装确认",
+        message: `确定要安装这个插件吗？`,
+        cancelButtonText: "我再想想",
+        confirmButtonText: "无视风险继续安装",
       })
-        .then(() => {
-          var loading = this.$loading({
-            target: ".table-border",
-            text: "正在安装插件...",
-            spinner: "el-icon-loading",
-            background: "rgba(255, 255, 255, 0.7)",
-          })
+      if (result) {
+        var loading = this.getLoading(".table-border")
 
-          this.postRequest(`${this.$root.prefix}/store/install_plugin`, {
-            id: data.id,
-          })
-            .then((resp) => {
-              loading.close()
-              if (resp.suc) {
-                if (resp.warning) {
-                  this.$message.warning({
-                    message: resp.warning,
-                    iconClass: "el-icon-warning-outline",
-                  })
-                } else {
-                  this.$message.success({
-                    message: resp.info || "插件安装成功!",
-                    iconClass: "el-icon-success",
-                  })
-                  this.getPluginList()
-                }
-              } else {
-                this.$message.error({
-                  message: resp.info || "插件安装失败",
-                  iconClass: "el-icon-error",
+        this.postRequest(`${this.$root.prefix}/store/install_plugin`, {
+          id: data.id,
+        })
+          .then((resp) => {
+            loading.close()
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning({
+                  message: resp.warning,
+                  iconClass: "el-icon-warning-outline",
                 })
+              } else {
+                this.$message.success({
+                  message: resp.info || "插件安装成功!",
+                  iconClass: "el-icon-success",
+                })
+                this.getPluginList()
               }
-            })
-            .catch((error) => {
-              loading.close()
+            } else {
               this.$message.error({
-                message: "安装过程中发生错误: " + (error.message || error),
+                message: resp.info || "插件安装失败",
                 iconClass: "el-icon-error",
               })
-              console.error("[Plugin Store] Install error:", error)
-            })
-        })
-        .catch(() => {
-          this.$message.info({
-            message: "已取消安装",
-            iconClass: "el-icon-info",
+            }
           })
+          .catch((error) => {
+            loading.close()
+            this.$message.error({
+              message: "安装过程中发生错误: " + (error.message || error),
+              iconClass: "el-icon-error",
+            })
+            console.error("[Plugin Store] Install error:", error)
+          })
+      } else {
+        this.$message.info({
+          message: "已取消安装",
+          iconClass: "el-icon-info",
         })
+      }
     },
 
     handleCommand(s) {
@@ -577,7 +670,6 @@ export default {
 
     getPluginList() {
       var loading = this.getLoading(".table-border")
-
       this.getRequest(`${this.$root.prefix}/store/get_plugin_store`)
         .then((resp) => {
           loading.close()
@@ -644,6 +736,112 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.main {
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+.title {
+  h1 {
+    transition: color 0.3s ease;
+
+    span {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+  }
+}
+
+.filter-button {
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--el-fill-color-light);
+    border-color: var(--el-border-color);
+  }
+}
+
+.author-dropdown {
+  .author-item {
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--el-fill-color-light);
+      color: var(--el-color-primary);
+    }
+  }
+}
+
+.table-container {
+  .table-border {
+    transition: all 0.3s ease;
+  }
+
+  :deep(.el-table) {
+    --el-table-border-color: var(--el-border-color-lighter);
+    --el-table-header-bg-color: var(--el-fill-color-light);
+    --el-table-row-hover-bg-color: var(--el-fill-color);
+
+    th {
+      background: var(--el-fill-color-light);
+      color: var(--el-color-primary);
+      font-weight: bold;
+      border-bottom: 2px solid var(--el-border-color);
+    }
+
+    td {
+      color: var(--el-text-color-regular);
+    }
+  }
+
+  .name-border {
+    .github-icon {
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: var(--el-color-primary) !important;
+      }
+    }
+  }
+
+  .is-install {
+    transition: all 0.3s ease;
+  }
+}
+
+// 暗色主题适配
+:root[data-theme="dark"] {
+  .main {
+    background: var(--el-bg-color-overlay);
+  }
+
+  .filter-button {
+    background: var(--el-bg-color);
+    border-color: var(--el-border-color-darker);
+
+    &:hover {
+      background: var(--el-fill-color-dark);
+    }
+  }
+
+  .table-container {
+    .table-border {
+      background: var(--el-bg-color);
+      border-color: var(--el-border-color-darker);
+    }
+
+    :deep(.el-table) {
+      --el-table-border-color: var(--el-border-color-darker);
+      --el-table-header-bg-color: var(--el-fill-color-dark);
+      --el-table-row-hover-bg-color: var(--el-fill-color-darker);
+
+      th {
+        background: var(--el-fill-color-dark);
+      }
+    }
+  }
+}
+
 .table-container {
   flex: 1;
   min-height: 0;
@@ -670,53 +868,54 @@ export default {
 .main {
   .title {
     h1 {
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      text-shadow: 1px 1px 2px var(--el-color-primary-light-8);
     }
   }
 
   .search-input {
     ::v-deep .el-input__inner {
       border-radius: 9999px;
-      border: 1px solid #f3a3c3;
+      border: 1px solid var(--el-border-color);
       padding-left: 35px;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: var(--el-bg-color-overlay);
       transition: all 0.3s;
 
       &:focus {
-        border-color: #ec4899;
-        box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+        border-color: var(--el-color-primary);
+        box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
       }
     }
   }
 
   .table-border {
     ::v-deep .el-table {
-      --el-table-border-color: #f9b8d0;
-      --el-table-header-bg-color: #fdf2f8;
-      --el-table-row-hover-bg-color: #fce7f3;
+      --el-table-border-color: var(--el-border-color);
+      --el-table-header-bg-color: var(--el-fill-color-light);
+      --el-table-row-hover-bg-color: var(--el-fill-color);
 
       th {
         font-weight: bold;
-        color: #831843;
+        color: var(--el-color-primary);
+        background: var(--el-fill-color-light);
       }
 
       td {
-        border-bottom: 1px solid #fbcfe8;
+        border-bottom: 1px solid var(--el-border-color-light);
       }
 
       .el-table__body tr.installed-row {
-        background-color: #f0fdf4;
+        background-color: var(--el-color-success-light-9);
 
         &:hover {
-          background-color: #dcfce7 !important;
+          background-color: var(--el-color-success-light-8) !important;
         }
       }
 
       .el-table__body tr.el-table__row--striped {
-        background-color: #fff5f7;
+        background-color: var(--el-fill-color-lighter);
 
         &.installed-row {
-          background-color: #ecfdf5;
+          background-color: var(--el-color-success-light-8);
         }
       }
     }
@@ -726,23 +925,23 @@ export default {
 // 二次元风格弹窗
 .confirm-box {
   border-radius: 16px !important;
-  border: 2px solid #f9a8d4 !important;
-  background-color: #fdf2f8 !important;
+  border: 2px solid var(--el-border-color-light) !important;
+  background-color: var(--el-bg-color) !important;
 
   .el-message-box__header {
-    background-color: #fce7f3;
+    background-color: var(--el-fill-color-light);
     border-radius: 14px 14px 0 0;
     padding: 15px 20px;
 
     .el-message-box__title {
-      color: #831843;
+      color: var(--el-color-primary);
       font-weight: bold;
     }
   }
 
   .el-message-box__content {
     padding: 20px;
-    color: #701a75;
+    color: var(--el-text-color-primary);
   }
 
   .el-message-box__btns {
@@ -755,7 +954,7 @@ export default {
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--el-box-shadow-light);
       }
     }
   }
@@ -806,5 +1005,45 @@ export default {
 
 .animate-bounce {
   animation: bounce 2s infinite;
+}
+
+.filter-button {
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--el-box-shadow);
+    border-color: var(--el-color-primary);
+    background-color: var(--el-fill-color-light) !important;
+  }
+
+  &:active {
+    transform: translateY(1px);
+    background-color: var(--el-fill-color-darker) !important;
+  }
+}
+
+.author-dropdown {
+  ::v-deep .el-dropdown-menu__item {
+    margin: 2px 0;
+    padding: 0;
+    border-radius: 6px;
+
+    &:hover,
+    &:focus {
+      background-color: var(--el-color-primary-light-9);
+      color: var(--el-color-primary);
+    }
+
+    &:active {
+      background-color: var(--el-color-primary-light-7);
+    }
+  }
+}
+
+.author-item {
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateX(4px);
+  }
 }
 </style>

@@ -1,7 +1,8 @@
 <template>
   <div
-    class="cmd-main p-4 bg-gradient-to-br from-pink-50 to-purple-50 h-full"
+    class="cmd-main p-4 h-full"
     ref="cmdMain"
+    :style="{ background: 'var(--el-bg-color)' }"
   >
     <!-- 按钮组 - 使用MyButton组件 -->
     <div class="btn-group flex flex-wrap gap-2 mb-4" ref="btnGroup">
@@ -32,9 +33,20 @@
         trigger="click"
         popper-class="anime-popover"
       >
-        <div class="p-4 bg-white rounded-xl shadow-lg border-2 border-pink-200">
+        <div
+          class="p-4 rounded-xl"
+          :style="{
+            background: 'var(--el-bg-color)',
+            boxShadow: 'var(--el-box-shadow-light)',
+            border: '1px solid var(--el-border-color-light)',
+          }"
+        >
           <p
-            class="small-title text-center text-purple-600 font-bold mb-3 border-b-2 border-pink-200 pb-2"
+            class="small-title text-center font-bold mb-3 border-b-2 pb-2"
+            :style="{
+              color: 'var(--el-color-primary)',
+              borderColor: 'var(--el-color-primary-light-7)',
+            }"
           >
             常用SQL
           </p>
@@ -47,10 +59,20 @@
               placement="top-start"
             >
               <div
-                class="common-sql-item p-3 mb-2 rounded-lg bg-gradient-to-r from-pink-50 to-purple-50 border border-pink-100 hover:border-pink-300 transition-all cursor-pointer"
+                class="common-sql-item p-3 mb-2 rounded-lg border transition-all cursor-pointer"
+                :style="{
+                  background: 'var(--el-fill-color-light)',
+                  border: '1px solid var(--el-border-color-light)',
+                  color: 'var(--el-color-primary)',
+                }"
                 @click="copyHistory(n.sql)"
               >
-                <p class="text-sm text-purple-800 font-mono">{{ n.sql }}</p>
+                <p
+                  class="text-sm font-mono"
+                  :style="{ color: 'var(--el-color-primary)' }"
+                >
+                  {{ n.sql }}
+                </p>
               </div>
             </el-tooltip>
           </div>
@@ -69,9 +91,15 @@
     </div>
     <!-- 主内容区域 -->
     <div
-      class="cmd-main-box bg-white rounded-xl shadow-lg p-4 md:p-6 border-2 border-pink-200"
+      class="cmd-main-box rounded-xl"
       ref="cmdMainBox"
-      :style="{ height: sizeMana.mainBoxHeight + 'px' }"
+      :style="{
+        background: 'var(--el-bg-color-overlay)',
+        boxShadow: 'var(--el-box-shadow-light)',
+        border: '1px solid var(--el-color-primary-light-7)',
+        height: sizeMana.mainBoxHeight + 'px',
+        padding: '1.5rem',
+      }"
     >
       <el-row :gutter="16">
         <el-col :span="24" :md="12">
@@ -89,12 +117,23 @@
         </el-col>
         <el-col :span="24" :md="12" class="mt-4 md:mt-0">
           <div
-            class="history h-full flex flex-col border-2 border-blue-200 rounded-xl p-4 bg-gradient-to-b from-blue-50 to-purple-50"
+            class="history h-full flex flex-col rounded-xl p-4"
+            :style="{
+              border: '1px solid var(--el-color-primary-light-7)',
+              background: 'var(--el-fill-color-light)',
+            }"
           >
             <p
-              class="title text-center text-blue-600 font-bold mb-3 border-b-2 border-blue-200 pb-2"
+              class="title text-center font-bold mb-3 border-b-2 pb-2"
+              :style="{
+                color: 'var(--el-color-primary)',
+                borderColor: 'var(--el-color-primary-light-7)',
+              }"
             >
-              历史记录 <span class="text-purple-400">(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧</span>
+              历史记录
+              <span :style="{ color: 'var(--el-color-primary-light-5)' }"
+                >(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧</span
+              >
             </p>
             <div
               class="history-box flex-grow overflow-y-auto"
@@ -103,10 +142,20 @@
               <div
                 v-for="(n, index) in historyList"
                 :key="index"
-                class="history-item p-3 mb-2 rounded-lg bg-white border border-blue-100 hover:border-blue-300 transition-all cursor-pointer"
+                class="history-item p-3 mb-2 rounded-lg border transition-all cursor-pointer"
+                :style="{
+                  background: 'var(--el-bg-color)',
+                  border: '1px solid var(--el-border-color-light)',
+                  color: 'var(--el-color-primary)',
+                }"
                 @click="copyHistory(n.sql)"
               >
-                <p class="text-sm text-blue-800 font-mono">{{ n.sql }}</p>
+                <p
+                  class="text-sm font-mono"
+                  :style="{ color: 'var(--el-color-primary)' }"
+                >
+                  {{ n.sql }}
+                </p>
               </div>
             </div>
             <div class="pagination mt-3">
@@ -125,13 +174,21 @@
       </el-row>
     </div>
 
-    <!-- 分割线 - 可爱风格 -->
+    <!-- 分割线 - 主题色 -->
     <div class="my-4 relative">
       <div
-        class="h-1 bg-gradient-to-r from-pink-300 via-purple-300 to-blue-300 rounded-full"
+        class="h-1 rounded-full"
+        :style="{
+          background:
+            'linear-gradient(90deg, var(--el-color-primary-light-7), var(--el-color-primary-light-5), var(--el-color-primary))',
+        }"
       ></div>
       <div
-        class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 text-pink-500 font-bold"
+        class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 font-bold"
+        :style="{
+          background: 'var(--el-bg-color)',
+          color: 'var(--el-color-primary)',
+        }"
       >
         执行结果
       </div>
@@ -139,16 +196,25 @@
 
     <!-- 结果区域 -->
     <div
-      class="result-box bg-white rounded-xl shadow-lg p-4 md:p-6 border-2 border-purple-200 mt-4"
+      class="result-box rounded-xl mt-4"
       ref="resultBox"
       :style="{
+        background: 'var(--el-bg-color-overlay)',
+        boxShadow: 'var(--el-box-shadow-light)',
+        border: '1px solid var(--el-color-primary-light-7)',
         height: sizeMana.resultHeight + 40 + 'px',
         overflow: 'auto',
+        padding: '1.5rem',
       }"
     >
       <p
         v-if="info"
-        class="error-info p-4 rounded-lg bg-red-100 border-2 border-red-200 text-red-600"
+        class="error-info p-4 rounded-lg"
+        :style="{
+          background: 'var(--el-color-danger-light-9)',
+          border: '1px solid var(--el-color-danger-light-5)',
+          color: 'var(--el-color-danger)',
+        }"
       >
         {{ info }}
       </p>
@@ -409,7 +475,7 @@ export default {
 .common-sql-item:hover,
 .history-item:hover {
   transform: translateX(4px);
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--el-box-shadow-light);
 }
 
 .common-sql-item,

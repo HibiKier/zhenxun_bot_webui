@@ -63,13 +63,19 @@
                           ? menu.icon + '-select'
                           : menu.icon
                       "
+                      size="1.7em"
                       class="w-6 h-6 transition-all duration-300"
                       :style="{
-                        color:
+                        '--icon-color':
                           curSelectMenu === menu.router
                             ? 'var(--primary-color)'
                             : 'var(--text-color-secondary)',
                       }"
+                      :color="
+                        curSelectMenu === menu.router
+                          ? 'var(--primary-color)'
+                          : 'var(--text-color-secondary)'
+                      "
                     />
                     <span
                       v-if="!isCollapsed"

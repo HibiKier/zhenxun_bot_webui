@@ -36,22 +36,46 @@ module.exports = {
       args[0].title = "真寻酱的后台捏"
       return args
     })
+
+    // 清除默认的 svg 规则
+    config.module.rule("svg").uses.clear()
+
+    // 添加新的 svg 规则
     config.module
       .rule("svg")
       .exclude.add(path.join(__dirname, "src/assets/icons/svg"))
       .end()
 
     config.module
-      .rule("icons") // 定义一个名叫 icons 的规则
-      .test(/\.svg$/) // 设置 icons 的匹配正则
-      .include.add(path.join(__dirname, "src/assets/icons/svg")) // 设置当前规则的作用目录，只在当前目录下才执行当前规则
+      .rule("icons")
+      .test(/\.svg$/)
+      .include.add(path.join(__dirname, "src/assets/icons/svg"))
       .end()
-      .use("svg-sprite") // 指定一个名叫 svg-sprite 的 loader 配置
-      .loader("svg-sprite-loader") // 该配置使用 svg-sprite-loader 作为处理 loader
+      .use("svg-sprite-loader")
+      .loader("svg-sprite-loader")
       .options({
-        // 该 svg-sprite-loader 的配置
         symbolId: "icon-[name]",
       })
       .end()
+      .use("svgo-loader")
+      .loader("svgo-loader")
+      .options({
+        plugins: [
+          {
+            name: "preset-default",
+            params: {
+              overrides: {
+                removeViewBox: false,
+              },
+            },
+          },
+          {
+            name: "removeAttrs",
+            params: {
+              attrs: "(stroke|fill)",
+            },
+          },
+        ],
+      })
   },
 }
