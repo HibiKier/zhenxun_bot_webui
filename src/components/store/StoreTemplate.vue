@@ -448,7 +448,7 @@ export default {
   methods: {
     getTableBorderHeight() {
       if (this.$isMobile()) {
-        return this.tableHeight
+        return this.tableHeight - 160
       }
       return this.tableHeight - 239
     },

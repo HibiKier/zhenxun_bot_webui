@@ -109,7 +109,7 @@
         <el-table-column label="操作" min-width="100" align="center">
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.is_file"
+              v-if="scope.row.is_file && !scope.row.is_image"
               @click.stop="editFile(scope.row)"
               type="text"
               icon="el-icon-edit"
