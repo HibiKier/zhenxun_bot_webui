@@ -62,10 +62,6 @@ _✨ 这是 [绪山真寻Bot](https://github.com/HibiKier/zhenxun_bot) 可视化
 #### 插件列表（配置项）
 ![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-plugin1.jpg)
 
-#### 插件列表（新增&管理）
-![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-plugin2.jpg)
-![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-plugin3.jpg)
-
 #### 插件商店
 ![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-store.jpg)
 
