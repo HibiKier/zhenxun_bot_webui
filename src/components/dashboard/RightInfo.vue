@@ -191,6 +191,8 @@ export default {
         session_expire_timeout: "30",
         nickname: [],
       },
+      activeGroupData: [],
+      hotPluginData: [],
       selectGroupType: "all",
       selectHotPluginType: "all",
       groupChart: null,
@@ -244,17 +246,27 @@ export default {
     }, 25000)
     this.handleResize()
     EventBus.$on("sidebar-aside", debounce(this.handleResize, 200))
-    EventBus.$on("change-theme", debounce(this.handleResize, 200))
+    EventBus.$on("change-theme", debounce(this.updateChartTheme, 200))
   },
   destroyed() {
     window.removeEventListener("resize", this.handleResize)
     EventBus.$off("sidebar-aside", this.handleResize)
-    EventBus.$off("change-theme", this.handleResize, 200)
+    EventBus.$off("change-theme", this.updateChartTheme)
     if (this.groupCntInterval) {
       clearInterval(this.groupCntInterval)
     }
   },
   methods: {
+    updateChartTheme() {
+      const groupOption = getChartOption()
+      groupOption.series[0].data = this.activeGroupData
+      const pluginOption = getChartOption()
+      pluginOption.series[0].data = this.hotPluginData
+      this.groupChart.setOption(groupOption, true)
+      this.hotPluginChart.setOption(pluginOption, true)
+      this.groupChart?.resize()
+      this.hotPluginChart?.resize()
+    },
     handleResize() {
       this.$nextTick(() => {
         setTimeout(() => {
@@ -273,9 +285,10 @@ export default {
                 30
             }
           }
-
-          this.groupChart?.resize()
-          this.hotPluginChart?.resize()
+          this.$nextTick(() => {
+            this.groupChart?.resize()
+            this.hotPluginChart?.resize()
+          })
         }, 100)
       })
     },
@@ -346,42 +359,17 @@ export default {
 
             // --- 主题化修改 Start ---
             try {
-              const computedStyle = getComputedStyle(document.documentElement)
-              const textColor =
-                computedStyle
-                  .getPropertyValue("--el-text-color-regular")
-                  .trim() || "#c0c4cc"
-              const bgColorOverlay =
-                computedStyle
-                  .getPropertyValue("--el-bg-color-overlay")
-                  .trim() || "#303133"
-              const borderColorLight =
-                computedStyle
-                  .getPropertyValue("--el-border-color-light")
-                  .trim() || "#4C4D4F"
-
               tmpOpt.backgroundColor = "transparent" // 设置背景透明
 
               // X 轴
               tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {}
-              tmpOpt.xAxis.axisLabel.color = textColor
               tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {}
-              tmpOpt.xAxis.nameTextStyle.color = textColor
               // Y 轴
               tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {}
-              tmpOpt.yAxis.axisLabel.color = textColor
               tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {}
-              tmpOpt.yAxis.nameTextStyle.color = textColor
               // 提示框
               tmpOpt.tooltip = tmpOpt.tooltip || {}
               tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {}
-              tmpOpt.tooltip.textStyle.color = textColor
-              tmpOpt.tooltip.backgroundColor = bgColorOverlay
-              tmpOpt.tooltip.borderColor = borderColorLight
-              // 系列标签
-              if (tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label) {
-                tmpOpt.series[0].label.color = textColor
-              }
             } catch (e) {
               console.error("Failed to apply theme to group chart:", e)
             }
@@ -389,7 +377,8 @@ export default {
 
             tmpOpt.xAxis.data = group_list
             tmpOpt.series[0].data = data
-            this.groupChart.setOption(tmpOpt)
+            this.activeGroupData = data
+            this.groupChart.setOption(tmpOpt, true)
           }
         } else {
           if (loading) {
@@ -436,42 +425,15 @@ export default {
 
             // --- 主题化修改 Start ---
             try {
-              const computedStyle = getComputedStyle(document.documentElement)
-              const textColor =
-                computedStyle
-                  .getPropertyValue("--el-text-color-regular")
-                  .trim() || "#c0c4cc"
-              const bgColorOverlay =
-                computedStyle
-                  .getPropertyValue("--el-bg-color-overlay")
-                  .trim() || "#303133"
-              const borderColorLight =
-                computedStyle
-                  .getPropertyValue("--el-border-color-light")
-                  .trim() || "#4C4D4F"
-
-              tmpOpt.backgroundColor = "transparent" // 设置背景透明
-
               // X 轴
               tmpOpt.xAxis.axisLabel = tmpOpt.xAxis.axisLabel || {}
-              tmpOpt.xAxis.axisLabel.color = textColor
               tmpOpt.xAxis.nameTextStyle = tmpOpt.xAxis.nameTextStyle || {}
-              tmpOpt.xAxis.nameTextStyle.color = textColor
               // Y 轴
               tmpOpt.yAxis.axisLabel = tmpOpt.yAxis.axisLabel || {}
-              tmpOpt.yAxis.axisLabel.color = textColor
               tmpOpt.yAxis.nameTextStyle = tmpOpt.yAxis.nameTextStyle || {}
-              tmpOpt.yAxis.nameTextStyle.color = textColor
               // 提示框
               tmpOpt.tooltip = tmpOpt.tooltip || {}
               tmpOpt.tooltip.textStyle = tmpOpt.tooltip.textStyle || {}
-              tmpOpt.tooltip.textStyle.color = textColor
-              tmpOpt.tooltip.backgroundColor = bgColorOverlay
-              tmpOpt.tooltip.borderColor = borderColorLight
-              // 系列标签
-              if (tmpOpt.series && tmpOpt.series[0] && tmpOpt.series[0].label) {
-                tmpOpt.series[0].label.color = textColor
-              }
             } catch (e) {
               console.error("Failed to apply theme to plugin chart:", e)
             }
@@ -479,7 +441,8 @@ export default {
 
             tmpOpt.xAxis.data = hotPluginList
             tmpOpt.series[0].data = data
-            this.hotPluginChart.setOption(tmpOpt)
+            this.hotPluginData = data
+            this.hotPluginChart.setOption(tmpOpt, true)
           }
         } else {
           this.$message.error(resp.info)

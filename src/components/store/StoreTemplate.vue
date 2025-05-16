@@ -517,7 +517,7 @@ export default {
       })
 
       if (result) {
-        var loading = this.$loading(".table-border")
+        var loading = this.getLoading(".table-border")
 
         this.postRequest(`${this.$root.prefix}/store/update_plugin`, {
           id: data.id,
@@ -569,7 +569,7 @@ export default {
         type: "warning",
       })
       if (result) {
-        var loading = this.$loading(".table-border")
+        var loading = this.getLoading(".table-border")
 
         this.postRequest(`${this.$root.prefix}/store/remove_plugin`, {
           id: data.id,
@@ -737,7 +737,6 @@ export default {
 
 <style lang="scss" scoped>
 .main {
-  min-height: 100vh;
   transition: background-color 0.3s ease;
 }
 

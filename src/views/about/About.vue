@@ -242,7 +242,7 @@ export default {
   display: flex;
   align-items: center;
   position: sticky;
-  top: 0.5rem;
+  top: 0.2rem;
   background-color: var(--bg-color-secondary);
   z-index: 10;
   text-align: center;

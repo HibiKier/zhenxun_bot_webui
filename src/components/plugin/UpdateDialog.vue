@@ -654,12 +654,6 @@ export default {
     .divider-content {
       display: flex;
       align-items: center;
-
-      &::before,
-      &::after {
-        content: "🌸";
-        margin: 0 5px;
-      }
     }
   }
 
@@ -831,7 +825,7 @@ export default {
       .emoji {
         position: absolute;
         right: 12px;
-        top: 50%;
+        top: 30%;
         transform: translateY(-50%);
       }
     }
