@@ -514,7 +514,7 @@ export default {
     },
     getChatAndCallCount(no_loading) {
       if (!no_loading) {
-        var loading = this.getLoading(".ch-count")
+        var loading = this.getLoading(".char-cards")
       }
       this.getRequest(
         `${this.$root.prefix}/dashboard/get_chat_and_call_count`

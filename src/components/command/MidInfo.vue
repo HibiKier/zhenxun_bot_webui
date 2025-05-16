@@ -523,7 +523,7 @@ export default {
     getCallCount(bot_id, no_loading) {
       if (bot_id) {
         if (!no_loading) {
-          var loading = this.getLoading(".ch-count")
+          var loading = this.getLoading(".function-area")
         }
 
         this.getRequest(`${this.$root.prefix}/main/get_all_call_count`, {
