@@ -1,7 +1,7 @@
 import { cloneDeep } from "lodash"
 
 // 获取CSS变量值的辅助函数
-function getCssVar(name) {
+export function getCssVar(name) {
   const value = getComputedStyle(document.documentElement)
     .getPropertyValue(name)
     .trim()

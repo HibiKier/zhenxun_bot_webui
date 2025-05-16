@@ -19,16 +19,18 @@
             size="sm"
             icon="clear3"
             type="danger"
+            iconColor="var(--button-icon-color-primary)"
           >
-            <i class="icon-trash"></i> 清空好友
+            清空好友
           </cute-button>
           <cute-button
             @click="clearRequest('GROUP')"
             size="sm"
             icon="clear3"
             type="danger"
+            iconColor="var(--button-icon-color-primary)"
           >
-            <i class="icon-trash"></i> 清空群组
+            清空群组
           </cute-button>
         </div>
       </div>
@@ -80,9 +82,10 @@
             <div class="action-buttons">
               <cute-button
                 @click="handleApprove(data)"
-                type="primary"
-                icon="true"
+                type="success"
+                icon="confirm"
                 size="sm"
+                iconColor="var(--button-icon-color-primary)"
               >
                 同意
               </cute-button>
@@ -91,6 +94,7 @@
                 type="danger"
                 icon="false"
                 size="sm"
+                iconColor="var(--button-icon-color-primary)"
               >
                 拒绝
               </cute-button>
@@ -99,6 +103,7 @@
                 type="normal"
                 icon="ignore"
                 size="sm"
+                iconColor="var(--button-icon-color-default)"
               >
                 忽略
               </cute-button>
@@ -136,8 +141,8 @@
             <div class="action-buttons">
               <cute-button
                 @click="handleApprove(data)"
-                type="primary"
-                icon="true"
+                type="success"
+                icon="confirm"
                 size="sm"
               >
                 同意
@@ -173,13 +178,13 @@
 </template>
 
 <script>
-import CuteButton from '../ui/CuteButton.vue'
+import CuteButton from "../ui/CuteButton.vue"
 
 export default {
   components: { CuteButton },
   data() {
     return {
-      activeTab: 'friend',
+      activeTab: "friend",
       sizeMana: {
         avatarSize: 50,
       },
@@ -195,7 +200,7 @@ export default {
   },
   mounted() {
     this.fetchRequests()
-    window.addEventListener('resize', this.handleResize)
+    window.addEventListener("resize", this.handleResize)
     this.initFontSize()
   },
   methods: {
@@ -210,7 +215,7 @@ export default {
     },
 
     async fetchRequests() {
-      const loading = this.getLoading('.el-dialog')
+      const loading = this.getLoading(".el-dialog")
       this.getRequest(`${this.$root.prefix}/manage/get_request_list`).then(
         (resp) => {
           if (resp.suc) {
@@ -228,16 +233,16 @@ export default {
       )
     },
 
-    async clear_request(request_type) {
+    async clearRequest(request_type) {
       const result = await this.$cuteConfirm({
-        title: '清空确认',
+        title: "清空确认",
         message: `确定要清空当前全局请求吗?`,
-        cancelButtonText: '我再想想',
-        confirmButtonText: '全部清空',
+        cancelButtonText: "我再想想",
+        confirmButtonText: "全部清空",
       })
       if (result) {
         try {
-          const loading = this.getLoading('.el-dialog')
+          const loading = this.getLoading(".el-dialog")
           this.postRequest(`${this.$root.prefix}/manage/clear_request`, {
             request_type,
           }).then((resp) => {
@@ -254,14 +259,14 @@ export default {
             this.fetchRequests()
           })
         } catch (error) {
-          this.$message.error('卸载失败: ' + error.message)
+          this.$message.error("卸载失败: " + error.message)
         }
       } else {
-        console.log('取消清空')
+        console.log("取消清空")
       }
     },
     handleApprove(data) {
-      const loading = this.getLoading('.el-dialog')
+      const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/approve_request`, {
         bot_id: data.bot_id,
         id: data.oid,
@@ -280,7 +285,7 @@ export default {
       })
     },
     handleRefuse(data) {
-      const loading = this.getLoading('.el-dialog')
+      const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/refuse_request`, {
         bot_id: data.bot_id,
         id: data.oid,
@@ -299,7 +304,7 @@ export default {
       })
     },
     handleIgnore(data) {
-      const loading = this.getLoading('.el-dialog')
+      const loading = this.getLoading(".el-dialog")
       this.postRequest(`${this.$root.prefix}/manage/delete_request`, {
         id: data.oid,
       }).then((resp) => {
@@ -318,12 +323,12 @@ export default {
     },
 
     close() {
-      this.$emit('close')
+      this.$emit("close")
     },
   },
 
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize)
+    window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
@@ -355,78 +360,115 @@ export default {
 <style scoped>
 /* 对话框基础样式 */
 .moe-dialog ::v-deep .el-dialog {
-  @apply overflow-visible rounded-2xl border-pink-300 bg-pink-50 shadow-lg;
-  border-width: 3px;
-  border-style: solid;
-  box-shadow: 0 10px 30px rgba(255, 182, 216, 0.3);
+  overflow: visible;
+  border-radius: 20px;
+  border: 3px solid var(--border-color);
+  background-color: var(--bg-color);
+  box-shadow: 0 10px 30px var(--echarts-shadow);
 }
 
 .moe-dialog ::v-deep .el-dialog__header {
-  @apply hidden;
+  display: none;
 }
 
 .moe-dialog ::v-deep .el-dialog__body {
-  @apply p-0 relative;
-  background: linear-gradient(to bottom, #fff9fc, #f8f4ff);
+  padding: 0;
+  position: relative;
+  background: var(--bg-color);
   border-radius: 20px;
 }
 
 .moe-container {
-  @apply p-6 relative rounded-2xl;
+  padding: 24px;
+  position: relative;
+  border-radius: 20px;
 }
 
 /* 头部样式 */
 .header-box {
-  @apply text-center mb-5 relative;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
 }
 
 .header-box .title {
-  @apply text-pink-500 font-bold mb-4 text-xl;
-  text-shadow: 1px 1px 2px rgba(255, 107, 158, 0.2);
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-bottom: 16px;
+  font-size: 20px;
+  text-shadow: 1px 1px 2px rgba(var(--primary-color), 0.2);
 }
 
 .header-box .title .icon {
-  @apply inline-block mx-2;
+  display: inline-block;
+  margin: 0 8px;
   animation: float 2s ease-in-out infinite;
 }
 
 .header-buttons {
-  @apply flex justify-center gap-2 mt-3;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 /* 标签页样式 */
 .tab-container .tabs {
-  @apply flex border-b-2 border-pink-200 mb-4;
+  display: flex;
+  border-bottom: 2px solid var(--border-color-light);
+  margin-bottom: 16px;
 }
 
 .tab-container .tabs button {
-  @apply flex-1 py-3 bg-transparent border-none relative text-purple-300 font-bold text-sm cursor-pointer transition-all;
+  flex: 1;
+  padding: 12px 0;
+  background: transparent;
+  border: none;
+  position: relative;
+  color: var(--text-color-secondary);
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
 }
 
 .tab-container .tabs button i {
-  @apply mr-1;
+  margin-right: 4px;
 }
 
 .tab-container .tabs button .badge {
-  @apply bg-pink-500 text-white rounded-full px-2 text-xs ml-1;
+  background-color: var(--primary-color);
+  color: var(--el-color-white);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-left: 4px;
 }
 
 .tab-container .tabs button.active {
-  @apply text-pink-500;
+  color: var(--primary-color);
 }
 
 .tab-container .tabs button.active::after {
-  content: '';
-  @apply absolute bottom-0 left-0 w-full;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   height: 3px;
-  background: linear-gradient(to right, #ff6b9e, #d8a8ff);
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--el-color-primary-light-8)
+  );
   border-radius: 3px 3px 0 0;
 }
 
 /* 请求列表样式 */
 .request-list {
   max-height: 50vh;
-  @apply overflow-y-auto pr-1;
+  overflow-y: auto;
+  padding-right: 4px;
   min-height: 300px;
 }
 
@@ -435,25 +477,34 @@ export default {
 }
 
 .request-list::-webkit-scrollbar-track {
-  @apply bg-pink-100 rounded;
+  background-color: var(--el-fill-color-light);
+  border-radius: 3px;
 }
 
 .request-list::-webkit-scrollbar-thumb {
-  @apply bg-pink-300 rounded;
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 3px;
 }
 
 .empty-state {
-  @apply text-center py-8 text-purple-300;
+  text-align: center;
+  padding: 32px 0;
+  color: var(--text-color-secondary);
 }
 
 .empty-state p {
-  @apply mt-3 text-sm;
+  margin-top: 12px;
+  font-size: 14px;
 }
 
 /* 请求卡片样式 */
 .request-card {
-  @apply bg-white rounded-xl p-4 mb-3 shadow-md;
-  border: 1px solid #ffd6e8;
+  background-color: var(--bg-color-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--el-box-shadow-light);
+  border: 1px solid var(--border-color);
   opacity: 0;
   animation: fadeInUp 0.5s forwards;
   transition: all 0.3s;
@@ -461,63 +512,102 @@ export default {
 
 .request-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(255, 182, 216, 0.3);
+  box-shadow: 0 5px 15px var(--echarts-shadow);
 }
 
 /* 用户信息样式 */
 .user-info {
-  @apply flex items-center mb-3;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .avatar-wrapper {
-  @apply relative mr-4;
+  position: relative;
+  margin-right: 16px;
 }
 
 .moe-avatar {
   width: 50px;
   height: 50px;
-  @apply border-2 border-pink-200;
+  border: 2px solid var(--border-color);
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
 }
 
 .online-dot {
-  @apply absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: var(--success-color);
+  border: 2px solid var(--el-color-white);
+  border-radius: 50%;
 }
 
 .member-count {
-  @apply absolute -bottom-2 -right-2 bg-purple-300 text-white rounded-full px-1 text-xs border-2 border-white;
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  background-color: var(--el-color-primary-light-5);
+  color: var(--el-color-white);
+  border-radius: 999px;
+  padding: 2px 4px;
+  font-size: 10px;
+  border: 2px solid var(--el-color-white);
 }
 
 .user-details {
-  @apply flex-1;
+  flex: 1;
 }
 
 .user-details .username {
-  @apply text-pink-500 font-bold mb-1 text-base;
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 16px;
 }
 
 .user-details .userid,
 .user-details .message,
 .user-details .inviter {
-  @apply text-purple-300 text-xs mb-0.5;
+  color: var(--text-color-secondary);
+  font-size: 12px;
+  margin-bottom: 2px;
 }
 
 .action-buttons {
-  @apply flex justify-end gap-2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 /* 底部装饰样式 */
 .footer-decoration {
-  @apply absolute -bottom-4 left-0 w-full flex justify-between px-5;
+  position: absolute;
+  bottom: -16px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
 }
 
 .paw {
-  @apply w-7 h-6 bg-pink-300 rounded-full relative;
+  width: 28px;
+  height: 24px;
+  background-color: var(--primary-color);
+  border-radius: 999px;
+  position: relative;
 }
 
 .paw::before {
-  content: '';
-  @apply absolute w-2 h-2 bg-white rounded-full;
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--el-color-white);
+  border-radius: 50%;
 }
 
 .left-paw {
@@ -525,12 +615,19 @@ export default {
 }
 
 .left-paw::before {
-  @apply top-1 right-1;
+  top: 4px;
+  right: 4px;
 }
 
 .left-paw::after {
-  content: '';
-  @apply absolute w-2 h-2 bg-white rounded-full top-3 right-2;
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--el-color-white);
+  border-radius: 50%;
+  top: 12px;
+  right: 8px;
 }
 
 .right-paw {
@@ -538,12 +635,19 @@ export default {
 }
 
 .right-paw::before {
-  @apply top-1 left-1;
+  top: 4px;
+  left: 4px;
 }
 
 .right-paw::after {
-  content: '';
-  @apply absolute w-2 h-2 bg-white rounded-full top-3 left-2;
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--el-color-white);
+  border-radius: 50%;
+  top: 12px;
+  left: 8px;
 }
 
 /* 移动端适配 */
@@ -554,27 +658,30 @@ export default {
   }
 
   .header-box .title {
-    @apply text-lg;
+    font-size: 18px;
   }
 
   .request-card {
-    @apply p-3;
+    padding: 12px;
   }
 
   .user-info {
-    @apply flex-col items-start;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .avatar-wrapper {
-    @apply mr-0 mb-2;
+    margin-right: 0;
+    margin-bottom: 8px;
   }
 
   .action-buttons {
-    @apply justify-center mt-2;
+    justify-content: center;
+    margin-top: 8px;
   }
 
   .footer-decoration {
-    @apply hidden;
+    display: none;
   }
 }
 </style>

@@ -173,6 +173,7 @@
 <script>
 import { debounce } from "lodash"
 import { getChartOption } from "@/utils/template"
+import EventBus from "@/utils/event-bus"
 export default {
   name: "RightInfo",
   data() {
@@ -186,6 +187,8 @@ export default {
         { label: "年", value: "year" },
       ],
       chartAreaHeight: 0,
+      activeGroupData: [],
+      hotPluginData: [],
       botInfo: {
         connect_count: 42,
         connectTime: "12:34:56",
@@ -204,13 +207,13 @@ export default {
   computed: {
     computedChartAreaHeight() {
       if (!this.chartAreaHeight) {
-        this.calculateHeights()
+        this.handleResize()
       }
       return this.chartAreaHeight
     },
     computedChartHeight() {
       if (!this.chartHeight) {
-        this.calculateHeights()
+        this.handleResize()
       }
       return this.chartHeight
     },
@@ -225,20 +228,14 @@ export default {
     this.initCharts()
     this.setupResizeListener()
     this.startTimers()
-    this.updateChartTheme()
+    EventBus.$on("sidebar-aside", debounce(this.handleResize, 200))
+    EventBus.$on("change-theme", debounce(this.updateChartTheme, 200))
   },
   beforeDestroy() {
-    this.cleanup()
-  },
-  watch: {
-    "$store.state.theme": {
-      handler() {
-        this.$nextTick(() => {
-          this.updateChartTheme()
-        })
-      },
-      immediate: true,
-    },
+    if (this.groupCntInterval) clearInterval(this.groupCntInterval)
+    if (this.timer) clearInterval(this.timer)
+    EventBus.$off("sidebar-aside", this.handleResize)
+    EventBus.$off("change-theme", this.updateChartTheme)
   },
   methods: {
     initCharts() {
@@ -247,7 +244,18 @@ export default {
       this.getActiveGroupData()
       this.getHotPlugin()
     },
-    calculateHeights() {
+    updateChartTheme() {
+      const groupOption = getChartOption()
+      groupOption.series[0].data = this.activeGroupData
+      const pluginOption = getChartOption()
+      pluginOption.series[0].data = this.hotPluginData
+      this.groupChart.setOption(groupOption, true)
+      this.hotPluginChart.setOption(pluginOption, true)
+      this.groupChart?.resize()
+      this.hotPluginChart?.resize()
+    },
+
+    handleResize() {
       this.$nextTick(() => {
         if (this.$refs.rightInfo) {
           const infoHeight =
@@ -314,11 +322,6 @@ export default {
       return `${h}:${m}:${s}`
     },
 
-    cleanup() {
-      if (this.groupCntInterval) clearInterval(this.groupCntInterval)
-      if (this.timer) clearInterval(this.timer)
-    },
-
     clickGroupType(type) {
       this.selectGroupType = type
       this.getActiveGroupData(type)
@@ -356,10 +359,11 @@ export default {
             })
             tmpOpt.xAxis.name = "群组"
             tmpOpt.xAxis.data = group_list
+            this.activeGroupData = data
             tmpOpt.series[0].data = data
             tmpOpt.series[0].series = "#a855f7"
 
-            this.groupChart.setOption(tmpOpt)
+            this.groupChart.setOption(tmpOpt, true)
           }
         } else {
           if (loading) {
@@ -399,87 +403,15 @@ export default {
             })
             tmpOpt.xAxis.name = "插件"
             tmpOpt.xAxis.data = hotPluginList
+            this.hotPluginData = data
             tmpOpt.series[0].data = data
-            this.hotPluginChart.setOption(tmpOpt)
+            this.hotPluginChart.setOption(tmpOpt, true)
           }
         } else {
           this.$message.error(resp.info)
         }
         loading.close()
       })
-    },
-
-    updateChartTheme() {
-      const style = getComputedStyle(document.documentElement)
-      const getThemeColor = (name) => style.getPropertyValue(name).trim()
-
-      const chartOption = {
-        title: {
-          textStyle: {
-            color: getThemeColor("--primary-color"),
-            fontSize: 16,
-          },
-        },
-        tooltip: {
-          backgroundColor: getThemeColor("--el-bg-color-overlay"),
-          borderColor: getThemeColor("--border-color-light"),
-          borderWidth: 1,
-          textStyle: {
-            color: getThemeColor("--text-color"),
-            fontSize: 14,
-          },
-        },
-        legend: {
-          textStyle: {
-            color: getThemeColor("--text-color"),
-            fontSize: 14,
-          },
-        },
-        grid: {
-          backgroundColor: getThemeColor("--bg-color-secondary"),
-        },
-        xAxis: {
-          axisLine: {
-            lineStyle: {
-              color: getThemeColor("--border-color"),
-            },
-          },
-          axisLabel: {
-            color: getThemeColor("--text-color-secondary"),
-            fontSize: 12,
-          },
-        },
-        yAxis: {
-          axisLine: {
-            lineStyle: {
-              color: getThemeColor("--border-color"),
-            },
-          },
-          axisLabel: {
-            color: getThemeColor("--text-color-secondary"),
-            fontSize: 12,
-          },
-          splitLine: {
-            lineStyle: {
-              color: getThemeColor("--border-color-light"),
-            },
-          },
-        },
-        series: [
-          {
-            itemStyle: {
-              color: getThemeColor("--primary-color"),
-            },
-          },
-        ],
-      }
-
-      if (this.groupChart) {
-        this.groupChart.setOption(chartOption, true)
-      }
-      if (this.hotPluginChart) {
-        this.hotPluginChart.setOption(chartOption, true)
-      }
     },
   },
 }

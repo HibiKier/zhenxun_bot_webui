@@ -148,7 +148,9 @@
 </template>
 
 <script>
-import { default as AnsiUp } from "ansi_up"
+import EventBus from "@/utils/event-bus"
+import { getCssVar } from "@/utils/template"
+import { debounce, cloneDeep } from "lodash"
 export default {
   name: "MidInfo",
   data() {
@@ -353,7 +355,6 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", this.handleResize)
-    window.addEventListener("theme-change", this.updateChartTheme)
     this.getChCount(this.botInfo.self_id)
     this.getCallCount(this.botInfo.self_id)
     this.getMonthChatAndCallCount(this.botInfo.self_id)
@@ -367,6 +368,8 @@ export default {
     this.chart = this.$echarts.init(this.$refs.chart)
     this.handleResize()
     this.updateChartTheme()
+    EventBus.$on("sidebar-aside", debounce(this.handleResize, 200))
+    EventBus.$on("change-theme", debounce(this.updateChartTheme, 200))
   },
   computed: {
     computedChartHeight() {
@@ -384,17 +387,8 @@ export default {
       clearInterval(this.callInterval)
     }
     window.removeEventListener("resize", this.handleResize)
-    window.removeEventListener("theme-change", this.updateChartTheme)
-  },
-  watch: {
-    "$store.state.theme": {
-      handler(newTheme) {
-        this.$nextTick(() => {
-          this.updateChartTheme()
-        })
-      },
-      immediate: true,
-    },
+    EventBus.$off("sidebar-aside", this.handleResize)
+    EventBus.$off("change-theme", this.updateChartTheme)
   },
   methods: {
     updateAreaHeight() {
@@ -482,7 +476,7 @@ export default {
           } else {
             this.$message.success(resp.info)
             this.chatAndCallMonth = resp.data
-            const chartOpt = JSON.parse(JSON.stringify(this.chartOpt))
+            const chartOpt = cloneDeep(this.chartOpt)
             chartOpt.xAxis.data = this.chatAndCallMonth.date
             chartOpt.series[0].data = this.chatAndCallMonth.chat
             chartOpt.series[1].data = this.chatAndCallMonth.call
@@ -529,7 +523,7 @@ export default {
     getCallCount(bot_id, no_loading) {
       if (bot_id) {
         if (!no_loading) {
-          var loading = this.getLoading(".ch-count")
+          var loading = this.getLoading(".function-area")
         }
 
         this.getRequest(`${this.$root.prefix}/main/get_all_call_count`, {
@@ -559,31 +553,28 @@ export default {
       }
     },
     updateChartTheme() {
-      const style = getComputedStyle(document.documentElement)
-      const getThemeColor = (name) => style.getPropertyValue(name).trim()
-
       const chartOpt = {
         title: {
           text: "消息/调用统计",
           textStyle: {
-            color: getThemeColor("--primary-color"),
+            color: getCssVar("--primary-color"),
             fontSize: 16,
           },
         },
         tooltip: {
           trigger: "axis",
-          backgroundColor: getThemeColor("--el-bg-color-overlay"),
-          borderColor: getThemeColor("--border-color-light"),
+          backgroundColor: getCssVar("--el-bg-color-overlay"),
+          borderColor: getCssVar("--border-color-light"),
           borderWidth: 1,
           textStyle: {
-            color: getThemeColor("--text-color"),
+            color: getCssVar("--text-color"),
             fontSize: 14,
           },
         },
         legend: {
           data: ["消息统计", "调用统计"],
           textStyle: {
-            color: getThemeColor("--text-color"),
+            color: getCssVar("--text-color"),
             fontSize: 14,
           },
         },
@@ -592,7 +583,7 @@ export default {
           right: "4%",
           bottom: "3%",
           containLabel: true,
-          backgroundColor: getThemeColor("--bg-color-secondary"),
+          backgroundColor: getCssVar("--bg-color-secondary"),
         },
         toolbox: {
           feature: {
@@ -602,7 +593,7 @@ export default {
             },
           },
           iconStyle: {
-            borderColor: getThemeColor("--primary-color-light"),
+            borderColor: getCssVar("--primary-color-light"),
           },
         },
         xAxis: {
@@ -611,11 +602,11 @@ export default {
           data: this.chartOpt?.xAxis?.data || [],
           axisLine: {
             lineStyle: {
-              color: getThemeColor("--border-color"),
+              color: getCssVar("--border-color"),
             },
           },
           axisLabel: {
-            color: getThemeColor("--text-color-secondary"),
+            color: getCssVar("--text-color-secondary"),
             fontSize: 12,
           },
         },
@@ -625,16 +616,16 @@ export default {
             name: "消息统计",
             axisLine: {
               lineStyle: {
-                color: getThemeColor("--border-color"),
+                color: getCssVar("--border-color"),
               },
             },
             axisLabel: {
-              color: getThemeColor("--text-color-secondary"),
+              color: getCssVar("--text-color-secondary"),
               fontSize: 12,
             },
             splitLine: {
               lineStyle: {
-                color: getThemeColor("--border-color-light"),
+                color: getCssVar("--border-color-light"),
               },
             },
           },
@@ -644,16 +635,16 @@ export default {
             position: "right",
             axisLine: {
               lineStyle: {
-                color: getThemeColor("--border-color"),
+                color: getCssVar("--border-color"),
               },
             },
             axisLabel: {
-              color: getThemeColor("--text-color-secondary"),
+              color: getCssVar("--text-color-secondary"),
               fontSize: 12,
             },
             splitLine: {
               lineStyle: {
-                color: getThemeColor("--border-color-light"),
+                color: getCssVar("--border-color-light"),
               },
             },
           },
@@ -663,14 +654,14 @@ export default {
             name: "消息统计",
             type: "line",
             smooth: true,
-            data: this.chartOpt?.series?.[0]?.data || [],
+            data: this.chatAndCallMonth.chat,
             yAxisIndex: 0,
             lineStyle: {
               width: 3,
-              color: getThemeColor("--primary-color"),
+              color: getCssVar("--primary-color"),
             },
             itemStyle: {
-              color: getThemeColor("--primary-color"),
+              color: getCssVar("--primary-color"),
             },
             areaStyle: {
               color: {
@@ -682,11 +673,11 @@ export default {
                 colorStops: [
                   {
                     offset: 0,
-                    color: getThemeColor("--primary-color-light"),
+                    color: getCssVar("--primary-color-light"),
                   },
                   {
                     offset: 1,
-                    color: getThemeColor("--el-fill-color-light"),
+                    color: getCssVar("--el-fill-color-light"),
                   },
                 ],
               },
@@ -696,14 +687,14 @@ export default {
             name: "调用统计",
             type: "line",
             smooth: true,
-            data: this.chartOpt?.series?.[1]?.data || [],
+            data: this.chatAndCallMonth.call,
             yAxisIndex: 1,
             lineStyle: {
               width: 3,
-              color: getThemeColor("--primary-color-light"),
+              color: getCssVar("--primary-color-light"),
             },
             itemStyle: {
-              color: getThemeColor("--primary-color-light"),
+              color: getCssVar("--primary-color-light"),
             },
             areaStyle: {
               color: {
@@ -715,11 +706,11 @@ export default {
                 colorStops: [
                   {
                     offset: 0,
-                    color: getThemeColor("--el-fill-color"),
+                    color: getCssVar("--el-fill-color"),
                   },
                   {
                     offset: 1,
-                    color: getThemeColor("--el-fill-color-lighter"),
+                    color: getCssVar("--el-fill-color-lighter"),
                   },
                 ],
               },
@@ -732,6 +723,7 @@ export default {
       if (this.chart) {
         this.chart.setOption(chartOpt, true)
       }
+      this.$nextTick(this.chart.resize)
     },
   },
 }

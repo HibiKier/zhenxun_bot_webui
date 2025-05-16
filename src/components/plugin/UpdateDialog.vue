@@ -196,8 +196,7 @@
         icon="cancel"
         @click="close"
         :rounded="true"
-        :color="'var(--el-text-color-disabled)'"
-        :text-color="'var(--el-color-white)'"
+        :iconColor="'var(--button-icon-color-primary)'"
       >
         取消
       </CuteButton>
@@ -208,8 +207,7 @@
         type="primary"
         :rounded="true"
         icon="true"
-        :color="'var(--el-color-primary)'"
-        :text-color="'var(--el-color-white)'"
+        :iconColor="'var(--button-icon-color-primary)'"
         >确定
       </CuteButton>
     </div>
@@ -656,12 +654,6 @@ export default {
     .divider-content {
       display: flex;
       align-items: center;
-
-      &::before,
-      &::after {
-        content: "🌸";
-        margin: 0 5px;
-      }
     }
   }
 
@@ -833,7 +825,7 @@ export default {
       .emoji {
         position: absolute;
         right: 12px;
-        top: 50%;
+        top: 30%;
         transform: translateY(-50%);
       }
     }

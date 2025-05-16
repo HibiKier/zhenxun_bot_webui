@@ -244,7 +244,7 @@ export default {
       })
     },
     handleBotStatus() {
-      var loading = this.getLoading(".left-info")
+      var loading = this.getLoading(".left-info-container")
 
       this.postRequest(`${this.$root.prefix}/main/change_bot_status`, {
         bot_id: this.botInfo.self_id,
@@ -264,7 +264,7 @@ export default {
       })
     },
     getBotModuleData() {
-      var loading = this.getLoading(".left-info")
+      var loading = this.getLoading(".left-info-container")
 
       this.getRequest(`${this.$root.prefix}/main/get_bot_block_module`, {
         bot_id: this.botInfo.self_id,
@@ -286,7 +286,7 @@ export default {
       })
     },
     clickBotManage() {
-      var loading = this.getLoading(".left-info")
+      var loading = this.getLoading(".left-info-container")
 
       this.postRequest(`${this.$root.prefix}/main/update_bot_manage`, {
         bot_id: this.botInfo.self_id,
