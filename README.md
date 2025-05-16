@@ -42,53 +42,53 @@ _✨ 这是 [绪山真寻Bot](https://github.com/HibiKier/zhenxun_bot) 可视化
 <div align="center">
 
 #### 登录界面
-![x](/docs_image/pc-login.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-login.jpg)
 
 #### API设置
-![x](/docs_image/pc-api.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-api.jpg)
 
 #### 仪表盘
-![x](/docs_image/pc-dashboard.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-dashboard.jpg)
 
 #### 仪表盘（展开）
-![x](/docs_image/pc-dashboard1.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-dashboard1.jpg)
 
 #### 控制台
-![x](/docs_image/pc-command.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-command.jpg)
 
 #### 插件列表
-![x](/docs_image/pc-plugin.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-plugin.jpg)
 
 #### 插件列表（配置项）
-![x](/docs_image/pc-plugin1.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-plugin1.jpg)
 
 #### 插件列表（新增&管理）
-![x](/docs_image/pc-plugin2.jpg)
-![x](/docs_image/pc-plugin3.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-plugin2.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-plugin3.jpg)
 
 #### 插件商店
-![x](/docs_image/pc-store.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-store.jpg)
 
 #### 好友/群组管理
-![x](/docs_image/pc-manage.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-manage.jpg)
 
 #### 请求管理
-![x](/docs_image/pc-manage1.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-manage1.jpg)
 
 #### 数据库管理
-![x](/docs_image/pc-database.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-database.jpg)
 
 ### 文件管理
-![x](/docs_image/pc-system.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-system.jpg)
 
 ### 文件管理（文本查看）
-![x](/docs_image/pc-system1.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-system1.jpg)
 
 ### 文件管理（图片查看）
-![x](/docs_image/pc-system2.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-system2.jpg)
 
 ### 关于
-![x](/docs_image/pc-about.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/pc-about.jpg)
 
 </div>
 
@@ -100,47 +100,47 @@ _✨ 这是 [绪山真寻Bot](https://github.com/HibiKier/zhenxun_bot) 可视化
 <div align="center">
 
 #### 登录界面
-![x](/docs_image/mobile-login.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-login.jpg)
 
 #### API设置
-![x](/docs_image/mobile-api.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-api.jpg)
 
 #### 仪表盘
-![x](/docs_image/mobile-dashboard.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-dashboard.jpg)
 
 #### 控制台
-![x](/docs_image/mobile-command.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-command.jpg)
 
 #### 插件列表
-![x](/docs_image/mobile-plugin.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-plugin.jpg)
 
 #### 插件列表（配置项）
-![x](/docs_image/mobile-plugin1.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-plugin1.jpg)
 
 
 #### 插件商店
-![x](/docs_image/mobile-store.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-store.jpg)
 
 #### 好友/群组管理
-![x](/docs_image/mobile-manage.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-manage.jpg)
 
 #### 请求管理
-![x](/docs_image/mobile-manage1.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-manage1.jpg)
 
 #### 数据库管理
-![x](/docs_image/mobile-database.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-database.jpg)
 
 ### 文件管理
-![x](/docs_image/mobile-system.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-system.jpg)
 
 ### 文件管理（文本查看）
-![x](/docs_image/mobile-system1.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-system1.jpg)
 
 ### 文件管理（图片查看）
-![x](/docs_image/mobile-system2.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-system2.jpg)
 
 ### 关于
-![x](/docs_image/mobile-about.jpg)
+![x](https://github.com/HibiKier/zhenxun_bot_webui/blob/main/docs_image/mobile-about.jpg)
 
 </div>
 
