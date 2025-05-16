@@ -1,284 +1,220 @@
 <template>
-  <el-dialog class="dialog-class" :visible="true" @close="close">
-    <OneMark text="是来自何处的羁绊呢" />
-    <div class="request-main">
-      <el-row style="height: 100%">
-        <el-col :span="12" style="height: 100%">
-          <div class="friend-req">
-            <div>
-              <p
-                class="base-title"
-                :style="{ fontSize: sizeMana.titleText + 'px' }"
-              >
-                好友请求
-              </p>
-              <MyButton
-                text="清空"
-                @click="clear_request('FRIEND')"
-                icon="clear2"
-                :width="90"
-                :height="34"
-              />
-            </div>
-            <div class="friend-req-list">
-              <div
-                v-for="data in dataObj.friend"
-                :key="data.flag"
-                class="req-item"
-              >
-                <div class="req-item-item">
-                  <div class="ava-box">
-                    <el-avatar
-                      :src="data.ava_url"
-                      class="list-ava"
-                      :style="{
-                        height: sizeMana.imageSize + 'px',
-                        width: sizeMana.imageSize + 'px',
-                      }"
-                    ></el-avatar>
-                  </div>
-                  <div class="u-info">
-                    <p
-                      class="u-name"
-                      :style="{ fontSize: sizeMana.nameText + 'px' }"
-                    >
-                      {{ data.remark || data.nickname }}
-                    </p>
-                    <p
-                      class="uid"
-                      :style="{ fontSize: sizeMana.tipText + 'px' }"
-                    >
-                      {{ data.id }}
-                    </p>
-                  </div>
-                </div>
-                <div class="c-btn">
-                  <MyButton
-                    text="同意"
-                    @click="approve(data)"
-                    :width="66"
-                    :height="35"
-                  />
-                  <MyButton
-                    text="拒绝"
-                    @click="refuse(data)"
-                    type="error"
-                    :width="66"
-                    :height="35"
-                  />
-                  <MyButton
-                    text="删除"
-                    @click="deleteReq(data)"
-                    type="warn"
-                    :width="66"
-                    :height="35"
-                  />
-                </div>
+  <el-dialog
+    class="moe-dialog"
+    :visible="true"
+    @close="close"
+    custom-class="moe-dialog-container"
+  >
+    <div class="moe-container">
+      <!-- 顶部标题区 -->
+      <div class="header-box">
+        <h3 class="title">
+          <span class="icon">🌸</span>
+          好友与群组请求
+          <span class="icon">🌸</span>
+        </h3>
+        <div class="header-buttons">
+          <cute-button
+            @click="clearRequest('FRIEND')"
+            size="sm"
+            icon="clear3"
+            type="danger"
+            iconColor="var(--button-icon-color-primary)"
+          >
+            清空好友
+          </cute-button>
+          <cute-button
+            @click="clearRequest('GROUP')"
+            size="sm"
+            icon="clear3"
+            type="danger"
+            iconColor="var(--button-icon-color-primary)"
+          >
+            清空群组
+          </cute-button>
+        </div>
+      </div>
+
+      <!-- 主体内容 (标签页形式) -->
+      <div class="tab-container">
+        <div class="tabs">
+          <button
+            @click="activeTab = 'friend'"
+            :class="{ active: activeTab === 'friend' }"
+          >
+            <i class="icon-heart"></i> 好友请求
+            <span class="badge">{{ dataObj.friend.length }}</span>
+          </button>
+          <button
+            @click="activeTab = 'group'"
+            :class="{ active: activeTab === 'group' }"
+          >
+            <i class="icon-group"></i> 群组请求
+            <span class="badge">{{ dataObj.group.length }}</span>
+          </button>
+        </div>
+
+        <!-- 好友请求列表 -->
+        <div v-show="activeTab === 'friend'" class="request-list friend-list">
+          <div v-if="!dataObj.friend.length" class="empty-state">
+            <p>暂时没有好友请求哦 (≧▽≦)</p>
+          </div>
+
+          <div
+            v-for="(data, index) in dataObj.friend"
+            :key="data.flag"
+            class="request-card"
+            :style="{ 'animation-delay': `${index * 0.05}s` }"
+          >
+            <div class="user-info">
+              <div class="avatar-wrapper">
+                <el-avatar :src="data.ava_url" class="moe-avatar"></el-avatar>
+                <div class="online-dot" v-if="data.isOnline"></div>
+              </div>
+              <div class="user-details">
+                <p class="username">{{ data.remark || data.nickname }}</p>
+                <p class="userid">ID: {{ data.id }}</p>
+                <p class="message" v-if="data.message">
+                  留言: {{ data.message }}
+                </p>
               </div>
             </div>
-          </div>
-        </el-col>
-        <el-col :span="12" style="height: 100%">
-          <div class="group-req">
-            <div style="float: left; width: 100%">
-              <p
-                class="base-title"
-                :style="{ fontSize: sizeMana.titleText + 'px' }"
+            <div class="action-buttons">
+              <cute-button
+                @click="handleApprove(data)"
+                type="success"
+                icon="confirm"
+                size="sm"
+                iconColor="var(--button-icon-color-primary)"
               >
-                群组请求
-              </p>
-              <MyButton
-                text="清空"
-                @click="clear_request('GROUP')"
-                icon="clear2"
-                :width="90"
-                :height="34"
-              />
+                同意
+              </cute-button>
+              <cute-button
+                @click="handleRefuse(data)"
+                type="danger"
+                icon="false"
+                size="sm"
+                iconColor="var(--button-icon-color-primary)"
+              >
+                拒绝
+              </cute-button>
+              <cute-button
+                @click="handleIgnore(data)"
+                type="normal"
+                icon="ignore"
+                size="sm"
+                iconColor="var(--button-icon-color-default)"
+              >
+                忽略
+              </cute-button>
             </div>
-            <div class="group-req-list">
-              <div
-                v-for="data in dataObj.group"
-                :key="data.flag"
-                class="req-item"
-              >
-                <div class="req-item-item">
-                  <div class="ava-box">
-                    <el-avatar
-                      :src="data.ava_url"
-                      class="list-ava"
-                      :style="{
-                        height: sizeMana.imageSize + 'px',
-                        width: sizeMana.imageSize + 'px',
-                      }"
-                    ></el-avatar>
-                  </div>
-                  <div class="u-info">
-                    <p
-                      class="u-name"
-                      :style="{ fontSize: sizeMana.nameText + 'px' }"
-                    >
-                      {{ data.remark || data.nickname }}
-                    </p>
-                    <p
-                      class="uid"
-                      :style="{ fontSize: sizeMana.tipText + 'px' }"
-                    >
-                      {{ data.id }}
-                    </p>
-                  </div>
-                </div>
-                <div class="c-btn">
-                  <MyButton
-                    text="同意"
-                    @click="approve(data)"
-                    :width="66"
-                    :height="35"
-                  />
-                  <MyButton
-                    text="拒绝"
-                    @click="refuse(data)"
-                    type="error"
-                    :width="66"
-                    :height="35"
-                  />
-                  <MyButton
-                    text="删除"
-                    @click="deleteReq(data)"
-                    type="warn"
-                    :width="66"
-                    :height="35"
-                  />
+          </div>
+        </div>
+
+        <!-- 群组请求列表 -->
+        <div v-show="activeTab === 'group'" class="request-list group-list">
+          <div v-if="!dataObj.group.length" class="empty-state">
+            <p>暂时没有群组请求呢 (◕‿◕✿)</p>
+          </div>
+
+          <div
+            v-for="(data, index) in dataObj.group"
+            :key="data.flag"
+            class="request-card"
+            :style="{ 'animation-delay': `${index * 0.05}s` }"
+          >
+            <div class="user-info">
+              <div class="avatar-wrapper">
+                <el-avatar :src="data.ava_url" class="moe-avatar"></el-avatar>
+                <div class="member-count">
+                  <i class="icon-user"></i> {{ data.memberCount }}
                 </div>
               </div>
+              <div class="user-details">
+                <p class="username">{{ data.groupName }}</p>
+                <p class="userid">群ID: {{ data.id }}</p>
+                <p class="inviter" v-if="data.inviter">
+                  邀请人: {{ data.inviter }}
+                </p>
+              </div>
+            </div>
+            <div class="action-buttons">
+              <cute-button
+                @click="handleApprove(data)"
+                type="success"
+                icon="confirm"
+                size="sm"
+              >
+                同意
+              </cute-button>
+              <cute-button
+                @click="handleRefuse(data)"
+                type="danger"
+                icon="false"
+                size="sm"
+              >
+                拒绝
+              </cute-button>
+              <cute-button
+                @click="handleIgnore(data)"
+                type="normal"
+                icon="ignore"
+                size="sm"
+              >
+                忽略
+              </cute-button>
             </div>
           </div>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
+
+      <!-- 底部装饰 -->
+      <div class="footer-decoration">
+        <div class="paw left-paw"></div>
+        <div class="paw right-paw"></div>
+      </div>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { getConvertSize, getFontSize } from "@/utils/utils"
-import OneMark from "@/components/ui/OneMark"
-import MyButton from "../ui/MyButton.vue"
+import CuteButton from "../ui/CuteButton.vue"
+
 export default {
-  name: "RequestDialog",
-  components: {
-    OneMark,
-    MyButton,
-  },
+  components: { CuteButton },
   data() {
     return {
+      activeTab: "friend",
       sizeMana: {
-        titleText: 18,
-        nameText: 20,
-        tipText: 13,
-        imageSize: 40,
+        avatarSize: 50,
       },
       dataObj: {
         friend: [],
         group: [],
       },
+      loading: {
+        clearFriend: false,
+        clearGroup: false,
+      },
     }
   },
   mounted() {
-    this.getReqList()
+    this.fetchRequests()
     window.addEventListener("resize", this.handleResize)
-    this.handleResize()
+    this.initFontSize()
   },
   methods: {
-    handleResize() {
-      this.initFontSize()
-    },
     initFontSize() {
-      this.sizeMana.titleText = getFontSize(18)
-      this.sizeMana.nameText = getFontSize(25)
-      this.sizeMana.tipText = getFontSize(15)
-      this.sizeMana.imageSize = getConvertSize(40, 1024)
+      const isMobile = window.innerWidth < 768
+      this.sizeMana = {
+        titleText: isMobile ? 16 : 18,
+        nameText: isMobile ? 18 : 20,
+        tipText: isMobile ? 12 : 14,
+        imageSize: isMobile ? 36 : 40,
+      }
     },
-    clear_request(request_type) {
-      this.$confirm("确认清空所有请求?", "提示", {
-        confirmButtonText: "确认",
-        cancelButtonText: "取消",
-        showClose: true,
-        type: "warning",
-      }).then(() => {
-        const loading = this.getLoading(".el-dialog")
-        this.postRequest(`${this.$root.prefix}/manage/clear_request`, {
-          request_type,
-        }).then((resp) => {
-          if (resp.suc) {
-            if (resp.warning) {
-              this.$message.warning(resp.warning)
-            } else {
-              this.$message.success(resp.info)
-            }
-          } else {
-            this.$message.error(resp.info)
-          }
-          loading.close()
-          this.getReqList()
-        })
-      })
-    },
-    approve(data) {
-      const loading = this.getLoading(".el-dialog")
-      this.postRequest(`${this.$root.prefix}/manage/approve_request`, {
-        bot_id: data.bot_id,
-        id: data.oid,
-      }).then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-          }
-        } else {
-          this.$message.error(resp.info)
-        }
-        loading.close()
-        this.getReqList()
-      })
-    },
-    refuse(data) {
-      const loading = this.getLoading(".el-dialog")
-      this.postRequest(`${this.$root.prefix}/manage/refuse_request`, {
-        bot_id: data.bot_id,
-        id: data.oid,
-      }).then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-          }
-        } else {
-          this.$message.error(resp.info)
-        }
-        loading.close()
-        this.getReqList()
-      })
-    },
-    deleteReq(data) {
-      const loading = this.getLoading(".el-dialog")
-      this.postRequest(`${this.$root.prefix}/manage/delete_request`, {
-        id: data.oid,
-      }).then((resp) => {
-        if (resp.suc) {
-          if (resp.warning) {
-            this.$message.warning(resp.warning)
-          } else {
-            this.$message.success(resp.info)
-          }
-        } else {
-          this.$message.error(resp.info)
-        }
-        loading.close()
-        this.getReqList()
-      })
-    },
-    getReqList() {
+
+    async fetchRequests() {
       const loading = this.getLoading(".el-dialog")
       this.getRequest(`${this.$root.prefix}/manage/get_request_list`).then(
         (resp) => {
@@ -296,197 +232,456 @@ export default {
         }
       )
     },
+
+    async clearRequest(request_type) {
+      const result = await this.$cuteConfirm({
+        title: "清空确认",
+        message: `确定要清空当前全局请求吗?`,
+        cancelButtonText: "我再想想",
+        confirmButtonText: "全部清空",
+      })
+      if (result) {
+        try {
+          const loading = this.getLoading(".el-dialog")
+          this.postRequest(`${this.$root.prefix}/manage/clear_request`, {
+            request_type,
+          }).then((resp) => {
+            if (resp.suc) {
+              if (resp.warning) {
+                this.$message.warning(resp.warning)
+              } else {
+                this.$message.success(resp.info)
+              }
+            } else {
+              this.$message.error(resp.info)
+            }
+            loading.close()
+            this.fetchRequests()
+          })
+        } catch (error) {
+          this.$message.error("卸载失败: " + error.message)
+        }
+      } else {
+        console.log("取消清空")
+      }
+    },
+    handleApprove(data) {
+      const loading = this.getLoading(".el-dialog")
+      this.postRequest(`${this.$root.prefix}/manage/approve_request`, {
+        bot_id: data.bot_id,
+        id: data.oid,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+        this.fetchRequests()
+      })
+    },
+    handleRefuse(data) {
+      const loading = this.getLoading(".el-dialog")
+      this.postRequest(`${this.$root.prefix}/manage/refuse_request`, {
+        bot_id: data.bot_id,
+        id: data.oid,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+        this.fetchRequests()
+      })
+    },
+    handleIgnore(data) {
+      const loading = this.getLoading(".el-dialog")
+      this.postRequest(`${this.$root.prefix}/manage/delete_request`, {
+        id: data.oid,
+      }).then((resp) => {
+        if (resp.suc) {
+          if (resp.warning) {
+            this.$message.warning(resp.warning)
+          } else {
+            this.$message.success(resp.info)
+          }
+        } else {
+          this.$message.error(resp.info)
+        }
+        loading.close()
+        this.fetchRequests()
+      })
+    },
+
     close() {
       this.$emit("close")
     },
   },
-  destroyed() {
+
+  beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
   },
 }
 </script>
 
-<style lang="scss" scoped>
-.dialog-class {
-  ::v-deep .el-dialog {
-    border-radius: 10px;
-    background-color: var(--el-bg-color);
+<style>
+/* 保留必要的动画定义 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  ::v-deep .el-dialog__header {
-    background-color: var(--el-bg-color);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  ::v-deep .el-dialog__body {
-    background-color: var(--el-bg-color-page);
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  .c-btn {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 15px;
-    gap: 10px;
+  50% {
+    transform: translateY(-5px);
+  }
+}
+</style>
+
+<style scoped>
+/* 对话框基础样式 */
+.moe-dialog ::v-deep .el-dialog {
+  overflow: visible;
+  border-radius: 20px;
+  border: 3px solid var(--border-color);
+  background-color: var(--bg-color);
+  box-shadow: 0 10px 30px var(--echarts-shadow);
+}
+
+.moe-dialog ::v-deep .el-dialog__header {
+  display: none;
+}
+
+.moe-dialog ::v-deep .el-dialog__body {
+  padding: 0;
+  position: relative;
+  background: var(--bg-color);
+  border-radius: 20px;
+}
+
+.moe-container {
+  padding: 24px;
+  position: relative;
+  border-radius: 20px;
+}
+
+/* 头部样式 */
+.header-box {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.header-box .title {
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-bottom: 16px;
+  font-size: 20px;
+  text-shadow: 1px 1px 2px rgba(var(--primary-color), 0.2);
+}
+
+.header-box .title .icon {
+  display: inline-block;
+  margin: 0 8px;
+  animation: float 2s ease-in-out infinite;
+}
+
+.header-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* 标签页样式 */
+.tab-container .tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border-color-light);
+  margin-bottom: 16px;
+}
+
+.tab-container .tabs button {
+  flex: 1;
+  padding: 12px 0;
+  background: transparent;
+  border: none;
+  position: relative;
+  color: var(--text-color-secondary);
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tab-container .tabs button i {
+  margin-right: 4px;
+}
+
+.tab-container .tabs button .badge {
+  background-color: var(--primary-color);
+  color: var(--el-color-white);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.tab-container .tabs button.active {
+  color: var(--primary-color);
+}
+
+.tab-container .tabs button.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--el-color-primary-light-8)
+  );
+  border-radius: 3px 3px 0 0;
+}
+
+/* 请求列表样式 */
+.request-list {
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 4px;
+  min-height: 300px;
+}
+
+.request-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.request-list::-webkit-scrollbar-track {
+  background-color: var(--el-fill-color-light);
+  border-radius: 3px;
+}
+
+.request-list::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 3px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--text-color-secondary);
+}
+
+.empty-state p {
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* 请求卡片样式 */
+.request-card {
+  background-color: var(--bg-color-secondary);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--el-box-shadow-light);
+  border: 1px solid var(--border-color);
+  opacity: 0;
+  animation: fadeInUp 0.5s forwards;
+  transition: all 0.3s;
+}
+
+.request-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--echarts-shadow);
+}
+
+/* 用户信息样式 */
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  margin-right: 16px;
+}
+
+.moe-avatar {
+  width: 50px;
+  height: 50px;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
+}
+
+.online-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  background-color: var(--success-color);
+  border: 2px solid var(--el-color-white);
+  border-radius: 50%;
+}
+
+.member-count {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  background-color: var(--el-color-primary-light-5);
+  color: var(--el-color-white);
+  border-radius: 999px;
+  padding: 2px 4px;
+  font-size: 10px;
+  border: 2px solid var(--el-color-white);
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-details .username {
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.user-details .userid,
+.user-details .message,
+.user-details .inviter {
+  color: var(--text-color-secondary);
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* 底部装饰样式 */
+.footer-decoration {
+  position: absolute;
+  bottom: -16px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.paw {
+  width: 28px;
+  height: 24px;
+  background-color: var(--primary-color);
+  border-radius: 999px;
+  position: relative;
+}
+
+.paw::before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--el-color-white);
+  border-radius: 50%;
+}
+
+.left-paw {
+  transform: rotate(30deg);
+}
+
+.left-paw::before {
+  top: 4px;
+  right: 4px;
+}
+
+.left-paw::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--el-color-white);
+  border-radius: 50%;
+  top: 12px;
+  right: 8px;
+}
+
+.right-paw {
+  transform: rotate(-30deg);
+}
+
+.right-paw::before {
+  top: 4px;
+  left: 4px;
+}
+
+.right-paw::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--el-color-white);
+  border-radius: 50%;
+  top: 12px;
+  left: 8px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .moe-dialog ::v-deep .el-dialog {
+    width: 90%;
+    max-width: none;
   }
 
-  .base-title {
-    color: var(--el-text-color-secondary);
-    margin-bottom: 5px;
+  .header-box .title {
     font-size: 18px;
-    margin-left: 0;
-    margin-top: 0;
-    float: none;
-    line-height: 34px;
   }
 
-  .request-main {
-    height: 65vh;
+  .request-card {
+    padding: 12px;
   }
 
-  ::v-deep .el-divider--vertical {
-    height: 100%;
-    margin: 0;
-    min-height: 300px;
-  }
-
-  .friend-req {
-    padding: 20px;
-    box-sizing: border-box;
-    height: 100%;
-    display: flex;
+  .user-info {
     flex-direction: column;
-
-    > div:first-child {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      padding: 0 10px;
-    }
-
-    .friend-req-list {
-      margin-top: 0;
-      overflow: auto;
-      flex-grow: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--el-border-color);
-      box-shadow: var(--el-box-shadow-light);
-      box-sizing: border-box;
-      background-color: transparent;
-
-      &::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: var(--el-fill-color-light);
-        border-radius: 3px;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--el-color-info-light-3);
-        border-radius: 3px;
-      }
-
-      &::-webkit-scrollbar-thumb:hover {
-        background: var(--el-color-info-light-5);
-      }
-    }
+    align-items: flex-start;
   }
 
-  .mid-line {
-    height: 100%;
-    width: 1px;
-    background-color: #939395;
+  .avatar-wrapper {
+    margin-right: 0;
+    margin-bottom: 8px;
   }
 
-  .group-req {
-    padding: 20px;
-    box-sizing: border-box;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-
-     > div:first-child {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-      padding: 0 10px;
-    }
-
-    .group-req-list {
-       margin-top: 0;
-      overflow: auto;
-       flex-grow: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--el-border-color);
-      box-shadow: var(--el-box-shadow-light);
-      box-sizing: border-box;
-      background-color: transparent;
-
-      &::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: var(--el-fill-color-light);
-        border-radius: 3px;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--el-color-info-light-3);
-        border-radius: 3px;
-      }
-
-      &::-webkit-scrollbar-thumb:hover {
-        background: var(--el-color-info-light-5);
-      }
-    }
+  .action-buttons {
+    justify-content: center;
+    margin-top: 8px;
   }
 
-  .req-item {
-    margin-top: 15px;
-    position: relative;
-    border: 1px solid var(--el-border-color-lighter);
-    padding: 15px;
-    border-radius: 8px;
-    box-sizing: border-box;
-    background-color: var(--el-bg-color);
-    transition: box-shadow 0.2s ease-in-out;
-
-    &:hover {
-      box-shadow: var(--el-box-shadow);
-    }
-
-    &:first-child {
-        margin-top: 0;
-    }
-
-    .req-item-item {
-      display: flex;
-      align-items: center;
-    }
-
-    .u-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin-left: 10px;
-      .u-name {
-        font-size: 20px;
-        font-weight: 600;
-        margin-bottom: 4px;
-      }
-      .uid {
-        color: var(--el-text-color-secondary);
-        font-size: 14px;
-      }
-    }
-  }
-
-  /deep/ .el-dialog__header {
-    padding: 12px 20px 10px;
-    box-sizing: border-box;
+  .footer-decoration {
+    display: none;
   }
 }
 </style>

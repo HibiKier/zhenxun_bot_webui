@@ -9,11 +9,14 @@ import "default-passive-events"
 import "./assets/icons/index"
 import "./assets/css/global.css"
 import "@/styles/theme.scss"
-import { message } from "@/utils/message"
+import "@/assets/tailwind.css" // 引入 Tailwind
+import "@/utils/components"
+import { message, notify } from "@/utils/message"
 import { loading } from "@/utils/loading"
 import chatWebSocket from "./utils/websocket/chat-websocket"
 import statusWebSocket from "./utils/websocket/status-websocket"
 import logWebSocket from "./utils/websocket/log-websocket"
+import { isMobile } from "@/utils/validate"
 import {
   postRequest,
   putRequest,
@@ -31,10 +34,12 @@ Vue.prototype.deleteRequest = deleteRequest
 Vue.prototype.getBaseUrl = getBaseUrl
 Vue.prototype.$echarts = echarts
 Vue.prototype.$message = message
+Vue.prototype.$notify = notify
 Vue.prototype.getLoading = loading
 Vue.prototype.$chatWebSocket = chatWebSocket
 Vue.prototype.$statusWebSocket = statusWebSocket
 Vue.prototype.$logWebSocket = logWebSocket
+Vue.prototype.$isMobile = isMobile
 
 const vue = new Vue({
   router,

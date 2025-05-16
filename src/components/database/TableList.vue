@@ -1,40 +1,98 @@
 <template>
-  <div class="table-list" ref="tableList">
-    <one-mark text="风灵月影的魔法" style="margin-top: 10px" />
-    <p class="title" ref="title">数据表</p>
-    <div class="table-list-box" :style="{ height: computedHeight + 'px' }">
+  <div
+    class="table-list h-full w-full p-4"
+    ref="tableList"
+    :style="{
+      background: 'var(--el-bg-color)',
+    }"
+  >
+    <div class="title-container mb-4">
+      <p
+        class="title text-2xl md:text-3xl font-bold"
+        ref="title"
+        :style="{ color: 'var(--el-color-primary)' }"
+      >
+        数据表
+      </p>
+    </div>
+
+    <div
+      class="table-list-box rounded-xl"
+      :style="{
+        height: computedHeight + 'px',
+        overflow: 'auto',
+        background: 'var(--el-bg-color-overlay)',
+        boxShadow: 'var(--el-box-shadow-light)',
+        border: '1px solid var(--el-border-color-light)',
+      }"
+    >
       <el-collapse
         v-model="activeName"
         accordion
         :key="reloadKey"
         @change="selectTable"
+        class="anime-collapse"
       >
         <el-collapse-item
           v-for="table in tableList"
           :key="table.name"
           :name="table.name"
+          class="mb-3 anime-collapse-item"
         >
           <template slot="title">
-            <div class="name-color"></div>
-            <p class="table-name">{{ table.name }}：</p>
-            <p class="table-desc">{{ table.desc || "-" }}</p>
+            <div
+              class="name-color"
+              :style="{
+                width: '3px',
+                height: '24px',
+                marginRight: '10px',
+                borderRadius: '3px',
+                background: 'var(--el-color-primary)',
+              }"
+            ></div>
+            <div class="flex flex-col md:flex-row md:items-center">
+              <p
+                class="table-name font-bold"
+                :style="{ color: 'var(--el-color-primary)' }"
+              >
+                {{ table.name }}：
+              </p>
+              <p
+                class="table-desc text-sm md:ml-2"
+                :style="{ color: 'var(--el-text-color-secondary)' }"
+              >
+                {{ table.desc || "-" }}
+              </p>
+            </div>
           </template>
-          <div v-if="table.showColum" class="column-list">
-            <el-table :data="tableColumn[table.name]" border>
+
+          <div v-if="table.showColum" class="column-list mt-3">
+            <el-table
+              :data="tableColumn[table.name]"
+              border
+              class="anime-table"
+            >
               <el-table-column
                 label="名称"
                 prop="column_name"
+                class-name="cute-column"
               ></el-table-column>
-              <el-table-column label="类型" prop="data_type"></el-table-column>
+              <el-table-column
+                label="类型"
+                prop="data_type"
+                class-name="cute-column"
+              ></el-table-column>
               <el-table-column
                 width="80"
                 label="最大长度"
                 prop="max_length"
+                class-name="cute-column"
               ></el-table-column>
               <el-table-column
                 width="80"
                 label="是否为空"
                 prop="is_nullable"
+                class-name="cute-column"
               ></el-table-column>
             </el-table>
           </div>
@@ -45,9 +103,7 @@
 </template>
 
 <script>
-import OneMark from "../ui/OneMark.vue"
 export default {
-  components: { OneMark },
   name: "TableList",
   data() {
     return {
@@ -72,7 +128,7 @@ export default {
     handleResize() {
       this.$nextTick(() => {
         this.tableHeight =
-          this.$refs.tableList.offsetHeight - this.$refs.title.offsetHeight - 90
+          this.$refs.tableList.offsetHeight - this.$refs.title.offsetHeight - 20
       })
     },
     async selectTable(tableName) {
@@ -83,9 +139,7 @@ export default {
       ) {
         const resp = await this.getRequest(
           `${this.$root.prefix}/database/get_table_column`,
-          {
-            table_name: tableName,
-          }
+          { table_name: tableName }
         )
         if (resp.suc) {
           if (resp.warning) {
@@ -132,139 +186,122 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.table-list {
-  height: calc(100% - 214px);
-  padding: 0 30px;
+<style scoped>
+.title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 5px;
+}
 
-  .title {
-    font-weight: bold;
-    font-size: 23px;
-    padding: 5px;
-    border-radius: 10px;
-    text-align: center;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    background-color: var(--bg-color-secondary);
-    height: 35px;
-    box-shadow: var(--el-box-shadow-light);
-  }
+.title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--el-color-primary);
+  opacity: 0.7;
+  border-radius: 3px;
+}
 
-  .name-color {
-    width: 2px;
-    height: 100%;
-    background-color: var(--primary-color);
-    margin-right: 5px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+.table-list-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.table-list-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--el-color-primary);
+  opacity: 0.8;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .table-list {
+    padding: 1rem;
+    height: auto !important;
   }
 
   .table-list-box {
-    overflow: auto;
-    height: 100%;
-    padding: 30px;
-    background-color: var(--bg-color-secondary);
-    border-radius: 10px;
-    box-sizing: border-box;
+    padding: 1rem;
+    height: auto !important;
+    max-height: 500px;
+    overflow-y: auto;
+  }
 
-    ::v-deep .el-collapse-item {
-      margin-bottom: 5px;
-      border-radius: 5px;
-    }
+  .title {
+    font-size: 1.5rem;
+  }
 
-    ::v-deep .el-collapse-item__header {
-      font-size: 15px;
-      font-weight: bold;
-      background-color: var(--bg-color-hover);
-      color: var(--el-text-color-primary);
-      border-bottom: 1px solid var(--el-border-color-light);
-    }
+  ::v-deep .anime-table {
+    width: 100%;
+    overflow-x: auto;
+  }
 
-    ::v-deep .el-collapse-item__wrap {
-      background-color: var(--bg-color-secondary);
-      border-bottom-left-radius: 5px;
-      border-bottom-right-radius: 5px;
-    }
-
-    ::v-deep .el-collapse-item__content {
-      padding-bottom: 15px;
-      padding-left: 15px;
-      padding-right: 15px;
-      color: var(--el-text-color-primary);
-    }
-
-    .table-box {
-      padding: 10px 20px;
-
-      ::v-deep .el-divider--horizontal {
-        margin: 10px 0;
-      }
-
-      .table-name {
-        font-weight: bold !important;
-        font-size: 20px !important;
-        cursor: pointer;
-        color: var(--el-text-color-primary);
-      }
-
-      .table-desc {
-        font-size: 14px;
-        color: var(--el-text-color-regular);
-        margin-top: 5px;
-      }
-
-      .column-list {
-        // height: 100px;
-      }
-    }
+  ::v-deep .anime-table .el-table__body-wrapper {
+    overflow-x: auto;
   }
 }
 
-/* 添加 Element UI 表格主题化样式 */
-.table-list-box ::v-deep .el-table,
-.table-list-box ::v-deep .el-table__expanded-cell {
-  background-color: transparent; /* 使表格背景透明以继承父级背景 */
+/* 自定义Element UI组件样式 */
+::v-deep .anime-collapse {
+  border: none;
 }
 
-.table-list-box ::v-deep .el-table th,
-.table-list-box ::v-deep .el-table tr,
-.table-list-box ::v-deep .el-table td {
-  background-color: transparent !important; /* 强制单元格背景透明 */
-  color: var(--el-text-color-regular); /* 使用主题文本颜色 */
-  border-color: var(--el-border-color-light) !important; /* 使用主题边框颜色，添加 important */
+::v-deep .anime-collapse-item {
+  background-color: var(--el-bg-color-overlay);
+  border-radius: 8px !important;
+  margin-bottom: 12px !important;
+  box-shadow: var(--el-box-shadow-lighter);
+  border: 1px solid var(--el-border-color-light) !important;
 }
 
-/* 覆盖表头背景和文字颜色 */
-.table-list-box ::v-deep .el-table th {
-  background-color: var(--el-fill-color-lighter) !important;
-  color: var(--el-text-color-primary);
+::v-deep .anime-collapse-item__header {
+  background-color: var(--el-fill-color-light) !important;
+  border-radius: 8px !important;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  color: var(--el-text-color-primary) !important;
+  border-bottom: none !important;
 }
 
-
-/* 覆盖斑马纹背景色 */
-.table-list-box ::v-deep .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background-color: var(--el-fill-color-lighter) !important;
+::v-deep .anime-collapse-item__wrap {
+  background-color: transparent !important;
+  border-bottom-left-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+  border: none !important;
 }
 
-/* 覆盖鼠标悬停行的背景色 */
-.table-list-box ::v-deep .el-table--enable-row-hover .el-table__body tr:hover > td {
-  background-color: var(--el-table-row-hover-bg-color) !important;
+::v-deep .anime-collapse-item__content {
+  padding: 16px !important;
+  color: var(--el-text-color-primary) !important;
 }
 
-/* 覆盖表格边框颜色 */
-.table-list-box ::v-deep .el-table--border::after,
-.table-list-box ::v-deep .el-table--group::after,
-.table-list-box ::v-deep .el-table::before {
-    background-color: var(--el-border-color-light) !important; /* 添加 important */
+::v-deep .anime-table {
+  --el-table-border-color: var(--el-border-color-light) !important;
+  --el-table-header-bg-color: var(--el-fill-color-light) !important;
+  --el-table-tr-bg-color: var(--el-bg-color-overlay) !important;
+  --el-table-row-hover-bg-color: var(--el-color-primary-light-9) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
 }
-.table-list-box ::v-deep .el-table--border th.is-leaf,
-.table-list-box ::v-deep .el-table--border td {
-    border-bottom: 1px solid var(--el-border-color-light) !important; /* 添加 important */
-}
-.table-list-box ::v-deep .el-table--border th,
-.table-list-box ::v-deep .el-table--border td {
-    border-right: 1px solid var(--el-border-color-light) !important; /* 添加 important */
-}
-/* --- */
 
+::v-deep .anime-table th {
+  color: var(--el-text-color-primary) !important;
+  font-weight: bold !important;
+}
+
+::v-deep .anime-table td {
+  color: var(--el-text-color-regular) !important;
+}
+
+::v-deep .cute-column .cell {
+  padding: 8px 12px !important;
+}
 </style>

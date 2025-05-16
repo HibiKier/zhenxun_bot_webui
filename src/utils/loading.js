@@ -1,11 +1,13 @@
 export function loading(target) {
   const loading = this.$loading({
-    // 声明一个loading对象
     target: target,
-    lock: true, // 是否锁屏
-    text: "嘟嘟嘟，连线中...", // 加载动画的文字
-    spinner: "el-icon-loading", // 引入的loading图标
-    background: "rgba(0, 0, 0, 0.7)", // 背景颜色
+    lock: true,
+    text: "(>ω<) 正在努力加载中喵~",
+    spinner: "el-icon-star-on",
+    background: "var(--el-bg-color-overlay)",
+    customClass: "kawaii-loading",
+    textColor: "var(--el-color-primary-light-3)",
+    spinnerColor: "var(--el-color-primary-light-3)",
   })
   setTimeout(function () {
     // 设定定时器，超时2S后自动关闭遮罩层，避免请求失败时，遮罩层一直存在的问题
@@ -13,3 +15,19 @@ export function loading(target) {
   }, 5000)
   return loading
 }
+
+// 添加自定义样式
+const style = document.createElement("style")
+style.textContent = `
+  .kawaii-loading {
+    .el-loading-spinner {
+      .el-loading-text {
+        color: var(--el-color-primary-light-3) !important;
+      }
+      .circular {
+        color: var(--el-color-primary-light-3) !important;
+      }
+    }
+  }
+`
+document.head.appendChild(style)
