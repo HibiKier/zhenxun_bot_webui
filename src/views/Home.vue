@@ -392,7 +392,6 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize)
-    // window.sessionStorage.removeItem("isAuthenticated")
   },
   inject: ["setAppTheme"],
   methods: {
@@ -430,6 +429,10 @@ export default {
       } else {
         // 桌面端根据折叠状态显示菜单
         this.asideShow = !this.isCollapsed
+        console.log("window.innerWidth", window.innerWidth)
+        if (window.innerWidth <= 1500) {
+          this.toggleCollapse()
+        }
       }
     },
     handleMainClick() {
@@ -619,7 +622,7 @@ export default {
 
 /* 折叠菜单样式 */
 ::v-deep .el-menu--collapse {
-  width: 80px;
+  width: 73px;
 }
 ::v-deep .el-menu--collapse .el-menu-item {
   display: flex;
