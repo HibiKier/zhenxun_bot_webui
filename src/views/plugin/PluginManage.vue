@@ -5,42 +5,57 @@
     :style="{ backgroundColor: 'var(--bg-color)' }"
   >
     <!-- 顶部插件类型选择 -->
-    <div
-      class="type-selector rounded-xl shadow-md p-1 mb-6 inline-flex"
-      :style="{
-        backgroundColor: 'var(--bg-color-secondary)',
-        border: '1px solid var(--border-color-light)',
-      }"
-      ref="typeSelectorRef"
-    >
-      <button
-        v-for="type in pluginTypes"
-        :key="type.value"
-        @click="clickPluginType(type.value)"
-        class="px-4 py-2 text-sm font-medium transition-all duration-300"
-        :class="{
-          'text-white shadow-inner': activeBtn === type.value,
-          'hover:bg-opacity-10': activeBtn !== type.value,
-          'rounded-l-lg': type.first,
-          'rounded-r-lg': type.last,
-        }"
+    <div class="type-selector-container flex justify-between items-center mb-6">
+      <div
+        class="type-selector rounded-xl shadow-md p-1 inline-flex"
         :style="{
-          backgroundColor:
-            activeBtn === type.value ? 'var(--primary-color)' : 'transparent',
-          color:
-            activeBtn === type.value
-              ? 'var(--bg-color)'
-              : 'var(--primary-color)',
-          '&:hover': {
-            backgroundColor:
-              activeBtn !== type.value
-                ? 'var(--bg-color-hover)'
-                : 'var(--primary-color)',
-          },
+          backgroundColor: 'var(--bg-color-secondary)',
+          border: '1px solid var(--border-color-light)',
         }"
+        ref="typeSelectorRef"
       >
-        {{ type.label }}({{ pluginCount[type.countKey] }})
-      </button>
+        <button
+          v-for="type in pluginTypes"
+          :key="type.value"
+          @click="clickPluginType(type.value)"
+          class="px-4 py-2 text-sm font-medium transition-all duration-300"
+          :class="{
+            'text-white shadow-inner': activeBtn === type.value,
+            'hover:bg-opacity-10': activeBtn !== type.value,
+            'rounded-l-lg': type.first,
+            'rounded-r-lg': type.last,
+          }"
+          :style="{
+            backgroundColor:
+              activeBtn === type.value ? 'var(--primary-color)' : 'transparent',
+            color:
+              activeBtn === type.value
+                ? 'var(--bg-color)'
+                : 'var(--primary-color)',
+            '&:hover': {
+              backgroundColor:
+                activeBtn !== type.value
+                  ? 'var(--bg-color-hover)'
+                  : 'var(--primary-color)',
+            },
+          }"
+        >
+          {{ type.label }}({{ pluginCount[type.countKey] }})
+        </button>
+      </div>
+
+      <!-- 安装依赖按钮 -->
+      <CuteButton
+        @click="showInstallDependencyDialog = true"
+        type="primary"
+        icon="download"
+        :iconColor="'var(--button-icon-color-info)'"
+        class="px-4 py-2 text-sm rounded-full transition-colors duration-200 flex items-center gap-1"
+        size="sm"
+      >
+        <i class="fas fa-box mr-1"></i>
+        依赖管理
+      </CuteButton>
     </div>
 
     <!-- 过滤标签区域 -->
@@ -286,6 +301,147 @@
         placeholder="请输入新的菜单类型名称..."
       />
     </NeonDialog>
+
+    <!-- 安装依赖对话框 -->
+    <NeonDialog
+      :visible.sync="showInstallDependencyDialog"
+      title="依赖管理"
+      icon-class="download"
+      @confirm="installDependency"
+      class="dependency-dialog"
+    >
+      <div class="flex flex-col gap-4">
+        <!-- 操作类型选择 -->
+        <div class="flex items-center gap-4">
+          <div
+            class="operation-selector flex rounded-lg overflow-hidden"
+            :style="{ border: '1px solid var(--border-color-light)' }"
+          >
+            <button
+              @click="dependencyOperation = 'install'"
+              class="px-4 py-2 text-sm font-medium transition-all duration-300 flex items-center"
+              :style="{
+                backgroundColor:
+                  dependencyOperation === 'install'
+                    ? 'var(--primary-color)'
+                    : 'var(--bg-color)',
+                color:
+                  dependencyOperation === 'install'
+                    ? 'var(--bg-color)'
+                    : 'var(--primary-color)',
+              }"
+            >
+              <i class="fas fa-download mr-2"></i>安装
+            </button>
+            <button
+              @click="dependencyOperation = 'uninstall'"
+              class="px-4 py-2 text-sm font-medium transition-all duration-300 flex items-center"
+              :style="{
+                backgroundColor:
+                  dependencyOperation === 'uninstall'
+                    ? 'var(--danger-color)'
+                    : 'var(--bg-color)',
+                color:
+                  dependencyOperation === 'uninstall'
+                    ? 'var(--bg-color)'
+                    : 'var(--danger-color)',
+              }"
+            >
+              <i class="fas fa-trash-alt mr-2"></i>卸载
+            </button>
+          </div>
+          <div class="flex-grow">
+            <NeonInput
+              v-model="dependencyName"
+              class="fm-input"
+              :placeholder="
+                dependencyOperation === 'install'
+                  ? '请输入要安装的依赖名称...'
+                  : '请输入要卸载的依赖名称...'
+              "
+            />
+          </div>
+        </div>
+
+        <!-- 提示信息 -->
+        <div
+          class="tip-container px-4 py-3 rounded-lg text-xs flex items-start"
+          :style="{
+            backgroundColor:
+              dependencyOperation === 'install'
+                ? 'var(--primary-color-light-9)'
+                : 'var(--danger-color-light)',
+            border: `1px dashed ${
+              dependencyOperation === 'install'
+                ? 'var(--primary-color-light)'
+                : 'var(--danger-color)'
+            }`,
+            color:
+              dependencyOperation === 'install'
+                ? 'var(--primary-color)'
+                : 'var(--danger-color)',
+          }"
+        >
+          <i class="fas fa-lightbulb mt-1 mr-3 text-base"></i>
+          <div class="flex-grow">
+            <span v-if="dependencyOperation === 'install'">
+              <div class="font-medium mb-1">安装依赖提示：</div>
+              <ul class="list-disc list-inside space-y-1">
+                <li>可以指定版本或安装多个依赖（使用空格分离）</li>
+                <li>
+                  指定版本使用等号：<code
+                    class="px-1 py-0.5 rounded bg-white bg-opacity-30"
+                    >httpx==0.27</code
+                  >
+                </li>
+                <li>
+                  安装多个依赖：<code
+                    class="px-1 py-0.5 rounded bg-white bg-opacity-30"
+                    >httpx requests</code
+                  >
+                </li>
+              </ul>
+            </span>
+            <span v-else>
+              <div class="font-medium mb-1">卸载依赖提示：</div>
+              <ul class="list-disc list-inside space-y-1">
+                <li>可以卸载多个依赖（使用空格分离）</li>
+                <li>
+                  卸载多个依赖：<code
+                    class="px-1 py-0.5 rounded bg-white bg-opacity-30"
+                    >httpx requests</code
+                  >
+                </li>
+                <li>请确认依赖名称正确，避免卸载系统依赖</li>
+              </ul>
+            </span>
+          </div>
+        </div>
+
+        <!-- 结果显示区域 -->
+        <div
+          class="result-container p-4 rounded-lg text-sm overflow-auto"
+          :style="{
+            backgroundColor: 'var(--bg-color)',
+            border: '1px solid var(--border-color-light)',
+            minHeight: '120px',
+          }"
+        >
+          <pre v-if="installResult" class="whitespace-pre-wrap">{{
+            installResult
+          }}</pre>
+          <div
+            v-else
+            class="flex items-center justify-center h-full text-center text-gray-400"
+          >
+            <div class="text-center">
+              <i class="fas fa-terminal text-2xl mb-2"></i>
+              <div>返回结果将显示在这里</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </NeonDialog>
   </div>
 </template>
 
@@ -325,6 +481,10 @@ export default {
       newMenuTypeName: "",
       renameMenuTypeName: "",
       oldRenameMenuTypeName: "",
+      showInstallDependencyDialog: false,
+      dependencyName: "",
+      installResult: "",
+      dependencyOperation: "install",
     }
   },
   computed: {
@@ -435,12 +595,7 @@ export default {
     bulkToggleSwitch(enable) {
       if (this.selectedPluginModules.length === 0) return
       const actionText = enable ? "启用" : "禁用"
-      const loading = this.$loading({
-        lock: true,
-        text: `正在批量${actionText}...`,
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      })
+      const loading = this.getLoading(".bulk-actions")
 
       const updates = this.selectedPluginModules.map((module) => ({
         module: module,
@@ -501,12 +656,7 @@ export default {
       }
       if (this.selectedPluginModules.length === 0) return
 
-      const loading = this.$loading({
-        lock: true,
-        text: "正在批量修改菜单类型...",
-        spinner: "el-icon-loading",
-        background: "rgba(0, 0, 0, 0.7)",
-      })
+      const loading = this.getLoading(".bulk-actions")
 
       const updates = this.selectedPluginModules.map((module) => ({
         module: module,
@@ -639,6 +789,46 @@ export default {
           this.$message.error(`请求失败: ${error}`)
         })
     },
+    installDependency() {
+      const dependency = this.dependencyName.trim()
+      if (!dependency) {
+        this.$message.warning("依赖名称不能为空")
+        return
+      }
+
+      const isInstall = this.dependencyOperation === "install"
+      const operationText = isInstall ? "安装" : "卸载"
+
+      this.installResult = `正在${operationText}依赖，请稍候...`
+
+      const loading = this.getLoading(".result-container")
+
+      this.postRequest(`${this.$root.prefix}/plugin/install_dependencies`, {
+        dependencies: dependency.split(" "),
+        handle_type: this.dependencyOperation,
+      })
+        .then((resp) => {
+          loading.close()
+          if (!resp) {
+            this.installResult = `${operationText}失败：无效的响应`
+            return
+          }
+
+          if (resp.suc) {
+            this.installResult = resp.data || `${operationText}成功！`
+            this.$message.success(`依赖${operationText}执行成功`)
+          } else {
+            this.installResult =
+              resp.info || `${operationText}失败，请查看详细信息`
+            this.$message.error(resp.info || `${operationText}依赖失败`)
+          }
+        })
+        .catch((error) => {
+          loading.close()
+          this.installResult = `${operationText}失败: ${error}`
+          this.$message.error(`请求失败: ${error}`)
+        })
+    },
   },
 }
 </script>
@@ -691,6 +881,16 @@ export default {
   .bulk-actions select {
     width: 100%;
   }
+
+  .type-selector-container {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .type-selector-container .type-selector {
+    width: 100%;
+  }
 }
 
 /* 滚动条样式 */
@@ -711,5 +911,84 @@ export default {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-color);
+}
+
+/* 依赖安装对话框 */
+.dependency-dialog {
+  /deep/ .el-dialog {
+    width: 90% !important;
+    max-width: 600px !important;
+  }
+
+  .result-container {
+    height: 200px;
+    font-family: monospace;
+    transition: all 0.3s ease;
+  }
+
+  .operation-selector {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    button {
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.4s ease, height 0.4s ease;
+      }
+
+      &:hover::before {
+        width: 150%;
+        height: 150%;
+      }
+    }
+  }
+
+  .tip-container {
+    transition: all 0.3s ease;
+
+    code {
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .dependency-dialog {
+    /deep/ .el-dialog {
+      width: 95% !important;
+    }
+
+    .result-container {
+      height: 150px;
+    }
+
+    .operation-selector {
+      width: 100%;
+
+      button {
+        flex: 1;
+      }
+    }
+
+    .flex.items-center.gap-4 {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
 }
 </style>
