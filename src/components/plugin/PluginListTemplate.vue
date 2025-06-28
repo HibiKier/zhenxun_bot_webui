@@ -173,7 +173,7 @@ export default {
       const loading = this.getLoading(".plugin-list-container")
 
       this.getRequest(`${this.$root.prefix}/plugin/get_plugin_list`, {
-        plugin_type: [this.pluginType],
+        plugin_type: [].concat(this.pluginType),
         menu_type: this.menuType,
       })
         .then((resp) => {
