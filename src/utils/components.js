@@ -1,8 +1,8 @@
-import Vue from 'vue'
-import CuteConfirm from '@/components/ui/CuteConfirm.vue'
+import Vue from "vue"
+import CuteConfirm from "@/components/ui/CuteConfirm.vue"
 
 // 注册全局组件（可选）
-Vue.component('CuteConfirm', CuteConfirm)
+Vue.component("CuteConfirm", CuteConfirm)
 
 // 添加 $cuteConfirm 方法
 Vue.prototype.$cuteConfirm = function (options) {
@@ -16,7 +16,7 @@ Vue.prototype.$cuteConfirm = function (options) {
     })
 
     // 修改关闭逻辑
-    instance.$on('close', () => {
+    instance.$on("cancel", () => {
       resolve(false) // 默认取消
       setTimeout(() => {
         instance.$destroy()
@@ -24,7 +24,7 @@ Vue.prototype.$cuteConfirm = function (options) {
       }, 300)
     })
 
-    instance.$on('confirm', () => {
+    instance.$on("confirm", () => {
       resolve(true) // 确认
       setTimeout(() => {
         instance.$destroy()

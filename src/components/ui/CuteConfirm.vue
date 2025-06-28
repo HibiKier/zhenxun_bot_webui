@@ -45,7 +45,7 @@
           }"
           icon="close"
           :iconColor="'var(--el-text-color-regular)'"
-          size="small"
+          size="sm"
           :fontSize="12"
           :iconSize="14"
         >
@@ -63,7 +63,7 @@
               : 'confirm'
           "
           :iconColor="'#ffffff'"
-          size="small"
+          size="sm"
           :fontSize="12"
           :iconSize="14"
         >
@@ -110,10 +110,10 @@ export default {
   methods: {
     handleConfirm() {
       this.$emit("confirm")
-      this.$emit("close")
+      this.$emit("cancel")
     },
     handleCancel() {
-      this.$emit("close")
+      this.$emit("cancel")
     },
     handleOverlayClick() {
       if (this.closeOnClickOverlay) {
@@ -135,7 +135,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: 9999;
   backdrop-filter: blur(4px);
   animation: fadeIn 0.3s ease;
 }

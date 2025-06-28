@@ -144,6 +144,7 @@
                 type="success"
                 icon="confirm"
                 size="sm"
+                iconColor="var(--button-icon-color-primary)"
               >
                 同意
               </cute-button>
@@ -152,6 +153,7 @@
                 type="danger"
                 icon="false"
                 size="sm"
+                iconColor="var(--button-icon-color-primary)"
               >
                 拒绝
               </cute-button>
@@ -160,6 +162,7 @@
                 type="normal"
                 icon="ignore"
                 size="sm"
+                iconColor="var(--button-icon-color-default)"
               >
                 忽略
               </cute-button>
@@ -236,7 +239,7 @@ export default {
     async clearRequest(request_type) {
       const result = await this.$cuteConfirm({
         title: "清空确认",
-        message: `确定要清空当前全局请求吗?`,
+        message: `确定要清空当前全部请求吗?`,
         cancelButtonText: "我再想想",
         confirmButtonText: "全部清空",
       })
