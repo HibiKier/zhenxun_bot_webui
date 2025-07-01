@@ -1,0 +1,29 @@
+name: Force Sync to Gitee
+on:
+  push:
+    branches: ["dist"]
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global http.postBuffer 524288000  
+          git config --global core.compression 0
+
+      - name: Add Gitee remote
+        run: |
+          git remote add gitee https://two_Dimension:${{ secrets.GITEE_TOKEN }}@gitee.com/zhenxun-org/zhenxun_bot_webui.git
+          git fetch gitee dist --force  # 强制更新本地引用
+
+      - name: Force push
+        run: git push --progress --force gitee HEAD:dist
+        env:
+          GIT_TRACE: 1
+          GIT_CURL_VERBOSE: 1
