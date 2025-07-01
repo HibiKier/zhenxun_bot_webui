@@ -3,175 +3,207 @@
     :visible.sync="visible"
     @close="close"
     :class="{
-      'dialog-class': true,
       'neko-dialog': true,
       'limit-width': !updateData.config_list || !updateData.config_list.length,
     }"
+    width="80%"
+    top="5vh"
   >
-    <div class="main">
-      <!-- 添加二次元装饰元素 -->
-      <div class="decoration deco-1"></div>
-      <div class="decoration deco-3"></div>
+    <!-- 对话框背景装饰 -->
+    <div class="dialog-background">
+      <div class="bg-pattern pattern-1"></div>
+      <div class="bg-pattern pattern-2"></div>
+      <div class="bg-blob blob-1"></div>
+      <div class="bg-blob blob-2"></div>
+    </div>
 
-      <div class="header-section">
-        <div class="title-wrapper">
-          <p class="plugin-name-class">
-            {{ updateData.plugin_name }}
-            <span class="version-class">v{{ updateData.version }}</span>
-          </p>
-        </div>
-        <p class="module-info">
-          {{ updateData.module }}
-          <span class="author-class" v-if="updateData.author">
-            @{{ updateData.author }}
-          </span>
-        </p>
+    <!-- 头部区域 -->
+    <div class="plugin-header">
+      <div class="plugin-icon">
+        <i class="el-icon-magic-stick"></i>
       </div>
+      <div class="plugin-info">
+        <h2 class="plugin-title">
+          {{ updateData.plugin_name }}
+          <span class="plugin-version">v{{ updateData.version }}</span>
+        </h2>
+        <div class="plugin-meta">
+          <span class="plugin-module">{{ updateData.module }}</span>
+          <span class="plugin-author" v-if="updateData.author">
+            <i class="el-icon-user"></i> {{ updateData.author }}
+          </span>
+        </div>
+      </div>
+    </div>
 
-      <div class="update-info mt-8 flex flex-col md:flex-row">
-        <!-- 基础配置区域 -->
-        <div class="base-setting w-full">
-          <div class="section-title">
-            <span class="title-text">基础配置</span>
-            <div class="title-decoration"></div>
+    <!-- 内容区域 -->
+    <div class="plugin-content">
+      <!-- 基础配置区域 -->
+      <div class="settings-container">
+        <div class="settings-section">
+          <div class="section-header">
+            <i class="el-icon-setting"></i>
+            <h3>基础配置</h3>
           </div>
-          <el-form :model="updateData" :rules="rules" ref="form">
-            <el-row>
-              <el-col span="24 md:span-12" prop="default_status">
-                <el-form-item>
-                  <div class="form-item-cute">
-                    <span class="label-text">默认开关</span>
-                    <MySwitch v-model="updateData.default_status" />
-                    <span class="emoji">💡</span>
-                  </div>
-                </el-form-item>
-              </el-col>
-              <el-col span="24 md:span-12">
-                <el-form-item prop="limit_superuser">
-                  <div class="form-item-cute">
-                    <span class="label-text">限制超级用户</span>
-                    <MySwitch v-model="updateData.limit_superuser" />
-                    <span class="emoji">👑</span>
-                  </div>
-                </el-form-item>
-              </el-col>
-            </el-row>
 
+          <el-form
+            :model="updateData"
+            :rules="rules"
+            ref="form"
+            class="settings-form"
+          >
+            <!-- 第一行设置 -->
+            <div class="settings-row">
+              <div class="setting-card">
+                <div class="setting-icon">
+                  <i class="el-icon-switch-button"></i>
+                </div>
+                <div class="setting-content">
+                  <div class="setting-label">默认开关</div>
+                  <div class="setting-control">
+                    <MySwitch v-model="updateData.default_status" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="setting-card">
+                <div class="setting-icon">
+                  <i class="el-icon-user"></i>
+                </div>
+                <div class="setting-content">
+                  <div class="setting-label">限制超级用户</div>
+                  <div class="setting-control">
+                    <MySwitch v-model="updateData.limit_superuser" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 真寻特有设置 -->
             <template v-if="this.$store.state.botType == 'zhenxun'">
-              <el-row>
-                <el-col span="24 md:span-12">
-                  <el-form-item prop="cost_gold">
-                    <div class="form-item-cute">
-                      <span class="label-text">花费金币</span>
+              <div class="settings-row">
+                <div class="setting-card">
+                  <div class="setting-icon">
+                    <i class="el-icon-coin"></i>
+                  </div>
+                  <div class="setting-content">
+                    <div class="setting-label">花费金币</div>
+                    <div class="setting-control">
                       <neon-input
                         v-model="updateData.cost_gold"
                         placeholder="0"
-                        class="mt-1 cute-input"
+                        class="neon-input"
                       />
-                      <span class="emoji">💰</span>
                     </div>
-                  </el-form-item>
-                </el-col>
-                <el-col span="24 md:span-12">
-                  <el-form-item prop="menu_type">
-                    <div class="form-item-cute">
-                      <span class="label-text">菜单类型</span>
+                  </div>
+                </div>
+
+                <div class="setting-card">
+                  <div class="setting-icon">
+                    <i class="el-icon-menu"></i>
+                  </div>
+                  <div class="setting-content">
+                    <div class="setting-label">菜单类型</div>
+                    <div class="setting-control">
                       <neko-select
                         v-model="updateData.menu_type"
                         placeholder="选择类型"
-                        class="mt-1 cute-select"
+                        class="neko-select"
                         :options="menuTypeOptions"
                       />
-                      <span class="emoji">📋</span>
                     </div>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+                  </div>
+                </div>
+              </div>
             </template>
 
-            <el-row>
-              <el-col
-                span="24 md:span-12"
+            <!-- 最后一行设置 -->
+            <div class="settings-row">
+              <div
+                class="setting-card"
                 v-if="this.$store.state.botType == 'zhenxun'"
               >
-                <el-form-item prop="level">
-                  <div class="form-item-cute">
-                    <span class="label-text">群权限</span>
+                <div class="setting-icon">
+                  <i class="el-icon-lock"></i>
+                </div>
+                <div class="setting-content">
+                  <div class="setting-label">群权限</div>
+                  <div class="setting-control">
                     <neko-select
                       v-model="updateData.level"
                       placeholder="选择等级"
-                      class="mt-1 cute-select"
+                      class="neko-select"
                       :options="levelOptions"
                     />
-                    <span class="emoji">🔒</span>
                   </div>
-                </el-form-item>
-              </el-col>
-              <el-col span="24 md:span-12">
-                <el-form-item prop="block_type">
-                  <div class="form-item-cute">
-                    <span class="label-text">禁用类型</span>
+                </div>
+              </div>
+
+              <div class="setting-card">
+                <div class="setting-icon">
+                  <i class="el-icon-remove"></i>
+                </div>
+                <div class="setting-content">
+                  <div class="setting-label">禁用类型</div>
+                  <div class="setting-control">
                     <neko-select
                       v-model="updateData.block_type"
                       placeholder="选择类型"
-                      class="mt-1 cute-select"
+                      class="neko-select"
                       :options="blockTypeOptions"
                       clearable
                     />
-                    <span class="emoji">🚫</span>
                   </div>
-                </el-form-item>
-              </el-col>
-            </el-row>
+                </div>
+              </div>
+            </div>
           </el-form>
         </div>
 
         <!-- 配置项区域 -->
         <div
-          class="config-setting mt-8 md:mt-0 md:ml-8 w-full md:w-1/2"
+          class="settings-section config-section"
           v-if="updateData.config_list && updateData.config_list.length"
         >
-          <div class="section-title">
-            <span class="title-text">配置项</span>
-            <div class="title-decoration"></div>
+          <div class="section-header">
+            <i class="el-icon-edit-outline"></i>
+            <h3>配置项</h3>
           </div>
-          <div class="config-table cute-scroll">
+
+          <div class="config-table-wrapper">
             <el-table
               :data="updateData.config_list"
               border
-              class="neko-table"
-              height="470"
+              class="config-table"
+              height="400"
             >
               <el-table-column
                 label="键"
                 prop="key"
-                min-width="100px"
-                header-class-name="neko-table-header"
-              ></el-table-column>
+                min-width="100"
+                align="left"
+              />
               <el-table-column
                 label="帮助"
                 prop="help"
-                min-width="200px"
-                header-class-name="neko-table-header"
-              ></el-table-column>
+                min-width="200"
+                align="left"
+              />
               <el-table-column
                 label="默认值"
                 prop="default_value"
-                header-class-name="neko-table-header"
+                min-width="100"
+                align="center"
               >
                 <template slot-scope="{ row }">
                   {{
                     row.default_value + "" != "null"
                       ? row.default_value + ""
-                      : ""
+                      : "-"
                   }}
                 </template>
               </el-table-column>
-              <el-table-column
-                label="值"
-                min-width="140px"
-                header-class-name="neko-table-header"
-              >
+              <el-table-column label="值" min-width="140" align="center">
                 <template slot-scope="scope">
                   <AutoComponent
                     :ref="'autoComponent_' + scope.$index"
@@ -187,29 +219,18 @@
       </div>
     </div>
 
-    <el-divider class="neko-divider">
-      <div class="divider-content">✨ 配置选项 ✨</div>
-    </el-divider>
-
-    <div class="footer flex justify-center items-center py-4">
-      <CuteButton
-        icon="cancel"
-        @click="close"
-        :rounded="true"
-        :iconColor="'var(--button-icon-color-primary)'"
-      >
-        取消
-      </CuteButton>
-
-      <CuteButton
-        class="confirm-btn ml-4 md:ml-12"
-        @click="commit"
-        type="primary"
-        :rounded="true"
-        icon="true"
-        :iconColor="'var(--button-icon-color-primary)'"
-        >确定
-      </CuteButton>
+    <!-- 底部操作区 -->
+    <div class="dialog-footer">
+      <div class="action-buttons">
+        <button class="cancel-button" @click="close">
+          <i class="el-icon-close"></i>
+          <span>取消</span>
+        </button>
+        <button class="confirm-button" @click="commit">
+          <i class="el-icon-check"></i>
+          <span>确定</span>
+        </button>
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -219,7 +240,6 @@ import AutoComponent from "./AutoComponent.vue"
 import NeonInput from "@/components/ui/NeonInput.vue"
 import NekoSelect from "@/components/ui/NekoSelect.vue"
 import MySwitch from "@/components/ui/MySwitch.vue"
-import CuteButton from "@/components/ui/CuteButton.vue"
 import { checkConfig } from "@/utils/check"
 
 export default {
@@ -232,7 +252,6 @@ export default {
     "neon-input": NeonInput,
     "neko-select": NekoSelect,
     MySwitch,
-    CuteButton,
   },
   data() {
     var checkCostGold = (rule, value, callback) => {
@@ -390,453 +409,517 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// 主题颜色变量
+$primary: var(--el-color-primary, #409eff);
+$primary-light: var(--el-color-primary-light-3, #79bbff);
+$primary-lighter: var(--el-color-primary-light-7, #c6e2ff);
+$primary-lightest: var(--el-color-primary-light-9, #ecf5ff);
+$text-main: var(--el-text-color-primary, #303133);
+$text-secondary: var(--el-text-color-secondary, #909399);
+$border-color: var(--el-border-color-light, #e4e7ed);
+$bg-color: var(--el-bg-color, #ffffff);
+$bg-color-overlay: var(--el-bg-color-overlay, #ffffff);
+
+// 动画
 @keyframes float {
-  0% {
-    transform: translateY(0px);
+  0%,
+  100% {
+    transform: translateY(0);
   }
   50% {
-    transform: translateY(-5px);
-  }
-  100% {
-    transform: translateY(0px);
+    transform: translateY(-10px);
   }
 }
 
-@keyframes sparkle {
-  0% {
-    opacity: 0.3;
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
   }
   50% {
-    opacity: 1;
+    opacity: 0.9;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
   }
   100% {
-    opacity: 0.3;
+    background-position: 0% 50%;
   }
 }
 
-.main {
-  max-height: 50vh;
-  overflow: auto;
-}
-
-.limit-width {
-  /deep/ .el-dialog {
-    width: 500px !important;
-  }
-}
-
+// 对话框样式
 .neko-dialog {
   ::v-deep .el-dialog {
-    border-radius: 20px;
-    background: var(--el-bg-color-overlay);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--el-box-shadow-light);
-    border: 2px solid var(--el-border-color-light);
+    border-radius: 16px;
     overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: none;
+    background: $bg-color-overlay;
+    backdrop-filter: blur(10px);
     position: relative;
   }
 
   ::v-deep .el-dialog__header {
-    border-bottom: 1px solid var(--el-border-color-light);
-    padding: 15px 20px;
-    background: var(--el-fill-color-light);
-  }
-
-  ::v-deep .el-dialog__title {
-    color: var(--el-color-primary);
-    font-weight: bold;
-    font-size: 18px;
-    text-shadow: 0 2px 4px var(--el-color-primary-light-7);
+    display: none; // 隐藏默认头部
   }
 
   ::v-deep .el-dialog__body {
-    color: var(--el-text-color-regular);
-    padding: 20px;
-    position: relative;
-  }
-
-  .decoration {
-    position: absolute;
-    z-index: 0;
-    opacity: 0.1;
-
-    &.deco-1 {
-      top: 20px;
-      right: 20px;
-      width: 80px;
-      height: 80px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23ff6b9e" d="M50 0c13.8 0 25 11.2 25 25s-11.2 25-25 25-25-11.2-25-25 11.2-25 25-25z"/></svg>');
-      animation: float 4s ease-in-out infinite;
-    }
-
-    &.deco-2 {
-      bottom: 40px;
-      left: 20px;
-      width: 60px;
-      height: 60px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%239d65ff" d="M50 0l12.5 37.5h25l-20 15 7.5 25-25-15-25 15 7.5-25-20-15h25z"/></svg>');
-      animation: sparkle 3s ease-in-out infinite;
-    }
-
-    &.deco-3 {
-      top: 50%;
-      right: 10%;
-      width: 40px;
-      height: 40px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%2365ffa3" d="M50 0c27.6 0 50 22.4 50 50s-22.4 50-50 50-50-22.4-50-50 22.4-50 50-50z"/></svg>');
-      animation: float 5s ease-in-out infinite;
-    }
-  }
-
-  .header-section {
-    text-align: center;
-    margin-bottom: 20px;
+    padding: 0;
     position: relative;
     z-index: 1;
-
-    .title-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 5px;
-    }
-
-    .plugin-name-class {
-      font-size: 2rem;
-      font-weight: bold;
-      color: var(--el-color-primary);
-      text-shadow: 0 2px 4px var(--el-color-primary-light-7);
-      margin: 0;
-      display: inline-block;
-      background: linear-gradient(
-        45deg,
-        var(--el-color-primary),
-        var(--el-color-primary-light-3)
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .version-class {
-      font-size: 1rem;
-      font-weight: normal;
-      color: var(--el-color-primary-light-3);
-      margin-left: 0.5rem;
-    }
-
-    .module-info {
-      color: var(--el-text-color-secondary);
-      font-size: 0.9rem;
-      margin-top: 5px;
-
-      .author-class {
-        color: var(--el-color-primary-light-3);
-        font-weight: 500;
-      }
-    }
   }
 
-  .section-title {
-    position: relative;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
+  // 背景装饰
+  .dialog-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0.5;
+    pointer-events: none;
 
-    .title-text {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: var(--el-color-primary);
-      background: linear-gradient(
-        45deg,
-        var(--el-color-primary),
-        var(--el-color-primary-light-3)
-      );
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      padding-right: 10px;
-      z-index: 1;
-    }
+    .bg-pattern {
+      position: absolute;
+      opacity: 0.05;
 
-    .title-decoration {
-      flex-grow: 1;
-      height: 2px;
-      background: linear-gradient(
-        90deg,
-        var(--el-color-primary-light-7),
-        var(--el-color-primary-light-5)
-      );
-      position: relative;
-
-      &::after {
-        content: "";
-        position: absolute;
-        top: -3px;
+      &.pattern-1 {
+        top: 0;
         right: 0;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--el-color-primary-light-3);
+        width: 300px;
+        height: 300px;
+        background-image: radial-gradient(
+          circle,
+          $primary 1px,
+          transparent 1px
+        );
+        background-size: 20px 20px;
+      }
+
+      &.pattern-2 {
+        bottom: 0;
+        left: 0;
+        width: 200px;
+        height: 200px;
+        background-image: linear-gradient(45deg, $primary 25%, transparent 25%),
+          linear-gradient(-45deg, $primary 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, $primary 75%),
+          linear-gradient(-45deg, transparent 75%, $primary 75%);
+        background-size: 20px 20px;
+        background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+      }
+    }
+
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.1;
+
+      &.blob-1 {
+        top: -100px;
+        right: -50px;
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, $primary, #8a2be2);
+        animation: pulse 10s infinite ease-in-out;
+      }
+
+      &.blob-2 {
+        bottom: -80px;
+        left: -50px;
+        width: 250px;
+        height: 250px;
+        background: linear-gradient(135deg, #00bfff, $primary);
+        animation: pulse 8s infinite ease-in-out reverse;
       }
     }
   }
 
-  .form-item-cute {
+  // 插件头部
+  .plugin-header {
     display: flex;
     align-items: center;
-    padding: 8px 12px;
-    background: var(--el-bg-color);
-    border-radius: 12px;
-    box-shadow: var(--el-box-shadow-lighter);
-    transition: all 0.3s ease;
-    position: relative;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--el-box-shadow-light);
-      background: var(--el-bg-color-overlay);
-    }
-
-    .label-text {
-      font-size: 14px;
-      color: var(--el-text-color-regular);
-      min-width: 80px;
-      margin-right: 10px;
-    }
-
-    .emoji {
-      margin-left: 8px;
-      font-size: 16px;
-    }
-  }
-
-  .cute-input {
-    ::v-deep .el-input__inner {
-      border-radius: 12px;
-      border: 1px solid var(--el-border-color-light);
-      background: var(--el-bg-color);
-      color: var(--el-text-color-regular);
-      padding-left: 10px;
-
-      &:focus {
-        border-color: var(--el-color-primary);
-        box-shadow: 0 0 0 2px var(--el-color-primary-light-8);
-      }
-    }
-  }
-
-  .cute-select {
-    ::v-deep .el-select {
-      .el-input__inner {
-        border-radius: 12px;
-        border: 1px solid var(--el-border-color-light);
-        background: var(--el-bg-color);
-        color: var(--el-text-color-regular);
-
-        &:hover {
-          border-color: var(--el-color-primary);
-        }
-      }
-
-      .el-select__caret {
-        color: var(--el-color-primary);
-      }
-    }
-  }
-
-  .neko-divider {
-    ::v-deep .el-divider__text {
-      background: var(--el-bg-color);
-      color: var(--el-color-primary);
-      font-size: 14px;
-      padding: 0 15px;
-    }
-
-    .divider-content {
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  .neko-table {
-    ::v-deep .el-table {
-      background-color: var(--el-bg-color);
-      border-radius: 15px !important;
-      overflow: hidden;
-      border: 1px solid var(--el-border-color-light);
-
-      &::before {
-        display: none;
-      }
-    }
-
-    ::v-deep .el-table__header-wrapper {
-      border-radius: 15px 15px 0 0;
-    }
-
-    ::v-deep .el-table__body-wrapper {
-      border-radius: 0 0 15px 15px;
-    }
-
-    .neko-table-header {
-      background: var(--el-fill-color-light);
-      color: var(--el-color-primary);
-      font-weight: bold;
-
-      th {
-        border-bottom: 1px solid var(--el-border-color-light);
-      }
-    }
-
-    ::v-deep .el-table__row {
-      background-color: var(--el-bg-color);
-      transition: all 0.3s;
-
-      td {
-        border-bottom: 1px solid var(--el-border-color-light);
-      }
-
-      &:hover {
-        background-color: var(--el-fill-color-light);
-        transform: translateX(2px);
-      }
-
-      &:nth-child(even) {
-        background-color: var(--el-fill-color-lighter);
-      }
-    }
-  }
-
-  .cute-scroll {
-    ::v-deep ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    ::v-deep ::-webkit-scrollbar-track {
-      background: var(--el-fill-color-light);
-      border-radius: 3px;
-    }
-
-    ::v-deep ::-webkit-scrollbar-thumb {
-      background: var(--el-color-primary-light-5);
-      border-radius: 3px;
-
-      &:hover {
-        background: var(--el-color-primary-light-3);
-      }
-    }
-  }
-
-  .cute-btn {
-    border-radius: 20px;
-    padding: 10px 25px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    border: none;
+    padding: 24px 30px;
+    background: linear-gradient(135deg, $primary-lightest, $bg-color);
+    border-bottom: 1px solid $border-color;
     position: relative;
     overflow: hidden;
 
-    &::before {
+    &::after {
       content: "";
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(
-        circle,
-        rgba(255, 255, 255, 0.3) 0%,
-        transparent 70%
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        $primary,
+        $primary-light,
+        $primary,
+        $primary-light
       );
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      background-size: 200% 100%;
+      animation: gradientMove 3s linear infinite;
     }
 
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(255, 150, 200, 0.4);
+    .plugin-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, $primary, $primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 
-      &::before {
-        opacity: 1;
+      i {
+        font-size: 30px;
+        color: white;
       }
     }
 
-    &:active {
-      transform: translateY(1px);
+    .plugin-info {
+      flex: 1;
+
+      .plugin-title {
+        margin: 0 0 8px;
+        font-size: 24px;
+        font-weight: 700;
+        color: $text-main;
+        display: flex;
+        align-items: center;
+
+        .plugin-version {
+          font-size: 14px;
+          font-weight: normal;
+          color: $text-secondary;
+          margin-left: 10px;
+          padding: 2px 8px;
+          background: $primary-lightest;
+          border-radius: 12px;
+        }
+      }
+
+      .plugin-meta {
+        display: flex;
+        align-items: center;
+        color: $text-secondary;
+        font-size: 14px;
+
+        .plugin-module {
+          padding-right: 12px;
+          margin-right: 12px;
+          border-right: 1px solid $border-color;
+        }
+
+        .plugin-author {
+          display: flex;
+          align-items: center;
+
+          i {
+            margin-right: 4px;
+            font-size: 14px;
+          }
+        }
+      }
     }
   }
 
-  .cancel-btn {
-    background: var(--el-fill-color-light);
-    color: var(--el-text-color-disabled);
+  // 内容区域
+  .plugin-content {
+    padding: 20px 30px;
+    max-height: 60vh;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $bg-color;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $primary-lighter;
+      border-radius: 3px;
+
+      &:hover {
+        background: $primary-light;
+      }
+    }
+  }
+
+  // 设置容器
+  .settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  // 设置区域
+  .settings-section {
+    background: $bg-color;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: all 0.3s ease;
 
     &:hover {
-      background: var(--el-fill-color);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      padding: 16px 20px;
+      background: $primary-lightest;
+      border-bottom: 1px solid $border-color;
+
+      i {
+        font-size: 20px;
+        color: $primary;
+        margin-right: 10px;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: $primary;
+      }
+    }
+
+    .settings-form {
+      padding: 20px;
+    }
+
+    .settings-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    // 设置卡片
+    .setting-card {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      background: $bg-color-overlay;
+      border-radius: 12px;
+      border: 1px solid $border-color;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: $primary-light;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .setting-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: $primary-lightest;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16px;
+
+        i {
+          font-size: 20px;
+          color: $primary;
+        }
+      }
+
+      .setting-content {
+        flex: 1;
+
+        .setting-label {
+          font-size: 15px;
+          font-weight: 500;
+          color: $text-main;
+          margin-bottom: 8px;
+        }
+
+        .setting-control {
+          display: flex;
+          align-items: center;
+
+          .neon-input,
+          .neko-select {
+            width: 100%;
+          }
+        }
+      }
     }
   }
 
-  .confirm-btn {
-    background: var(--el-color-primary);
-    color: var(--el-color-white);
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  // 配置表格
+  .config-section {
+    .config-table-wrapper {
+      padding: 15px;
+      max-height: 400px;
+      overflow: hidden;
+    }
 
-    &:hover {
-      background: var(--el-color-primary-light-3);
+    .config-table {
+      ::v-deep .el-table {
+        border-radius: 10px;
+        overflow: hidden;
+
+        &::before {
+          display: none;
+        }
+
+        .el-table__header-wrapper {
+          th {
+            background: $primary-lightest;
+            color: $primary;
+            font-weight: 600;
+            padding: 12px 0;
+          }
+        }
+
+        .el-table__row {
+          td {
+            padding: 10px 0;
+            transition: all 0.3s;
+          }
+
+          &:hover td {
+            background-color: $primary-lightest;
+          }
+        }
+      }
     }
   }
-}
 
-@media (max-width: 768px) {
-  .neko-dialog {
+  // 底部操作区
+  .dialog-footer {
+    padding: 20px 30px;
+    border-top: 1px solid $border-color;
+    background: $bg-color;
+    display: flex;
+    justify-content: flex-end;
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 24px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+
+        i {
+          margin-right: 6px;
+          font-size: 16px;
+        }
+
+        &.cancel-button {
+          background: $bg-color;
+          color: $text-secondary;
+          border: 1px solid $border-color;
+
+          &:hover {
+            background: #f5f7fa;
+            color: $text-main;
+          }
+        }
+
+        &.confirm-button {
+          background: $primary;
+          color: white;
+
+          &:hover {
+            background: $primary-light;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(64, 158, 255, 0.3);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+    }
+  }
+
+  // 响应式调整
+  @media (max-width: 768px) {
     ::v-deep .el-dialog {
       width: 95% !important;
-      max-width: 95%;
       margin: 10px auto;
-      border-radius: 15px;
     }
 
-    .update-info {
-      flex-direction: column;
-
-      .base-setting,
-      .config-setting {
-        width: 100% !important;
-      }
-
-      .config-setting {
-        margin-left: 0 !important;
-        margin-top: 20px;
-      }
-    }
-
-    ::v-deep .el-col {
-      padding-left: 0 !important;
-      margin-bottom: 10px;
-    }
-
-    .form-item-cute {
+    .plugin-header {
+      padding: 15px;
       flex-direction: column;
       align-items: flex-start;
 
-      .label-text {
-        margin-bottom: 5px;
-      }
-
-      .emoji {
-        position: absolute;
-        right: 12px;
-        top: 30%;
-        transform: translateY(-50%);
+      .plugin-icon {
+        margin-bottom: 15px;
       }
     }
 
-    .footer {
-      flex-direction: column;
+    .plugin-content {
+      padding: 15px;
+    }
 
-      .confirm-btn {
-        margin-left: 0 !important;
-        margin-top: 10px;
+    .settings-row {
+      grid-template-columns: 1fr !important;
+    }
+
+    .dialog-footer {
+      padding: 15px;
+
+      .action-buttons {
+        width: 100%;
+
+        button {
+          flex: 1;
+          padding: 10px 0;
+        }
       }
+    }
+  }
+
+  // 限制宽度
+  &.limit-width {
+    ::v-deep .el-dialog {
+      max-width: 600px;
     }
   }
 }
