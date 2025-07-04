@@ -465,7 +465,7 @@ export default {
         { value: "NORMAL", label: "普通插件", countKey: "normal", first: true },
         { value: "ADMIN", label: "管理员插件", countKey: "admin" },
         { value: "SUPERUSER", label: "超级用户插件", countKey: "superuser" },
-        { value: "HIDDEN", label: "其他插件", countKey: "other", last: true },
+        { value: ["HIDDEN","DEPENDANT"], label: "其他插件", countKey: "other", last: true },
       ],
       pluginCount: { normal: 0, admin: 0, superuser: 0, other: 0 },
       activeBtn: "NORMAL",
